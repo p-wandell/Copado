@@ -1,0 +1,92 @@
+<!--
+  ~ Copyright (c) 2021.  7Summits Inc. All rights reserved.
+  -->
+
+<template>
+    <!-- Previous / Next Variant -->
+    <div
+        if:true={showDefaultPagination}
+        class="x7s-pagination x7s-pagination_default"
+    >
+        <div class="x7s-pagination_label">
+            {labels.labelPage}&nbsp;{currentPage}&nbsp;/&nbsp;{totalPages}
+        </div>
+        <lightning-button 
+            if:true={showPrevious}
+            label={labels.buttonPrevious}
+            icon-name="utility:chevronleft"
+            icon-position="left"
+            onclick={previousHandler}
+            variant={buttonVariant}
+            class="x7s-pagination_button-default"
+        ></lightning-button>
+        <lightning-button
+            if:true={showNext}
+            label={labels.buttonNext}
+            icon-name="utility:chevronright"
+            icon-position="right"
+            onclick={nextHandler}
+            variant={buttonVariant}
+            class="x7s-pagination_button-default"
+        ></lightning-button>
+    </div>
+
+    <!-- Paging Variant -->
+    <div
+        if:true={showPagingPagination}
+        class="x7s-pagination x7s-pagination_paging"
+    >
+        <button
+            class={buttonIconClass}
+            if:true={showPrevious}
+            onclick={previousHandler}
+        ><lightning-icon icon-name="utility:chevronleft" size="xx-small" alternative-text="labels.buttonPrevious"></lightning-icon></button>
+        <button
+            if:true={showFirst}
+            class={buttonClass}
+            onclick={pageHandler}
+        >1</button>
+        <div
+            if:true={showFirstPlaceholder}
+            class={placeholderButtonClass}
+        >{labels.buttonPlaceholder}</div>
+        <template for:each={paginationItems} for:item="item">
+            <button
+                class={item.class}
+                onclick={pageHandler}
+                key={item.label}
+            >{item.label}</button>
+        </template>
+        <div
+            if:true={showLastPlaceholder}
+            class={placeholderButtonClass}
+        >{labels.buttonPlaceholder}</div>
+        <button
+            if:true={showLast}
+            class={buttonClass}
+            onclick={pageHandler}
+        >{totalPages}</button>
+        <button
+            class={buttonIconClass}
+            if:true={showNext}
+            onclick={nextHandler}
+            variant="neutral"
+        ><lightning-icon icon-name="utility:chevronright" size="xx-small" alternative-text="labels.buttonNext"></lightning-icon></button>
+    </div>
+
+    <!-- More variant -->
+    <div
+        if:true={showMorePagination}
+        class="x7s-pagination x7s-pagination_default"
+    >
+        <div class="x7s-pagination_label">
+            {labels.labelMore}&nbsp;{currentItems}&nbsp;/&nbsp;{totalItems}
+        </div>
+        <lightning-button label={labels.buttonMore}
+                        disabled={more}
+                        onclick={moreHandler}
+                        variant={buttonVariant}
+                        class="x7s-pagination_button-default">
+        </lightning-button>
+    </div>
+</template>

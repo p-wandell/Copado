@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2018. 7Summits Inc.
+ */
+
+global class SVNSUMMITS_WrapperNetwork {
+
+	@AuraEnabled
+	global String userId                {get;set;}
+
+    @AuraEnabled
+    global Boolean isFollowing          {get;set;}  // Am I folowing this User
+
+    @AuraEnabled
+    global Integer intLikeReceived      {get;set;}  // number of likes associated with user
+
+    @AuraEnabled
+    global Integer intPostsMade         {get;set;}  // number of posts made by the user
+
+    @AuraEnabled
+    global Integer intNumberOfFollowers {get;set;}  // number of followers associated with user
+
+    @AuraEnabled
+    global String strKnowledgeTopics    {get;set;}  // topics associated with record
+
+    @AuraEnabled
+    global String strKnowledgeTopics1   {get;set;}  // topics associated with record
+
+    @AuraEnabled
+    global String strKnowledgeTopics2   {get;set;}  // topics associated with record
+
+    @AuraEnabled
+    global Id strKnowledgeTopicId       {get;set;}  // topicsId associated with record
+
+    @AuraEnabled
+    global Id strKnowledgeTopicId1      {get;set;}  //  topicsId associated with record
+
+    @AuraEnabled
+    global Id strKnowledgeTopicId2      {get;set;}  // opicsId associated with record
+
+    @AuraEnabled
+    global User objUser                 {get;set;}  // data associated with user
+
+    global SVNSUMMITS_WrapperNetwork(User objUser) {
+        this.objUser                = objUser;
+		this.userId                 = objUser.Id;
+	    this.isFollowing            = isFollowing;
+        this.intLikeReceived        = intLikeReceived;
+        this.intPostsMade           = intPostsMade;
+        this.intNumberOfFollowers   = intNumberOfFollowers;
+        this.strKnowledgeTopics     = strKnowledgeTopics;
+        this.strKnowledgeTopics1    = strKnowledgeTopics1;
+        this.strKnowledgeTopics2    = strKnowledgeTopics2;
+        this.strKnowledgeTopicId    = strKnowledgeTopicId;
+        this.strKnowledgeTopicId1   = strKnowledgeTopicId1;
+        this.strKnowledgeTopicId2   = strKnowledgeTopicId2;
+    }
+}

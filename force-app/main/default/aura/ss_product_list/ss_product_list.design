@@ -1,0 +1,94 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by joecallin on 7/18/17.
+ -->
+
+<design:component label="7S Product List">
+	<design:attribute name="setting"
+	                  label="Catalog Setting Name"
+	                  description="Enter the name of product catalog custom metadata type record. Leave blank to use Default"/>
+
+	<design:attribute name="listType"
+	                  label="Product List Type"
+	                  description="Tile will display the product list in a grid like fashion. Use List for a list style layout. Compact is intended for a sidebar."
+	                  dataSource="Tile,List,Compact"/>
+	<design:attribute name="showFeatured"
+	                  label="Featured only"
+	                  description="Display featured items only"/>
+	<design:attribute name="title"
+	                  label="Product List Header"
+	                  description="This is the header displayed above the list"/>
+	<design:attribute name="showHeader"
+	                  label="Show header"
+	                  description="Show the header title"/>
+	<design:attribute name="showFamilyTitle"
+	                  label="Show product family header"
+	                  description="Enable to show the product family name when called from Product Family List Component"/>
+	<design:attribute name="headerAlignment"
+	                  label="Horizontal header alignment"
+	                  description="Horizontal alignment for the list header"
+	                  dataSource="start, center, end"/>
+
+	<design:attribute name="showImage"
+	                  label="Show product image"/>
+	<design:attribute name="showImageBorder"
+	                  label="Show image border"
+	                  description="Show a border around the product image"/>
+	<design:attribute name="showImagePrice"
+	                  label="Show image price"
+	                  description="Show the product price on the image"/>
+	<design:attribute name="showProductFamily"
+	                  label="Show product family"/>
+	<design:attribute name="showProductCode"
+	                  label="Show product code"/>
+	<design:attribute name="showPrice"
+	                  label="Show product price"/>
+	<design:attribute name="showDescription"
+	                  label="Show product description"/>
+	<design:attribute name="showAddToCart"
+	                  label="Show add to cart button"/>
+	<design:attribute name="showAddQuantity"
+	                  label="Show add to cart quantity"/>
+	<design:attribute name="showSuggestProduct"
+	                  label="Show suggest product button"/>
+	<design:attribute name="showActionMenu"
+	                  label="Show action menu"
+	                  description="Show the action menu to initiate an custom defined action."/>
+
+	<design:attribute name="minimumPrice"
+	                  label="Minimum price filter"
+	                  description="List items with a price equal or greater than this value"/>
+	<design:attribute name="maximumPrice"
+	                  label="Maximum price filter"
+	                  description="List items with a price equal or less than this value"/>
+
+	<design:attribute name="descriptionLineCount"
+	                  label="Description lines to show"
+	                  description="Number of lines to show for the description"/>
+	<design:attribute name="addToCartPosition"
+	                  label="Add to cart or suggest position"
+	                  dataSource="Top, Bottom"
+	                  description="Position to place the add to cart or suggest product or action menu button if enabled"/>
+	<design:attribute name="pageSize"
+	                  label="Items Per Page"
+	                  description="This is the number of products that will be loaded per page"/>
+	<design:attribute name="paginationPosition"
+	                  label="Pagination Location"
+	                  description="Where the pagination will display in relation to the list"
+	                  dataSource="None, Top, Bottom, Top, Both"/>
+	<design:attribute name="paginationAlignment"
+	                  label="Pagination alignment"
+	                  description="Pagination buttons horizontal alignment"
+	                  dataSource="start, center, end"/>
+	<design:attribute name="sortString"
+	                  label="Initial sort order"
+	                  dataSource="Product Name, Product Family,Product Code, Unit Price"/>
+	<design:attribute name="searchString"
+	                  label="Limit products to a product code"/>
+	<design:attribute name="filterString"
+	                  label="Limit products to a product family"
+	                  dataSource="apex://pc_filterDynamicPickList"/>
+</design:component>

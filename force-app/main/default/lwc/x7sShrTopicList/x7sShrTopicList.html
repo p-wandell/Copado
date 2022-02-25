@@ -1,0 +1,18 @@
+<!--
+  ~ Copyright (c) 2020.  7Summits Inc. All rights reserved.
+  -->
+
+<!-- x7S Topic List -->
+<template>
+    <template if:true={topics}>
+        <ul class={componentClass}>
+            <template for:each={topics} for:item='topic'>
+                <c-x-7s-shr-topic-list-item class="topic-list__item"
+                                        key={topic.Id}
+                                        topic={topic}
+                                        type={type}
+                ></c-x-7s-shr-topic-list-item>
+            </template>
+        </ul>
+    </template>
+</template>

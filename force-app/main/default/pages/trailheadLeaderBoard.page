@@ -1,0 +1,134 @@
+<apex:page controller="trailheadLeaderBoardController" showchat="false" sidebar="false" standardStylesheets="true" showheader="false">
+    <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
+    <apex:stylesheet value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/css/theme.blue.css" />
+    
+    <style>
+        body{
+            background-image: url("http://www.7summitsinc.com/wp-content/uploads/Banner-Nov13.jpg");
+            background-size: cover;
+            color: #fff;
+        }
+
+        td{
+            color: #fff;
+        }
+
+        a#logo{
+            background: url(http://www.7summitsinc.com/wp-content/themes/7s/images/logo-white.svg) no-repeat center center !important;
+            background-size: 101px 50px !important;
+            color: rgba(0,0,0,0);
+            font-size: 0;
+            width: 101px;   
+            height: 50px;
+            display: inline-block;      
+        }
+  
+
+        table {
+            width: 75%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {font-size:30px;}
+        h2 {font-size:20px;}
+        
+        .totalpointscolumn
+        {
+            font-size:20px;
+            font-weight: bold;
+        }
+        
+        a:link {
+            text-decoration: none;
+        }
+
+        body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock{
+
+            background: none;
+            border: none;
+        }
+
+        body .bRelatedList .pbBody table.list, body .apexp .pbBody table.list{
+            background: none;
+            border: none;
+        }
+
+        body .pbBody table.list tr th, body .pbBody table.list tr td{
+            color: #fff;
+        }
+
+        .pbBody, .pbBody a, .pbBody td, .lbBody a, .lbBodyDescription, .list .headerRow .noRowsHeader{
+            color: #fff;
+        }
+
+        .highlight td{
+            background: #074c5c !important;
+        }
+
+        .bPageHeader .phHeader td{
+            vertical-align: middle;
+            padding: 20px;
+            background: #074c5c;
+        }
+
+        #AppBodyHeader .phHeader{
+            box-shadow: 0px 0px 10px #000;
+        }
+    </style>
+    
+    <!--Header on the page-->
+    <div id="AppBodyHeader" class="bPageHeader">
+    <table id="phHeader" class="phHeader brandZeronaryBgr" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td >
+                <a href="http://7summitsinc.com" target="_blank" id="logo">Logo</a>
+            </td>
+            <td align="center">
+                <h1>{!trailsettings.Header_Message__c}</h1>
+            </td>
+            <td align="center"><h2>
+                <script language="JavaScript">
+                TargetDate = "{!trailsettings.Target_Time__c}";
+                BackColor = "";
+                ForeColor = "white";
+                CountActive = true;
+                CountStepper = -1;
+                LeadingZero = true;
+                DisplayFormat = "%%D%% Days, %%H%% Hours, %%M%% Minutes, %%S%% Seconds.";
+                FinishMessage = "{!trailsettings.Finish_Message__c}";
+                </script>
+                &nbsp;&nbsp; <script src="{!URLFOR($Resource.countdown, 'countdown.js')}">
+                </script> 
+            
+                </h2></td>
+        </tr>
+    </table>
+    </div>
+
+    <br /><br />
+
+
+    <!--Table that contains the leaderboard-->
+      <apex:form >
+      
+      <apex:pageblock >
+          <apex:pageblocktable value="{!contacts}" var="cw" id="trailblazers">
+              
+              <apex:column headervalue="Rank" value="{!cw.count}" />
+              <apex:column headerValue="Trailblazer" styleclass="totalpointscolumn">
+                <a href="https://trailhead.salesforce.com/users/profiles/{!cw.c.SF_Dev_User_Id__c}" target="_blank">
+                    <apex:outputText value="{!cw.Name}" />
+                </a>
+              </apex:column>
+              <apex:column headervalue="Badges" value="{!cw.badgeTotal}" styleclass="totalpointscolumn"/>
+              <apex:column headervalue="Trails" value="{!cw.trails}" styleclass="totalpointscolumn" />                    
+              <!-- what is this? <apex:column headervalue="Check In Points" value="{!cw.c.Points_Check_In__c}"/> -->
+              <apex:column headervalue="Total Points" value="{!cw.totalPoints}" styleclass="totalpointscolumn"/>          
+              <!--<apex:column headervalue="Trailblazer on Twitter" value="{!cw.c.Twitter_URL__c}"/>-->
+              
+          </apex:pageblocktable>
+      </apex:pageblock>
+
+      </apex:form>
+</apex:page>

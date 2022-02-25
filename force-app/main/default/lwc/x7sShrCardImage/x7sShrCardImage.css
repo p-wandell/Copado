@@ -1,0 +1,79 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+:host {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.card-image__wrapper,
+.card-image__avatar-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.card-image__wrapper {
+  background-color: #eee;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.card-image__image {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+.card-image__placeholder {
+  opacity: 0.3;
+}
+.card-image_has-avatar .card-image__wrapper {
+  background-color: var(--lwc-colorTextDefault);
+}
+.card-image_has-avatar .card-image__image {
+  -webkit-filter: blur(10px) grayscale(1);
+  -moz-filter: blur(10px) grayscale(1);
+  -o-filter: blur(10px) grayscale(1);
+  -ms-filter: blur(10px) grayscale(1);
+  filter: blur(10px) grayscale(1);
+  opacity: 0.25;
+  width: 110%;
+  height: 110%;
+  left: -5%;
+  top: -5%;
+  position: relative;
+}
+.card-image_has-avatar.card-image_emphasize-background .card-image__image {
+  -webkit-filter: blur(7px);
+  -moz-filter: blur(7px);
+  -o-filter: blur(7px);
+  -ms-filter: blur(7px);
+  filter: blur(7px);
+  opacity: 1;
+}
+.card-image__avatar-wrapper {
+  width: 100%;
+}
+.card-image__avatar-wrapper.slds-align_absolute-center {
+  position: absolute;
+}
+.card-image__avatar {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 50%;
+}

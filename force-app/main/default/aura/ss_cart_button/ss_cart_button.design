@@ -1,0 +1,35 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 9/29/17.
+ -->
+
+<design:component label="7S Product Cart Button">
+	<design:attribute name="setting"
+	                  label="Catalog Setting Name"
+	                  description="Enter the name of product catalog custom metadata type record. Leave blank to use Default"/>
+	<design:attribute name="cartAlign"
+	                  label="Horizontal alignment"
+	                  description="Horizontal alignment for the cart button"
+	                  dataSource="start, center, end"/>
+	<design:attribute name="singleButton"
+	                  label="Single button only"
+	                  description="Show Cart and item count on a single button"/>
+	<design:attribute name="showCount"
+	                  label="Show cart item count"
+	                  description="Show the number of items in the cart"/>
+	<design:attribute name="showTotal"
+	                  label="Show total"
+	                  description="Show total value of all items in the cart"/>
+	<design:attribute name="showBorder"
+	                  label="Add border"
+	                  description="Add a border to the cart button"/>
+	<design:attribute name="cartUrl"
+	                  label="Cart URL"
+	                  description="Specify the cart page URL"/>
+	<design:attribute name="catalogUrl"
+	                  label="Catalog URL"
+	                  description="Return to catalog URL"/>
+</design:component>

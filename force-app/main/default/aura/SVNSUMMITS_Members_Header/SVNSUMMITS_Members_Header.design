@@ -1,0 +1,15 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<design:component label="7S Members Banner">
+	<design:attribute name="memberTitle"
+	                  label="Member Directory Title"
+	                  description="Text to display as title. Translated by referencing setup->Custom Labels-> ss_label_Members.  If you change it to regular text it will display fine but NOT be translatable. Clearing out ANY text will restore default."
+	                  required="true"/>
+	<design:attribute name="showNumberOfMembers"
+	                  label="Display Number of Members"
+	                  description="Enable/Disable the display of the member count. This number will not display if the community has more than 10,000 members"/>
+	<design:attribute name="showSort"
+	                  label="Show sort selection"
+	                  description="Show the sort members selection"/>
+</design:component>

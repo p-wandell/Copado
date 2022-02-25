@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Hvis du vælger Opportunity Product, er kun mulige produkter, der har IsServicesProductLine tjekket, inkluderet. Hvis du vælger Produkt, inkluderes kun mulige produkter, der har IsServicesProdukt tjekket på selve produktet.</help>
+    <label><!-- Use Is Services Product On Opp Product --></label>
+    <name>pse__Use_Is_Services_Product_On_Opp_Product__c</name>
+    <picklistValues>
+        <masterLabel>Opportunity Product</masterLabel>
+        <translation>Mulighed Produkt</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Product</masterLabel>
+        <translation>Produkt</translation>
+    </picklistValues>
+</CustomFieldTranslation>

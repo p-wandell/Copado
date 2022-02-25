@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__SourceDataview__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>The dataview that acts as the source of the field names for this summarization template.</description>
+    <externalId>false</externalId>
+    <label>Dataview</label>
+    <referenceTo>ffr__DataView__c</referenceTo>
+    <relationshipLabel>Su</relationshipLabel>
+    <relationshipName>SummarizationTemplates</relationshipName>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

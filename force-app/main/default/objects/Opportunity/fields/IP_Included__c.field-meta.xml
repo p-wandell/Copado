@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IP_Included__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(
+IP_Purchased_Count__c&gt;0,
+TRUE,
+FALSE)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>IP Included</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

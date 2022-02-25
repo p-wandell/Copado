@@ -1,0 +1,19 @@
+<!-- Copyright (c) 2021. 7Summits Inc. -->
+
+<template>
+    <c-x7s-shr-component-wrapper custom-class={customClass} 
+                                 variant={viewVariant} 
+                                 auto-slds-card={autoSlds}
+                                 aria-label={labels.labelAriaWrapper}>
+        <template if:true={isItemAvailable}>
+            <lightning-datatable
+                    key-field="id"
+                    data={data}
+                    columns={columns}
+                    hide-checkbox-column="true"
+                    onrowaction={handleRowAction} 
+                    >
+            </lightning-datatable>
+        </template> 
+    </c-x7s-shr-component-wrapper>
+</template>

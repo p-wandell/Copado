@@ -1,0 +1,81 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_GroupsController"
+                access="global"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+	<aura:registerEvent name="appEvent" type="c:SVNSUMMITS_Groups_Filters_Event"/>
+
+	<aura:attribute name="filterMyGroups" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="showMyGroups" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showSortBy" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showGroupType" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="defaultSort" type="String" default="Latest Group Activity" access="global"/>
+	<aura:attribute name="defaultType" type="String" default="All Types" access="global"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="center"
+	                  horizontalAlign="end">
+		
+				<lightning:layoutItem
+				                      padding="horizontal-small">
+					<aura:if isTrue="{!v.showMyGroups}">
+						<lightning:input type="toggle"
+						                 name="checkMyGroups"
+						                 onchange="{!c.onFilterMyGroups}"
+						                 checked="{!v.filterMyGroups}"
+						                 label="{!$Label.c.ss_grp_label_My_Groups}"
+										messageToggleActive=""
+										messageToggleInactive=""
+										class="slds-m-top--small"/>
+						</aura:if>
+				</lightning:layoutItem>
+
+
+
+		<aura:if isTrue="{!v.showSortBy}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="3"
+			                      mediumDeviceSize="3"
+			                      smallDeviceSize="12"
+			                      padding="horizontal-small">
+
+					<lightning:select aura:id="headerSort"
+					                  name="selectSort"
+					                  label="{!$Label.c.ss_grp_label_Sort_By}"
+					                  class="slds-input-select slds-float--right filter"
+					                  onchange="{!c.selectSortBy}"
+										value="{!v.defaultSort}">
+						<option value="Latest Group Activity">{!$Label.c.ss_grp_label_Latest_Group_Activity}</option>
+						<option value="Recently Viewed">{!$Label.c.ss_grp_label_Recently_Viewed}</option>
+						<option value="Most Number Of Members">Most {!$Label.c.ss_grp_label_Number_Of_Members}</option>
+						<option value="Least Number Of Members">Least {!$Label.c.ss_grp_label_Number_Of_Members}</option>
+						<option value="Date Created : Oldest">{!$Label.c.ss_grp_label_Date_Created_Oldest}</option>
+						<option value="Date Created : Newest">{!$Label.c.ss_grp_label_Date_Created_Newest}</option>
+					</lightning:select>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<aura:if isTrue="{!v.showGroupType}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="3"
+			                      mediumDeviceSize="3"
+			                      smallDeviceSize="12"
+			                      padding="horizontal-small">
+
+					<lightning:select aura:id="headerType"
+					                  name="selectSort"
+					                  label="Group Type"
+					                  class="slds-input-select slds-float--right filter"
+					                  onchange="{!c.selectGroupType}"
+					                  value="{!v.defaultType}">
+						<option value="All Types">All Types</option>
+						<option value="Public">Public</option>
+						<option value="Private">Private</option>
+					</lightning:select>
+
+			</lightning:layoutItem>
+		</aura:if>
+	</lightning:layout>
+</aura:component>

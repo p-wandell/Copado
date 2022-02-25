@@ -1,0 +1,105 @@
+<apex:page standardController="ffr__RelatedContentPane__c" extensions="ffr.RelatedContentPaneController" showHeader="true" sidebar="true" docType="html-5.0">
+	<apex:includeScript value="{!$Resource.ffr__ExcelBuilder}"></apex:includeScript>
+
+	<c:extjs_bootstrap applicationName="RelatedContentPane" staticResource="{!$Resource.ffr__RelatedContentPane}" developmentPrefix="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}">
+		<script>
+			window['$RemoteAction'] = window['$RemoteAction'] || {};
+			window['$Params'] = window['$Params'] || {};
+			window['$Label'] = window['$Label'] || {};
+			window['$IFrameURL'] = window['$IFrameURL'] || {};
+			$Params.ExtraClasspaths = [];
+			$Params.ExtraAliases = {};
+			var Ext = Ext || {};
+			Ext.buildSettings = { baseCSSPrefix: "f-", scopeResetCSS: true };
+
+			<!-- Remote Actions -->
+			$RemoteAction.RelatedContentPaneController = $RemoteAction.RelatedContentPaneController || {};
+			$RemoteAction.RelatedContentPaneController.lookup = '{!$RemoteAction.RelatedContentPaneController.lookup}';
+			$RemoteAction.RelatedContentPaneController.getRcpWithData = '{!$RemoteAction.RelatedContentPaneController.getRcpWithData}';
+			$RemoteAction.RelatedContentPaneController.saveRcpData = '{!$RemoteAction.RelatedContentPaneController.saveRcpData}';
+			$RemoteAction.RelatedContentPaneController.rcpComponentServerCommand = '{!$RemoteAction.RelatedContentPaneController.rcpComponentServerCommand}';
+			$RemoteAction.RelatedContentPaneController.rcpComponentServerRead = '{!$RemoteAction.RelatedContentPaneController.rcpComponentServerRead}';
+			$RemoteAction.RelatedContentPaneController.loadRCPEntity = '{!$RemoteAction.RelatedContentPaneController.loadRCPEntity}';
+
+			<!-- Params -->
+			$Params.RcpEntity = '{!JSENCODE(RcpEntity)}';
+			$Params.ListPageUrl = '{!JSENCODE(ListPageUrl)}';
+			$Params.EditPageUrl = '{!JSENCODE(EditorPageUrl)}';
+			$Params.PeriodsEnabled = Boolean({!PeriodsEnabled});
+			$Params.PeriodObjectName = '{!JSENCODE(PeriodObjectName)}';
+			$Params.PeriodsPerYear = Number({!PeriodsPerYear});
+			$Params.CurrentPeriodName = '{!JSENCODE(CurrentPeriodName)}';
+			$Params.RequiredPicklistFields = '{!JSENCODE(RequiredPicklistFields)}';
+			$Params.DefaultDrivingEntity = {
+				Id: '{!JSENCODE(DefaultDrivingEntityId)}',
+				Name: '{!JSENCODE(DefaultDrivingEntityName)}'
+			};
+
+			<!-- General Labels -->
+			$Label.RelatedContentPaneTitle = '{!JSENCODE($Label.RelatedContentPaneTitle)}';
+			$Label.RcpSelectInstanceEmptyText = '{!JSENCODE($Label.RcpSelectInstanceEmptyText)}';
+			$Label.RcpLandingPanelText = '{!JSENCODE($Label.RcpLandingPanelText)}';
+
+			<!-- Button labels -->
+			$Label.GoToListButton = '{!JSENCODE($Label.GoToListButton)}';
+			$Label.RelatedContentPaneEditButton = '{!JSENCODE($Label.RelatedContentPaneEditButton)}';
+			$Label.ToolbarHelp = '{!JSENCODE($Label.ToolbarHelp)}';
+			$Label.ToolbarToggleFullscreen = '{!JSENCODE($Label.ToolbarToggleFullscreen)}';
+
+			<!-- Component labels -->
+			<apex:repeat value="{!requiredLabels}" var="labelName" id="componentLabels">
+				$Label.{!labelName} = '{!JSENCODE(requiredLabels[labelName])}';
+			</apex:repeat>
+
+			<!-- RCP Labels -->
+			$Label.RCPNoDataFoundOnRow = '{!JSENCODE($Label.RCPNoDataFoundOnRow)}';
+			$Label.RcpPaletteSectionRemoved = '{!JSENCODE($Label.RcpPaletteSectionRemoved)}';
+			$Label.RcpComponentDataInaccessible = '{!JSENCODE($Label.RcpComponentDataInaccessible)}';
+			$Label.RcpNoComponents = '{!JSENCODE($Label.RcpNoComponents)}';
+			$Label.RCPErrorsTitle = '{!JSENCODE($Label.RCPErrorsTitle)}';
+			$Label.RCPLoading = '{!JSENCODE($Label.RCPLoading)}';
+			$Label.RCPRefresh = '{!JSENCODE($Label.RCPRefresh)}';
+			$Label.RCPClose = '{!JSENCODE($Label.RCPClose)}';
+			$Label.RelatedContentPaneDrivingEntityLabel = '{!JSENCODE($Label.RelatedContentPaneDrivingEntityLabel)}';
+
+			<!-- Data Support Labels -->
+			$Label.DataSupportTitleBoolean = '{!JSENCODE($Label.DataSupportTitleBoolean)}';
+			$Label.DataSupportTitleDate = '{!JSENCODE($Label.DataSupportTitleDate)}';
+			$Label.DataSupportTitleDateTime = '{!JSENCODE($Label.DataSupportTitleDateTime)}';
+			$Label.DataSupportTitleId = '{!JSENCODE($Label.DataSupportTitleId)}';
+			$Label.DataSupportTitleNumber = '{!JSENCODE($Label.DataSupportTitleNumber)}';
+			$Label.DataSupportTitlePeriod = '{!JSENCODE($Label.DataSupportTitlePeriod)}';
+			$Label.DataSupportTitlePicklist = '{!JSENCODE($Label.DataSupportTitlePicklist)}';
+			$Label.DataSupportTitleText = '{!JSENCODE($Label.DataSupportTitleText)}';
+			$Label.DataSupportLabelLatitude = '{!JSENCODE($Label.DataSupportLabelLatitude)}';
+			$Label.DataSupportLabelLongitude = '{!JSENCODE($Label.DataSupportLabelLongitude)}';
+			$Label.DataSupportTipDisplayMap = '{!JSENCODE($Label.DataSupportTipDisplayMap)}';
+			$Label.DataSupportTipCallThisNumber = '{!JSENCODE($Label.DataSupportTipCallThisNumber)}';
+
+			<!-- IFrame Resource URLs -->
+			<apex:repeat value="{!iFrameResourceNames}" var="resName" id="resourceUrls">
+				$IFrameURL.{!resName} = '{!JSENCODE($IFrameResource[iFrameResourceNames[resName]])}';
+			</apex:repeat>
+		</script>
+
+		<!-- DEVELOPMENT -->
+		<apex:outputPanel layout="none" rendered="{!NOT(LEN($Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c) == 0)}">
+			<apex:repeat value="{!sectionsExtLoadingInfo}" var="packageInfo" id="packageLoadingDev">
+				<apex:stylesheet value="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}/packages/local/{!packageInfo.PackageName}/build/resources/{!packageInfo.PackageName}-all.css"/>
+				<script>
+					$Params.ExtraClasspaths.push({!packageInfo.DeveloperModeClassPaths});
+				</script>
+			</apex:repeat>
+		</apex:outputPanel>
+	</c:extjs_bootstrap>
+
+	<apex:dynamicComponent componentValue="{!dependentComponents}"/>
+
+	<!-- PRODUCTION -->
+	<apex:outputPanel rendered="{!LEN($Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c) == 0}" layout="none">
+		<apex:repeat value="{!sectionsExtLoadingInfo}" var="packageInfo" id="packageLoadingProd">
+			<apex:stylesheet value="{!URLFOR(packageInfo.StaticResource, '/resources/' + packageInfo.PackageName + '-all.css')}"/>
+			<script src="{!URLFOR(packageInfo.StaticResource, '/' + packageInfo.PackageName + '.js')}"></script>
+		</apex:repeat>
+	</apex:outputPanel>
+</apex:page>

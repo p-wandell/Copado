@@ -1,0 +1,18 @@
+<apex:page standardController="ffr__DataView__c" extensions="ffr.CannedDataviewUtility" recordSetVar="dataviews" lightningStylesheets="true" docType="html-5.0">
+	<apex:form >
+		<apex:actionFunction name="createAllStandardDataviews" action="{!createAllStandardDataviews}"/>
+		<apex:actionFunction name="cancelCreatingAllStandardDataviews" action="{!cancelCreatingAllStandardDataviews}"/>
+	</apex:form>
+	<script>
+		'use strict';
+		if (confirm("{!JSINHTMLENCODE($Label.CannedDataviewCreationConfirmation)}")) {
+			document.addEventListener("DOMContentLoaded", function (event) {
+				createAllStandardDataviews();
+			});
+		} else {
+			document.addEventListener("DOMContentLoaded", function (event) {
+				cancelCreatingAllStandardDataviews();
+			});
+		}
+	</script>
+</apex:page>

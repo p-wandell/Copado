@@ -1,0 +1,12 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Accordion -->
+<template>
+	<lightning-accordion class="x7s-accordion" allow-multiple-sections-open active-section-name={active} aria-label={customLabel.labelAriaWrapper}>
+		<lightning-accordion-section class="x7s-accordion__list-item" name="x" label={label}>
+			<lightning-formatted-rich-text value={content}></lightning-formatted-rich-text>
+		</lightning-accordion-section>
+	</lightning-accordion>
+</template>

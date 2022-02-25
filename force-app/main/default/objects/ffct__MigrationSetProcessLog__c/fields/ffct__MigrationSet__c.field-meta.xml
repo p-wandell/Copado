@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__MigrationSet__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>Holds Migration Set records associated with the logs.</description>
+    <externalId>false</externalId>
+    <label>Migration Set</label>
+    <referenceTo>ffct__MigrationSet__c</referenceTo>
+    <relationshipLabel>Migration Set Process Logs</relationshipLabel>
+    <relationshipName>MigrationSetProcessLogs</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,227 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" title="Text Synchronization App" >
+    <style>
+        .gi-override {
+            position: relative;
+        }
+        
+        .webrtc-container {
+          position: relative;
+          float: left;
+          width: 559px;
+          height: 420px;
+          text-align: left;
+          border-radius: 5px;
+          background-color: #CFD9DD;
+        }
+        
+        .webrtc-container .gi-list {
+            padding: 0;
+            overflow: hidden;
+            border: 0;
+            background: none;
+        }
+        
+        .webrtc-container.gi-webrtc .gi-user {
+              display: block;
+              margin: 0;
+        }
+        
+        .webrtc-container.gi-webrtc .gi-user .gi-user-wrapper {
+              position: absolute;
+              width: auto;
+              bottom: 9px;
+              left: 9px;
+              background: white;
+              border-radius: 3px;
+              overflow: visible;
+              border: 0;
+              box-shadow: 0 1px 2px rgba(0,0,0,.35);
+        }
+        
+        .webrtc-container.gi-webrtc .gi-name {
+              width: auto;
+              padding-left: 10px;
+              padding-right: 25px;
+              font-size: 1.1em;
+              line-height: 1.6;
+        }
+        
+        .webrtc-container.gi-webrtc .gi-user .gi-stream-wrapper {
+            width: 100%;
+            height: 420px;
+            border-radius: 5px;
+            /*background-color: #D3D9DB;*/
+            background-position: center;
+        }
+        .webrtc-list {
+          margin-top: 19px;
+        }
+
+        .webrtc-list .gi-webrtc {
+          position: relative !important;
+        }
+
+          .gi-collapse-wrapper {
+            display: none;
+          }
+
+          .gi-webrtc-centered {
+            display: block;
+            max-width: none;
+            box-shadow: none;
+          }
+
+          .webrtc-list .gi-webrtc .gi-list {
+            height: 182px;
+            border-style: solid;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 3px rgba(0,0,0,.1);
+          }
+
+          .webrtc-list .gi-webrtc .gi-user .gi-stream-wrapper {
+            background-color: #D3D9DB;
+          }
+        .cf:before,
+        .cf:after {
+            content: " ";
+            display: table;
+        }
+
+        .cf:after {
+            clear: both;
+        }
+
+        .cf {
+            *zoom: 1;
+        }
+    </style>
+    <!--<apex:includeScript value="/canvas/sdk/js/publisher.js"/>-->
+    <!--<h2>Room is <span id="roomname"></span></h2>-->
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" />
+    <apex:includeScript value="https://cdn.goinstant.net/v1/platform.min.js"/>
+    <apex:includeScript value="https://cdn.goinstant.net/widgets/webrtc/latest/webrtc.min.js" />
+    <apex:stylesheet value="https://cdn.goinstant.net/widgets/webrtc/latest/webrtc.css" />
+    
+    <div class="main">
+        <div id="userView" class="webrtc-list">
+        </div>
+    </div>
+    
+    <script>
+        // The connection url below is available in the GoInstant dashboard. It includes your Account Name
+        // and Application Name (you created both when signing up). This url tells GoInstant where your
+        // application and account are located in order to connect.
+    
+        // Url to goinstant account, replace <account-name> with yours and 
+        // replace <app-name> with yours
+        var url = 'https://goinstant.net/a2f212174a68/my-application';
+        var userDefaults = {displayName: '{!$User.FirstName}'};
+    
+        // Grab an id from the page, if none, then we will use the salesforce user id.
+        // Since these are universally unique, they work well for unique room names!
+        var objectid = "{!$CurrentPage.parameters.Id}";
+        if (objectid === "") {
+            objectid = '{!$User.Id}';
+        }
+        $("#roomname").html(objectid);
+    
+        // The token is not an OAuth token, but rather useful information that the 
+        // widget expects and knows what to do with.
+        var token = { user: {
+                         subject: '{!$User.Id}',  // Subject, required claim
+                         displayName: '{!$User.FirstName} {!$User.LastName}',  // Display Name, private claim
+                         avatarUrl: ''
+                      },
+                     room: objectid
+                    };
+
+    console.log('Page id: {!$CurrentPage.parameters.Id}');
+    console.log('Page url: {!$CurrentPage.URL}');
+
+    // Ok, let's connect and provide a callback. The same callback is used for success or
+    // error, we just look to see if an err object was returned to handle the error.
+    goinstant.connect(url, token, function (err, connection, room) {
+            if (err) {
+                // Could not connect to GoInstant
+                throw err;
+            }
+            
+            // Configure the room, this defines where on the page 
+            // and also some initial behaviors. The two elements below
+            // are actually defined in the custom component "VisUserList"
+            // referenced above.
+            var config = {
+                room: room,
+                listContainer: document.getElementById("userView"),
+                expandContainer: document.getElementById("mainView"),
+                collapsed: false,
+                autoStart: false
+            };
+
+            // Create a new instance of the WebRTC widget
+            var webrtc = new goinstant.widgets.WebRTC(config);
+            
+            // Initialize the WebRTC widget
+            webrtc.initialize(function(err) {
+                if (err) {
+                    throw err;
+                }
+                // The widget should now be rendered on the page
+                console.log(room);
+            });
+            
+            // You are now connected! Let's see who else may be in the room!
+            room.users.get(function(err, usersObj, context) {
+                if (err) {
+                    // A problem occurred during the get.
+                }
+
+                // An array containing the ids of users who have joined the room.
+                var userIds = Object.keys(usersObj);
+
+                userIds.forEach(function(id) {
+                    console.log(usersObj[id].displayName + ' is in the room!');
+                });
+            });
+        
+            // The listener will fire every time another user joins the room
+            room.on('join', function (userData) {
+                console.log('user', userData.displayName, 'joined the lobby!');
+            });
+            
+            // The listener will fire everytime a user leaves the Room
+            room.on('leave', function (userData) {
+                console.log('user', userData.displayName, 'left the lobby!');
+            });
+            
+            // Retrieve a reference to the current users key
+            var userKey = room.self();
+            console.log('current users key', userKey);
+            userKey.key('displayName').set('{!$User.FirstName} {!$User.LastName}');
+            userKey.key('avatarUrl').set('');
+            
+            // Now use that key to retrieve the current users data
+            userKey.get(function(err, value, context) {
+                if (err) {
+                    // could not retrieve user data
+                    throw err;
+                }
+                console.log('current user', value);
+            });
+            
+            // The listener will be invoked every time the value of name is changed
+            // by another user
+            var name = room.key('name');
+            var el = $('input[id="sync"]');
+    
+            name.on('set', function(value, context) {
+                el.val(value);
+            });
+    
+            el.on('keyup', function() {
+                name.set($(this).val());
+            });
+        });
+        
+    </script>
+</apex:page>

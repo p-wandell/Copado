@@ -1,0 +1,38 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Adventure Progress Ring -->
+<template>
+  <div if:true={hasValue} class={computedClass}>
+    <div class="slds-progress-ring__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={value}>
+      <svg viewBox="-1 -1 2 2">
+        <path class="slds-progress-ring__path x7s-adventure-progress-ring__path" id="slds-progress-ring-path-39" d={svgD}></path>
+      </svg>
+    </div>
+
+    <template if:true={isCompleted}>
+      <div class="slds-progress-ring__content x7s-adventure-progress-ring__content">
+        <span class="slds-icon_container slds-icon-utility-check" title="Complete">
+          <svg class="slds-icon" aria-hidden="true">
+            <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#check"></use>
+          </svg>
+          <span class="slds-assistive-text">Complete</span>
+        </span>
+      </div>
+    </template>
+    
+    <template if:false={isCompleted}>
+        <template if:true={ringSize}>
+          <div class="slds-progress-ring__content x7s-adventure-progress-ring__content">
+            <span if:true={showValue}>{valueInt}%</span>
+          </div>
+        </template>
+        <template if:false={ringSize}>
+          <div class="slds-progress-ring__content x7s-adventure-progress-ring__contentSmall">
+            <span if:true={showValue}>{valueInt}%</span>
+          </div>
+        </template>
+    </template>
+  </div>
+</template>

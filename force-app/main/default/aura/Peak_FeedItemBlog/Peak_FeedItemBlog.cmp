@@ -1,0 +1,16 @@
+<!--
+ - Created by kentheberling on 5/9/18.
+ -->
+
+<aura:component description="Peak_FeedItemBlog">
+
+    <aura:attribute type="Object" name="feedItem" />
+
+    <lightning:layout verticalAlign="center">
+        <lightning:layoutItem class="feed-item blog" >
+            <h5 class="h5 feed-item-title"><ui:outputURL label="{!v.feedItem.title}" value="{!v.feedItem.url}" target="_blank" /></h5>
+            <p>{!v.feedItem.author.name}&nbsp;&bull;&nbsp;<ui:outputDateTime value="{!v.feedItem.date}" format="MMMM d, YYYY"/></p>
+        </lightning:layoutItem>
+    </lightning:layout>
+
+</aura:component>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ACTIVE_JTD_Billable_NB_Cost__c</fullName>
+    <description>Sum of all assignment&apos;s Job to Date (Cost) on active projects</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Sum of all assignment&apos;s Job to Date (Cost) on active projects</inlineHelpText>
+    <label>ACTIVE_JTD Billable &amp; NB (Cost)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

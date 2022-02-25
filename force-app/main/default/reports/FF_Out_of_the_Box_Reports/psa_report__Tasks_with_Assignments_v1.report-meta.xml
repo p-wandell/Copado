@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>pse__Assignment__c.pse__Scheduled_Hours__c:SUM-pse__Project_Task_Assignment__c.psa_report__Estimated_Hours_per_PTA__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Variance</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <columns>
+        <field>pse__Assignment__c.pse__Project_Task_Assignments__r$pse__Project_Task__c</field>
+    </columns>
+    <columns>
+        <field>pse__Assignment__c.pse__Project_Task_Assignments__r$pse__Project_Task_Start_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Assignment__c.pse__Project_Task_Assignments__r$pse__Project_Task_End_Date__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Assignment__c$pse__Scheduled_Hours__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Assignment__c.pse__Project_Task_Assignments__r$psa_report__Estimated_Hours_per_PTA__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Bottom up Planning: Tasks with Assignments</description>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Assignment__c$pse__Project__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Assignment__c$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Bottom up Planning: Tasks with ASNs v1</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>psa_report__assignments_with_tasks__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>false</showGrandTotal>
+    <showSubTotals>false</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Assignment__c$pse__Assignment_Daily_Notes_Last_Updated__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

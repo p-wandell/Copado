@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>false</plural>
+        <value>Ressourcenanforderung</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>true</plural>
+        <value>Ressourcenanforderungen</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>false</plural>
+        <value><!-- Ressourcenanforderung --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>true</plural>
+        <value><!-- Ressourcenanforderungen --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>false</plural>
+        <value><!-- Ressourcenanforderung --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>true</plural>
+        <value><!-- Ressourcenanforderungen --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>false</plural>
+        <value><!-- Ressourcenanforderung --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>true</plural>
+        <value><!-- Ressourcenanforderungen --></value>
+    </caseValues>
+    <fieldSets>
+        <label><!-- Create Project From Template Alt Copy Project Resource Request Fields --></label>
+        <name>pse__CreateProjFromTempAltCopyProjRRFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Create Project from Template Resource Request Columns --></label>
+        <name>pse__CreateProjectFromTemplateRRColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Create Project from Opportunity or Template Resource Request Columns --></label>
+        <name>pse__CreateProjectOpportunityRRColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- CreateRRFromOppFieldSet --></label>
+        <name>pse__CreateRRFromOppFieldSet</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- CreateRRFromProjFieldSet --></label>
+        <name>pse__CreateRRFromProjFieldSet</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- CreateRRFromProjOrOppColumns --></label>
+        <name>pse__CreateRRFromProjOrOppColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- CreateResourceRequestSetColumns --></label>
+        <name>pse__CreateResourceRequestSetColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- MassReassignResourceRequestColumns --></label>
+        <name>pse__MassReassignResourceRequestColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Resource Request editable columns For UI on RR From Template Field Set --></label>
+        <name>pse__RRFromTemplateEditableColumnFieldSet</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Resource Request Read Only columns For UI on RR From Template Field Set --></label>
+        <name>pse__RRFromTemplateReadOnlyColumnFieldSet</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Resource Request Summary Additional Columns --></label>
+        <name>pse__RRSummaryAdditionalColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Res Request Tooltip Field Set --></label>
+        <name>pse__Res_Request_Tooltip_Field_Set</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- ResourceRequestEditFieldset --></label>
+        <name>pse__ResourceRequestEditFieldset</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Resource Request Lookup Field Set --></label>
+        <name>pse__Resource_Request_Lookup_Field_Set</name>
+    </fieldSets>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Ressourcenanforderungs-ID</nameFieldLabel>
+    <sharingReasons>
+        <label><!-- PSE Member Share --></label>
+        <name>pse__PSE_Member_Share</name>
+    </sharingReasons>
+    <sharingReasons>
+        <label><!-- PSE PM Share --></label>
+        <name>pse__PSE_PM_Share</name>
+    </sharingReasons>
+    <validationRules>
+        <errorMessage><!-- End Date cannot occur before Start Date --></errorMessage>
+        <name>pse__Check_End_Date</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Opportunity on the request does not match the Opportunity on the Project --></errorMessage>
+        <name>pse__Check_Opp_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot associate the milestone with the resource request. The milestone must belong to the resource request&apos;s project. Either change the milestone or change the project. --></errorMessage>
+        <name>pse__Milestone_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- An Opportunity or Project must be set. --></errorMessage>
+        <name>pse__Project_Or_Opp_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Project cannot be blank if a milestone is selected. --></errorMessage>
+        <name>pse__Project_Required_for_Milestone</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You must select a Contact that has the Is Resource field set to true --></errorMessage>
+        <name>pse__Validate_Contact_Is_Resource</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You cannot change the project, opportunity and account of a resource request that belongs to a resource request set. --></errorMessage>
+        <name>pse__Validate_Project_Opp_And_Account_Change</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You must have a valid Start Date and Hours to change status to Ready to Staff --></errorMessage>
+        <name>pse__Validate_Ready_to_Staff</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Active status can only be used for closed, won opportunities and must have a project set. --></errorMessage>
+        <name>pse__Validate_Status</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The currency for the Resource Request must match the currency for the Project --></errorMessage>
+        <name>pse__check_project_currency</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- End Date is required --></errorMessage>
+        <name>pse__end_date_required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Requested Hours is required --></errorMessage>
+        <name>pse__hours_required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Start date is required --></errorMessage>
+        <name>pse__start_date_required</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Create_Resource_Request_Set --></label>
+        <name>pse__Create_Resource_Request_Set</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Load_in_Planners --></label>
+        <name>pse__Load_in_Planners</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Mass_Update_Resource_Requests --></label>
+        <name>pse__Mass_Update_Resource_Requests</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- OppAddResReqFromTemplate --></label>
+        <name>pse__OppAddResReqFromTemplate</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Request_Resources --></label>
+        <name>pse__Request_Resources</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Request_Resources_For_Project --></label>
+        <name>pse__Request_Resources_For_Project</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Reschedule_Resource_Requests --></label>
+        <name>pse__Reschedule_Resource_Requests</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Search_Resources --></label>
+        <name>pse__Search_Resources</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- View_Unfilled_Resource_Requests --></label>
+        <name>pse__View_Unfilled_Resource_Requests</name>
+    </webLinks>
+</CustomObjectTranslation>

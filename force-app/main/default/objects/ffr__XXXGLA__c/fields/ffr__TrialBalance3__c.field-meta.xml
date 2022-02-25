@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__TrialBalance3__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Trial Balance 3</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>ffr__TrialBalance2__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Sales Revenue</fullName>
+                <default>false</default>
+                <label>Sales Revenue</label>
+            </value>
+            <value>
+                <fullName>Cost of Sales</fullName>
+                <default>false</default>
+                <label>Cost of Sales</label>
+            </value>
+            <value>
+                <fullName>Administration Costs</fullName>
+                <default>false</default>
+                <label>Administration Costs</label>
+            </value>
+            <value>
+                <fullName>Depreciation</fullName>
+                <default>false</default>
+                <label>Depreciation</label>
+            </value>
+            <value>
+                <fullName>Equipment Hire and Repairs</fullName>
+                <default>false</default>
+                <label>Equipment Hire and Repairs</label>
+            </value>
+            <value>
+                <fullName>Marketing Expenses</fullName>
+                <default>false</default>
+                <label>Marketing Expenses</label>
+            </value>
+            <value>
+                <fullName>Motor Expenses</fullName>
+                <default>false</default>
+                <label>Motor Expenses</label>
+            </value>
+            <value>
+                <fullName>Occupation Costs</fullName>
+                <default>false</default>
+                <label>Occupation Costs</label>
+            </value>
+            <value>
+                <fullName>Payroll Costs</fullName>
+                <default>false</default>
+                <label>Payroll Costs</label>
+            </value>
+            <value>
+                <fullName>Professional Fees</fullName>
+                <default>false</default>
+                <label>Professional Fees</label>
+            </value>
+            <value>
+                <fullName>Staff Costs</fullName>
+                <default>false</default>
+                <label>Staff Costs</label>
+            </value>
+            <value>
+                <fullName>Travel Expenses</fullName>
+                <default>false</default>
+                <label>Travel Expenses</label>
+            </value>
+            <value>
+                <fullName>Other Income and Expenses</fullName>
+                <default>false</default>
+                <label>Other Income and Expenses</label>
+            </value>
+            <value>
+                <fullName>Finance Costs</fullName>
+                <default>false</default>
+                <label>Finance Costs</label>
+            </value>
+            <value>
+                <fullName>Taxation</fullName>
+                <default>false</default>
+                <label>Taxation</label>
+            </value>
+            <value>
+                <fullName>Bank and Cash</fullName>
+                <default>false</default>
+                <label>Bank and Cash</label>
+            </value>
+            <value>
+                <fullName>Accounts Receivable</fullName>
+                <default>false</default>
+                <label>Accounts Receivable</label>
+            </value>
+            <value>
+                <fullName>Provisions</fullName>
+                <default>false</default>
+                <label>Provisions</label>
+            </value>
+            <value>
+                <fullName>Inventory</fullName>
+                <default>false</default>
+                <label>Inventory</label>
+            </value>
+            <value>
+                <fullName>Prepayments and Accrued Income</fullName>
+                <default>false</default>
+                <label>Prepayments and Accrued Income</label>
+            </value>
+            <value>
+                <fullName>Debtors</fullName>
+                <default>false</default>
+                <label>Debtors</label>
+            </value>
+            <value>
+                <fullName>Stock</fullName>
+                <default>false</default>
+                <label>Stock</label>
+            </value>
+            <value>
+                <fullName>Fixtures Fittings and Equipment</fullName>
+                <default>false</default>
+                <label>Fixtures Fittings and Equipment</label>
+            </value>
+            <value>
+                <fullName>Land and Buildings</fullName>
+                <default>false</default>
+                <label>Land and Buildings</label>
+            </value>
+            <value>
+                <fullName>Intangible Assets</fullName>
+                <default>false</default>
+                <label>Intangible Assets</label>
+            </value>
+            <value>
+                <fullName>Accounts Payable</fullName>
+                <default>false</default>
+                <label>Accounts Payable</label>
+            </value>
+            <value>
+                <fullName>Accruals and Deferred Income</fullName>
+                <default>false</default>
+                <label>Accruals and Deferred Income</label>
+            </value>
+            <value>
+                <fullName>Employment Payables</fullName>
+                <default>false</default>
+                <label>Employment Payables</label>
+            </value>
+            <value>
+                <fullName>Tax Liability</fullName>
+                <default>false</default>
+                <label>Tax Liability</label>
+            </value>
+            <value>
+                <fullName>Creditors</fullName>
+                <default>false</default>
+                <label>Creditors</label>
+            </value>
+            <value>
+                <fullName>Employment Creditors</fullName>
+                <default>false</default>
+                <label>Employment Creditors</label>
+            </value>
+            <value>
+                <fullName>Payable After 1 Year</fullName>
+                <default>false</default>
+                <label>Payable After 1 Year</label>
+            </value>
+            <value>
+                <fullName>Creditors Due After 1 Year</fullName>
+                <default>false</default>
+                <label>Creditors Due After 1 Year</label>
+            </value>
+            <value>
+                <fullName>Capital and Reserves</fullName>
+                <default>false</default>
+                <label>Capital and Reserves</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Accounts Payable</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Accruals and Deferred Income</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Employment Payables</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Tax Liability</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Creditors</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Employment Creditors</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Long Term Liabilities</controllingFieldValue>
+            <valueName>Payable After 1 Year</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Long Term Liabilities</controllingFieldValue>
+            <valueName>Creditors Due After 1 Year</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shareholders Funds</controllingFieldValue>
+            <valueName>Capital and Reserves</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gross Profit</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Sales Revenue</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gross Profit</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Cost of Sales</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Administration Costs</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>Depreciation and Amortization</controllingFieldValue>
+            <valueName>Depreciation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Equipment Hire and Repairs</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Marketing Expenses</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Motor Expenses</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Occupation Costs</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Payroll Costs</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Professional Fees</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Staff Costs</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Travel Expenses</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operating Expenses</controllingFieldValue>
+            <controllingFieldValue>EBITDA</controllingFieldValue>
+            <valueName>Other Income and Expenses</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Interest and Taxation</controllingFieldValue>
+            <controllingFieldValue>Interest</controllingFieldValue>
+            <valueName>Finance Costs</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Interest and Taxation</controllingFieldValue>
+            <controllingFieldValue>Taxation</controllingFieldValue>
+            <valueName>Taxation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Bank and Cash</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Accounts Receivable</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Provisions</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Inventory</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Prepayments and Accrued Income</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Debtors</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Stock</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Fixed Assets</controllingFieldValue>
+            <valueName>Fixtures Fittings and Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Fixed Assets</controllingFieldValue>
+            <valueName>Land and Buildings</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Intangible Assets</controllingFieldValue>
+            <valueName>Intangible Assets</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

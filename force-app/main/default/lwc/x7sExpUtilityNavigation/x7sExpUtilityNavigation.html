@@ -1,0 +1,30 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Utility Navigation -->
+<template>
+    <nav class={componentClass} style={componentStyle}>
+        <div class={pageContainerClass}>
+            <c-x7s-exp-navigation-list if:true={isGuestUser} mobile-hamburger={mobileHamburger} inverse={inverse}
+                                   link-1={guestLink1} link-1-is-button={guestLink1IsButton} link-1-open-in-new-page={guestLink1OpenInNewPage} link-1-text={guestLink1Text}
+                                   link-2={guestLink2} link-2-is-button={guestLink2IsButton} link-2-open-in-new-page={guestLink2OpenInNewPage} link-2-text={guestLink2Text}
+                                   link-3={guestLink3} link-3-is-button={guestLink3IsButton} link-3-open-in-new-page={guestLink3OpenInNewPage} link-3-text={guestLink3Text}
+                                   link-4={guestLink4} link-4-is-button={guestLink4IsButton} link-4-open-in-new-page={guestLink4OpenInNewPage} link-4-text={guestLink4Text}
+                                   link-5={guestLink5} link-5-is-button={guestLink5IsButton} link-5-open-in-new-page={guestLink5OpenInNewPage} link-5-text={guestLink5Text}
+                                   link-6={guestLink6} link-6-is-button={guestLink6IsButton} link-6-open-in-new-page={guestLink6OpenInNewPage} link-6-text={guestLink6Text}
+                                   link-7={guestLink7} link-7-is-button={guestLink7IsButton} link-7-open-in-new-page={guestLink7OpenInNewPage} link-7-text={guestLink7Text}
+                                   link-8={guestLink8} link-8-is-button={guestLink8IsButton} link-8-open-in-new-page={guestLink8OpenInNewPage} link-8-text={guestLink8Text}></c-x7s-exp-navigation-list>
+
+            <c-x7s-exp-navigation-list if:false={isGuestUser} mobile-hamburger={mobileHamburger} inverse={inverse}
+                                   link-1={userLink1} link-1-is-button={userLink1IsButton} link-1-open-in-new-page={userLink1OpenInNewPage} link-1-text={userLink1Text}
+                                   link-2={userLink2} link-2-is-button={userLink2IsButton} link-2-open-in-new-page={userLink2OpenInNewPage} link-2-text={userLink2Text}
+                                   link-3={userLink3} link-3-is-button={userLink3IsButton} link-3-open-in-new-page={userLink3OpenInNewPage} link-3-text={userLink3Text}
+                                   link-4={userLink4} link-4-is-button={userLink4IsButton} link-4-open-in-new-page={userLink4OpenInNewPage} link-4-text={userLink4Text}
+                                   link-5={userLink5} link-5-is-button={userLink5IsButton} link-5-open-in-new-page={userLink5OpenInNewPage} link-5-text={userLink5Text}
+                                   link-6={userLink6} link-6-is-button={userLink6IsButton} link-6-open-in-new-page={userLink6OpenInNewPage} link-6-text={userLink6Text}
+                                   link-7={userLink7} link-7-is-button={userLink7IsButton} link-7-open-in-new-page={userLink7OpenInNewPage} link-7-text={userLink7Text}
+                                   link-8={userLink8} link-8-is-button={userLink8IsButton} link-8-open-in-new-page={userLink8OpenInNewPage} link-8-text={userLink8Text}></c-x7s-exp-navigation-list>
+        </div>
+    </nav>
+</template>

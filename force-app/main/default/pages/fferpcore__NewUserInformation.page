@@ -1,0 +1,31 @@
+<apex:page standardController="fferpcore__UserInformation__c" extensions="fferpcore.UserInformationController" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+    <apex:sectionHeader title="{!$Label.fferpcore__userinformationsectiontitle}" subtitle="{!$Label.fferpcore__userinformationsectionsubtitle}" help="{!HelpUrl}"/>
+    <apex:pageMessages />
+    <apex:form >
+        <apex:pageBlock title="{!$Label.fferpcore__userinformationblocktitle}">
+            <apex:pageBlockButtons location="both" >
+                <apex:commandButton action="{!save}" value="{!$Label.fferpcore__erpvisualforcesavebutton}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.fferpcore__erpvisualforcecancelbutton}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1" collapsible="false">
+                <apex:selectList value="{!fferpcore__UserInformation__c.fferpcore__ProfileName__c}" multiselect="false" size="1">
+                    <apex:selectOptions value="{!profileOptions}"/>
+                </apex:selectList>
+                <apex:inputField value="{!fferpcore__UserInformation__c.fferpcore__FirstName__c}"/>
+                <apex:inputField value="{!fferpcore__UserInformation__c.fferpcore__LastName__c}" required="true"/>
+                <apex:inputField value="{!fferpcore__UserInformation__c.fferpcore__Alias__c}" required="true"/>
+                <apex:inputField value="{!fferpcore__UserInformation__c.fferpcore__Email__c}" required="true"/>
+                <apex:inputField value="{!fferpcore__UserInformation__c.Name}" required="true"/>
+                <apex:inputField value="{!fferpcore__UserInformation__c.fferpcore__TimezoneSidKey__c}"/>
+                <apex:inputField value="{!fferpcore__UserInformation__c.fferpcore__User__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.fferpcore__userinformationimportinformationsection}" columns="1" collapsible="false">
+                <apex:selectList value="{!fferpcore__UserInformation__c.fferpcore__Status__c}" required="true" multiselect="false" size="1">
+                    <apex:selectOptions value="{!statusOptions}"/>
+                </apex:selectList>
+                <apex:inputField value="{!fferpcore__UserInformation__c.fferpcore__Message__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

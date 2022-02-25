@@ -1,0 +1,21 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+ <aura:component description="SVNSUMMITS_News_Tile_Like_Button"
+                    access="global"
+                    controller="SVNSUMMITS_NewsController">
+
+        <aura:attribute name="newsTileId" type="String" default="" access="global"/>
+
+        <aura:attribute name="isLiking" type="Boolean" default="false"/>
+        <aura:attribute name="likeCount" type="Integer" default="0" access="global"/>
+
+
+        <lightning:buttonStateful
+                labelWhenOff="{!$Label.c.ss_nws_button_Like + ' ' + v.likeCount}"
+                labelWhenOn="{!$Label.c.ss_nws_button_Liked + ' ' + v.likeCount}"
+                labelWhenHover="{!$Label.c.ss_nws_button_Unlike}"
+                iconNameWhenOff=""
+                iconNameWhenOn="utility:like"
+                iconNameWhenHover="utility:close"
+                state="{!v.isLiking}"
+                onclick="{!c.handleTileLikeClick}"/>
+</aura:component>

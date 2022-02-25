@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the current financial status from the picklist. Alternatively, use Process Builder or workflow rules to use your own logic to control the behavior of the corresponding color indicator field. --></help>
+    <label><!-- Financial Status --></label>
+    <name>pse__Financial_Status__c</name>
+    <picklistValues>
+        <masterLabel>Green</masterLabel>
+        <translation><!-- Green --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Red</masterLabel>
+        <translation><!-- Red --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Yellow</masterLabel>
+        <translation><!-- Yellow --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

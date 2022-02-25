@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IP_Revenue_Override_Date__c</fullName>
+    <description>Blank implies revenue recognition date = close date. Only update if those dates should differ.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Blank implies revenue recognition date = close date. Only update if those dates should differ.</inlineHelpText>
+    <label>IP Revenue Date Override</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

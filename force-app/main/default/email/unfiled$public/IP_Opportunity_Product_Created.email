@@ -1,0 +1,9 @@
+{!OpportunityLineItem.CreatedBy} has added IP to the following open opportunity: {!OpportunityLineItem.Opportunity_Name_Formula__c}
+
+Product: {!OpportunityLineItem.Product_Name_Formula__c}
+Sales Price: {!OpportunityLineItem.UnitPrice} ({!OpportunityLineItem.Discount__c} Discount)
+Note: Suggested floor price is {!OpportunityLineItem.Floor_Price__c}
+
+This is NOT a closed/won notification, this is a communication that this IP has been newly added to an open opportunity with a probability greater than 0% and less than 100%.
+
+View details here: {!OpportunityLineItem.Link}

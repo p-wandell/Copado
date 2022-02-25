@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>2nd level About FinancialForce PSA permission set</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>PSA - About FinancialForce PSA</label>
+    <pageAccesses>
+        <apexPage>pse__AboutPSA</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+</PermissionSet>

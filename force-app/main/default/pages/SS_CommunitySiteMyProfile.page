@@ -1,0 +1,27 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="true" controller="SS_CommunitySiteMyProfileController" action="{!forwardToProfilePage}">
+    <!--<apex:composition template="SS_CommunitySiteTemplate">
+        <apex:define name="body">
+            <div id="content">
+                <div class="page-header"><h2>My Profile</h2></div>
+                <div class="row">
+                <script type="text/javascript">
+                    function autoResize(id){
+                        var newheight;
+                        var newwidth;
+
+                        if(document.getElementById){
+                            newheight=document.getElementById(id).contentWindow.document.body.scrollHeight;
+                            newwidth=document.getElementById(id).contentWindow.document.body.scrollWidth;
+                        }
+
+                        document.getElementById(id).height= (newheight) + "px";
+                        document.getElementById(id).width= (newwidth) + "px";
+                        $j('iframe').contents().find('#chatterTab').css('font-size','12px');
+                    }
+                </script>
+                <iframe id="iframe1" onload="autoResize('iframe1');"  src="/_ui/core/userprofile/UserProfilePage?tab=sfdc.ProfilePlatformFeed&isdtp=vw" height="1000px" scrolling="no" width="100%"/>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>-->
+</apex:page>

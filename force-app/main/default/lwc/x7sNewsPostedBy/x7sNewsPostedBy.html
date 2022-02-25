@@ -1,0 +1,31 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc. All rights reserved.
+  -->
+<template>
+	<template if:true={showAuthor}>
+		<c-x7s-shr-component-wrapper custom-class={customClass}
+		                             title={showheadingTitle}
+		                             title-align={headerAlignment}
+		                             variant={variant}>
+			<c-x7s-shr-card description={sinceLabel}
+			                image-src={imageUrl}
+			                record-id={profileId}
+			                text-align='center'
+			                title={communityNickname}
+			                use-avatar={showAvatar}>
+				<slot>
+					<template if:true={sinceDate.length}>
+						<template if:true={showMemberSince}>
+							<lightning-formatted-date-time class="textStyle"
+							                               day="2-digit"
+							                               month="long"
+							                               value={sinceDate}
+							                               year="numeric">
+							</lightning-formatted-date-time>
+						</template>
+					</template>
+				</slot>
+			</c-x7s-shr-card>
+		</c-x7s-shr-component-wrapper>
+	</template>
+</template>

@@ -1,0 +1,20 @@
+<!--
+  - Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<aura:component description="x7sIdeas_Heading">
+    <aura:attribute name="tag" type="String" default="h2" />
+    <aura:attribute name="class" type="String" />
+    <!-- Size can be: small, medium, large -->
+    <aura:attribute name="size" type="String" default="medium" />
+    <aura:attribute name="style" type="String" default="" />
+    <!-- align can be: left, center, right -->
+    <aura:attribute name="align" type="String" default="left" />
+
+    <aura:html tag="{!v.tag}"
+               class="{!'ideas-heading ' + if(v.size, ' slds-text-heading_' + v.size, '') + if(v.align, ' slds-text-align_' + v.align, '') + ' ' + v.class}"
+               style="{!v.style}"
+    >
+        {!v.body}
+    </aura:html>
+</aura:component>

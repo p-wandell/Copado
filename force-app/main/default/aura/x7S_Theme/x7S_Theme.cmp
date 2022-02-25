@@ -1,0 +1,215 @@
+<!--
+ - Copyright (c) 2019. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 2019-05-03.
+-->
+<aura:component description="x7S_Theme" implements="forceCommunity:themeLayout" access="global" extends="c:Peak_Base">
+    <aura:attribute name="search" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="profileMenu" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="appContainer" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="navBar" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="TemplateHeaderTop" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="TemplateHeaderBottom" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="TemplateFeatureContentTop" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="TemplateFeatureContentBottom" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="TemplateFooter" type="Aura.Component[]" required="false"/>
+
+
+    <!-- Custom -->
+    <aura:attribute name="homeLink" type="String" required="false" default="/"/>
+    <aura:attribute name="twoBar" type="Boolean" default="false"/>
+    <aura:attribute name="communityTitle" type="String" required="false" default="THE HIVE"/>
+    <aura:attribute name="navBarColor" type="String" required="false" default="#004785"/>
+    <aura:attribute name="communityLogo" type="String" required="false"
+                    default="/hive/s/sfsites/c/resource/x7S_HiveLightning/images/hiveCommunityLogo.svg#main"/>
+    <aura:attribute name="checkedProfile" type="Boolean" default="false"/>
+    <aura:attribute name="restrictImage" type="Boolean" default="false"/>
+    <aura:attribute name="wide" type="boolean" default="false"/>
+    <aura:attribute name="isInBuilder" type="boolean" default="true"/>
+    <aura:attribute name="termsFileId" type="String" default="0690U000001MU8I"/>
+    <aura:attribute name="isMobile" type="boolean" default="true"/>
+    <aura:attribute name="isInit" type="boolean" default="false"/>
+    <aura:attribute name="showTerms" type="Boolean" default="true"/>
+    <aura:attribute name="showPrintBalance" type="Boolean" default="false"/>
+    <aura:attribute name="profileClass" type="String"/>
+    <aura:attribute name="showSearch" type="Boolean" default="false"/>
+    <aura:attribute name="acceptDisabled" type="Boolean" default="true"/>
+    <aura:attribute name="blurCalled" type="Boolean" default="false"/>
+    <aura:attribute name="originalSearchOffset" type="String"/>
+    <aura:attribute name="searchField" type="String"/>
+    <aura:attribute name="searchBox" type="String"/>
+    <aura:attribute name="searchButton" type="String"/>
+    <aura:attribute name="searchWrapper" type="String"/>
+    <aura:attribute name="navigationList" type="String"/>
+    <aura:attribute name="navigationButton" type="String"/>
+
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+    <aura:handler name="closeModal" event="c:x7S_ModalEvent" action="{!c.closeTerms}"/>
+
+    <aura:attribute name="record" type="Object"/>
+    <aura:attribute name="currentUser" type="Object"/>
+    <aura:attribute name="recordError" type="String"/>
+    <aura:attribute name="recordLoader" type="Object"/>
+
+    <force:recordData aura:id="recordLoader" recordId="{!$SObjectType.CurrentUser.Id}" targetRecord="{!v.record}"
+                      fields="Id,Profile.Name,Hive_Terms__c" targetFields="{!v.currentUser}"
+                      targetError="{!v.recordError}" recordUpdated="{!c.recordUpdated}" mode="EDIT"/>
+
+    <aura:if isTrue="{!v.isInit}">
+        <aura:if isTrue="{!and(!v.currentUser.Hive_Terms__c, !v.isInBuilder)}">
+            <c:x7S_Modal hideClose="true" customClass="in-back">
+                <lightning:layout horizontalAlign="" verticalAlign="" multipleRows="" class="slds-grid_vertical">
+                    <lightning:layoutItem size="" class="">
+                        <p>Please review and accept the community terms to continue to the community.</p>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="" class="slds-p-top_medium">
+                        <a href="javascript:void(0)" onclick="{!c.viewTerms}" title="Open Community Terms">Terms and
+                            Conditions</a>
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <aura:set attribute="header">
+                    <c:Peak_HTML_Headings headingText="Community Terms and Conditions" headingTag="h2"/>
+                </aura:set>
+                <aura:set attribute="footer">
+                    <lightning:button variant="brand" label="Accept" onclick="{!c.acceptTerms}" disabled="{!v.acceptDisabled}"/>
+                </aura:set>
+            </c:x7S_Modal>
+            <aura:set attribute="else">
+                <lightning:layout aura:id="community-theme" horizontalAlign="" verticalAlign="" multipleRows="true"
+                                  class="theme-layout siteforceServiceBody slds-grid_vertical">
+                    <lightning:layoutItem padding="" size="12" class="theme-row">
+                        <lightning:layout horizontalAlign="" verticalAlign="" multipleRows="" class="">
+                            <lightning:layoutItem padding="" size="12" class="">
+                                {!v.TemplateHeaderTop}
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="" size="12" class="theme-row">
+                        <div class="{!'theme-header' + if(v.twoBar, ' two-bar', ' single-bar')}">
+                            <section>
+                                <lightning:layout horizontalAlign="" verticalAlign="" multipleRows=""
+                                                  class="upper-bar slds-is-relative slds-p-horizontal_x-large slds-p-vertical_medium">
+                                    <lightning:layoutItem padding="" size="12">
+                                        <lightning:layout horizontalAlign="" verticalAlign="center" multipleRows="" class="">
+                                            <lightning:layoutItem flexibility="no-shrink" size=""
+                                                                  class="theme-logo-row slds-p-right_medium">
+                                                <c:x7SCommunityLogo link="/" communityTitle="{!v.communityTitle}"
+                                                                    onurlclick="{!c.linkClick}" communityLogo="{!v.communityLogo}"/>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem aura:id="theme-navigation_wrapper" padding="" flexibility="grow" size=""
+                                                                  class="theme-navigation_wrapper mobile-position">
+                                                <div id="theme-navigation_wrapper">
+                                                    {!v.navBar}
+                                                </div>
+                                            </lightning:layoutItem>
+                                            <aura:if isTrue="{!or(!v.twoBar, v.isMobile)}">
+                                                <lightning:layoutItem size=""
+                                                                      class="theme-search-group slds-p-right_x-large slds-col_bump-left">
+                                                    <lightning:layout horizontalAlign="end" verticalAlign="center" multipleRows="" class="">
+                                                        <lightning:layoutItem aura:id="theme-search" padding=""
+                                                                              size="" class="{!'theme-search slds-is-absolute' + if(!v.showSearch, ' slds-hidden', '')}">
+                                                            <div id="theme-search">
+                                                                {!v.search}
+                                                            </div>
+                                                        </lightning:layoutItem>
+                                                        <lightning:layoutItem aura:id="search-toggle" size="" class="search-toggle slds-show_medium">
+                                                            <lightning:buttonIcon iconName="{!'utility:' +
+                                                            if(!v.showSearch, 'search', 'close')}" variant="bare"
+                                                                                  onclick="{!c.toggleSearch}" alternativeText="Toggle Search" size="large"/>
+                                                        </lightning:layoutItem>
+                                                    </lightning:layout>
+                                                </lightning:layoutItem>
+                                            </aura:if>
+                                            <lightning:layoutItem aura:id="theme-user" padding=""
+                                                                  flexibility="no-shrink" size="" class="{!'theme-user' + if(and(v.twoBar, !v.isMobile), ' slds-col_bump-left', '')}">
+                                                <lightning:layout horizontalAlign="" verticalAlign="center" multipleRows="" class="">
+                                                    <aura:if isTrue="{!or(v.isInBuilder, v.appContainer.length > 0)}">
+                                                        <lightning:layoutItem padding="" size="" class="{!'slds-p-horizontal_x-small' + if(v.isInBuilder, ' min-width', '')}">
+                                                            {!v.appContainer}
+                                                        </lightning:layoutItem>
+                                                    </aura:if>
+                                                    <lightning:layoutItem padding="" size="" class="theme-notifications slds-p-horizontal_x-small">
+                                                        <forceCommunity:notifications />
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem padding="" flexibility="no-shrink" size=""
+                                                                          class="theme-profile slds-p-left_x-small">
+                                                        {!v.profileMenu}
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                                <aura:if isTrue="{!v.twoBar}">
+                                    <lightning:layout horizontalAlign="center" verticalAlign="" multipleRows=""
+                                                      class="lower-bar">
+                                        <lightning:layoutItem size="" class="">
+                                            <aura:if isTrue="{!or(v.TemplateFeatureContentTop.length > 0, v.isBuilder)}">
+                                                <lightning:layout horizontalAlign="center" verticalAlign="center"
+                                                                  multipleRows=""
+                                                                  class="">
+                                                    <lightning:layoutItem size="" class="">
+                                                        {!v.TemplateFeatureContentTop}
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </aura:if>
+                                            <aura:if isTrue="{!!v.isMobile}">
+                                                <lightning:layout horizontalAlign="center" verticalAlign="center"
+                                                                  multipleRows=""
+                                                                  class="">
+                                                    <lightning:layoutItem aura:id="theme-search" padding="" size=""
+                                                                          class="theme-search slds-is-relative">
+                                                        <div id="theme-search">
+                                                            {!v.search}
+                                                        </div>
+                                                        <span class="search-icon slds-is-absolute slds-show_medium">
+                                                    <lightning:buttonIcon iconName="utility:search" variant="bare"
+                                                                          onclick="{!c.searchClick}"
+                                                                          alternativeText="Search the Hive"
+                                                                          size="large"/>
+                                                </span>
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </aura:if>
+                                            <aura:if isTrue="{!or(v.TemplateFeatureContentBottom.length > 0, v.isBuilder)}">
+                                                <lightning:layout horizontalAlign="center" verticalAlign="center"
+                                                                  multipleRows=""
+                                                                  class="">
+                                                    <lightning:layoutItem size="" class="">
+                                                        {!v.TemplateFeatureContentBottom}
+                                                    </lightning:layoutItem>
+                                                </lightning:layout>
+                                            </aura:if>
+                                        </lightning:layoutItem>
+                                    </lightning:layout>
+                                </aura:if>
+                            </section>
+                        </div>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="" size="12" class="theme-row">
+                        <lightning:layout horizontalAlign="" verticalAlign="" multipleRows="" class="">
+                            <lightning:layoutItem padding="" size="12" class="">
+                                {!v.TemplateHeaderBottom}
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="" size="12" class="theme-row theme-body">
+                        <lightning:layout horizontalAlign="{!v.wide ? 'center' : ''}" verticalAlign="" multipleRows="" class="{!!v.wide ? 'slds-container_x-large' : 'wide'}">
+                            <lightning:layoutItem padding="" size="12" class="">
+                                <div id="spike-page-content">
+                                    {!v.body}
+                                </div>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="" size="12" class="theme-row theme-footer slds-m-top_x-large">
+                        <lightning:layout >
+                            <lightning:layoutItem padding="" size="12" class="">
+                                {!v.TemplateFooter}
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+</aura:component>

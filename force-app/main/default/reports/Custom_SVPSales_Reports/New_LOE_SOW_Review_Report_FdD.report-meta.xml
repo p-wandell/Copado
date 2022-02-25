@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>LOE_SOW_Review__c$LOE_SOW_Name__c</field>
+    </columns>
+    <columns>
+        <field>LOE_SOW_Review__c$Name</field>
+    </columns>
+    <columns>
+        <field>LOE_SOW_Review__c$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>LOE_SOW_Review__c$CreatedBy</field>
+    </columns>
+    <columns>
+        <field>LOE_SOW_Review__c$Type__c</field>
+    </columns>
+    <columns>
+        <field>LOE_SOW_Review__c$Approver__c</field>
+    </columns>
+    <columns>
+        <field>LOE_SOW_Review__c$Statement_of_Work__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>LOE_SOW_Review__c$Status__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>,Pending,Needs Minor Work,Needs Major Work,Approved</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>LOE_SOW_Review__c$CreatedDate</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>3/24/2021 12:00 AM</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>LOE_SOW_Review__c$Status__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>LOE &amp; SOW Review Report</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>LOE_SOW_Review__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>LOE_SOW_Review__c$CreatedDate</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>LOE_SOW_Review__c$Approved_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

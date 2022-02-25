@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<isExposed>true</isExposed>
+	<masterLabel>7S Events Detail Banner</masterLabel>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightningCommunity__Default">
+			<property name="exploreOtherEventsURL"
+			          label="Explore Other Events URL"
+			          type="String"
+			          description="URL for Explore Other Events"/>
+			<property name="exploreOtherEvents"
+			          label="Explore Other Events Text"
+			          type="String"
+					  default="EXPLORE OTHER EVENTS"
+					  description="Explore Other Events Text"/>
+			<property name="showTopics"
+					  label="Show Topics"
+					  type="Boolean"
+					  description="Select to show the topics"/>
+			<property name="showVolunteerButton"
+			          label="Show Volunteer Button"
+			          type="Boolean"
+			          description="Enable to show volunteer button and edit event volunteers"/>
+			<property name="editEventsUrl"
+			          type="String"
+			          label="Events Edit Page Name"
+			          description="After Clicking on Edit button, It will redirect to record edit form which is Create Events component"/>
+			<property name="variant"
+			          label="Default Variant"
+			          type="String"
+			          description="Select the default layout variant"
+			          datasource="default,slds-card,featured"/>
+			<property name="customClass"
+			          label="Custom Class"
+			          type="String"
+			          description="Used for custom styling."/>
+			<property name="recordId"
+			          label="Record Id"
+			          type="String"
+			          default="{!recordId}"
+			          description="Set to {!recordId} to pass the page's record Id."/>
+
+		</targetConfig>
+		<targetConfig targets="lightning__AppPage, lightning__HomePage, lightning__RecordPage">
+			<property name="exploreOtherEventsURL"
+			          label="Explore Other Events URL"
+			          type="String"
+			          description="URL for Explore Other Events"/>
+			<property name="exploreOtherEvents"
+			          label="Explore Other Events Text"
+			          type="String"
+					  description="Explore Other Events Text"/>
+			<property name="showTopics"
+					  label="Show Topics"
+					  type="Boolean"
+					  description="Select to show the topics"/>
+			<property name="showVolunteerButton"
+			          label="Show Volunteer Button"
+			          type="Boolean"
+			          description="Enable to show volunteer button and edit event volunteers"/>
+			<property name="editEventsUrl"
+			          type="String"
+			          label="Events Edit URL"
+			          description="After Clicking on Edit button, It will redirect to record edit form which is Create Events component"/>
+			<property name="variant"
+			          label="Default Variant"
+			          type="String"
+			          description="Select the default layout variant"
+			          datasource="default,slds-card,featured"/>
+			<property name="customClass"
+			          label="Custom Class"
+			          type="String"
+			          description="Used for custom styling."/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

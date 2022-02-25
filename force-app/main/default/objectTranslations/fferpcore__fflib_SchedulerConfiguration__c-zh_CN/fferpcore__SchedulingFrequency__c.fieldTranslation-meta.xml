@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Scheduling Frequency --></label>
+    <name>fferpcore__SchedulingFrequency__c</name>
+    <picklistValues>
+        <masterLabel>Daily</masterLabel>
+        <translation>日常</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hourly</masterLabel>
+        <translation>每小时</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Monthly</masterLabel>
+        <translation>每月一次</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Weekly</masterLabel>
+        <translation>每周</translation>
+    </picklistValues>
+</CustomFieldTranslation>

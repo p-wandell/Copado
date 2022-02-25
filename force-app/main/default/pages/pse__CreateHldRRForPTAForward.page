@@ -1,0 +1,2 @@
+<apex:page standardController="pse__Project_Task__c" recordSetVar="recs" action="{!URLFOR($Page.CreateResourceRequestForPTA,'',[pid=$CurrentPage.parameters.id,mode='HldRR'])}">
+</apex:page>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>pse__Est_Vs_Actuals__c.Forecast_Amount__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <downGroupingContext>FK_$pse__Assignment__c.pse__Resource__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Est. to Complete (ETC)</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>pse__Est_Vs_Actuals__c.Forecast_Amount__c:SUM + pse__Est_Vs_Actuals__c.pse__Actual_Billable_Amount__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Est. at Complete (EAC)</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(pse__Est_Vs_Actuals__c.pse__Actual_Billable_Amount__c:SUM + pse__Est_Vs_Actuals__c.Forecast_Amount__c:SUM)-(FK_pse__Assignment__c.pse__Bill_Rate__c:SUM * FK_pse__Assignment__c.pse__Planned_Hours__c:SUM)</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA3</developerName>
+        <downGroupingContext>FK_$pse__Assignment__c.pse__Resource__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Resource Variance</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>pse__Est_Vs_Actuals__c.Budget__c:MAX</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA4</developerName>
+        <downGroupingContext>pse__Est_Vs_Actuals__c.pse__Project__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Project Budget</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(pse__Est_Vs_Actuals__c.pse__Actual_Billable_Amount__c:SUM + pse__Est_Vs_Actuals__c.Forecast_Amount__c:SUM)-pse__Est_Vs_Actuals__c.Budget__c:MAX</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA5</developerName>
+        <downGroupingContext>pse__Est_Vs_Actuals__c.pse__Project__c</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Project Budget Variance</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>FK_$pse__Assignment__c.pse__Planned_Revenue__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c.pse__Actual_Hours__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c.pse__Actual_Billable_Amount__c</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Time_Period_Type__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Week</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Project__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>7S</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Project__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>Broken</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Actual_Hours__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>0</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Est_Vs_Actuals__c.pse__Project__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_$pse__Assignment__c.pse__Resource__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Tableau Broken Link Budget Variance</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$pse__Est_Vs_Actuals__c@pse__Est_Vs_Actuals__c.pse__Assignment__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Est_Vs_Actuals__c.pse__Start_Date__c</dateColumn>
+        <interval>INTERVAL_LASTWEEK</interval>
+    </timeFrameFilter>
+</Report>

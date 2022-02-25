@@ -1,0 +1,10 @@
+<apex:page controller="ob1.OutputViewerController" 
+           showHeader="false" 
+           sidebar="false" 
+           cache="true" 
+           contentType="{!ContentType}" 
+           renderas="{!IF(ContentType='application/pdf','pdf','')}"
+           applyHtmlTag="false"
+ >
+ <apex:outputText escape="false" value="{!Output}" />
+</apex:page>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Wechselkurstypen zur Verwendung mit ERP-Wechselkursen. Es wird empfohlen, die verwalteten Tarifpreistypen nicht zu löschen. Weitere Informationen finden Sie in der ERP-Hilfe.</help>
+    <label><!-- Exchange Rate Type --></label>
+    <name>fferpcore__ExchangeRateType__c</name>
+    <picklistValues>
+        <masterLabel>Average</masterLabel>
+        <translation>Durchschnittlich</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Budget</masterLabel>
+        <translation>Budget</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Closing</masterLabel>
+        <translation>Schließen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Commercial</masterLabel>
+        <translation>Kommerziell</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Historical</masterLabel>
+        <translation>Historisch</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Spot</masterLabel>
+        <translation>Stelle</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Translation</masterLabel>
+        <translation>Übersetzung</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<isExposed>true</isExposed>
+	<masterLabel>7S Events Detail RSVP</masterLabel>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightningCommunity__Default">
+			<property name="variant"
+			          label="Default Variant"
+			          type="String"
+			          description="Select the default list layout"
+			          datasource="default,slds-card,featured"/>
+			<property name="peopleAttendText"
+			          label="People Attending Text"
+			          type="String"
+			          required="true"
+			          description="People Attending Label"/>
+			<property name="willYouAttendText"
+			          label="Will you attend text"
+			          type="String"
+			          required="true"
+			          description="Will you attend Label"/>
+			<property name="variantSelected"
+			          label="Button Variant when Selected"
+			          type="String"
+			          datasource="brand, inverse, neutral, text"
+			          description="Select the variant for the button appearance when selected"/>
+			<property name="variantUnselected"
+			          label="Button Variant when not Selected"
+			          type="String"
+			          datasource="brand, inverse, neutral, text"
+			          description="Select the variant for the button appearance when not selected"/>
+			<property name="customClass"
+			          label="Custom Class"
+			          type="String"
+			          description="Used for custom styling."/>
+			<property name="listId"
+			          label="Component Group"
+			          type="String"
+			          description="Unique ID to link complimentary components together to share data."/>
+			<property name="recordId"
+			          label="Record Id"
+			          type="String"
+			          default="{!recordId}"
+			          description="Set to {!recordId} to pass the page's record Id."/>
+		</targetConfig>
+
+		<targetConfig targets="lightning__AppPage, lightning__HomePage, lightning__RecordPage">
+			<property name="variant"
+			          label="Default Variant"
+			          type="String"
+			          description="Select the default list layout"
+			          datasource="default,slds-card,featured"/>
+			<property name="peopleAttendText"
+			          label="People Attending Text"
+			          type="String"
+			          required="true"
+			          description="People Attending Label"/>
+			<property name="willYouAttendText"
+			          label="Will you attend text"
+			          type="String"
+			          required="true"
+			          description="Will you attend Label"/>
+			<property name="variantSelected"
+			          label="Button Variant when Selected"
+			          type="String"
+			          datasource="brand, inverse, neutral, text"
+			          description="Select the variant for the button appearance when selected"/>
+			<property name="variantUnselected"
+			          label="Button Variant when not Selected"
+			          type="String"
+			          datasource="brand, inverse, neutral, text"
+			          description="Select the variant for the button appearance when not selected"/>
+			<property name="customClass"
+			          label="Custom Class"
+			          type="String"
+			          description="Used for custom styling."/>
+			<property name="listId"
+			          label="Component Group"
+			          type="String"
+			          description="Unique ID to link complimentary components together to share data."/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

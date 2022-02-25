@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>FK_pse__Assignment__c.pse__Planned_Hours__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Baseline (Loaded Plan)</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>pse__Est_Vs_Actuals__c.pse__Actual_Hours__c:SUM - FK_pse__Assignment__c.pse__Non_Billable_Hours_In_Financials__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA6</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Job to Date (JTD)</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>pse__Est_Vs_Actuals__c.Forecasted_Hours__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA7</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Est. to Complete</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(pse__Est_Vs_Actuals__c.pse__Actual_Hours__c:SUM + pse__Est_Vs_Actuals__c.Forecasted_Hours__c:SUM) - FK_pse__Assignment__c.pse__Non_Billable_Hours_In_Financials__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA8</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Est. at Complete</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(pse__Est_Vs_Actuals__c.pse__Actual_Hours__c:SUM + pse__Est_Vs_Actuals__c.Forecasted_Hours__c:SUM)-(FK_pse__Assignment__c.pse__Non_Billable_Hours_In_Financials__c:SUM +FK_pse__Assignment__c.pse__Planned_Hours__c:SUM)</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA9</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Variance</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c.Scheduled_Billable_Hours__c</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Time_Period_Type__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Week</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Project__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>7S</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Est_Vs_Actuals__c.pse__End_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Est_Vs_Actuals__c.pse__Project__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Est_Vs_Actuals__c.pse__Resource__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Plan vs Backlog</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>CustomEntity$pse__Est_Vs_Actuals__c@pse__Est_Vs_Actuals__c.pse__Assignment__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Est_Vs_Actuals__c.pse__End_Date__c</dateColumn>
+        <interval>INTERVAL_NEXT30</interval>
+    </timeFrameFilter>
+</Report>

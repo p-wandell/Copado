@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Template_Proj_Alt_Copy_Meth_Fieldset__c</fullName>
+    <defaultValue>&apos;CreateProjFromTempAltCopyProjMethFields&apos;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>The API name of a field set used by the Methodology object. Fields in this set define the methodology fields (if associated methodologies exist) to copy from the template to the new project. These fields are not shown on the Create Project from Template page. The default value is CreateProjFromTempAltCopyProjMethFields.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>API name of a field set used by the Methodology object. Fields in this set define the methodology fields (if associated methodologies exist) to copy from the template to the new project. These fields are not shown on the Create Project from Template page.</inlineHelpText>
+    <label>Template Proj Alt Copy Meth Fieldset</label>
+    <length>100</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

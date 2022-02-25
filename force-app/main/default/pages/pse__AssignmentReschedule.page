@@ -1,0 +1,25 @@
+<apex:page standardController="pse__Proj__c" recordsetvar="assignments" extensions="pse.AssignmentReScheduleController" >
+
+<apex:pageMessages id="msgs" />	
+<html>
+<title>{!$Label.pse__assignment_label_zero_out_schedule_hours}</title>
+<body>
+<apex:form >
+<apex:actionFunction action="{!recalculateScheduleHours}" name="jsZeroOutScheduleHours" rerender="msgs" />
+</apex:form> 
+<script type="text/javascript">
+
+    var confirmAction = function (){
+        var userConfirm = confirm('{!JSINHTMLENCODE($Label.pse__confirm_allow_schedule_recalulation)}');
+        if (userConfirm == true){
+            jsZeroOutScheduleHours();        
+        }else {
+            /*Send back*/
+            window.history.back();                
+        }
+    }
+    setTimeout('confirmAction()',2000); 
+</script>
+</body>
+</html>
+</apex:page>

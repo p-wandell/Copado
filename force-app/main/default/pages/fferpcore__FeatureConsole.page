@@ -1,0 +1,93 @@
+<apex:page tabStyle="FeatureConsole__tab" controller="fferpcore.FeatureConsoleController" lightningStylesheets="true">
+    <c:ffui_slds />
+    <apex:includeScript value="{!URLFOR($Resource.fferpcore__FeatureConsole, 'bundle.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__FeatureConsole,'featureconsole.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+    <apex:outputPanel styleClass="slds-scope">
+        <c:ffui_lightningOut outAppName="fferpcore:FCWrapperApp"/>
+        <c:ffui_header instanceName="$FFHEADER"/>
+    </apex:outputPanel>
+
+    <c:RemoteSiteVerifier siteUrl="{!MetadataApiUrl}"
+        siteName="{!$Label.fferpcore__remotesitemetadataapiname}"
+        siteDescription="{!$Label.fferpcore__remotesitemetadataapidescription}"
+        message="{!RemoteSiteVerifierFeatureConsoleNeedsAccessMessage}"
+        rendered="{!AND(NOT(IsRemoteSiteSettingConfigured), hasActivationPermission)}"/>
+
+    <apex:form >
+
+        <script>
+            $FFHEADER.renderHeader({
+                objectName: '{!JSENCODE($Label.fferpcore__featureconsole)}',
+                recordName: '{!$ObjectType.fferpcore__FeatureConsoleFeature__mdt.LabelPlural}',
+                icon: '{!iconUrl}',
+                helpUrl: '{!helpUrl}',
+                buttons: []
+            });
+
+            // Remove SLDS scope from content container to ensure correct styling in Classic.
+            var bodyCell = document.getElementById('bodyCell');
+            if(bodyCell) {
+                bodyCell.classList.remove('slds-scope');
+            }
+
+            window.addEventListener('load', function(){
+                window.FC = new FeatureConsolePage();
+                window.FC.initFilters();
+            });
+        </script>
+
+        <!-- *** LOADING INDICATOR *** -->
+
+        <c:fflib_LoadIndicator startLoadFn="startLoad" stopLoadFn="stopLoad"/>
+
+        <!-- *** FEATURES *** -->
+        <apex:pageBlock >
+            <!-- *** FILTERS *** -->
+            <apex:pageBlockSection title="{!$Label.fferpcore__featureconsolefilters}" columns="2">
+                    <!-- Filters -->
+                    <apex:selectList label="{!$Label.fferpcore__featureconsolecolumnproduct}" multiselect="true" size="3"
+                                     styleClass="ffdc-fc-filter-select"
+                                     html-data-filter-key="Product" html-data-filter-all-value="{!filterAllValue}">
+                        <apex:selectOptions value="{!filterProducts}"/>
+                    </apex:selectList>
+                    <apex:selectList label="{!$Label.fferpcore__featureconsoleenablementstatus}" multiselect="true" size="3"
+                                     styleClass="ffdc-fc-filter-select"
+                                     html-data-filter-key="IsActive" html-data-filter-all-value="{!filterAllValue}">
+                        <apex:selectOptions value="{!filtersStatus}"/>
+                    </apex:selectList>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="{!$ObjectType.fferpcore__FeatureConsoleFeature__mdt.LabelPlural}" columns="1" id="featuresPanel">
+                <apex:pageBlockTable value="{!allFeatures}" var="feature">
+                    <apex:column headerValue="{!$Label.fferpcore__featureconsolecolumnproduct}">
+                        <apex:outputLabel value="{!feature.Product}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.fferpcore__FeatureConsoleFeatureStep__mdt.fields.fferpcore__Feature__c.Label}" html-filter-data="{!feature.FilterData}">
+                        <apex:commandLink styleClass="ffdc-fc-feature-name" action="{!goToFeature}" value="{!feature.Record.MasterLabel}">
+                            <apex:param name="targetFeature" value="{!feature.Record.Id}" assignTo="{!TargetFeature}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.fferpcore__FeatureConsoleFeature__mdt.fields.fferpcore__FeatureDescription__c.Label}">
+                        <apex:outputLabel value="{!feature.DescriptionHtml}" escape="false"/>
+                    </apex:column>
+                    <apex:column styleClass="ffdc-fc-status-column ffdc-fc-feature-status" headerValue="{!$Label.fferpcore__featureconsoleenablementstatus}">
+                        <apex:outputLabel value="{!$Label.fferpcore__featureconsolefilteroptionstatusdisabled}" styleClass="ffdc-fc-feature-status-off {!IF(feature.IsActive, 'ffdc-fc-hidden', '')}"/>
+                        <apex:outputLabel value="{!$Label.fferpcore__featureconsolefilteroptionstatusenabled}" styleClass="ffdc-fc-feature-status-on {!IF(feature.IsActive, '', 'ffdc-fc-hidden')}"/>
+                    </apex:column>
+
+                    <apex:column styleClass="ffdc-fc-status-column">
+                        <apex:variable var="statusStyle"
+                             value="{!IF(feature.IsInProgress, 'ffdc-fc-status-paused',
+                                 IF(feature.HasErrors, 'ffdc-fc-status-has-errors',
+                                 IF(feature.HasWarnings, 'ffdc-fc-status-has-warnings',
+                                 IF(feature.HasInfo, 'ffdc-fc-status-has-info',
+                                 'ffdc-fc-status-none'))))} ffdc-fc-status"
+                        />
+                        <apex:outputPanel styleClass="{!statusStyle}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

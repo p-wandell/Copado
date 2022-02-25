@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+
+/* carousel card styles */
+hr {
+    width: 40%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 30%;
+}
+.slds-avatar {
+    max-width: 80%;
+    border-radius: 50%;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+}
+
+/* set carousel arrows to brand color */
+.slick-prev:before,
+.slick-next:before {
+    color: var(--lwc-colorBrand);
+}
+
+/* make the carousel slides equal height */
+.slick-track {
+    display: flex;
+}
+.slick-initialized .slick-slide {
+    flex: 1;
+    height: auto;
+}

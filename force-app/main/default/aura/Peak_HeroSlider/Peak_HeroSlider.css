@@ -1,0 +1,87 @@
+/**
+ * peak_lightning - Generates the assets used for Peak Lightning
+ * @version 1.0.0
+ * @author 7Summits
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.THIS {
+  position: relative;
+  color: token(colorTextInverse);
+  /* Common CSS here */
+  /*Fix for dots*/
+}
+.THIS .slider h1 {
+  font-size: 1.75rem;
+}
+@media (min-width: 48em) {
+  .THIS .slider h1 {
+    font-size: 3.75rem;
+  }
+}
+.THIS .slider h2 {
+  font-size: 1.2rem;
+}
+@media (min-width: 48em) {
+  .THIS .slider h2 {
+    font-size: 2.75rem;
+  }
+}
+.THIS .slider .peak-banner-overlay {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  content: ' ';
+}
+.THIS .slider .slds-grid {
+  position: relative;
+  z-index: 1;
+}
+.THIS .slider .slide {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  background-position: center center;
+  background-size: cover;
+}
+.THIS .slider .slide .peak-component {
+  width: 100%;
+}
+.THIS .slider .slick-prev {
+  z-index: 100;
+  left: 20px;
+}
+.THIS .slider .slick-next {
+  z-index: 100;
+  right: 20px;
+}
+.THIS .slider .slick-dots {
+  bottom: 0;
+  margin-left: 0;
+  /* Fixes the visible horizontal scroll bar */
+}
+.THIS .slider .content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+.THIS .slider .darktext h1,
+.THIS .slider .darktext h2,
+.THIS .slider .darktext p {
+  color: token(colorTextDefault);
+}
+.THIS .slider .slds-button {
+  margin-right: token(spacingLarge);
+}
+.THIS .slider .slds-wrap {
+  height: 100%;
+}
+.THIS .slick-dotted.slick-slider {
+  margin: 0;
+}

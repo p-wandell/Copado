@@ -1,0 +1,70 @@
+<!-- Copyright (c) 2018-2019 FinancialForce.com, inc.  All rights reserved. -->
+<apex:page showHeader="true" sidebar="false" title="{!$Label.pse__forecasting_label_view_title}" tabStyle="pse__Forecast_Enhanced_Calculation__c" standardController="pse__Forecast_Enhanced_Calculation__c" extensions="pse.ForecastViewController" lightningStylesheets="true" docType="html-5.0">
+    <apex:pageMessages />
+    <c:extjs_bootstrap applicationName="ESF" staticResource="{!$Resource.pse__ESF}" developmentPrefix="">
+
+        <script type="text/javascript">
+            var Ext = Ext || {};
+
+            var $Params = $Params || {};
+            $Params.salesforceURL = '{!salesforceURL}';
+            $Params.detailRelatedTypeProject = '{!detailRelatedTypeProject}';
+            $Params.detailRelatedTypeOpportunity = '{!detailRelatedTypeOpportunity}';
+			$Params.userCanOverride = {!canUserOverride};
+			$Params.userCanCommit = {!canUserCommit};
+
+            var $Label = $Label || {};
+
+            $Label.common_label_cancel = '{!JSENCODE($Label.common_label_cancel)}';
+            $Label.common_label_currency = '{!JSENCODE($Label.common_label_currency)}';
+            $Label.common_label_error = '{!JSENCODE($Label.common_label_error)}';
+            $Label.common_label_list_separator_no_space = '{!JSENCODE($Label.common_list_separator_no_space)}';
+			$Label.common_label_save = '{!JSENCODE($Label.common_label_save)}';
+			$Label.common_label_back = '{!JSENCODE($Label.common_label_back)}';
+
+			$Label.commit_button_label = '{!JSENCODE($Label.forecasting_commit_button_label)}';
+			$Label.calculation_committed = '{!JSENCODE($Label.forecasting_data_view_calculation_committed)}';
+			$Label.commit_prompt_title = '{!JSENCODE($Label.forecasting_commit_prompt_title)}';
+    		$Label.commit_prompt_text = '{!JSENCODE($Label.forecasting_commit_prompt_text)}';
+
+            $Label.calculation_id_missing = '{!JSENCODE($Label.forecasting_error_data_view_no_calculation_selected)}';
+            $Label.calculation_record_loading = '{!JSENCODE($Label.forecasting_label_data_loading)}';
+            $Label.data_view_title = '{!JSENCODE($Label.forecasting_label_view_title)}';
+            $Label.forecast_summary_column_name = '{!JSENCODE($ObjectType.Forecast_Enhanced_Summary__c.label)}';
+            $Label.forecasting_detail_column_point_of_contact = '{!JSENCODE($Label.forecasting_detail_column_point_of_contact)}'
+            $Label.forecasting_detail_column_projects_and_opportunities = '{!JSENCODE($Label.forecasting_detail_column_projects_and_opportunities)}'
+            $Label.forecasting_detail_empty_grid = '{!JSENCODE($Label.forecasting_detail_empty_grid)}';
+            $Label.forecasting_summary_empty_grid = '{!JSENCODE($Label.forecasting_summary_empty_grid)}';
+
+			$Label.forecasting_tooltip_collapse = '{!JSENCODE($Label.forecasting_tooltip_collapse)}';
+			$Label.forecasting_tooltip_expand = '{!JSENCODE($Label.forecasting_tooltip_expand)}';
+			$Label.forecasting_tooltip_maximize = '{!JSENCODE($Label.forecasting_tooltip_maximize)}';
+			$Label.forecasting_tooltip_restore = '{!JSENCODE($Label.forecasting_tooltip_restore)}';
+
+            $Label.override_created_by_with_colon = '{!JSENCODE($Label.forecasting_override_created_by_colon)}';
+            $Label.override_created_date_with_colon = '{!JSENCODE($Label.forecasting_override_created_date_colon)}';
+            $Label.override_current_value = '{!JSENCODE($Label.forecasting_override_current_value)}';
+            $Label.override_notes = '{!JSENCODE($ObjectType.Forecast_Enhanced_Override__c.fields.Notes__c.label)}';
+            $Label.override_notes_with_colon = '{!JSENCODE($Label.forecasting_override_notes_with_colon)}';
+            $Label.override_original_value = '{!JSENCODE($Label.forecasting_override_original_value)}';
+            $Label.override_original_value_with_colon = '{!JSENCODE($Label.forecasting_override_original_value_colon)}';
+            $Label.override_rollup_from_with_colon = '{!JSENCODE($Label.forecasting_override_rollup_from_colon)}';
+            $Label.override_value = '{!JSENCODE($ObjectType.Forecast_Enhanced_Override__c.fields.Override_Value__c.label)}';
+            $Label.override_variance_with_colon = '{!JSENCODE($Label.forecasting_override_variance_colon)}';
+            $Label.override_window_title = '{!JSENCODE($Label.forecasting_override_window_title)}';
+            $Label.rollup_tooltip_title = '{!JSENCODE($Label.forecasting_rollup_tooltip_title)}';
+
+            $RemoteAction = {
+                ForecastViewController : {
+                    getForecastCalculation: '{!$RemoteAction.ForecastViewController.getForecastCalculation}',
+                    getSummaryHierarchy: '{!$RemoteAction.ForecastViewController.getSummaryHierarchy}',
+                    getSetupCategories: '{!$RemoteAction.ForecastViewController.getSetupCategories}',
+                    getDetails: '{!$RemoteAction.ForecastViewController.getDetails}',
+					saveSummaryCategoryOverride: '{!$RemoteAction.ForecastViewController.saveSummaryCategoryOverride}',
+					commitForecastCalculation: '{!$RemoteAction.ForecastViewController.commitForecastCalculation}'
+                }
+            };
+
+       </script>
+    </c:extjs_bootstrap>
+</apex:page>

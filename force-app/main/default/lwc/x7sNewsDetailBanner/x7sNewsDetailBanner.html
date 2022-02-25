@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc. All rights reserved.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper custom-class={componentClass}
+	                             variant={variant}>
+		<c-x7s-shr-record-banner title={translatedNameOrTitle} topics={topics}>
+			<div slot="actions">
+				<template if:true={showFollowButton}>
+					<c-x7s-news-follow-button record-id={recordId}>
+					</c-x7s-news-follow-button>
+				</template>
+
+				<template if:true={showLikeButton}>
+					<c-x7s-news-like-button record-id={recordId} like-count={likeCount}>
+					</c-x7s-news-like-button>
+				</template>
+			</div>
+			<div slot="meta">
+				<ul class="slds-list_horizontal slds-has-dividers_right">
+					<template if:true={isShowAuthor}>
+						<li class="slds-item">
+							<c-x7s-shr-meta icon="utility:date_time"
+							                hide-count>
+								<lightning-relative-date-time value={publishedDate}>
+
+								</lightning-relative-date-time>&nbsp;
+								{labels.labelAuthorBy}&nbsp;
+								<a href={profileUrl}>
+									{publishedBy}
+								</a>
+							</c-x7s-shr-meta>
+						</li>
+					</template>
+					<template if:true={isRecordEditable}>
+						<li class="slds-item slds-text-link">
+							<lightning-formatted-text value={editNewsLabel} onclick={editNewsRecord} linkify>
+							</lightning-formatted-text>
+						</li>
+					</template>
+
+					<template if:true={isRecordDeletable}>
+						<li class="slds-item slds-text-link">
+							<lightning-formatted-text value={deleteNewsLabel} onclick={delete_News_Record} linkify>
+							</lightning-formatted-text>
+						</li>
+					</template>
+				</ul>
+			</div>
+		</c-x7s-shr-record-banner>
+	</c-x7s-shr-component-wrapper>
+</template>

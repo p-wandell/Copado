@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Role__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Role</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>AE</fullName>
+                <default>false</default>
+                <label>AE</label>
+            </value>
+            <value>
+                <fullName>BA</fullName>
+                <default>false</default>
+                <label>BA</label>
+            </value>
+            <value>
+                <fullName>BA (MTX)</fullName>
+                <default>false</default>
+                <label>BA (MTX)</label>
+            </value>
+            <value>
+                <fullName>Biz Arch</fullName>
+                <default>false</default>
+                <label>Biz Arch</label>
+            </value>
+            <value>
+                <fullName>Change Analyst</fullName>
+                <default>false</default>
+                <label>Change Analyst</label>
+            </value>
+            <value>
+                <fullName>Consultant</fullName>
+                <default>false</default>
+                <label>Consultant</label>
+            </value>
+            <value>
+                <fullName>Content Marketer</fullName>
+                <default>false</default>
+                <label>Content Marketer</label>
+            </value>
+            <value>
+                <fullName>Coverage</fullName>
+                <default>false</default>
+                <label>Coverage</label>
+            </value>
+            <value>
+                <fullName>CP</fullName>
+                <default>false</default>
+                <label>CP</label>
+            </value>
+            <value>
+                <fullName>CPQ Arch</fullName>
+                <default>false</default>
+                <label>CPQ Arch</label>
+            </value>
+            <value>
+                <fullName>CS - BA</fullName>
+                <default>false</default>
+                <label>CS - BA</label>
+            </value>
+            <value>
+                <fullName>CS - FED</fullName>
+                <default>false</default>
+                <label>CS - FED</label>
+            </value>
+            <value>
+                <fullName>CS - Platform Dev</fullName>
+                <default>false</default>
+                <label>CS - PD</label>
+            </value>
+            <value>
+                <fullName>CS - PM</fullName>
+                <default>false</default>
+                <label>CS - PM</label>
+            </value>
+            <value>
+                <fullName>CS - SFDC Dev</fullName>
+                <default>false</default>
+                <label>CS-SF Dev</label>
+            </value>
+            <value>
+                <fullName>CS - TL</fullName>
+                <default>false</default>
+                <label>CS - TL</label>
+            </value>
+            <value>
+                <fullName>DA</fullName>
+                <default>false</default>
+                <label>DA</label>
+            </value>
+            <value>
+                <fullName>Design Engineer</fullName>
+                <default>false</default>
+                <label>Design Engineer</label>
+            </value>
+            <value>
+                <fullName>Director, FED</fullName>
+                <default>false</default>
+                <label>Dir FED</label>
+            </value>
+            <value>
+                <fullName>Dir of HR &amp; Recruiting</fullName>
+                <default>false</default>
+                <label>Dir of HR &amp; Recruiting</label>
+            </value>
+            <value>
+                <fullName>Exec</fullName>
+                <default>false</default>
+                <label>Exec</label>
+            </value>
+            <value>
+                <fullName>Experience Strategist</fullName>
+                <default>false</default>
+                <label>Experience Strategist</label>
+            </value>
+            <value>
+                <fullName>FED</fullName>
+                <default>false</default>
+                <label>FED</label>
+            </value>
+            <value>
+                <fullName>FED (CG)</fullName>
+                <default>false</default>
+                <label>FED (CG)</label>
+            </value>
+            <value>
+                <fullName>FED (CT)</fullName>
+                <default>false</default>
+                <label>FED (CT)</label>
+            </value>
+            <value>
+                <fullName>FED (GS)</fullName>
+                <default>false</default>
+                <label>FED (GS)</label>
+            </value>
+            <value>
+                <fullName>FED (MTX)</fullName>
+                <default>false</default>
+                <label>FED (MTX)</label>
+            </value>
+            <value>
+                <fullName>FED (Offshore)</fullName>
+                <default>false</default>
+                <label>FED (Off)</label>
+            </value>
+            <value>
+                <fullName>Front Desk Receptionist</fullName>
+                <default>false</default>
+                <label>Front Desk Receptionist</label>
+            </value>
+            <value>
+                <fullName>Integration Architect</fullName>
+                <default>false</default>
+                <label>IA</label>
+            </value>
+            <value>
+                <fullName>Managed Services</fullName>
+                <default>false</default>
+                <label>Managed Services</label>
+            </value>
+            <value>
+                <fullName>Operations</fullName>
+                <default>false</default>
+                <label>Operations</label>
+            </value>
+            <value>
+                <fullName>PC</fullName>
+                <default>false</default>
+                <label>PC</label>
+            </value>
+            <value>
+                <fullName>Platform Dev</fullName>
+                <default>false</default>
+                <label>PD</label>
+            </value>
+            <value>
+                <fullName>PD (CG)</fullName>
+                <default>false</default>
+                <label>PD (CG)</label>
+            </value>
+            <value>
+                <fullName>PD (CT)</fullName>
+                <default>false</default>
+                <label>PD (CT)</label>
+            </value>
+            <value>
+                <fullName>PD (GS)</fullName>
+                <default>false</default>
+                <label>PD (GS)</label>
+            </value>
+            <value>
+                <fullName>PD (MTX)</fullName>
+                <default>false</default>
+                <label>PD (MTX)</label>
+            </value>
+            <value>
+                <fullName>Platform Dev (Offshore)</fullName>
+                <default>false</default>
+                <label>PD (Off)</label>
+            </value>
+            <value>
+                <fullName>PM</fullName>
+                <default>false</default>
+                <label>PM</label>
+            </value>
+            <value>
+                <fullName>Product</fullName>
+                <default>false</default>
+                <label>Product</label>
+            </value>
+            <value>
+                <fullName>QA</fullName>
+                <default>false</default>
+                <label>QA</label>
+            </value>
+            <value>
+                <fullName>QA (CG)</fullName>
+                <default>false</default>
+                <label>QA (CG)</label>
+            </value>
+            <value>
+                <fullName>QA (CT)</fullName>
+                <default>false</default>
+                <label>QA (CT)</label>
+            </value>
+            <value>
+                <fullName>QA (GS Labs)</fullName>
+                <default>false</default>
+                <label>QA (GS)</label>
+            </value>
+            <value>
+                <fullName>QA (MTX)</fullName>
+                <default>false</default>
+                <label>QA (MTX)</label>
+            </value>
+            <value>
+                <fullName>QA (Offshore)</fullName>
+                <default>false</default>
+                <label>QA (Off)</label>
+            </value>
+            <value>
+                <fullName>Recruiter</fullName>
+                <default>false</default>
+                <label>Recruiter</label>
+            </value>
+            <value>
+                <fullName>SA</fullName>
+                <default>false</default>
+                <label>SA</label>
+            </value>
+            <value>
+                <fullName>SE</fullName>
+                <default>false</default>
+                <label>SE</label>
+            </value>
+            <value>
+                <fullName>SFDC Dev</fullName>
+                <default>false</default>
+                <label>SF Dev</label>
+            </value>
+            <value>
+                <fullName>SFDC Dev (CG)</fullName>
+                <default>false</default>
+                <label>SF Dev (CG)</label>
+            </value>
+            <value>
+                <fullName>SFDC Dev (CT)</fullName>
+                <default>false</default>
+                <label>SF Dev (CT)</label>
+            </value>
+            <value>
+                <fullName>SF Dev (GS)</fullName>
+                <default>false</default>
+                <label>SF Dev (GS)</label>
+            </value>
+            <value>
+                <fullName>SF Dev (MTX)</fullName>
+                <default>false</default>
+                <label>SF Dev (MTX)</label>
+            </value>
+            <value>
+                <fullName>SF Dev (Off)</fullName>
+                <default>false</default>
+                <label>SF Dev (Off)</label>
+            </value>
+            <value>
+                <fullName>TA</fullName>
+                <default>false</default>
+                <label>TA</label>
+            </value>
+            <value>
+                <fullName>TA (CG)</fullName>
+                <default>false</default>
+                <label>TA (CG)</label>
+            </value>
+            <value>
+                <fullName>TA (CT)</fullName>
+                <default>false</default>
+                <label>TA (CT)</label>
+            </value>
+            <value>
+                <fullName>TA (GS Labs)</fullName>
+                <default>false</default>
+                <label>TA (GS)</label>
+            </value>
+            <value>
+                <fullName>TA (MTX)</fullName>
+                <default>false</default>
+                <label>TA (MTX)</label>
+            </value>
+            <value>
+                <fullName>TL</fullName>
+                <default>false</default>
+                <label>TL</label>
+            </value>
+            <value>
+                <fullName>TL (CG)</fullName>
+                <default>false</default>
+                <label>TL (CG)</label>
+            </value>
+            <value>
+                <fullName>TL (CT)</fullName>
+                <default>false</default>
+                <label>TL (CT)</label>
+            </value>
+            <value>
+                <fullName>TL (GS)</fullName>
+                <default>false</default>
+                <label>TL (GS)</label>
+            </value>
+            <value>
+                <fullName>TL (MTX)</fullName>
+                <default>false</default>
+                <label>TL (MTX)</label>
+            </value>
+            <value>
+                <fullName>TL (Off)</fullName>
+                <default>false</default>
+                <label>TL (Off)</label>
+            </value>
+            <value>
+                <fullName>UI Designer</fullName>
+                <default>false</default>
+                <label>UI Dsgn</label>
+            </value>
+            <value>
+                <fullName>UX Designer</fullName>
+                <default>false</default>
+                <label>UX Dsgn</label>
+            </value>
+            <value>
+                <fullName>VP of Alliances</fullName>
+                <default>false</default>
+                <label>VP of Alliances</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

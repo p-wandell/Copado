@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Operations_Request_Finance_Approval</fullName>
+        <description>Operations Request - Finance Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>michelle@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Operations_Requests/Operations_Request_Finance_Approval</template>
+    </alerts>
+    <alerts>
+        <fullName>Operations_Request_NS_FF_Upaates_Needed</fullName>
+        <description>Operations Request - NS/FF Upates Needed</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>daniel.mosbarger@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>kerri.mclaughlin@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>michelle@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Operations_Requests/New_Operations_Request</template>
+    </alerts>
+    <alerts>
+        <fullName>Operations_Request_New_User</fullName>
+        <description>Operations Request - New User</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>daniel.mosbarger@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>jennifer.wiza@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>kerri.mclaughlin@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>michael.mccormick@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>michelle@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Operations_Requests/New_Operations_Request</template>
+    </alerts>
+    <alerts>
+        <fullName>Project_Request_Completed</fullName>
+        <description>Project Request Completed</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Operations_Requests/Project_Request_Completed</template>
+    </alerts>
+    <alerts>
+        <fullName>Project_Workbook_Loaded</fullName>
+        <description>Project Workbook Loaded</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>daniel.mosbarger@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>jeff.murnan@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>kerri.mclaughlin@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Operations_Requests/Project_Workbook_Loaded</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Assign_to_Queue</fullName>
+        <description>Assign the record to the Operations Request queue.</description>
+        <field>OwnerId</field>
+        <lookupValue>Operations_Request</lookupValue>
+        <lookupValueType>Queue</lookupValueType>
+        <name>Assign to Queue</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Status_to_Assigned</fullName>
+        <field>Status__c</field>
+        <literalValue>Assigned</literalValue>
+        <name>Update Status to Assigned</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Status_to_Completed</fullName>
+        <field>Status__c</field>
+        <literalValue>Completed</literalValue>
+        <name>Update Status to Completed</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Status_to_Submitted</fullName>
+        <field>Status__c</field>
+        <literalValue>Submitted</literalValue>
+        <name>Update Status to Submitted</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>Finance Approval - Nonbill Assignment Request</fullName>
+        <actions>
+            <name>Operations_Request_Finance_Approval</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Operations_Requests__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Nonbill Assignment</value>
+        </criteriaItems>
+        <description>When a nonbill assignment request is created, an email is sent to Michelle Hicks-Tobias.</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>Finance Approval - Time Movement Request</fullName>
+        <actions>
+            <name>Operations_Request_Finance_Approval</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <description>When a Time Movement request is created with hours moving to nonbill, an email is sent to finance for approval.</description>
+        <formula>AND( Request_Type__c = &quot;Time_Movement&quot;,
+To_Assignment__r.pse__Is_Billable__c = FALSE)</formula>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>New User Request</fullName>
+        <actions>
+            <name>Operations_Request_New_User</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Operations_Requests__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>New User</value>
+        </criteriaItems>
+        <description>When a New User Request is created, an email alert goes out to users responsible for FF &amp; NS.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>New User Status Update - Assigned</fullName>
+        <actions>
+            <name>Update_Status_to_Assigned</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically updates status to assigned when a request owner is chosen.</description>
+        <formula>AND(NOT(ISNULL(Request_Owner__c)), Request_Type__c = &quot;New_User&quot;,
+Completed_in_FF__c = FALSE, Completed_in_NS__c = FALSE )</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>New User Status Update - Completed</fullName>
+        <actions>
+            <name>Update_Status_to_Completed</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically updates status to Completed when request has been fulfilled (and approved if necessary).</description>
+        <formula>AND(Request_Type__c =&quot;New_User&quot;,  User_Created_in_FF__c  = TRUE,  
+User_Created_in_NS__c = TRUE)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Nonbill Assignment Request</fullName>
+        <actions>
+            <name>Operations_Request_NS_FF_Upaates_Needed</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Operations_Requests__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Nonbill Assignment</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Operations_Requests__c.Finance_Approval__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </criteriaItems>
+        <description>When a Nonbill Assignment request is created and approved by finance, an email alert goes out to Operations &amp; Finance</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Nonbill Status Update - Assigned</fullName>
+        <actions>
+            <name>Update_Status_to_Assigned</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically updates status to assigned when a request owner is chosen.</description>
+        <formula>AND(NOT(ISBLANK(Request_Owner__c)),Request_Type__c = &quot;Nonbill_Assignment&quot;,
+Completed_in_FF__c = FALSE)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Nonbill Status Update - Completed</fullName>
+        <actions>
+            <name>Update_Status_to_Completed</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically updates status to Completed when request has been fulfilled (and approved if necessary).</description>
+        <formula>AND(
+Request_Type__c =&quot;Nonbill_Assignment&quot;, 
+ISPICKVAL(Finance_Approval__c,&quot;Approved&quot;),
+Completed_in_FF__c = TRUE
+)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Project Request Completed</fullName>
+        <actions>
+            <name>Project_Request_Completed</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Operations_Requests__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Nonbill Assignment,Time Movement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Operations_Requests__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Completed</value>
+        </criteriaItems>
+        <description>When a request pertaining to a project is completed, a notification email is sent to the PM.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Project Workbook Loaded</fullName>
+        <actions>
+            <name>Project_Workbook_Loaded</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Operations_Requests__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Project Workbook Load</value>
+        </criteriaItems>
+        <description>When a Project Workbook Load request is created, an email is sent to Operations</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>Queue Assignment</fullName>
+        <actions>
+            <name>Assign_to_Queue</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Assign all Operations Request records to the Operations Request Queue.</description>
+        <formula>TRUE</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Status Update - Submitted</fullName>
+        <actions>
+            <name>Update_Status_to_Submitted</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically update status to Submitted when a new Operations Request record is created.</description>
+        <formula>ISBLANK(Request_Owner__c)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Time Movement Request</fullName>
+        <actions>
+            <name>Operations_Request_NS_FF_Upaates_Needed</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <description>When a Time Movement Request is approved by finance or doesn&apos;t require moving time to nonbill, an email alert goes out to users responsible for FF &amp; NS.</description>
+        <formula>OR(
+ISBLANK( To_Assignment__c ),
+To_Assignment__r.pse__Is_Billable__c=TRUE,
+TEXT(Finance_Approval__c)=&quot;Approved&quot;)
+ &amp;&amp; 
+Request_Type__c = &quot;Time_Movement&quot;</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Time Status Update - Assigned</fullName>
+        <actions>
+            <name>Update_Status_to_Assigned</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically updates status to assigned when a request owner is chosen.</description>
+        <formula>AND(NOT(ISBLANK(Request_Owner__c)),Request_Type__c = &quot;Time_Movement&quot;, 
+AND(OR(Completed_in_FF__c = FALSE, Completed_in_NS__c = FALSE)))</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Time Status Update - Completed</fullName>
+        <actions>
+            <name>Update_Status_to_Completed</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically updates status to Completed when request has been fulfilled (and approved if necessary).</description>
+        <formula>OR(
+AND(
+Request_Type__c =&quot;Time_Movement&quot;,
+ISBLANK(To_Assignment__c),
+Completed_in_FF__c = TRUE,
+Completed_in_NS__c = TRUE),
+
+AND(
+Request_Type__c =&quot;Time_Movement&quot;,
+To_Assignment__r.pse__Is_Billable__c = TRUE,
+Completed_in_FF__c = TRUE,
+Completed_in_NS__c = TRUE),
+
+AND(
+Request_Type__c =&quot;Time_Movement&quot;,
+To_Assignment__r.pse__Is_Billable__c = FALSE,
+ISPICKVAL(Finance_Approval__c,&quot;Approved&quot;),
+Completed_in_FF__c = TRUE,
+Completed_in_NS__c = TRUE))</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>WB Status Update - Assigned</fullName>
+        <actions>
+            <name>Update_Status_to_Assigned</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically updates status to assigned when a request owner is chosen.</description>
+        <formula>AND(NOT(ISBLANK(Request_Owner__c)), Request_Type__c = &quot;Project_Workbook_Load&quot;,
+Completed_in_FF__c = FALSE)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>WB Status Update - Completed</fullName>
+        <actions>
+            <name>Update_Status_to_Completed</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Automatically updates status to Completed when request has been fulfilled (and approved if necessary).</description>
+        <formula>AND(Request_Type__c =&quot;Project_Workbook_Load&quot;,Completed_in_FF__c = TRUE)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+</Workflow>

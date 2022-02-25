@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Report Status --></label>
+    <name>ffr__ReportStatus__c</name>
+    <picklistValues>
+        <masterLabel>Completed</masterLabel>
+        <translation>완료 됨</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Creating Layout</masterLabel>
+        <translation>레이아웃 생성</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Getting Data</masterLabel>
+        <translation>데이터 가져 오기</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Launching Assembling Data and Layout Process</masterLabel>
+        <translation>어셈블 링 데이터 및 레이아웃 프로세스 시작</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Started</masterLabel>
+        <translation>시작되지 않음</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Waiting for Assembling Data Process</masterLabel>
+        <translation>데이터 어셈블 링 대기 프로세스</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Waiting for Data and Layout Process</masterLabel>
+        <translation>데이터 및 레이아웃 프로세스 대기 중</translation>
+    </picklistValues>
+</CustomFieldTranslation>

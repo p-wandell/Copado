@@ -1,0 +1,50 @@
+<apex:page standardController="ffr__RelatedContentPane__c" extensions="ffr.RelatedContentPaneStartController" recordSetVar="rcps" tabStyle="RelatedContentPanes__tab" lightningStylesheets="true" docType="html-5.0">
+	<c:fflib_LoadIndicator id="loadIndicator" startLoadFn="startLoad" stopLoadFn="stopLoad" blocking="true"/>
+	<style>
+		.slds-vf-scope .headerButtons {
+			display: block;
+			margin: 10px 10px 10px 0;
+		}
+	</style>
+
+	<apex:sectionHeader title="{!$Label.ffr__relatedcontentpanes}"/> <!--HELP - TODOH2-->
+	<apex:form id="formId">
+		<apex:actionFunction name="delRcpAction" action="{!deleteRCP}" oncomplete="stopLoad('{!JSINHTMLENCODE($Label.ffr__relatedcontentpanedeleting)}', '{!JSINHTMLENCODE($Label.ffr__relatedcontentpanedeletingfinished)}');" rerender="sectionItems" />
+		<apex:inputHidden value="{!RcpIdToDelete}" id="recToDelID"></apex:inputHidden>
+		<apex:actionFunction name="onChangeSearchBox" action="{!actOnSearch}" reRender="theTable"/>
+		<apex:pageBlock id="sectionItems">
+			<!-- Messages -->
+			<apex:pageMessages />
+			<table>
+				<tr>
+					<td style="font-weight:bold; font-size:16px">{!$Label.ffr__relatedcontentpanesearch}<br/>
+						<apex:inputText style="width:350px; height:20px;" id="searchText" value="{!SearchText}" onkeyup="onChangeSearchBox()"/>
+					</td>
+				</tr>
+			</table>
+			<apex:panelGrid styleClass="headerButtons">
+				<apex:commandButton action="{!getRelatedContentPaneEditorPage}" value="{!$Label.ffr__relatedcontentpanenewbutton}" rendered="{!$Permission.ffr__RelatedContentPaneCreate || $Setup.ffr__ReportingSettings__c.ffr__DisableCustomPermissions__c}"/>
+			</apex:panelGrid>
+			<apex:pageBlockTable value="{!RcpSummaries}" var="summary" id="theTable">
+				<apex:column >
+						<apex:facet name="header">{!$Label.ffr__relatedcontentpaneactionlabel}</apex:facet>
+						<apex:outputLink value="{!$Page.ffr__relatedcontentpaneeditor}?id={!summary.Id}">{!$Label.ffr__relatedcontentpaneeditlabel}</apex:outputLink>
+						<apex:outputText value="  |  "/>
+						<apex:commandLink onclick="return confirmProcess('{!JSENCODE($Label.ffr__relatedcontentpanedeleteconfirmation)}', '{!JSINHTMLENCODE($Label.ffr__relatedcontentpanedeleting)}', '{!$Component.formId.recToDelID}', '{!summary.Id}', delRcpAction)" rerender="sectionItems">{!$Label.ffr__relatedcontentpanedeletelabel}
+							<apex:param name="delId" value="{!summary.Id}"/>
+						</apex:commandLink>
+					</apex:column>
+				<apex:column >
+					<apex:facet name="header">{!$Label.ffr__relatedcontentpanenamelabel}</apex:facet>
+					<apex:outputLink value="{!$Page.ffr__relatedcontentpane}?id={!summary.Id}"> {!summary.Name}</apex:outputLink>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">{!$Label.ffr__relatedcontentpanedrivingentitylabel}</apex:facet>
+					<apex:outputText value="{!summary.DrivingEntity}"/>
+				</apex:column>
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+	</apex:form>
+
+	<script src="{!URLFOR($Resource.ffr__front, 'utils/pages.js')}"/>
+</apex:page>

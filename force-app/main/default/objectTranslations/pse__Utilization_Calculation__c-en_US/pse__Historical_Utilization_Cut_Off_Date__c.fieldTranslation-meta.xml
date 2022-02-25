@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the value that describes when historical utilization calculations should stop. This is typically the last day of the week that all timecards were entered. --></help>
+    <label><!-- Historical Utilization Cut-Off Date --></label>
+    <name>pse__Historical_Utilization_Cut_Off_Date__c</name>
+    <picklistValues>
+        <masterLabel>End of Last Week</masterLabel>
+        <translation><!-- End of Last Week --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>End of This Week</masterLabel>
+        <translation><!-- End of This Week --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Today</masterLabel>
+        <translation><!-- Today --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <colorRanges>
+        <aggregate>Average</aggregate>
+        <columnName>pse__Est_Vs_Actuals__c.psa_report__EvA_Variance__c</columnName>
+        <highBreakpoint>75.0</highBreakpoint>
+        <highColor>#54C254</highColor>
+        <lowBreakpoint>0.01</lowBreakpoint>
+        <lowColor>#C25454</lowColor>
+        <midColor>#C2C254</midColor>
+    </colorRanges>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c.psa_report__Scheduled_Billings__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c.psa_report__Actual_Billings__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Average</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c.psa_report__EvA_Variance__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Projected Billings by Region and by Month based on Assignments</description>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>pse__Est_Vs_Actuals__c.pse__Start_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_$Contact.pse__Region__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_$Contact.pse__Resource_Role__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Projected Timecard Billings v1</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>CustomEntity$pse__Est_Vs_Actuals__c@pse__Est_Vs_Actuals__c.pse__Resource__c</reportType>
+    <scope>user</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>false</showGrandTotal>
+    <showSubTotals>false</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Est_Vs_Actuals__c.pse__End_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

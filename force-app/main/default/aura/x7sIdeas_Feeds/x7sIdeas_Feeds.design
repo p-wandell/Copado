@@ -1,0 +1,16 @@
+<!--
+  - Copyright (c) 2020. 7Summits Inc.
+  -->
+
+
+<design:component label="7S Idea Discussion">
+	<design:attribute name="title"
+	                  label="Feed Title"
+	                  description="Add a title"/>
+	<design:attribute name="showFeed"
+	                  label="Show Feed"
+	                  description="Enable chatter feed"/>
+	<design:attribute name="opaqueBackground"
+	                  label="Opaque background"
+	                  description="Enable to show an opaque background"/>
+</design:component>

@@ -1,0 +1,26 @@
+<!--
+ - Created by brianpoulsen on 3/20/17.
+ - Edited by Joe Callin on 8/12/2017.
+ -->
+
+<aura:component description="Peak_HTML_Headings" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" extends="c:Peak_Base">
+    <aura:attribute name="isInit" type="Boolean" default="false"/>
+    <aura:attribute name="headingTag" type="string"/>
+    <aura:attribute name="headingText" type="string"/>
+    <aura:attribute name="headingAlignment" type="string"/>
+    <aura:attribute name="headingClass" type="String"/>
+    <aura:attribute name="color" type="String"/>
+
+    <aura:attribute name="CustomClassName" type="String" default="" />
+    <aura:attribute name="CustomIdName" type="String" default="" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:if isTrue="{!v.isInit}">
+        <section aura:id="{!v.CustomIdName}" id="{!v.CustomIdName}" class="{!v.CustomClassName}">
+            <aura:html tag="{!v.headingTag}" style="{!'color:' + v.color}" class="{!v.headingClass}">
+                <c:Peak_Base labelText="{!v.headingText}"/>
+            </aura:html>
+        </section>
+    </aura:if>
+</aura:component>

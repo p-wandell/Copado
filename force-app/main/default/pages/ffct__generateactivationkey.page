@@ -1,0 +1,33 @@
+<apex:page sidebar="true" standardStylesheets="true" controller="ffct.GenerateActivationCodeController" action="{!initActivationKeyGenerator}" doctype="html-5.0">
+	<apex:sectionheader title="{!$Label.ffct__generateactivationkeyfortools}" help="helploader?topicid=1049"/>
+	<apex:form id="generatecodeform">
+	
+		<apex:actionStatus id="eventStatus"  >
+            <apex:facet name="start">
+                <apex:outputPanel >
+                   <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                      <div style="position:absolute;top:50%;left:50%">
+                        <apex:image value="/img/loading32.gif"></apex:image>
+                      </div>
+                  </div>
+                </apex:outputPanel>
+            </apex:facet>   
+        </apex:actionStatus>
+        
+		<apex:pagemessages id="pgMsg" escape="false"/>
+		<apex:pageBlock rendered="{!ValidRequest}">
+
+			<apex:pageBlockSection columns="1" collapsible="false" rendered="{!ValidRequest}">
+				<apex:inputText Label="{!$Label.ffct__orgusername}" size="40" value="{!SuppKeyInputs.Username}" required="true" rendered="{!!DisplayActivationCode}"/>
+				<apex:outputText Label="{!$Label.ffct__orgusername}" value="{!SuppKeyInputs.Username}" rendered="{!DisplayActivationCode}"/>
+				<apex:outputText Label="{!$Label.ffct__activationkey}" value="{!GeneratedActivationCode}" rendered="{!DisplayActivationCode}"/>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockButtons location="bottom" rendered="{!ValidRequest}">
+            	<apex:commandButton action="{!generateActivationKey}" value="{!$Label.ffct__generate}" rerender="generatecodeform" rendered="{!!DisplayActivationCode}" status="eventStatus" />
+            	<apex:commandButton action="{!backToGenerateActivationKey}" value="{!$Label.ffct__back}" rerender="generatecodeform" rendered="{!DisplayActivationCode}" status="eventStatus" />
+            </apex:pageBlockButtons>			
+			
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

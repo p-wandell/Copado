@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__AutoGeneratePromptMapping__c</fullName>
+    <defaultValue>true</defaultValue>
+    <deprecated>false</deprecated>
+    <description>This custom setting allows you to automatically create an associated reporting prompt mapping when creating, updating, or deleting a reporting filter mapping.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Allows you to automatically create an associated reporting prompt mapping when creating, updating, or deleting a reporting filter mapping.</inlineHelpText>
+    <label>Automatically Generate Prompt Mappings</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,16 @@
+<!--
+ - Created by kentheberling on 6/7/18.
+ -->
+
+<aura:component description="Peak_RelatedFiles" extends="c:Peak_Base" controller="Peak_RelatedFilesController" implements="forceCommunity:availableForAllPageTypes,force:hasRecordId">
+
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="peakResponse" type="Peak_Response" />
+    <aura:handler name="init" action="{!c.initPeakRelatedFiles}" value="{!this}"/>
+
+
+    <aura:iteration items="{!v.peakResponse.results}" var="attachment">
+        <a href="{!v.sitePrefix+'/servlet/servlet.FileDownload?file='+attachment.Id}" target="_blank">{!attachment.Name}</a>&nbsp;<small>(<ui:outputDateTime value="{!attachment.CreatedDate}" format="MMMM dd, YYYY h:m a"/>) <em><ui:outputNumber value="{!attachment.BodyLength / 1024}" format="0"/> kb</em></small>
+        <hr class="slds-m-vertical_x-small"/>
+    </aura:iteration>
+</aura:component>

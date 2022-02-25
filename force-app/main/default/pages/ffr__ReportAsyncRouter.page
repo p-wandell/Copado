@@ -1,0 +1,28 @@
+<apex:page showHeader="true" sidebar="false" controller="ffr.ReportAsyncRouterController">
+	<apex:stylesheet value="{!URLFOR($Resource.ffr__EnhancedEngine, '/css/ReportAsyncPages.css')}"/>
+
+	<c:fflib_LoadIndicator startLoadFn="startLoadFs" stopLoadFn="stopLoadFs" asSlds="true"/>
+	<apex:form >
+		<apex:actionFunction name="resumeRoutingProcess" action="{!resumeRoutingProcess}"/>
+		<apex:actionFunction name="returnToReportingDefinition" action="{!returnToReportingDefinition}"/>
+	</apex:form>
+
+	<apex:outputPanel id="pageStyle" layout="block" styleClass="processing-text"></apex:outputPanel>
+
+	<script src="{!URLFOR($Resource.front,'utils/pages.js')}" type="text/javascript"/>
+	<script>
+		var hasExecutionId = {!HasExecutionId};
+
+		function resume() {
+			setupLoadIndicator('{!JSINHTMLENCODE($Label.ReportingDefinitionProcessing)}');
+			resumeRoutingProcess();
+		}
+
+		window.addEventListener('load', function() {
+			if (!hasExecutionId && !confirm('{!JSINHTMLENCODE($Label.EnhancedEngineRunProcessConfirmation)}'))
+				returnToReportingDefinition();
+			else
+				resume();
+		});
+	</script>
+</apex:page>

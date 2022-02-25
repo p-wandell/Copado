@@ -1,0 +1,6 @@
+<apex:page standardController="pse__Expense__c" recordSetVar="exp" extensions="pse.EditExpensesController" 
+    action="{!forwardToEditExpenses}">
+<!-- this page forwards to the EditExpenses page after setting the expense report id page param. we
+     need this page in order to create a direct reference to this page from a list button. we can't 
+     build a URL to the other page unfortunately b/c the dev and prod namespaces differ. -->
+</apex:page>

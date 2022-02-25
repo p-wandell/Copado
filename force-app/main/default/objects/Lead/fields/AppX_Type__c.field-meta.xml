@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AppX_Type__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(CONTAINS( TEXT(LeadSource) , &quot;Leade&quot;) , &quot;Leaderboard&quot;, 
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Twit&quot;), &quot;Twitter&quot;, 
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Social&quot;), &quot;Social Share&quot;, 
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Video&quot;), &quot;Video Gallery&quot;, 
+ IF(CONTAINS( TEXT(LeadSource) , &quot;B2B&quot;), &quot;B2B Bolt&quot;,
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Bolt&quot;), &quot;Bolt&quot;,
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Slide&quot;), &quot;SlideShare&quot;, 
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Ideas&quot;), &quot;Ideas&quot;,
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Quest&quot;), &quot;Questionnaire&quot;,
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Profile&quot;), &quot;Profile&quot;,
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Migr&quot;), &quot;Migration&quot;,
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Guide&quot;), &quot;Guide Me&quot;,
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Conta&quot;), &quot;Contact Us&quot;,
+ IF(CONTAINS( TEXT(LeadSource) , &quot;Page&quot;), &quot;Page Info&quot;,
+ &quot;&quot;) ) ) ) ) ) ) ) ) ) ) ) ) )</formula>
+    <label>AppX App Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Events List Control</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+		<target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default, lightning__RecordPage">
+            <property name="sortBy"
+                            label="Default Sorting"
+                            type="String"
+                            datasource="Upcoming, Top Attendance"
+                            description="Sort By"/>
+            <property name="sortVariant"  
+                            label="Sort Label Variant"
+                            type="String"
+                            description="Select the sort option label appearance."
+                            datasource="standard, label-hidden"/>
+            <property name="showSort"
+                            label="Show Sort Options"
+                            type="Boolean"
+                            default="true"
+                            description="Enable to show the sort drop down"/>
+            <property name="showViewOptions"
+                            label="Show View Options"
+                            default="true"
+                            type="Boolean"/> 
+            <property name="showPagination"
+                            label="Show Pagination"
+                            type="Boolean"
+                            default="true"
+                            description="Enable to show the prev/next buttons"/>
+            <property name="listId"
+                            label="Component Group"
+                            type="String"
+                            description="Unique ID to link complimentary components together to share data."/>
+            <property name="customClass" 
+                            label="Custom Class" 
+                            type="String" 
+                            description="Used for custom styling."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

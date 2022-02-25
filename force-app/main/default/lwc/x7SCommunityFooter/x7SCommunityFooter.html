@@ -1,0 +1,76 @@
+<!--
+ - Copyright (c) 2019. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 2019-05-16.
+-->
+<!-- 7S Community Footer -->
+<template>
+    <section id={customId} class={wrapperClass}>
+        <lightning-layout horizontal-align="center" vertical-align="" multiple-rows=""
+                          class="slds-p-top_x-large slds-p-horizontal_x-large slds-p-bottom_xx-large">
+            <lightning-layout-item size="12" class="slds-container_x-large">
+                <lightning-layout horizontal-align="spread" vertical-align="center" multiple-rows="true" class="">
+                    <lightning-layout-item class="">
+                        <lightning-layout horizontal-align="" vertical-align="center" multiple-rows="true" class="">
+                            <lightning-layout-item class="slds-p-right_x-large slds-p-vertical_xx-small">
+                                <c-x-7-s-community-logo link="/" community-title={communityTitle}
+                                                        onurlclick={linkClick} community-logo= {communityLogo}
+                                ></c-x-7-s-community-logo>
+                            </lightning-layout-item>
+                            <lightning-layout-item class="">
+                                <lightning-layout horizontal-align="" vertical-align="" multiple-rows="true">
+                                    <template for:each={linkList} for:item="link" for:index="index">
+                                        <lightning-layout-item key={link.text} class="slds-p-right_small slds-p-vertical_xx-small">
+<!--                                            <lightning-formatted-url value={link.url} tooltip={link.tooltip}-->
+<!--                                                                     label={link.text} target={link.target}-->
+<!--                                            ></lightning-formatted-url>-->
+                                            <a href={link.url} title={link.tooltip} target={link.target}>
+                                                {link.text}
+                                            </a>
+                                        </lightning-layout-item>
+                                    </template>
+                                </lightning-layout>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-p-vertical_xx-small">
+                        <lightning-layout horizontal-align="" vertical-align="center" class="">
+                            <template if:true={showCompanyLink}>
+                                <lightning-layout-item class="slds-p-right_large">
+                                    <lightning-formatted-url value={companyLinkUrl} tooltip={companyLinkTooltip}
+                                                             label={companyLinkText} target={companyLinkTarget}
+                                    ></lightning-formatted-url>
+                                </lightning-layout-item>
+                            </template>
+                            <lightning-layout-item class="">
+                                <lightning-layout horizontal-align="" vertical-align="center" class="social-links">
+                                    <template if:true={showLinkedin}>
+                                        <lightning-layout-item class="slds-p-right_x-small">
+                                            <a href={linkedinUrl} target="_blank">
+                                                <i class="fab fa-linkedin"></i>
+                                            </a>
+                                        </lightning-layout-item>
+                                    </template>
+                                    <template if:true={showTwitter}>
+                                        <lightning-layout-item class="slds-p-right_x-small">
+                                            <a href={twitterUrl} target="_blank">
+                                                <i class="fab fa-twitter-square"></i>
+                                            </a>
+                                        </lightning-layout-item>
+                                    </template>
+
+                                    <template if:true={showFacebook}>
+                                        <lightning-layout-item class="">
+                                            <a href={facebookUrl} target="_blank">
+                                                <i class="fab fa-facebook-square"></i>
+                                            </a>
+                                        </lightning-layout-item>
+                                    </template>
+                                </lightning-layout>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-layout-item>
+        </lightning-layout>
+    </section>
+</template>

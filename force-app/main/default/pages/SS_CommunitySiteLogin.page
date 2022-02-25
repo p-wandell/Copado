@@ -1,0 +1,33 @@
+<!--Home -->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" title="{!$Label.site.login}">
+<style>
+    label {
+        color: #7C7878 !important;
+    }
+    .row * {
+        box-sizing: border-box !important;
+    }
+</style>
+    <apex:composition template="{!$Site.Template}">
+    	<apex:define name="body">  
+            <title>{!$Label.site.login}</title>
+    		<div id="content">
+                <div class="page-header"><h2>{!$Label.site.login}</h2></div>
+                <div class="row">
+                    <div class="col-md-6">
+    				    <c:SS_CommunitySiteLogin />
+                    </div>
+                    <div class="col-md-6">
+                        <c:SS_CommunitySiteLoginProviders />
+                    </div>
+                    <!-- <div class="col-md-6 col-md-offset-1">
+                        <c:SS_PublicCarousel />
+                    </div> -->
+    			</div>
+                <div class="row">
+                    <c:SS_CommunitySiteTimeline />
+                </div>
+    		</div>
+    	</apex:define>
+  </apex:composition>
+</apex:page>

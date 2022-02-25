@@ -1,0 +1,347 @@
+<apex:page standardController="pse__Resource_Request__c" extensions="pse.SearchResourcesController" sidebar="false" showHeader="false" standardStylesheets="false" action="{!initMap}">
+
+<html >
+ 
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css" >
+  html { height: 100% }
+  body { height: 100%; margin: 0px; padding: 0px }
+  #map_canvas { height: 100% }
+
+</style>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?client=gme-financialforcecom"></script>
+
+
+<script type="text/javascript">
+var cm_map;
+var cm_openInfowindow;
+var cm_mapMarkers = [];
+var cm_mapHTMLS = [];
+
+// Change these parameters to customize map
+var param_idColumn = "id";
+var param_rankColumn = "id";
+
+var param_titleColumn = "name";
+var param_addressColumn = "address";
+var param_urlColumn = "link";
+var param_costRate = "costRate";
+var param_currencyIsoCode = "currencyIsoCode";
+
+var param_descriptionColumn = "description";
+var param_latColumn = "lat";
+var param_lngColumn = "lng";
+var param_distanceColumn = "distance";
+var param_iconType = "green";
+var param_RRiconType = "red";
+
+
+/* Instead of using <body onload="cm_load()"> we should use DOMContentLoaded event.
+ * Onload is generally discouraged because it is not triggered until all images have loaded. If a page includes lots of images then we may see a noticeable lag 
+ * before the page becomes active.
+ * Also there can be only one onload function . If we use our own onload it may destroy other functions attached to onload event by Salesforce/any other libraries .
+ */
+document.addEventListener('DOMContentLoaded', cm_load);
+
+/**
+ * rounds a number to 6th decimal place
+ */
+function roundNumber(number){
+	var number = Math.round( number * 100000) / 100000;
+	return number;
+}
+
+/**
+ * Loads map and calls function to load in worksheet data.
+ */
+function cm_load() {  
+  //var myLatlng = new google.maps.LatLng(148,-32);
+  var rrLat = {!resourceRequest.Latitude_PSA__c};
+  var rrLng = {!resourceRequest.Longitude_PSA__c};
+  if((rrLat == null || isNaN(rrLat)) || (rrLng == null || isNaN(rrLng))){return ;}
+  var myLatlng = new google.maps.LatLng(rrLat,rrLng);
+  var myOptions = {
+    zoom: 8,
+    center: myLatlng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+  cm_map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+  cm_loadMapJSON();
+  
+}
+
+/**
+ * Function that sorts 2 worksheet rows from JSON feed
+ * based on their rank column. Only called if column is defined.
+ * @param {rowA} Object Represents row in JSON feed
+ * @param {rowB} Object Represents row in JSON feed
+ * @return {Number} Difference between row values
+ */
+function cm_sortRows(rowA, rowB) {
+  var rowAValue = parseFloat(rowA[param_distanceColumn]);
+  var rowBValue = parseFloat(rowB[param_distanceColumn]);
+  if(isNaN(rowAValue)){rowAValue = 0;}  
+  if(isNaN(rowBValue)){rowBValue = 0;}
+  return rowAValue - rowBValue;
+}
+
+/**
+ * Function called when marker on the map is clicked.
+ * Opens an info window (bubble) above the marker.
+ * @param {Number} markerNum Number of marker in global array
+ */
+function cm_markerClicked(markerNum) {
+  var infowindowOptions = {
+    content: cm_mapHTMLS[markerNum]
+  }
+  var infowindow = new google.maps.InfoWindow(infowindowOptions);
+  infowindow.open(cm_map, cm_mapMarkers[markerNum]);
+  cm_setInfowindow(infowindow);
+}
+
+/**
+ * Function to cut the label to 40 charcters.
+ * @param {label} label on the push pin marker
+ * @return {String} label returned after cutting its lenght to 40 characters
+ */
+function slicingLabelTo40Characters (label) {
+	var newLabel;
+	if(label.length > 40){
+		newLabel = label.substring(0,37) + "...";
+	} 
+	else {
+		newLabel = label;
+	}
+	return newLabel;
+}
+
+/**
+ * Function to add marker for the destination
+ */
+function addDestinationMarker(){
+	var isGeneric = {!isCalledForGenericSearch};
+	var lat, lng;
+	lat = parseFloat("{!resourceRequest.Latitude_PSA__c}");
+	lng = parseFloat("{!resourceRequest.Longitude_PSA__c}");
+	var point = new google.maps.LatLng(lat,lng);
+	var label =  "{!JSENCODE(resourceRequest.name)}";
+	label = slicingLabelTo40Characters(label);
+	var infoHtml = "<br/><div style=\"font-size:12px;" + "width: 250px; height: 150px;" +" overflow:auto;\">";
+	infoHtml += "<a target=\"_blank\" href=\"" + _staffingPageUrl + "?id={!JSENCODE(resourceRequest.id)}" + "\">" + "<strong>" + "{!JSENCODE(resourceRequest.name)}" + "</strong> </a>";
+	var address =  "{!JSENCODE(resourceRequest.Work_Street_PSA__c + ' ' + resourceRequest.Work_City_PSA__c + '<br/>' + resourceRequest.Work_State_PSA__c + ' ' + resourceRequest.Work_Country_PSA__c + '<br/>' + resourceRequest.Work_PostalCode_PSA__c)}";
+           
+	var markerRank = -1;
+	if (!isGeneric) {
+		infoHtml += "<br/>" +  "({!JSENCODE($Label.Search_Resources_Map_Description_Label)} {!JSENCODE(resourceRequest.name)})" + "...<br/>";
+    } 
+    else {
+    	if (address !== " \u003Cbr/\u003E \u003Cbr/\u003E") {
+    		infoHtml += "<B>{!$Label.Common_Label_Address} : </B>" + address;
+		} else {
+			infoHtml += "<B>{!$Label.Common_Label_Latitude}: </B>" + "{!resourceRequest.Latitude_PSA__c}" + "<br/>";
+	        infoHtml += "<B>{!$Label.Common_Label_Longitude}: </B>" + "{!resourceRequest.Longitude_PSA__c}" + "<br/>";
+        }
+    }
+    infoHtml += "</div>"
+	marker= cm_createMarker(cm_map,point,label,infoHtml,markerRank,false);
+	cm_mapMarkers.push(marker);
+    cm_mapHTMLS.push(infoHtml);
+    // returning lan-lat point so that it extends the map boundries to the point, so as to user does not have to drag to see it.
+    return point;
+}
+
+
+var _staffingPageUrl = "{!$Page.SearchResources}";
+var _distanceUnit = "{!JSENCODE(distanceUnit)}";
+
+// Creating the map for resources that has similar longitude and latituude (that is same to 5 units after decimal)i.e similar addresses so that its details clubbed to make single marker.
+var resourceMap = {};
+	<apex:repeat value="{!resourceListForMap}" var="result">
+		// creating resource object on basis of result
+		var res = {
+			"id": "{!result.indexOfResource}", 
+            "lat": "{!result.resource.Latitude_PSA__c}", 
+            "lng": "{!result.resource.Longitude_PSA__c}",
+            "distance": "{!result.distance}", 
+            "address": "{!JSENCODE(result.resource.MailingStreet + ' ' + result.resource.MailingCity + '<br/>' + result.resource.MailingState + ', ' + result.resource.MailingCountry)}",
+            "name": "{!JSENCODE(result.resource.name)}", 
+            "link": "/{!JSENCODE(result.resource.id)}", 
+            "description": "",
+            "costRate" : "{!result.resource.Default_Cost_Rate__c}",
+            "currencyIsoCode" : "{!result.resource.CurrencyIsoCode}",
+            <apex:repeat value="{!pushPinAddedFields}" var="field">
+            	"{!field}" : "{!result.resource[pushPinAddedFields[field]]}",
+            </apex:repeat>
+	   	};
+	   	
+		latitude = roundNumber( parseFloat("{!result.resource.Latitude_PSA__c}"));
+    	longitude = roundNumber( parseFloat("{!result.resource.Longitude_PSA__c}"));
+    	if(resourceMap[latitude + "_" +longitude] === undefined) {
+    		resourceMap[latitude + "_" +longitude] = [];
+    	}
+    	resourceMap[latitude + "_" +longitude].push(res);	
+	</apex:repeat>
+    
+//creating set set of all longitude and latitude that will be used later in cm_loadMapJSON function    
+var resourceSet = [];
+
+/**
+ * Function to check if the latitude and logitude pair exist in the resourceSet
+ * @param {resourceSet} Array of the object latLangPair
+ * @param {latLngPair} Object contains latitude and logitude pair and ditance of resource
+ * @return (boolean) true if the latLngPair object already exists in resourceSet
+ */
+function hasLatAndLong(resourceSet, latLngPair) {
+	return resourceSet.some(function (el) {
+    	return el.lat === latLngPair.lat && el.lng === latLngPair.lng;
+	});
+}
+<apex:repeat value="{!resourceListForMap}" var="result">
+	latLangPair = {
+    	"lat": roundNumber( parseFloat("{!result.resource.Latitude_PSA__c}")),
+ 		"lng": roundNumber( parseFloat("{!result.resource.Longitude_PSA__c}")),
+	 	"distance": "{!result.distance}"
+  	};
+  	
+  	if (!hasLatAndLong(resourceSet, latLangPair)) {
+  		resourceSet.push(latLangPair);
+   	}
+</apex:repeat>
+
+//We can have distnace and later sort json here OR we can supply sorted json
+resourceSet.sort(cm_sortRows);
+
+function cm_loadMapJSON() {
+  var bounds = new google.maps.LatLngBounds();
+  var markPostionOnMap = true;
+  var resListperLatlang;
+  /*Add resources to display*/
+  var currentMarkerRank = 0;
+  var markerRank = 0;
+  var multiResourcePoint = false;
+  var infoHtml, label, marker;
+  var lat, lng;
+  for (var i = 0; i < resourceSet.length; i++) {
+    var pointp = resourceSet[i];
+    var entry = resourceMap[pointp[param_latColumn] + "_" + pointp[param_lngColumn]];
+    lat = pointp[param_latColumn];
+    lng = pointp[param_lngColumn];
+    var isGeoFound = ((lat != null && lat != 0 && !isNaN(lat)) && (lng != null && lng != 0 && !isNaN(lng))); 
+    if(isGeoFound) {
+        var point = new google.maps.LatLng(lat,lng);
+        label = "";
+        multiResourcePoint = false;
+        if(entry.length > 1) {
+           	multiResourcePoint = true;
+        }
+        infoHtml = "<br/><div style=\"font-size:12px; width: 250px; height: 150px;  overflow:auto;\">";
+        for(var j = 0; j < entry.length; j++) {
+            resListperLatlang = entry[j];
+            markerRank ++;
+            label += " " + markerRank + ". " + resListperLatlang[param_titleColumn];
+            infoHtml += "<a target=\"_blank\" href=\"" + resListperLatlang[param_urlColumn] + "\">" + "<strong>" +markerRank+". " +resListperLatlang[param_titleColumn] + "</strong> </a>";
+            infoHtml += "<br/>" + resListperLatlang[param_addressColumn] + "...<br/>";
+            infoHtml += "{!$Label.Common_Label_Distance}: " + resListperLatlang[param_distanceColumn] + " " +_distanceUnit + "<br/>"  ;
+            infoHtml += "{!$Label.Common_Label_Cost_Rate}: " + resListperLatlang[param_costRate] +" (" +resListperLatlang[param_currencyIsoCode] + ")<br/>"  ;
+           	<apex:repeat value="{!pushPinAddedFields}" var="field">
+           		infoHtml += "{!field}" + ": " + resListperLatlang["{!field}"] + "<br/>";
+           	</apex:repeat>
+            
+    } 
+    infoHtml += "<p></p></div>"; //adds an empty line.    
+    label = slicingLabelTo40Characters(label);
+    marker= cm_createMarker(cm_map,point,label,infoHtml,markerRank,multiResourcePoint);
+    cm_mapMarkers.push(marker);
+    cm_mapHTMLS.push(infoHtml);
+    bounds.extend(point);
+    }
+    }
+    destinationPoint = addDestinationMarker();
+    bounds.extend(destinationPoint);
+  cm_map.fitBounds(bounds);
+  cm_map.setCenter(bounds.getCenter());
+}
+
+function cm_setInfowindow(newInfowindow) {
+  if (cm_openInfowindow != undefined) {
+    cm_openInfowindow.close();
+  }
+
+  cm_openInfowindow = newInfowindow;
+}
+
+/**
+ * Creates marker with ranked Icon or blank icon,
+ * depending if rank is defined. Assigns onclick function.
+ * @param {GLatLng} point Point to create marker at
+ * @param {String} title Tooltip title to display for marker
+ * @param {String} html HTML to display in InfoWindow
+ * @param {Number} rank Number rank of marker, used in creating icon
+ * @param {Boolean} true if more than one resource has similar address
+ * @return {GMarker} Marker created
+ */
+function cm_createMarker(map, latlng, title, html, rank, isMultiResourcePoint) {
+  var iconSize = new google.maps.Size(24, 38);
+  var iconShadowSize = new google.maps.Size(37, 34);
+  var iconHotSpotOffset = new google.maps.Point(9, 34);
+  var iconPosition = new google.maps.Point(0, 0);
+  var infoWindowAnchor = new google.maps.Point(9, 2);
+  var infoShadowAnchor = new google.maps.Point(18, 25);
+
+  var iconShadowUrl = "{!URLFOR($Resource.SearchResourceMapMarkers, 'markers')}" + "/" + "shadow50.png";
+  var iconImageUrl = "{!URLFOR($Resource.SearchResourceMapMarkers, 'markers')}" + "/";
+
+  if(rank > 0 && rank < 100 ) {
+  	if(!isMultiResourcePoint) {
+    	iconImageUrl = iconImageUrl + param_iconType + "/marker" + rank + ".png" + "?raw=true";
+    } else {
+    	//when there are more than 1 resource on the push pin it shows this marker.
+    	iconImageUrl = iconImageUrl + "marker_green+.png?raw=true";
+   	}
+  } 
+  else if (rank > 100) {
+    iconImageUrl = iconImageUrl + param_iconType + "/blank.png" + "?raw=true";
+  }else if(rank == -1){ 
+    iconImageUrl = iconImageUrl + param_RRiconType + "/blank.png" + "?raw=true";
+  }
+
+  var markerShadow =
+      new google.maps.MarkerImage(iconShadowUrl, iconShadowSize, iconPosition, iconHotSpotOffset);
+
+  var markerImage =
+      new google.maps.MarkerImage(iconImageUrl, iconSize, iconPosition, iconHotSpotOffset);
+
+  var markerOptions = {
+    title: title,
+    icon: markerImage,
+    shadow: markerShadow,
+    position: latlng,
+    map: map
+  }
+
+  var marker = new google.maps.Marker(markerOptions);
+
+  google.maps.event.addListener(marker, "click", function() {
+    var infowindowOptions = {
+      content: html
+    }
+    var infowindow = new google.maps.InfoWindow(infowindowOptions);
+    cm_setInfowindow(infowindow);
+    infowindow.open(map, marker);
+  });
+
+  return marker;
+}
+
+
+</script>
+</head>
+
+<body>
+<div id="map_canvas" style="width:100%; height:100%"></div>
+
+</body> 
+</html>
+
+</apex:page>

@@ -1,0 +1,34 @@
+<!--
+ - Created by francois korb on 1/15/18.
+ -->
+
+<aura:component description="SVNSUMMITS_Events_Type_Filter"
+                controller="SVNSUMMITS_EventListController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base">
+
+	<!-- Base model -->
+	<aura:handler   name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.doInit}"/>
+	<aura:attribute name="baseModel" type="String" access="global"/>
+
+	<aura:registerEvent name="typeEvent" type="c:SVNSUMMITS_Events_Type_Filter_Event"/>
+
+	<aura:attribute name="selectAll"       type="String" default="{!$Label.c.ss_evt_text_selectAll}" access="public"/>
+	<aura:attribute name="eventTypeValues" type="List"   access="public"/>
+	<aura:attribute name="eventType"       type="String" default="" access="public"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="start">
+		<lightning:layoutItem size="12"
+		                      flexibility="auto">
+			<lightning:select label="{!$Label.c.ss_evt_label_EventTypeFilter}"
+			                  name="eventTypeSelect"
+			                  value="{!v.eventType}"
+			                  onchange="{!c.updateFilter}">
+				<aura:iteration items="{!v.eventTypeValues}" var="eventTypeItem">
+					<option value="{!eventTypeItem}">{!eventTypeItem}</option>
+				</aura:iteration>
+			</lightning:select>
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

@@ -1,0 +1,124 @@
+<!--
+ - Copyright (c) 2019. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 2019-04-09.
+-->
+
+<!-- 7S Community Assets -->
+<template>
+    <template if:true={displayTitleArea}>
+        <lightning-layout vertical-align="center" class="slds-p-bottom_medium">
+            <template if:true={displayTitle}>
+                <lightning-layout-item class="">
+                    <h2>{listTitle}</h2>
+                </lightning-layout-item>
+            </template>
+            <template if:true={displayNewButton}>
+                <lightning-layout-item class="slds-col_bump-left">
+                    <lightning-button label={newButtonLabel} variant="brand" onclick={openForm}></lightning-button>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+    </template>
+    <lightning-layout horizontal-align="" vertical-align="" multiple-rows="true" class={customClass}>
+        <lightning-layout-item flexibility="grow" class="table">
+            <template if:true={headersLoaded}>
+                <lightning-layout vertical-align="center" multiple-rows="true"
+                                  class="row header slds-border_bottom slds-p-vertical_small">
+                    <template for:each={fieldList} for:item="fieldLabel" for:index="index">
+                        <lightning-layout-item key={fieldLabel.field} class={fieldLabel.class}>
+                            <h3>{fieldLabel.label}</h3>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </template>
+            <template if:true={listLoaded}>
+                <template if:true={hasItems}>
+                    <div class="slds-is-relative">
+                        <template for:each={assetList} for:item="asset" for:index="index">
+                            <lightning-layout key={asset} horizontal-align="" vertical-align="center"
+                                              multiple-rows="true"
+                                              class="row slds-border_bottom slds-p-vertical_small">
+                                <template for:each={asset} for:item="assetField" for:index="index">
+                                    <lightning-layout-item key={assetField} class={assetField.class}>
+                                        <template if:true={showHeaders}>
+                                            <div data-header={assetField.field}>
+                                                <template if:false={assetField.link}>
+                                                    <p>{assetField.value}</p>
+                                                </template>
+                                                <template if:true={assetField.link}>
+                                                    <template if:true={assetField.link.record}>
+                                                        <a href={assetField.link.url}
+                                                           title={assetField.link.tooltip} onclick={navigateToOwnerRecord}>{assetField
+                                                            .value}</a>
+                                                    </template>
+                                                    <template if:false={assetField.link.record}>
+                                                        <lightning-formatted-url label={assetField.value} tooltip={assetField.link.tooltip}
+                                                                                 value={assetField.link.url} target={assetField.link.target} ></lightning-formatted-url>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template if:false={showHeaders}>
+                                            <div>
+                                                <template if:false={assetField.link}>
+                                                    <p>{assetField.value}</p>
+                                                </template>
+                                                <template if:true={assetField.link}>
+                                                    <template if:true={assetField.link.record}>
+                                                        <a href={assetField.link.url}
+                                                           title={assetField.link.tooltip} onclick={navigateToOwnerRecord}>{assetField
+                                                            .value}</a>
+                                                    </template>
+                                                    <template if:false={assetField.link.record}>
+                                                        <lightning-formatted-url label={assetField.value} tooltip={assetField.link.tooltip}
+                                                                                 value={assetField.link.url} target={assetField.link.target} ></lightning-formatted-url>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </lightning-layout-item>
+                                </template>
+                            </lightning-layout>
+                        </template>
+                        <template if:true={refreshing}>
+                            <div class="refresh-icon">
+                                <lightning-spinner variant="brand" alternative-text="Loading"
+                                                   size="small"></lightning-spinner>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template if:false={hasItems}>
+                    <lightning-layout horizontal-align="center" vertical-align="" multiple-rows="true" class="slds-p-vertical_medium">
+                        <lightning-layout-item class="">
+                            There are no community assets for this record
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </template>
+        </lightning-layout-item>
+    </lightning-layout>
+    <template if:true={showForm}>
+        <c-x-7-s-modal class="asset-modal" onclose={closeForm}>
+            <lightning-record-edit-form object-api-name="Community_Asset__c" onsuccess={formSuccess}>
+                <template for:each={formFields} for:item="formField" for:index="index">
+                    <lightning-input-field key={formField} field-name={formField.field}
+                                           value={formField.value}
+                                           disabled={formField.disabled}></lightning-input-field>
+                </template>
+            </lightning-record-edit-form>
+            <lightning-layout horizontal-align="end" slot="footer">
+                <lightning-layout-item class="slds-p-right_x-small">
+                    <lightning-button variant="neutral" type="reset" name="cancel" label="Cancel"
+                                      onclick={closeForm}>
+                    </lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item class="">
+                    <lightning-button variant="brand" type="submit" name="create" label="Create Asset"
+                                      onclick={submitForm}>
+                    </lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </c-x-7-s-modal>
+    </template>
+</template>

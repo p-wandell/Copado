@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Internal_Support</fullName>
+    <active>true</active>
+    <businessProcess>Internal Support Process</businessProcess>
+    <compactLayoutAssignment>Internal_Support_Compact_Layout</compactLayoutAssignment>
+    <description>Record type for all internal helpdesk support cases</description>
+    <label>Internal Support</label>
+    <picklistValues>
+        <picklist>Origin</picklist>
+        <values>
+            <fullName>Email</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Platform__c</picklist>
+        <values>
+            <fullName>Jive %28Cloud%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Jive %28Hosted%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Salesforce %28Lightning%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Salesforce %28Visualforce%29</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Priority</picklist>
+        <values>
+            <fullName>Severity 1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Severity 2</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Severity 3</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Severity 4</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Product__c</picklist>
+        <values>
+            <fullName>CoreConnect</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Custom Jive Project</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Custom Salesforce Project</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Events Lightning Component</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Groups Lightning Component</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Ideas Lightning Component</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Jive Tile</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Members Lightning Component</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>News Lightning Component</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Reason</picklist>
+        <values>
+            <fullName>Contractor Off-boarding Provisioning</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Contractor Onboarding Provisioning</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Employee - Off-boarding Provisioning</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Employee - Onboarding Provisioning</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hardware Issue</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hardware Request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>IBM Accounts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>IBM Laptop</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Jira Client Provisioning</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Jira Import</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Networking Issue</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Software Request</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Request_Type__c</picklist>
+        <values>
+            <fullName>Bug Report</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New Feature Idea</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SFDC IP Demo Request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Support Request</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Bug Report</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New Request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SFDC IP Demo Request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Support Request</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Warranty_Status__c</picklist>
+        <values>
+            <fullName>Current</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Expired</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not sure</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

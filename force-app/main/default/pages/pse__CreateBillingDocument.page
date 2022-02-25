@@ -1,0 +1,27 @@
+<apex:page standardController="pse__Billing_Event__c" extensions="pse.BillingDocumentController" action="{!Validate}" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:sectionHeader title="{!$Label.pse__billingeventintegrationhelptitle}" help="{!$Page.pse__CreateBillingEventIntegrationHelp}"/>
+	<apex:outputPanel id="messages">
+			<apex:pageMessages />
+	</apex:outputPanel>
+	<apex:pageBlock id="confirmationForm">
+			<apex:pageBlockButtons location="bottom">
+				<apex:form >
+					<apex:actionStatus id="status">
+						<apex:facet name="start">
+							<apex:outputPanel >
+								<apex:commandButton value="{!$Label.pse__common_label_processing}" disabled="true"/>
+								<apex:commandButton value="{!$Label.pse__common_label_processing}" disabled="true" rendered="{!showContinueButton}"/>
+							</apex:outputPanel>
+						</apex:facet>
+						<apex:facet name="stop">
+							<apex:outputPanel >
+								<apex:commandButton value="{!$Label.pse__common_label_return}" action="{!redirectDetailPage}" rerender="confirmationForm" status="status"/>
+								<apex:commandButton value="{!$Label.pse__common_label_continue}" action="{!createBillingDocument}" rerender="confirmationForm, messages" rendered="{!showContinueButton}" status="status"/>
+							</apex:outputPanel>
+						</apex:facet>
+					</apex:actionStatus>
+				</apex:form>
+			</apex:pageBlockButtons>
+	</apex:pageBlock>
+</apex:page>

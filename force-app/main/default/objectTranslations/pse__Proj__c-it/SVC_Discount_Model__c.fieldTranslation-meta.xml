@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- If &apos;Gross Rate to Netsuite&apos; is selected, Accounting will show the gross rate on the invoice with a % off for the discount.
+
+If &apos;Bill Rate to Netsuite&apos; is selected, Accounting will show the net rates on the invoice. --></help>
+    <label><!-- SVC_Discount_Model --></label>
+    <name>SVC_Discount_Model__c</name>
+    <picklistValues>
+        <masterLabel>Bill Rate to NetSuite</masterLabel>
+        <translation><!-- Bill Rate to NetSuite --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Gross Rate to NetSuite</masterLabel>
+        <translation><!-- Gross Rate to NetSuite --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

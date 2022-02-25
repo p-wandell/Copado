@@ -1,0 +1,208 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_GroupsController"
+                access="global"
+                implements="force:appHostable,flexipage:availableForAllPageTypes">
+
+	<aura:attribute name="debugMode" type="Boolean" default="false" access="public"/>
+
+	<aura:attribute name="wrapperGroupsObj" type="SVNSUMMITS_WrapperGroups" access="public"/>
+	<aura:attribute name="group" type="object" access="public"/>
+
+	<aura:attribute name="showAuthor" type="Boolean" default="false" access="public"/>
+	<aura:attribute name="showGroupType" type="Boolean" default="false" access="public"/>
+	<aura:attribute name="showLastActive" type="Boolean" default="true" access="public"/>
+	<aura:attribute name="showJoinButton" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showDescription" type="String" default="2" access="public"/>
+	<aura:attribute name="showMemberCount" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showAnnouncements" type="Boolean" default="true" access="public"/>
+	<aura:attribute name="showInformation" type="Boolean" default="true" access="public"/>
+	<aura:attribute name="descriptionLines" type="String" default="2" access="public"/>
+
+	<aura:attribute name="showBackgroundImage" type="Boolean" default="true" access="global"/>
+
+	<aura:attribute name="isNicknameDisplayEnabled" type="Boolean" default="false" access="public"/>
+
+	<aura:attribute name="profileURL" type="String" access="public"/>
+	<aura:attribute name="groupsURL" type="String" access="public"/>
+
+	<aura:attribute name="customClass" type="String" default="" access="public"/>
+	<aura:attribute name="customId" type="String" default="" access="public"/>
+
+	<aura:registerEvent type="c:SVNSUMMITS_Groups_Load_Event" name="loadEvent"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="stretch"
+	                  horizontalAlign="center"
+	                  class="slds-box_border">
+
+		<aura:if isTrue="{!and(v.group.InformationBody != undefined, v.showInformation)}">
+			<div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right slds-fall-into-ground" role="tooltip" id="help" style="position: absolute; bottom: 45px;width:100%;" aura:id="popInfo">
+				<div class="slds-popover__body"><ui:outputRichText value="{!v.group.InformationBody}" /></div>
+			</div>
+		</aura:if>
+
+		<aura:if isTrue="{!and(v.group.AnnouncementId != undefined, v.showAnnouncements)}">
+			<div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right slds-fall-into-ground" role="tooltip" id="help" style="position: absolute; bottom: 45px;width:100%;" aura:id="popAnnouncement">
+				<div class="slds-popover__body">Active announcement; click on group for details.</div>
+			</div>
+		</aura:if>
+
+		<!-- IMAGE -->
+		<lightning:layoutItem size="12">
+			<div class="featuredImage" data-hasBG="{!v.showBackgroundImage}">
+				<aura:if isTrue="{!v.showBackgroundImage}">
+					<div class="image"
+					     style="{!'background-image:url(' + v.group.FullPhotoUrl + ');'}">
+					</div>
+					<aura:set attribute="else">
+						<div class="image" style="height:20px;">&nbsp;</div>
+					</aura:set>
+				</aura:if>
+
+				<div class="slds-align_absolute-center titleImageWrap">
+					<a onclick="{!c.goToRecord}"
+					   data-id="{!v.group.Id}">
+						<img class="tileImage"
+						     style="{! if(v.showBackgroundImage, 'top:-50px;','')}"
+						     src="{!v.group.FullPhotoUrl}"/>
+					</a>
+				</div>
+			</div>
+		</lightning:layoutItem>
+
+
+		<!-- NAME -->
+		<lightning:layoutItem size="12"
+		                      padding="around-small"
+		                      class="slds-align_absolute-center">
+			<a class="slds-text-heading_medium slds-text-align--center"
+			   onclick="{!c.goToRecord}"
+			   data-id="{!v.group.Id}">{!v.group.Name}</a>
+		</lightning:layoutItem>
+
+		<!-- DESCRIPTION - use min-height for alignment -->
+		<aura:if isTrue="{!v.showDescription}">
+			<lightning:layoutItem size="12"
+			                      padding="horizontal-small"
+			                      class="slds-align_absolute-center">
+				<div class="slds-text-body_regular slds-text-align--center description"
+				     style="{!'-webkit-line-clamp:'+ v.descriptionLines +';'}">
+						{!v.group.Description}
+				</div>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- GROUP TYPE AND OWNER -->
+		<aura:if isTrue="{! or(v.showGroupType, v.showAuthor)}">
+			<lightning:layoutItem size="12"
+			                      padding="around-xsmall"
+			                      class="slds-align-bottom">
+				<lightning:layout
+						multipleRows="true"
+						horizontalAlign="end"
+						verticalAlign="end">
+					<lightning:layoutItem size="12"
+					                      class="slds-text-heading_label-normal slds-align_absolute-center slds-p-bottom--medium">
+						<aura:if isTrue="{!v.showGroupType}">
+						{!v.group.CollaborationType}&nbsp;{!$Label.c.ss_grp_label_groupType}
+							<aura:set attribute="else">
+								&nbsp;
+							</aura:set>
+						</aura:if>
+
+						<aura:if isTrue="{! and(v.showGroupType, v.showAuthor)}">,&nbsp;</aura:if>
+
+						<aura:if isTrue="{!v.showAuthor}">
+						{!$Label.c.ss_grp_label_Owner}&nbsp;
+							<aura:if isTrue="{!v.isNicknameDisplayEnabled}">
+							{!v.group.Owner.CommunityNickname}
+								<aura:set attribute="else">
+										{!v.group.Owner.Name}
+								</aura:set>
+							</aura:if>
+							<aura:set attribute="else">
+								&nbsp;
+							</aura:set>
+						</aura:if>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- MEMBERSHIP -->
+		<aura:if isTrue="{!v.showJoinButton}">
+			<lightning:layoutItem size="12"
+			                      padding="around-xsmall">
+				<aura:if isTrue="{!v.group.showJoinButton}">
+					<lightning:buttonStateful class="slds-align_absolute-center"
+					                          labelWhenOff="{!$Label.c.ss_grp_button_Join}"
+					                          labelWhenOn="{!$Label.c.ss_mbr_button_Member}"
+					                          labelWhenHover="{!$Label.c.ss_mbr_button_Leave}"
+					                          iconNameWhenOff="utility:add"
+					                          iconNameWhenOn="utility:check"
+					                          iconNameWhenHover="utility:close"
+					                          state="{!v.group.isMember}"
+					                          onclick="{!c.handleMemberClick}"/>
+					<aura:set attribute="else">
+						<p class="slds-p-bottom--small">&nbsp;</p>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- MEMBER COUNT -->
+		<lightning:layoutItem size="12"
+		                      padding="around-small">
+			<lightning:layout multipleRows="false"
+			                  horizontalAlign="end"
+			                  verticalAlign="end">
+				<lightning:layoutItem class="slds-text-body_small slds-text-color--weak">
+					<aura:if isTrue="{!v.showLastActive}">
+					{!$Label.c.ss_grp_label_lastActive}&nbsp;{!v.group.strTime}
+						<aura:set attribute="else">
+							&nbsp;
+						</aura:set>
+					</aura:if>
+				</lightning:layoutItem>
+
+				<aura:if isTrue="{!and(v.group.AnnouncementId != undefined, v.showAnnouncements)}">
+					<lightning:layoutItem class="slds-text-heading_small slds-m-horizontal_x-small">
+						<a name="announce" href="javascript:void(0)" onmouseover="{!c.openPopAnnouncement}" onmouseout="{!c.closePopAnnouncement}">
+						<lightning:icon iconName="utility:announcement"
+						                class="announcement-icon"
+						                size="x-small"
+						                alternativeText="announcement icon"/>
+						</a>
+					</lightning:layoutItem>
+				</aura:if>
+
+				<aura:if isTrue="{!and(v.group.InformationBody != undefined, v.showInformation)}">
+					<lightning:layoutItem class="slds-text-heading_small slds-m-horizontal_x-small">
+							<a name="info" href="javascript:void(0)" onmouseover="{!c.openPopInfo}" onmouseout="{!c.closePopInfo}">
+
+							<lightning:icon iconName="utility:info"
+							                class="information-icon"
+							                size="x-small"
+							                alternativeText="information icon"/>
+						</a>
+					</lightning:layoutItem>
+				</aura:if>
+
+				<aura:if isTrue="{!v.showMemberCount}">
+					<lightning:layoutItem class="slds-text-heading_small slds-m-horizontal_x-small">
+						<lightning:icon iconName="utility:people"
+						                class="people-icon"
+						                size="x-small"
+						                alternativeText="people icon"/>
+						&nbsp;{!v.group.MemberCount}
+
+					</lightning:layoutItem>
+				</aura:if>
+
+
+
+			</lightning:layout>
+		</lightning:layoutItem>
+
+	</lightning:layout>
+</aura:component>

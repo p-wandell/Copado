@@ -1,0 +1,110 @@
+<!-- Copyright (c) 2020. 7summits Inc. All rights reserved. -->
+
+<template>
+  <!-- <c-x-7s-shr-component-wrapper>
+        <template if:true={showInput}>
+            <lightning-textarea value={postTextval}
+                                onchange={inputChange}
+                                label="Enter text">
+            </lightning-textarea>
+        </template>
+    </c-x-7s-shr-component-wrapper> -->
+  <c-x-7s-shr-component-wrapper
+    title={title}
+    description={description}
+    auto-slds-card
+  >
+    <lightning-layout class="slds-m-right_medium slds-m-bottom_xx-small">
+      <lightning-layout-item
+        class="slds-m-right_xx-small"
+        alignment-bump={buttonAlign}
+      >
+        <lightning-button-icon
+          icon-name="utility:refresh"
+          alternative-text="Refresh"
+          title="Refresh"
+          size="medium"
+          onclick={refreshHandle}
+          class="slds-m-top_small"
+        >
+        </lightning-button-icon>
+      </lightning-layout-item>
+      <lightning-layout-item class="slds-m-right_x-small">
+        <template if:true={showLaunch}>
+          <a onclick={gotoUrl}>
+            <img
+              src={slckImg}
+              alt="Slack Logo"
+              style="width: 98px;"
+              class="slds-box slds-box_xx-small"
+            />
+          </a>
+        </template>
+      </lightning-layout-item>
+    </lightning-layout>
+    <div style={adjustHeight} class="scroll slds-panel">
+      <template for:each={feed} for:item="feedMessage">
+        <div key={feedMessage.client_msg_id}>
+          <c-x-7s-shr-card
+            description={feedMessage.userName}
+            custom-class={customClass}
+            layout="horizontal"
+            image-src={feedMessage.userIcon}
+            use-avatar={useAvatar}
+            avatar-size={avaterSize}
+            variant={variant}
+            hide-avatar-background
+            hide-placeholder-image
+            min-height={getMinHeight}
+          >
+            <lightning-formatted-text
+              value={feedMessage.text}
+            ></lightning-formatted-text>
+            <template if:true={feedMessage.publicFiles}>
+              <template for:each={feedMessage.publicFiles} for:item="file">
+                <p key={file.id}>
+                  <template if:false={showImages}>
+                    [<a href={file.imgurl} target="_blank">{file.imgTitle}</a>]
+                  </template>
+                  <template if:true={showImages}>
+                    <img
+                      src={file.imgurl}
+                      alt="Slack Image"
+                      class="slds-p-around_xx-small"
+                      style="width: 400px;"
+                    />
+                  </template>
+                </p>
+              </template>
+            </template>
+            <template if:true={feedMessage.privateFiles}>
+              <template for:each={feedMessage.privateFiles} for:item="file">
+                <p key={file.id}>
+                  [<a href={file.imgurl} target="_blank">{file.imgTitle}</a>]
+                </p>
+              </template>
+            </template>
+            <template for:each={feedMessage.attachments} for:item="attach">
+              <p key={feedMessage.id} if:true={attach.image_url}>
+                <template if:true={showImages}>
+                  <img
+                    src={attach.image_url}
+                    alt="Slack Image"
+                    class="slds-p-around_xx-small"
+                    style="width: 400px;"
+                  />
+                </template>
+                <template if:false={showImages}>
+                  [<a href={attach.image_url} target="_blank">Attachment</a>]
+                </template>
+              </p>
+            </template>
+          </c-x-7s-shr-card>
+        </div>
+      </template>
+      <template if:true={loaded}>
+        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+      </template>
+    </div>
+  </c-x-7s-shr-component-wrapper>
+</template>

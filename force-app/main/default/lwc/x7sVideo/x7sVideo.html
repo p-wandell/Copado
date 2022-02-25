@@ -1,0 +1,106 @@
+<!--
+ - Copyright (c) 2020. 7Summits Inc. All rights reserved.
+ -->
+
+<!-- 7S Video Gallery -->
+<template>
+	<section if:true={showComponent}>
+		<c-x7s-shr-component-wrapper
+				class="x7s-video"
+				description={subTitle}
+				title={title}
+				title-align={align}
+				variant={variant}
+				aria-label={label.labelAriaWrapper}
+		>
+
+			<div class="x7s-video__row slds-grid slds-wrap slds-grid_vertical-stretch slds-grid_pull-padded-small">
+				<template for:each={videos} for:item="video" for:index="index">
+					<div class={colClasses} key={video.key}>
+						<article class={videoClasses}>
+							<div if:true={video.isVimeo}
+							     class="x7s-video__video-container">
+								<iframe
+										src={video.embedUrl}
+										class="x7s-video__video-embed"
+										frameborder="0"
+										allowfullscreen
+										title={index}>
+								</iframe>
+							</div>
+							<div if:true={video.isYouTube}
+							     class="x7s-video__video-container">
+								<iframe
+										src={video.embedUrl}
+										class="x7s-video__video-embed"
+										frameborder="0"
+										allowfullscreen="allowfullscreen"
+										mozallowfullscreen="mozallowfullscreen"
+										msallowfullscreen="msallowfullscreen"
+										oallowfullscreen="oallowfullscreen"
+										webkitallowfullscreen="webkitallowfullscreen"
+										title={index}>
+								</iframe>
+							</div>
+							<div if:true={video.isWistia}
+							     class="x7s-video__video-container">
+								<iframe
+										src={video.embedUrl}
+										class="x7s-video__video-embed wistia_embed"
+										scrolling="no"
+										frameborder="0"
+										name="wistia_embed"
+										allowtransparency="true"
+										allowfullscreen
+										mozallowfullscreen
+										webkitallowfullscreen
+										oallowfullscreen
+										msallowfullscreen
+										title={index}>
+								</iframe>
+							</div>
+							<div if:true={video.isVidyard}
+							     class="x7s-video__video-container">
+								<iframe
+										src={video.embedUrl}
+										class="x7s-video__video-embed vidyard_iframe"
+										scrolling="no"
+										frameborder="0"
+										allowtransparency="true"
+										title={index}
+										allowfullscreen>
+								</iframe>
+							</div>
+							<div if:true={video.isBrightcove}
+							     class="x7s-video__video-container">
+								<iframe
+										src={video.embedUrl}
+										class="x7s-video__video-embed vidyard_iframe"
+										scrolling="no"
+										frameborder="0"
+										allowtransparency="true"
+										title={index}
+										allowfullscreen>
+								</iframe>
+							</div>
+
+							<div if:true={video.title}
+							     class="x7s-video__video-title slds-text-heading_small slds-p-top_small slds-p-bottom_xx-small">
+								{video.title}
+							</div>
+							<template if:false={hideDescriptions}>
+								<div if:true={video.description}>
+									<div class="x7s-video__video-description slds-text-body_regular"
+									     style={lineClampStyle}>
+										{video.description}
+									</div>
+								</div>
+							</template>
+						</article>
+					</div>
+				</template>
+			</div>
+
+		</c-x7s-shr-component-wrapper>
+	</section>
+</template>

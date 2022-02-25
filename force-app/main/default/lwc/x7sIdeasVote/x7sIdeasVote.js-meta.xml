@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Ideas Vote</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="showPoints" label="Show Number of Points" type="Boolean" description="Show number of points for this idea"/>
+            <property name="allowVote" label="Show Vote Action" type="Boolean" description="Enable to display Vote Action in Table view."/>
+            <property name="showRemoveVote" label="Show Remove Vote Action" type="Boolean" description="Enable to display Show Remove Vote."/>
+            <property name="showAccountLimitHeaderText" label="Display Account Limit Header Text" type="Boolean" description="Show the Account Limit Header text"/>
+            <property name="headerText" label="Header Text for Account Voting Limit" type="String" description="Edit the header text"/>
+            <property name="currentLimit" label="Current Limit Title" type="String" description="Show current limit title"/>
+            <property name="totalLimit" label="Total Limit Title" type="String" description="Show total limit title"/>
+            <property name="displaySupporters" label="Display Supporters" type="Boolean" description="When enabled, displays a list of users who have supported the idea."/>
+            <property name="numberSupporters" label="Number of Supporters" type="Integer" description="Enter the total number of supporters to show"/>
+            <property name="customClass" label="Custom Class" type="String" description="Used for custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Id of specific List"/>
+            <property name="recordId" label="Record Id" type="String" default="{!recordId}" description="Set to {!recordId} to pass the page's record Id."/>
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,lightning__RecordPage">
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="allowVote" label="Show Vote Action" type="Boolean" description="Enable to display Vote Action in Table view."/>
+            <property name="showPoints" label="Show Number of Points" type="Boolean" description="Show number of points for this idea"/>
+            <property name="showRemoveVote" label="Show Remove Vote Action" type="Boolean" description="Enable to display Show Remove Vote."/>
+            <property name="showAccountLimitHeaderText" label="Display Account Limit Header Text" type="Boolean" description="Show the Account Limit Header text"/>
+            <property name="headerText" label="Header Text for Account Voting Limit" type="String" description="Edit the header text"/>
+            <property name="currentLimit" label="Current Limit Title" type="String" description="Show current limit title"/>
+            <property name="totalLimit" label="Total Limit Title" type="String" description="Show total limit title"/>
+            <property name="displaySupporters" label="Display Supporters" type="Boolean" description="When enabled, displays a list of users who have supported the idea."/>
+            <property name="numberSupporters" label="Number of Supporters" type="Integer" description="Enter the total number of supporters to show"/>
+            <property name="customClass" label="Custom Class" type="String" description="Used for custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Id of specific List"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

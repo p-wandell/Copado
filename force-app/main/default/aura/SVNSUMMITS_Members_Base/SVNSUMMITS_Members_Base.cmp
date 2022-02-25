@@ -1,0 +1,16 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+
+<!--
+ - Created by francoiskorb on 12/28/17.
+ -->
+
+<aura:component description="SVNSUMMITS_Members_Base"
+				extensible="true">
+
+	<!-- Turn off for production -->
+	<aura:attribute name="debugMode" type="Boolean" default="true" access="public"/>
+
+	{!v.body}
+</aura:component>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Page Link</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Page Link</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="linkLabel" label="Link Label" type="String" />
+            <property name="linkApi" label="FAQ Page API" type="String" description="Community page API name. Append open question with comma." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

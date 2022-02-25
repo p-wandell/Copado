@@ -1,0 +1,105 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 7/14/17.
+ -->
+
+<aura:component description="ss_product_filter"
+                extends="c:ss_product_base"
+                controller="pc_filterController"
+                implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                access="global">
+
+	<aura:attribute name="showSearch"           type="Boolean"  default="true"  access="global"/>
+	<aura:attribute name="searchProductCode"    type="String"   default=""      access="public"/>
+	<aura:attribute name="searchThreshold"      type="Integer"  default="2"     access="global"/>
+
+	<aura:attribute name="showFilter"           type="Boolean"  default="true"  access="global"/>
+	<aura:attribute name="searchProductFamily"  type="String"   default=""      access="public"/>
+	<aura:attribute name="familyValues"         type="String[]"                 access="public"/>
+
+	<aura:attribute name="showSort"             type="Boolean"  default="true"  access="global"/>
+	<aura:attribute name="sortOrder"            type="String"   default=""      access="global"/>
+	<aura:attribute name="sortValues"           type="String[]"                 access="public"/>
+
+	<aura:attribute name="showHeader"           type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="title"                type="string"   default="Product Filter" access="global"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+	<aura:registerEvent name="filterEvent" type="c:ss_product_filter_event"/>
+	<aura:handler event="c:ss_product_filter_update_event" action="{!c.updateFilter}"/>
+
+	<aura:attribute name="listTitle" type="Aura.Component[]">
+			{!v.title}
+	</aura:attribute>
+
+
+	<lightning:card>
+		<aura:set attribute="title">
+			<aura:if isTrue="{!v.showHeader}">
+					{!v.listTitle}
+			</aura:if>
+		</aura:set>
+
+		<lightning:layout verticalAlign="center"
+		                  pullToBoundary="small"
+		                  multipleRows="true">
+
+			<aura:if isTrue="{!v.showSearch}">
+				<lightning:layoutItem size="12"
+				                      smallDeviceSize="12"
+				                      mediumDeviceSize="6"
+				                      largeDeviceSize="4"
+				                      padding="around-small">
+					<lightning:input name="productCodeSearch"
+					                 class="slds-p-horizontal--medium"
+					                 onchange="{!c.searchProducts}"
+					                 type="search"
+					                 label="{!$Label.c.ss_pc_label_searchProductCode}"
+					                 value="{!v.searchProductCode}"
+					                 placeholder="{!$Label.c.ss_pc_label_searchProductCode}"/>
+				</lightning:layoutItem>
+			</aura:if>
+
+			<aura:if isTrue="{!v.showFilter}">
+				<lightning:layoutItem size="12"
+				                      smallDeviceSize="12"
+				                      mediumDeviceSize="6"
+				                      largeDeviceSize="4"
+				                      padding="around-small">
+					<lightning:select name="productFamilySearch"
+					                  class="slds-p-horizontal--medium"
+					                  onchange="{!c.filterProducts}"
+					                  label="{!$Label.c.ss_pc_label_searchProductFamily}"
+					                  value="{!v.searchProductFamily}">
+						<aura:iteration items="{!v.familyValues}" var="family">
+							<option value="{!family}">{!family}</option>
+						</aura:iteration>
+					</lightning:select>
+				</lightning:layoutItem>
+			</aura:if>
+
+			<aura:if isTrue="{!v.showSort}">
+				<lightning:layoutItem size="12"
+				                      smallDeviceSize="12"
+				                      mediumDeviceSize="6"
+				                      largeDeviceSize="4"
+				                      padding="around-small">
+					<lightning:select name="productSort"
+					                  class="slds-p-horizontal--medium"
+					                  onchange="{!c.sortProducts}"
+					                  label="{!$Label.c.ss_pc_label_sortProducts}"
+					                  value="{!v.sortOrder}">
+						<option value="Product Name">{!$Label.c.ss_pc_label_sortByProductName}</option>
+						<option value="Product Family">{!$Label.c.ss_pc_label_sortByProductFamily}</option>
+						<option value="Product Code">{!$Label.c.ss_pc_label_sortByProductCode}</option>
+						<option value="Unit Price">{!$Label.c.ss_pc_label_sortByProductPrice}</option>
+					</lightning:select>
+				</lightning:layoutItem>
+			</aura:if>
+		</lightning:layout>
+	</lightning:card>
+</aura:component>

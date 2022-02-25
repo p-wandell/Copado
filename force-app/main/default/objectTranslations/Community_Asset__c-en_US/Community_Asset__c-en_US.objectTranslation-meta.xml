@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Community Asset</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Community Assets</value>
+    </caseValues>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- The asset name is a required field --></errorMessage>
+        <name>Asset_Name_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Asset Owner is required --></errorMessage>
+        <name>Asset_Owner_Required</name>
+    </validationRules>
+</CustomObjectTranslation>

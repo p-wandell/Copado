@@ -1,0 +1,9 @@
+<apex:page title="{!$Label.pse__psa_operations_page_title}" tabStyle="PSE_Operations__tab" lightningStylesheets="true">
+<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+<br/>
+<apex:sectionHeader title="{!$Label.pse__psa_operations_section_header_title}"/>
+  <apex:pageBlock title="{!$Label.pse__psa_operations_functions_section}">
+      <apex:outputLink value="{!URLFOR($Page.pse__MissingTimecard)}">{!$Label.pse__psa_operations_link_missing_timecards}</apex:outputLink>
+  </apex:pageBlock>
+  
+</apex:page>

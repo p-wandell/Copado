@@ -1,0 +1,44 @@
+<apex:page standardController="fferpcore__BillingDocument__c" extensions="fferpcore.BillingDocumentsCalculateTaxController" recordSetVar="documents" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+	<apex:form >
+		<apex:sectionHeader title="{!$Label.fferpcore__billingdocumentscalculatetaxpagetitle}" help="{!HelpUrl}" />
+
+		<apex:pageBlock >
+			<apex:pageMessages />
+
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.fferpcore__billingdocumentscalculatetaxbuttonconfirm}"
+					action="{!calculate}" rendered="{!CanCalculate}" />
+
+				<apex:commandButton value="{!$Label.fferpcore__erpvisualforcecancelbutton}" action="{!cancel}" rendered="{!CanCalculate}"/>
+				<apex:commandButton value="{!$Label.fferpcore__erpvisualforcereturn}" action="{!cancel}" rendered="{!NOT(CanCalculate)}"/>
+			</apex:pageBlockButtons>
+
+			<apex:pageBlockTable value="{!InvalidDocuments}" var="doc" rendered="{!HasInvalidDocuments}">
+				<apex:column >
+					<apex:facet name="header">{!$ObjectType.fferpcore__BillingDocument__c.Fields.Name.Label}</apex:facet>
+
+					<apex:outputLink value="{!URLFOR($Action.fferpcore__BillingDocument__c.View, doc.Id)}">
+						{!doc.Name}
+					</apex:outputLink>
+				</apex:column>
+
+				<apex:column >
+					<apex:facet name="header">{!$Label.fferpcore__billingdocumentscalculatetaxerrortitle}</apex:facet>
+
+					<apex:outputText value="{!doc.Error}" />
+				</apex:column>
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+
+		<!-- This is required to ensure the fields are available for the controller -->
+		<apex:repeat value="{!documents}" var="document">
+			<apex:outputText value="{!document.Name}" rendered="false" />
+			<apex:outputText value="{!document.fferpcore__Account__c}" rendered="false" />
+			<apex:outputText value="{!document.fferpcore__Company__c}" rendered="false" />
+			<apex:outputText value="{!document.Company__r.fferpcore__TaxInformation__c}" rendered="false" />
+			<apex:outputText value="{!document.fferpcore__DocumentStatus__c}" rendered="false" />
+			<apex:outputText value="{!document.fferpcore__DocumentDate__c}" rendered="false" />
+		</apex:repeat>
+	</apex:form>
+</apex:page>

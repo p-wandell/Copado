@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Facing__c</fullName>
+    <description>Indicates a customer facing issue</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Indicates a customer facing issue</inlineHelpText>
+    <label>Customer Facing</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Customer_Facing</valueSetName>
+    </valueSet>
+</CustomField>

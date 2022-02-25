@@ -1,0 +1,94 @@
+<!-- NOTE: the standard controller will be overriden -->
+<apex:page controller="pse.BacklogCalculatorController" title="{!$Label.pse__backlog_label_calculate_backlog}" lightningStylesheets="true">
+
+<style type="text/css">
+.slds-vf-scope .multiSelectPicklistRow select[multiple] { width: 15rem !important;}
+.slds-vf-scope select[multiple] option { font-size: .875rem;}
+.infoIcon { vertical-align: middle; margin: 5px 10px 5px 10px !important;}
+.info-block { border: 1px solid; border-color: #dddbda; border-radius: .25rem;}
+</style>
+<apex:stylesheet value="{!URLFOR($Resource.pse__fflib_baf, '/stylesheets/progress-bar.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+<apex:outputPanel layout="none" rendered="{!$User.UIThemeDisplayed == 'Theme4d'}">
+	<style>
+		.infoIcon {
+			width: 23px !important;
+			color: #706e6b;
+			height: 23px !important;
+		}
+		.info-block {
+			background-color: #f4f6f9;
+			padding: 0.75rem 1rem;
+			border: none;
+		}
+	</style>
+</apex:outputPanel>
+    <apex:insert name="sectionHeader"/>
+
+    <apex:outputPanel layout="block" styleClass="info-block" rendered="{!showEntryMode}">
+        <table>
+            <tr>
+                <td><apex:image value="/s.gif" styleClass="infoIcon"/></td>
+                <td><apex:outputText value="{!$Label.pse__backlog_message_instructions}" /></td>
+            </tr>
+        </table>
+    </apex:outputPanel>
+    <p />
+
+    <apex:pageMessages id="messages"/>
+    <p />
+
+    <c:WaitComponent />
+
+    <apex:form >
+        <apex:actionFunction name="jsOnStartCalculatingFromChange" action="{!onStartCalculatingFromChange}" oncomplete="wait(false);" rerender="messages,calcBlock" />
+
+        <apex:pageBlock title="{!$Label.pse__backlog_label_calculate_backlog}" mode="edit" id="calcBlock"
+            rendered="{!showEntryMode}" tabStyle="{!IF(isRegion,'Region__c',IF(isPractice,'Practice__c','Grp__c'))}">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="{!$Label.pse__common_label_calculate}" action="{!calculate}"/>
+                <apex:commandButton value="{!$Label.pse__common_label_schedule}" action="{!schedule}" />
+                <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancel}" immediate="true"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.pse__common_label_information}" columns="2">
+                <apex:inputField value="{!criteria.Name}" required="true"/>
+                <apex:outputField value="{!criteria.pse__Region__c}" rendered="{!isRegion}"/>
+                <apex:outputField value="{!criteria.pse__Practice__c}" rendered="{!isPractice}"/>
+                <apex:outputField value="{!criteria.pse__Group__c}" rendered="{!isGroup}"/>
+
+                <apex:inputField value="{!criteria.pse__Start_Calculating_From__c}" onchange="wait(true);jsOnStartCalculatingFromChange();"/>
+                <apex:pageBlockSectionItem />
+
+                <apex:inputField value="{!criteria.pse__Start_Date__c}" required="true"/>
+                <apex:inputField value="{!criteria.pse__End_Date__c}"/>
+
+                <apex:inputField value="{!criteria.pse__Include_Sublevels__c}"/>
+                <apex:inputField value="{!criteria.pse__Calculate_Project_Backlog__c}"/>
+
+                <apex:inputField value="{!criteria.pse__Reuse_Detail_Objects__c}"/>
+                <apex:inputField value="{!criteria.pse__Copy_Fields_for_Current_Time_Period__c}"/>
+
+                <apex:inputField value="{!criteria.pse__Time_Period_Types__c}" required="true"/>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="{!$Label.pse__utilization_label_schedule}" columns="1">
+		        <c:ApexSchedule schedPattern="{!schedulePattern}"/>
+		    </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <apex:outputPanel rendered="{!NOT(showEntryMode)}" id="progressPanel">
+		    <div align="center" class="ffdc-apexlib-progress ffdc-apexlib-progress-default" >
+                <div class="ffdc-apexlib-progress-inner" style="width:20%">
+                    <div class="ffdc-apexlib-progress-strip"></div>
+                    <div class="ffdc-apexlib-progress-bar" style="width: {!percentComplete}%;"></div>
+                </div>
+                <div class="ffdc-apexlib-progress-message">
+                    <apex:outputText value="{!statusString}"/>
+                </div>
+            </div>
+		</apex:outputPanel>
+
+		<apex:actionPoller action="{!checkProgress}" id="poller" interval="5" rerender="progressPanel,messages,poller"
+		    rendered="{!AND(NOT(showEntryMode),NOT(isComplete))}"/>
+    </apex:form>
+</apex:page>

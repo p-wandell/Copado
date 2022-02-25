@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>IF((pse__Utilization_Detail__c.pse__Scheduled_Billable_Hours__c:SUM+pse__Utilization_Detail__c.pse__Scheduled_Credited_Hours__c:SUM) &gt; 0,((pse__Utilization_Detail__c.pse__Scheduled_Billable_Hours__c:SUM+pse__Utilization_Detail__c.pse__Scheduled_Credited_Hours__c:SUM)/(pse__Utilization_Detail__c.pse__Scheduled_Calendar_Hours__c:SUM-pse__Utilization_Detail__c.pse__Scheduled_Excluded_Hours__c:SUM)),0)</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA2</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Scheduled Utilization %</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>pse__Utilization_Detail__c.pse__Scheduled_Billable_Hours__c:SUM + pse__Utilization_Detail__c.pse__Scheduled_Credited_Hours__c:SUM + pse__Utilization_Detail__c.pse__Scheduled_Non_Billable_Hours__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA5</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Total Planned Hours</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>pse__Utilization_Detail__c.pse__Scheduled_Calendar_Hours__c:SUM - (pse__Utilization_Detail__c.pse__Scheduled_Billable_Hours__c:SUM + pse__Utilization_Detail__c.pse__Scheduled_Credited_Hours__c:SUM + pse__Utilization_Detail__c.pse__Scheduled_Non_Billable_Hours__c:SUM)</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA6</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Whitespace</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <columns>
+        <field>pse__Time_Period__c.pse__Utilization_Details1__r$pse__Resource__c.Id</field>
+    </columns>
+    <columns>
+        <field>pse__Time_Period__c.pse__Utilization_Details1__r$pse__Resource__c.psa_report__Resource_Name__c</field>
+    </columns>
+    <columns>
+        <field>pse__Time_Period__c$pse__Start_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Time_Period__c.pse__Utilization_Details1__r$pse__Scheduled_Billable_Hours__c</field>
+    </columns>
+    <columns>
+        <field>pse__Time_Period__c.pse__Utilization_Details1__r$pse__Scheduled_Non_Billable_Hours__c</field>
+    </columns>
+    <columns>
+        <field>pse__Time_Period__c.pse__Utilization_Details1__r$pse__Scheduled_Credited_Hours__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Time_Period__c.pse__Utilization_Details1__r$Competency_Group__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>Delivery Operations</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Time_Period__c.pse__Utilization_Details1__r$pse__Resource__c.pse__Is_Resource_Active__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Time_Period__c.pse__Utilization_Details1__r$pse__Resource__c.ReportsTo</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>O&apos;Brien,Murnan,Haga,Rosenberg,Hinkel,Jimenez</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Time_Period__c$pse__End_Date__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>LAST_WEEK</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Time_Period__c.pse__Utilization_Details1__r$Target_Utilization__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>50</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <name>Staffing Project Demand</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Utilization_Details_with_Time_Periods__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Time_Period__c$pse__End_Date__c</dateColumn>
+        <interval>INTERVAL_CURNEXT1</interval>
+    </timeFrameFilter>
+</Report>

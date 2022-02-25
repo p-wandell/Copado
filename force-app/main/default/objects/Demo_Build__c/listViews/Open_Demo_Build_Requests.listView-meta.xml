@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Open_Demo_Build_Requests</fullName>
+    <columns>NAME</columns>
+    <columns>Industry__c</columns>
+    <columns>Type__c</columns>
+    <columns>Priority__c</columns>
+    <columns>Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>New</value>
+    </filters>
+    <label>Open Demo Build Requests</label>
+</ListView>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="googleCalendarApp">
+    <apiVersion>46.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Google Calendar</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage, lightning__AppPage, lightning__RecordPage">
+            
+            <property name="title" type="String" default="" label="Title" description="Title that displays at the top of the application. If defined, this title will appear at the top of each step.  If empty, no application title will be displayed."/>
+            <property name="pagePosition" type="String" default="Left" label="Title Alignment" datasource="Left,Right,Center" description="Select the alignment for the title text.  Options are: Left, Right and Center."/>
+
+            <property name="username" type="String" default="" label="Calendar ID" description="Enter Google Calendar ID.   This can be found in Settings > Integrate Calendar for your Google Calendar."/>
+            
+            <property name="cardOn" type="Boolean" default="False" label="Show Border" description="Select to display a border around the calendar."/>
+
+            <property name="propTitle" type="Boolean" default="true" label="Show Google Title" description="Select to display the title from Google Calendar."/>
+            <property name="propNav" type="Boolean" default="true" label="Show Google Nav" description="Select to display the navigation bar from Google Calendar."/>
+            <property name="propDate" type="Boolean" default="true" label="Show Google Date" description="Select to display the date from Google Calendar."/>
+            <property name="propPrint" type="Boolean" default="true" label="Show Google Print Icon" description="Select to display the print icon from Google Calendar."/>
+            <property name="propTabs" type="Boolean" default="true" label="Show Google Tabs" description="Select to display tabs from Google Calendar."/>
+            <property name="propCalendars" type="Boolean" default="true" label="Show Google Calendar List" description="Select to display the Google Calendar List drop-down."/>
+            <property name="propTZ" type="Boolean" default="true" label="Show Google Time Zone" description="Select to display time zone from Google Calendar."/>
+            <property name="mode" type="String" default="Month" label="Default View" datasource="Week,Month,Agenda" description="Enter your preferred view:  Month, Week, Agenda."/>
+            <property name="propWeekStart" type="String" default="Sunday" label="Week Start" datasource="Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday" description="Enter the day you would like the week to start on.  Options:  Sunday, Monday, Tuesday, Wednesday, Thursday, Friday and Saturday."/>
+
+            <property name="propLanguage" type="String" default="English (US)" label="Language" datasource="Afrikaans,azərbaycan,Bahasa Indonesia,Català,Cymraeg,Dansk,Deutsch,English (UK),English (US),Español,Español (Latinoamérica),eskara,Filipino,Français,Français (Canada),galego,Hrvatski,isiZulu,Italiano,Kiswahili,Latviešu,Lietuvių,Magyar,Melayu,Nederlands,Norsk (bokmål),Polski,Português (Brasil)‎,Português (Portugal),Română,Slovenčina,Slovenščina,Suomi,Svenska‎,Tiếng Việt,Türkçe,íslenska,Čeština,Ελληνικά,Български,монгол,Русский,Српски,Українська,Հայերեն,العربية,עברית,اُردُو‬,فارسی,नेपाली,मराठी,हिन्दी,বাংলা,ગુજરાતી,தமிழ்,తెలుగు,ಕನ್ನಡ,മലയാളം,සිංහල,ภาษาไทย,ລາວ,မြန်မာ,ქართული,አማርኛ,ខ្មែរ,中文 (香港),中文 (简体),中文 (繁體),日本語,한국어" description="Select the language the calendar should display in. 
+            For example, to set the language as English (United States), you enter “En” for this property. "/>
+            <property name="propTZBuilder" type="String" default="America/Los_Angeles" label="Time Zone" datasource="Pacific/Kiritimati,Pacific/Enderbury,Pacific/Tongatapu,Pacific/Chatham,Pacific/Auckland,Pacific/Fiji,Asia/Kamchatka,Pacific/Norfolk,Australia/Lord_Howe,Pacific/Guadalcanal,Australia/Adelaide,Australia/Sydney,Australia/Brisbane,Australia/Darwin,Asia/Seoul,Asia/Tokyo,Asia/Hong_Kong,Asia/Kuala_Lumpur,Asia/Manila,Asia/Shanghai,Asia/Singapore,Asia/Taipei,Australia/Perth,Asia/Bangkok,Asia/Ho_Chi_Minh,Asia/Jakarta,Asia/Rangoon,Asia/Dhaka,Asia/Kathmandu,Asia/Colombo,Asia/Kolkata,Asia/Karachi,Asia/Tashkent,Asia/Yekaterinburg,Asia/Kabul,Asia/Baku,Asia/Dubai,Asia/Tbilisi,Asia/Yerevan,Asia/Tehran,Africa/Nairobi,Asia/Baghdad,Asia/Kuwait,Asia/Riyadh,Europe/Minsk,Europe/Moscow,Africa/Cairo,Asia/Beirut,Asia/Jerusalem,Europe/Athens,Europe/Bucharest,Europe/Helsinki,Europe/Istanbul,Africa/Johannesburg,Europe/Amsterdam,Europe/Berlin,Europe/Brussels,Europe/Paris,Europe/Prague,Europe/Rome,Europe/Lisbon,Africa/Algiers,Europe/London,Atlantic/Cape_Verde,Africa/Casablanca,Europe/Dublin,GMT,America/Scoresbysund,Atlantic/Azores,Atlantic/South_Georgia,America/St_Johns,America/Sao_Paulo,America/Argentina/Buenos_Aires,America/Santiago,America/Halifax,America/Puerto_Rico,Atlantic/Bermuda,America/Caracas,America/Indiana/Indianapolis,America/New_York,America/Bogota,America/Lima,America/Panama,America/Mexico_City,America/Chicago,America/El_Salvador,America/Denver,America/Mazatlan,America/Phoenix,America/Los_Angeles,America/Tijuana,Pacific/Pitcairn,America/Anchorage,Pacific/Gambier,America/Adak,Pacific/Marquesas,Pacific/Honolulu,Pacific/Niue,Pacific/Pago_Pago" description="Select the time zone the calendar should display in. 
+            For example, if you want to set the time zone as Central Daylight Time (America/Chicago), enter “America/Chicago” for this property."/>
+
+            <property name="height" type="String" default="600" label="Application Height" description="Specify the height, in pixels, for the application."/>
+            <property name="width" type="String" default="100%" label="Application Width" description="Specify the width in pixels or percentage, for the application."/>
+        </targetConfig>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" type="String" default="" label="Title" description="Title that displays at the top of the application. If defined, this title will appear at the top of each step.  If empty, no application title will be displayed."/>
+            <property name="pagePosition" type="String" default="Left" label="Title Alignment" datasource="Left,Right,Center" description=""/>
+
+            <property name="username" type="String" default="" label="Calendar ID" description="Enter Google Calendar ID.   This can be found in Settings > Integrate Calendar for your Google Calendar."/>
+
+            <property name="cardOn" type="Boolean" default="False" label="Show Border" description="Select to display a border around the calendar."/>
+
+            <property name="propTitle" type="Boolean" default="true" label="Show Google Title" description="Select to display the title from Google Calendar."/>
+            <property name="propNav" type="Boolean" default="true" label="Show Google Nav" description="Select to display the navigation bar from Google Calendar."/>
+            <property name="propDate" type="Boolean" default="true" label="Show Google Date" description="Select to display the date from Google Calendar."/>
+            <property name="propPrint" type="Boolean" default="true" label="Show Google Print Icon" description="Select to display the print icon from Google Calendar."/>
+            <property name="propTabs" type="Boolean" default="true" label="Show Google Tabs" description="Select to display tabs from Google Calendar."/>
+            <property name="propCalendars" type="Boolean" default="true" label="Show Google Calendar List" description="Select to display the Google Calendar List drop-down."/>
+            <property name="propTZ" type="Boolean" default="true" label="Show Google Time Zone" description="Select to display time zone from Google Calendar."/>
+            <property name="mode" type="String" default="Month" label="Default View" datasource="Week,Month,Agenda" description="Enter your preferred view:  Month, Week, Agenda."/>
+            <property name="propWeekStart" type="String" default="Sunday" label="Week Start" datasource="Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday" description="Enter the day you would like the week to start on.  Options:  Sunday, Monday, Tuesday, Wednesday, Thursday, Friday and Saturday.
+"/>
+
+            <property name="propLanguageCommunity" type="String" default="en" label="Language" description="Select the language the calendar should display in. 
+            For example, to set the language as English (United States), you enter “En” for this property. 
+"/>
+            <property name="propTZBuilder" type="String" default="America/Los_Angeles" label="Time Zone" description="Select the time zone the calendar should display in. 
+            For example, if you want to set the time zone as Central Daylight Time (America/Chicago), enter “America/Chicago” for this property.
+"/>
+
+            <property name="height" type="String" default="600" label="Application Height" description="Specify the height, in pixels, for the application."/>
+            <property name="width" type="String" default="100%" label="Application Width" description="Specify the width in pixels or percentage, for the application."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

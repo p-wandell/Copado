@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Periodo de tiempo</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Períodos de tiempo</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Nombre del período de tiempo</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- Time Period may not end before it starts --></errorMessage>
+        <name>pse__Time_Period_may_not_end_before_it_starts</name>
+    </validationRules>
+</CustomObjectTranslation>

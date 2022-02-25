@@ -1,0 +1,186 @@
+<!-- we need to set a standard controller even though this is a template because we need to set our ext class -->
+<apex:page controller="pse.TransactionViewerController" 
+    title="{!$Label.pse__txviewer_title}" lightningStylesheets="true">
+  
+  <apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}" layout="none">
+  	<style>
+        .pageBlockTableScroll {display: block; overflow-x: auto; margin-bottom: 5px;}
+    </style>
+	</apex:outputPanel>
+  <c:WaitComponent />
+  <!-- overridden by template user to provide an object-specific header-->
+  <apex:insert name="sectionHeader"/>
+  
+  <apex:pageMessages id="messages"/>
+  
+  <apex:form >
+  <apex:pageBlock title="{!targetObjectName}" tabStyle="{!IF(isRegion,'Region__c',IF(isPractice,'Practice__c','Grp__c'))}">
+      <apex:pageblockButtons >
+          <apex:commandButton action="{!doFilter}" value="{!$Label.pse__txviewer_label_filter}" reRender="txPanel,messages" status="loadingStatus"/>
+          <apex:commandButton action="{!resetDefaults}" value="{!$Label.pse__txviewer_label_default_filter}" reRender="filterSection,txPanel,messages" status="loadingStatus"/>
+          <apex:commandButton action="{!cancel}" value="{!$Label.pse__common_label_cancel}"/>
+      </apex:pageblockButtons>
+      
+      <!-- allow template user to provide an object-specific info section -->
+      <apex:insert name="infoSection"/>
+      
+      <apex:pageBlockSection title="{!$Label.pse__txviewer_label_filters}" columns="2" id="filterSection">
+          <apex:pageBlockSectionItem ><apex:outputLabel value="{!$Label.pse__txviewer_num_sublevels}"/>
+              <apex:selectList value="{!numSubLevels}" size="1" multiselect="false">
+                <apex:selectOptions value="{!subLevels}"/>
+              </apex:selectList> 
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value=""/>
+          <!-- NOTE: there's currently a bug in StandardSetController when setPageSize is called that will wipe any where criteria
+              <apex:outputLabel value="{!$Label.txviewer_label_tx_per_page}"/>
+              <apex:inputText value="{!pageSize}" size="3" maxlength="3"/>
+              -->
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem ><apex:outputLabel value="{!$Label.pse__txviewer_label_categories}"/>
+              <apex:selectList multiselect="true" size="4" value="{!categories}">
+                <apex:selectOptions value="{!categoryOptions}"/>
+              </apex:selectList> 
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem ><apex:outputLabel value="{!$Label.pse__txviewer_label_types}"/>
+              <apex:selectList multiselect="true" size="4" value="{!txTypes}">
+                <apex:selectOptions value="{!typeOptions}"/>
+              </apex:selectList> 
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel value="{!$Label.pse__common_label_start_date}"/>
+              <apex:inputField value="{!startDateTxObject.pse__Effective_Date__c}"/>
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel value="{!$Label.pse__common_label_end_date}"/>
+              <apex:inputField value="{!endDateTxObject.pse__Effective_Date__c}"/>
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >{!$Label.pse__txviewer_label_show_ineligible_tx}</apex:outputLabel>
+              <apex:inputCheckbox value="{!showIneligible}"/>
+          </apex:pageBlockSectionItem>
+      </apex:pageBlockSection>
+  </apex:pageBlock>
+  
+  <div align="center">
+      <apex:actionStatus id="loadingStatus" onstart="wait(true)" onstop="wait(false)"/>
+  </div>
+
+  <apex:pageBlock title="{!$Label.pse__common_label_transactions}" tabStyle="{!IF(isRegion,'Region__c',IF(isPractice,'Practice__c','Grp__c'))}">
+  <apex:outputPanel id="txPanel">
+  	<apex:outputPanel styleClass="pageBlockTableScroll">
+      <apex:pageBlockTable var="txw" value="{!currentTxPage}">
+          <apex:column >
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortTarget}" rerender="txPanel,messages" status="loadingStatus">
+                      {!targetColumnName}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!targetSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!targetSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+              <apex:outputLink value="/{!txw.targetObjectId}">{!txw.targetObjectName}</apex:outputLink>
+          </apex:column>
+          <apex:column >
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortTxNumber}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.txviewer_label_tx_number}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!txNumberSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!txNumberSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+              <apex:outputLink value="{!URLFOR($Action.pse__Transaction__c.View, txw.tx.Id)}">{!txw.tx.Name}</apex:outputLink>
+          </apex:column>
+          <apex:column value="{!txw.tx.pse__Effective_Date__c}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortDate}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.txviewer_label_effective_date}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!dateSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!dateSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>
+          <apex:column value="{!txw.tx.pse__Project__c}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortProject}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.common_label_project}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!projectSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!projectSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>
+          <apex:column value="{!txw.tx.Project__r.pse__Region__c}" rendered="{!AND(isRegion,showProjectParent)}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortProjectParent}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.txviewer_label_project_region}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!projectParentSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!projectParentSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>
+          <apex:column value="{!txw.tx.Project__r.pse__Practice__c}" rendered="{!AND(isPractice,showProjectParent)}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortProjectParent}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.txviewer_label_project_practice}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!projectParentSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!projectParentSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>          
+          <apex:column value="{!txw.tx.Project__r.pse__Group__c}" rendered="{!AND(isGroup,showProjectParent)}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortProjectParent}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.txviewer_label_project_group}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!projectParentSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!projectParentSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>          
+          <apex:column value="{!txw.tx.pse__Category__c}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortCategory}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.common_label_category}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!categorySortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!categorySortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>
+          <apex:column value="{!txw.tx.pse__Type__c}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" action="{!sortType}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.common_label_type}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!typeSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!typeSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>
+          <apex:column value="{!txw.tx.pse__Amount__c}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortAmount}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.common_label_amount}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!amountSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!amountSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>          
+          </apex:column>
+          <apex:column headerValue="{!$Label.pse__common_label_amount} ({!targetLabel} {!$Label.pse__common_label_currency})" rendered="{!showTargetCurrency}">
+              <apex:outputText value="{!txw.targetCurrencyAmtString}"/>
+          </apex:column>
+          <apex:column >
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.pse__txviewer_message_click_to_sort}" action="{!sortRelatedRecord}" rerender="txPanel,messages" status="loadingStatus">
+                      {!$Label.txviewer_label_related_record}&nbsp;<apex:image value="/s.gif" styleClass="sortAsc" rendered="{!relatedRecordSortType=1}"/>
+                      <apex:image value="/s.gif" styleClass="sortDesc" rendered="{!relatedRecordSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>          
+              <apex:outputLink value="/{!txw.tx.pse__Related_Record_ID__c}" target="_blank">{!txw.tx.pse__Related_Record_Name__c}</apex:outputLink>
+          </apex:column>
+      </apex:pageBlockTable>
+	</apex:outputPanel>	
+      <p/>
+      <apex:outputPanel rendered="{!numRecords > 0}">
+          <table width="100%" border="0">
+          <tr>
+          <td width="33%">{!$Label.common_label_page} <apex:inputText value="{!pageNumber}" size="1"><apex:actionSupport action="{!pageUpdated}" reRender="txPanel,messages" event="onchange" status="loadingStatus"/></apex:inputText> {!$Label.pse__txviewer_message_of} {!numPages}</td>
+          <td align="center" width="34%">
+              <apex:commandLink action="{!firstPage}" status="loadingStatus" value="<<" reRender="txPanel,messages"/>&nbsp;&nbsp;<apex:commandLink action="{!previousPage}" value="< {!$Label.pse__common_label_previous}" status="loadingStatus" reRender="txPanel,messages"/>
+              &nbsp;&nbsp;<apex:commandLink action="{!nextPage}" value="{!$Label.pse__common_label_next} >" reRender="txPanel,messages" status="loadingStatus"/>&nbsp;&nbsp;<apex:commandLink action="{!lastPage}" value=">>" reRender="txPanel,messages" status="loadingStatus"/> 
+          </td>
+          <td align="right" width="33%">{!$Label.pse__txviewer_message_showing} {!currentPageStart}-{!currentPageEnd} {!$Label.pse__txviewer_message_of} {!numRecords}
+          </td>
+          </tr>
+          </table>
+	</apex:outputPanel>
+  </apex:outputPanel>
+  </apex:pageBlock>
+  </apex:form>  
+</apex:page>

@@ -1,0 +1,276 @@
+<template>
+      <template if:false={hideButton}>
+        <div class={wrapperClass}>
+            <lightning-button label={buttonText} variant="brand" onclick={openmodal}></lightning-button>
+        </div>
+    </template>
+
+    <template if:true={openmodel}>
+        <div>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-label="modalContent"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header headerPosition">
+                        <lightning-button-icon aria-label="btn" icon-name="utility:close" class="slds-hidden slds-p-right_xx-small">
+                        </lightning-button-icon>
+                        <lightning-formatted-rich-text class="topText bar" value={topTitle}>
+                        </lightning-formatted-rich-text>
+                        <lightning-button-icon aria-label="btn" class="slds-p-left_xx-small" icon-name="utility:close" title="Close"
+                            onclick={closeModal}>
+                            <span class="slds-assistive-text">Close</span>
+                        </lightning-button-icon>
+                    </header>
+                    <div class="slds-modal__content slds-p-top_x-small slds-p-left_medium slds-p-right_medium frame slds-scrollable scroll-touch"
+                        id="modal-content-id-1">
+                        <template if:true={pageOne}>
+                            <c-x7s-guide-me-tile modal-size={modalSize} layout-one={layoutOne} layout-two={layoutTwo}
+                                layout-three={layoutThree} has-n-pages={hasOnePage} has-field-api-name={hasFieldApiName}
+                                show-again-message={showAgainMessage} is-checked={isChecked} image-src={imageSrc}
+                                border-on={borderOn} border-on-element={borderOnOne} title={title}
+                                left-align={leftAlign} description={description} 
+                                onprogressvaluechange={hanldeProgressValueChange}></c-x7s-guide-me-tile>
+                        </template>
+                        <template if:true={pageTwo}>
+                            <center>
+                                <c-x7s-guide-me-tile modal-size={modalSize} layout-one={layoutOne}
+                                    layout-two={layoutTwo} layout-three={layoutThree} has-n-pages={hasTwoPages}
+                                    has-field-api-name={hasFieldApiName} show-again-message={showAgainMessage}
+                                    is-checked={isChecked} image-src={imageSrcTwo} border-on={borderOn}
+                                    border-on-element={borderOnTwo} title={titleTwo} left-align={leftAlign}
+                                    description={descriptionTwo}
+                                    onprogressvaluechange={hanldeProgressValueChange}></c-x7s-guide-me-tile>
+                            </center>
+                        </template>
+                        <template if:true={pageThree}>
+                            <center>
+                                <c-x7s-guide-me-tile modal-size={modalSize} layout-one={layoutOne}
+                                    layout-two={layoutTwo} layout-three={layoutThree} has-n-pages={hasThreePages}
+                                    has-field-api-name={hasFieldApiName} show-again-message={showAgainMessage}
+                                    is-checked={isChecked} image-src={imageSrcThree} border-on={borderOn}
+                                    border-on-element={borderOnThree} title={titleThree} left-align={leftAlign}
+                                    description={descriptionThree}
+                                    onprogressvaluechange={hanldeProgressValueChange}></c-x7s-guide-me-tile>
+                            </center>
+                        </template>
+                        <template if:true={pageFour}>
+                            <center>
+                                    <c-x7s-guide-me-tile modal-size={modalSize}
+                                    layout-one={layoutOne} layout-two={layoutTwo}
+                                    layout-three={layoutThree} has-n-pages={hasFourPages}
+                                    has-field-api-name={hasFieldApiName} show-again-message={showAgainMessage}
+                                    is-checked={isChecked} image-src={imageSrcFour} border-on={borderOn}
+                                    border-on-element={borderOnFour} title={titleFour} left-align={leftAlign}
+                                    description={descriptionFour} 
+                                    onprogressvaluechange={hanldeProgressValueChange}></c-x7s-guide-me-tile>
+                            </center>
+                        </template>
+                        <template if:true={pageFive}>
+                            <center>
+                                    <c-x7s-guide-me-tile modal-size={modalSize}
+                                    layout-one={layoutOne} layout-two={layoutTwo}
+                                    layout-three={layoutThree} has-n-pages={hasFivePages}
+                                    has-field-api-name={hasFieldApiName} show-again-message={showAgainMessage}
+                                    is-checked={isChecked} image-src={imageSrcFive} border-on={borderOn}
+                                    border-on-element={borderOnFive} title={titleFive} left-align={leftAlign}
+                                    description={descriptionFive} 
+                                    onprogressvaluechange={hanldeProgressValueChange}></c-x7s-guide-me-tile>
+                            </center>
+                        </template>
+                        <template if:true={pageSix}>
+                            <center>
+                                    <c-x7s-guide-me-tile modal-size={modalSize}
+                                    layout-one={layoutOne} layout-two={layoutTwo}
+                                    layout-three={layoutThree} has-n-pages={hasSixPages}
+                                    has-field-api-name={hasFieldApiName} show-again-message={showAgainMessage}
+                                    is-checked={isChecked} image-src={imageSrcSix} border-on={borderOn}
+                                    border-on-element={borderOnSix} title={titleSix} left-align={leftAlign}
+                                    description={descriptionSix} 
+                                    onprogressvaluechange={hanldeProgressValueChange}></c-x7s-guide-me-tile>
+                            </center>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <div class="buttonPosition">
+                            <template if:true={pageOne}>
+                                <lightning-button-icon aria-label="btn" class="slds-hidden"></lightning-button-icon>
+                                <template if:true={twoPages}>
+                                    <lightning-progress-indicator class="bar" current-step="1" type="base"
+                                        variant="base">
+                                        <lightning-progress-step label="Step 1" value="1"></lightning-progress-step>
+                                        <template if:true={twoPages}>
+                                            <lightning-progress-step label="Step 2" value="2"></lightning-progress-step>
+                                        </template>
+                                        <template if:true={threePages}>
+                                            <lightning-progress-step label="Step 3" value="3"></lightning-progress-step>
+                                        </template>
+                                        <template if:true={fourPages}>
+                                            <lightning-progress-step label="Step 4" value="4"></lightning-progress-step>
+                                        </template>
+                                        <template if:true={fivePages}>
+                                            <lightning-progress-step label="Step 5" value="5"></lightning-progress-step>
+                                        </template>
+                                        <template if:true={sixPages}>
+                                            <lightning-progress-step label="Step 6" value="6"></lightning-progress-step>
+                                        </template>
+                                    </lightning-progress-indicator>
+                                </template>
+                                <template if:true={twoPages}>
+                                    <lightning-button-icon aria-label="btn" class="" icon-name="utility:chevronright"
+                                        onclick={handlePageForward}></lightning-button-icon>
+                                </template>
+                                <template if:false={twoPages}>
+                                    <lightning-button-icon aria-label="btn" class="slds-hidden"></lightning-button-icon>
+                                </template>
+                            </template>
+                            <template if:true={pageTwo}>
+                                <lightning-button-icon aria-label="btn" class="slds-float_left" icon-name="utility:chevronleft"
+                                    onclick={handlePageBack}></lightning-button-icon>
+                                <lightning-progress-indicator class="bar" current-step="2" type="base" variant="base">
+                                        
+                                    <lightning-progress-step label="Step 1" value="1"></lightning-progress-step>
+                                    <template if:true={twoPages}>
+                                        <lightning-progress-step label="Step 2" value="2"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={threePages}>
+                                        <lightning-progress-step label="Step 3" value="3"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fourPages}>
+                                        <lightning-progress-step label="Step 4" value="4"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fivePages}>
+                                        <lightning-progress-step label="Step 5" value="5"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={sixPages}>
+                                        <lightning-progress-step label="Step 6" value="6"></lightning-progress-step>
+                                    </template>
+                                </lightning-progress-indicator>
+                                <template if:true={threePages}>
+                                    <lightning-button-icon aria-label="btn" icon-name="utility:chevronright" onclick={handlePageForward}>
+                                    </lightning-button-icon>
+                                </template>
+                                <template if:false={threePages}>
+                                    <lightning-button-icon aria-label="btn" class="slds-hidden"></lightning-button-icon>
+                                </template>
+                            </template>
+                            <template if:true={pageThree}>
+                                <lightning-button-icon aria-label="btn" class="" icon-name="utility:chevronleft"
+                                    onclick={handlePageBack}></lightning-button-icon>
+                                <lightning-progress-indicator class="bar" current-step="3" type="base" variant="base">
+                                      
+                                    <lightning-progress-step label="Step 1" value="1"></lightning-progress-step>
+                                    <template if:true={twoPages}>
+                                        <lightning-progress-step label="Step 2" value="2"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={threePages}>
+                                        <lightning-progress-step label="Step 3" value="3"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fourPages}>
+                                        <lightning-progress-step label="Step 4" value="4"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fivePages}>
+                                        <lightning-progress-step label="Step 5" value="5"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={sixPages}>
+                                        <lightning-progress-step label="Step 6" value="6"></lightning-progress-step>
+                                    </template>
+                                </lightning-progress-indicator>
+                                <template if:true={fourPages}>
+                                    <lightning-button-icon aria-label="btn" class="slds-float_right" icon-name="utility:chevronright"
+                                        onclick={handlePageForward}></lightning-button-icon>
+                                </template>
+                                <template if:false={fourPages}>
+                                    <lightning-button-icon aria-label="btn" class="slds-hidden"></lightning-button-icon>
+                                </template>
+                            </template>
+                            <template if:true={pageFour}>
+                                <lightning-button-icon aria-label="btn" class="" icon-name="utility:chevronleft"
+                                    onclick={handlePageBack}></lightning-button-icon>
+                                <lightning-progress-indicator class="bar" current-step="4" type="base" variant="base">
+                                     
+                                    <lightning-progress-step label="Step 1" value="1"></lightning-progress-step>
+                                    <template if:true={twoPages}>
+                                        <lightning-progress-step label="Step 2" value="2"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={threePages}>
+                                        <lightning-progress-step label="Step 3" value="3"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fourPages}>
+                                        <lightning-progress-step label="Step 4" value="4"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fivePages}>
+                                        <lightning-progress-step label="Step 5" value="5"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={sixPages}>
+                                        <lightning-progress-step label="Step 6" value="6"></lightning-progress-step>
+                                    </template>
+                                </lightning-progress-indicator>
+                                <template if:true={fivePages}>
+                                    <lightning-button-icon aria-label="btn" class="slds-float_right" icon-name="utility:chevronright"
+                                        onclick={handlePageForward}></lightning-button-icon>
+                                </template>
+                                <template if:false={fivePages}>
+                                    <lightning-button-icon aria-label="btn" class="slds-hidden"></lightning-button-icon>
+                                </template>
+                            </template>
+                            <template if:true={pageFive}>
+                                <lightning-button-icon aria-label="btn" class="" icon-name="utility:chevronleft"
+                                    onclick={handlePageBack}></lightning-button-icon>
+                                <lightning-progress-indicator class="bar" current-step="5" type="base" variant="base">
+                                     
+                                    <lightning-progress-step label="Step 1" value="1"></lightning-progress-step>
+                                    <template if:true={twoPages}>
+                                        <lightning-progress-step label="Step 2" value="2"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={threePages}>
+                                        <lightning-progress-step label="Step 3" value="3"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fourPages}>
+                                        <lightning-progress-step label="Step 4" value="4"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fivePages}>
+                                        <lightning-progress-step label="Step 5" value="5"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={sixPages}>
+                                        <lightning-progress-step label="Step 6" value="6"></lightning-progress-step>
+                                    </template>
+                                </lightning-progress-indicator>
+                                <template if:true={sixPages}>
+                                    <lightning-button-icon aria-label="btn" class="slds-float_right" icon-name="utility:chevronright"
+                                        onclick={handlePageForward}></lightning-button-icon>
+                                </template>
+                                <template if:false={sixPages}>
+                                    <lightning-button-icon aria-label="btn" class="slds-hidden"></lightning-button-icon>
+                                </template>
+                            </template>
+                            <template if:true={pageSix}>
+                                <lightning-button-icon aria-label="btn" class="" icon-name="utility:chevronleft"
+                                    onclick={handlePageBack}></lightning-button-icon>
+                                <lightning-progress-indicator aria-label="proIndi" class="bar" current-step="6" type="base" variant="base">
+                                      
+                                    <lightning-progress-step label="Step 1" value="1"></lightning-progress-step>
+                                    <template if:true={twoPages}>
+                                        <lightning-progress-step label="Step 2" value="2"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={threePages}>
+                                        <lightning-progress-step label="Step 3" value="3"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fourPages}>
+                                        <lightning-progress-step label="Step 4" value="4"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={fivePages}>
+                                        <lightning-progress-step label="Step 5" value="5"></lightning-progress-step>
+                                    </template>
+                                    <template if:true={sixPages}>
+                                        <lightning-progress-step label="Step 6" value="6"></lightning-progress-step>
+                                    </template>
+                                </lightning-progress-indicator>
+                                <lightning-button-icon class="slds-hidden"></lightning-button-icon>
+                            </template>
+                        </div>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+</template>

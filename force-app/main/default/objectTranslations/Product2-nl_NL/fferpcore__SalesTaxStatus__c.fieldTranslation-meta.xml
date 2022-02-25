@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>De belastingstatus voor dit product voor SUT-bedrijven.</help>
+    <label><!-- Sales Tax Status --></label>
+    <name>fferpcore__SalesTaxStatus__c</name>
+    <picklistValues>
+        <masterLabel>Exempt</masterLabel>
+        <translation>Vrijgesteld</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Exempt for Qualifying Accounts</masterLabel>
+        <translation>Vrijgesteld voor kwalificerende accounts</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Taxable</masterLabel>
+        <translation>Belastbaar</translation>
+    </picklistValues>
+</CustomFieldTranslation>

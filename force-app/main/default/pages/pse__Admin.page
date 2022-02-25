@@ -1,0 +1,252 @@
+<apex:page controller="pse.AdminController" tabStyle="PS_Admin__tab" title="{!$Label.pse__admin_title}" lightningStylesheets="true">
+	<style type="text/css">
+		.waitingSearchDivOpacity {
+			opacity: 0.60 !important;
+		}
+
+		#associateOverlayContainer.secondaryPalette {
+			background-color: transparent !important;
+		}
+	</style>
+	<apex:stylesheet value="{!URLFOR($Resource.pse__jsComponentsResources, 'componentStyles.css')}" />
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+
+	<apex:form >
+		<apex:pageMessages id="msgs" />
+		<apex:actionFunction action="{!googleMapsActivate}" name="jsGoogleMapsActivate" />
+		<apex:actionFunction action="{!googleMapsDeactivate}" name="jsGoogleMapsDeactivate" />
+		<apex:pageBlock title="{!$Label.pse__admin_page_config_mgmt}">
+			<apex:outputLink value="{!URLFOR($Page.appirio_core__ConfigExport)}">{!$Label.pse__admin_page_export_config}</apex:outputLink>
+			<br/>
+			<br/>
+			<apex:outputLink value="{!URLFOR($Page.appirio_core__ConfigImport)}">{!$Label.pse__admin_page_import_config}</apex:outputLink>
+			<br/>
+			<br/>
+			<apex:outputLink value="{!URLFOR($Page.pse__CustomSettingsImport)}">{!$Label.pse__admin_page_import_cs}</apex:outputLink>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__erp_administration_title}">
+			<apex:outputLink value="{!URLFOR($Page.pse__ERPAdministration)}">{!$Label.pse__erp_administration_title}</apex:outputLink>
+		</apex:pageBlock>
+
+		<apex:pageBlock title="{!$Label.pse__admin_page_bill_q_mgmt}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processBillingQueue}" value="{!$Label.pse__admin_page_init_billing_queue}" disabled="{!NOT enableSubmitBillingQueue}" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection >
+				<apex:pageBlockSectionItem >
+					{!$Label.pse__admin_page_limit_to_project}
+					<apex:inputField value="{!project.pse__Parent_Project__c}" required="false" />
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		<apex:pageBlock rendered="{!showWQManager}" title="{!$Label.pse__admin_page_wqm}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton rendered="{!showWQManager}" action="{!scheduleWorkQueueManager}" value="{!$Label.pse__admin_page_start_wq_manager}" />
+				<br/>
+				<apex:commandButton rendered="{!showWQMonitor}" action="{!scheduleWorkQueueMonitor}" value="{!$Label.pse__admin_page_start_wq_monitor}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__admin_page_rpgpr_maint_batch}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processRPGPRMaintBatch}" value="{!$Label.pse__admin_page_submit_batch}" />
+				<apex:commandButton action="{!scheduleRPGPRMaintBatch}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection >
+				<apex:pageBlockSectionItem >
+					<apex:selectList id="RPGPR" value="{!source}" size="1">
+						<apex:selectOption itemValue="all" itemLabel="{!$Label.pse__common_label_all}" />
+						<apex:selectOption itemValue="region" itemLabel="{!$Label.pse__common_label_region}" />
+						<apex:selectOption itemValue="practice" itemLabel="{!$Label.pse__common_label_practice}" />
+						<apex:selectOption itemValue="grp" itemLabel="{!$Label.pse__common_label_group}" />
+						<apex:selectOption itemValue="resource" itemLabel="{!$Label.pse__common_label_resource}" />
+						<apex:selectOption itemValue="project" itemLabel="{!$Label.pse__common_label_project}" />
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__admin_page_actuals_cdb}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processCalcDeltaBatch}" value="{!$Label.pse__admin_page_submit_batch}" />
+				<apex:commandButton action="{!scheduleCalcDeltaBatch}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__admin_page_sjc}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processJobCleanup}" value="{!$Label.pse__admin_page_submit_batch}" />
+				<apex:commandButton action="{!scheduleJobCleanup}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__project_actuals_recalc_title}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!projectActualsRecalc}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__update_legacy_project_currency_exchange_rates}" id="datePB">   
+			<apex:pageBlockButtons location="top">
+					<apex:commandButton styleClass="btn" value="{!$Label.pse__common_label_update_records}" action="{!updateProjectExchangeRateOnEstVsActualAndMilestone}" onclick="wait(true);" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection id="dateBPS">
+				<apex:pageBlockSectionItem id="fromDateBSI">
+					{!$Label.pse__common_label_from}
+					<apex:inputField id="fromDateId" value="{!fromDate.pse__Date__c}" required="true" style="width:100px"/>	
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem id="toDateBSI">
+					{!$Label.pse__common_label_to}
+					<apex:inputField id="toDateId" value="{!toDate.pse__Date__c}" required="true" style="width:100px"/>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__generate_eva_for_legacy_held_rr_title}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!generateEVAForLegacyHeldRR}" value="{!$Label.pse__generate_evas}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__admin_page_calculate_schedule_future_time}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processCalcFutureTimeBatch}" value="{!$Label.pse__admin_page_submit_batch}" />
+				<apex:commandButton action="{!scheduleCalcFutureTimeBatch}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__app_log_cleanup_job_title}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton value="{!$Label.pse__admin_page_submit_batch}" onclick="checkValues(); return false;" />
+			</apex:pageBlockButtons>
+			<apex:selectCheckboxes id="appLogOrigin" value="{!OriginValues}">
+				<apex:selectOptions id="app" value="{!items}" />
+			</apex:selectCheckboxes>
+			<apex:actionFunction name="fieldUpdateFunction" action="{!AppLogDeleteBatch}" />
+			<script type="text/javascript">
+				//Validation to check if origin values are selected before scheduling AppLogDeleteBatch
+				function checkValues() {
+					var elem1 = document.getElementById("{!$Component.appLogOrigin}:0");
+					var elem2 = document.getElementById("{!$Component.appLogOrigin}:1");
+
+					if ((!elem1.checked && !elem2.checked)) {
+						alert('{!JSINHTMLENCODE($Label.Admin_Page_Submit_Batch_Validation_Msg)}');
+						return false;
+					}
+					else {
+						fieldUpdateFunction();
+					}
+				}
+			</script>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__utilization_engine}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processUtilizationEngineBatch}" value="{!$Label.pse__admin_page_submit_batch}" />
+				<apex:commandButton action="{!scheduleUtilizationEngine}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__admin_page_recalculate_schedule_on_assignments}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processAssignmentRescheduleBatch}" value="{!$Label.pse__admin_page_submit_batch}" />
+				<apex:commandButton action="{!AsnScheduleRecalcFutureTimeBatch}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__admin_page_recalculate_schedule_on_resource_requests}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processResReqRescheduleBatch}" value="{!$Label.pse__admin_page_submit_batch}" />
+				<apex:commandButton action="{!resReqScheduleRecalcFutureTimeBatch}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__calculate_hours_variance}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!processProjectVarianceBatch}" value="{!$Label.pse__admin_page_submit_batch}" />
+				<apex:commandButton action="{!ScheduleProjectVarianceFutureTimeBatch}" value="{!$Label.pse__admin_page_schedule_batch}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__common_label_schedule}">
+			<apex:pageBlockSection columns="1">
+				<apex:facet name="header">{!$Label.pse__utilization_label_schedule} </apex:facet>
+				<c:ApexSchedule schedPattern="{!schedulePattern}" />
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__admin_page_geocoding_services}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton styleClass="btn" onclick="activateMap(); return false;" action="{!googleMapsActivate}" value="{!$Label.pse__admin_page_activate_googlemaps}"
+				 disabled="{! isGoogleMapsActivated}" />
+				<apex:commandButton styleClass="btn" onclick="deactivateMap(); return false;" action="{!googleMapsDeactivate}" value="{!$Label.pse__admin_page_deactivate_googlemaps}"
+				 disabled="{!NOT isGoogleMapsActivated}" />
+			</apex:pageBlockButtons>
+			<span class="slds-checkbox">
+				<apex:inputCheckbox disabled="true" value="{!MapquestDetailsPresent}" />
+				<apex:outputLabel value="{!$Label.pse__admin_page_mapquest_details_present}" />
+			</span>
+		</apex:pageBlock>
+	</apex:form>
+	
+	<apex:outputPanel id="OutDialogContainer" layout="block" />
+	<c:lightningAlert exportObjectName="$FFDC" outContainerId="{!$Component.OutDialogContainer}" />
+
+	<script src="{!$Resource.jsComponents}" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		function activateMap() {
+			var buttons = [{
+				'name': 'decline',
+				'label': '{!JSENCODE($Label.Google_Maps_Decline_Button)}'
+			}, {
+				'name': 'activate',
+				'label': '{!JSENCODE($Label.Google_Maps_Accept_Button)}',
+				'variant': 'brand'
+			}];
+			showDialog('', buttons, '{!JSENCODE($Label.Google_Maps_Activate_Confirm_Msg)}')
+		}
+
+		function deactivateMap() {
+			var buttons = [{
+				'name': 'decline',
+				'label': '{!JSENCODE($Label.Google_Maps_Confirm_Cancel_Deactivate_GoogleMaps)}'
+			}, {
+				'name': 'deactivate',
+				'label': '{!JSENCODE($Label.Google_Maps_Confirm_Deactivate_GoogleMaps)}',
+				'variant': 'brand'
+			}];
+			showDialog('', buttons, '{!JSENCODE($Label.Google_Maps_Deactivate_Confirm_Msg)}');
+		}
+
+		function showDialog(title, buttons, bodyContent) {
+			var config = {
+				'buttons': buttons,
+				'title': title,
+				'text': bodyContent,
+				'icon': 'utility:info'
+			};
+			$FFDC.showAlert(config, function (sourceEventKey) {
+				if (sourceEventKey === 'activate') {
+					jsGoogleMapsActivate();
+				}
+				else if (sourceEventKey === 'deactivate') {
+					jsGoogleMapsDeactivate();
+				}
+				return true;
+			});
+		}
+
+		prepareHeader();
+
+		function prepareHeader() {
+			var config = {
+				objectName: '{!JSENCODE($Label.admin_title)}',
+				documentIcon: {
+					name: 'psa_admin',
+					namespace: $FFOUTAPP.getNamespace()
+				},
+				helpUrl: '{!$Page.PSAAdminHelp}',
+				onRender: 'onHeaderLoadCallback'
+			};
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+
+		function setFocusOnLoad() { }
+	</script>
+</apex:page>

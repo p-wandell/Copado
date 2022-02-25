@@ -1,0 +1,32 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- X 7 S Feed Item Event -->
+<template>
+    <lightning-layout vertical-align="center">
+        <lightning-layout-item class="slds-text-align_center slds-m-horizontal_small date">
+            <p class="dow" data-datetimefield={dateTimeField}>
+                <lightning-formatted-date-time
+                        value={eventTimestamp}
+                        day="numeric"
+                >
+                </lightning-formatted-date-time>
+            </p>
+            <p class="month h6" data-datetimefield={dateTimeField}>
+                <lightning-formatted-date-time
+                        value={eventTimestamp}
+                        month="short"
+                >
+                </lightning-formatted-date-time>
+            </p>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-m-left_medium">
+            <h5 class="h5 feed-item-title">
+                <a href={href} target="_blank">
+                    <lightning-formatted-rich-text value={title}></lightning-formatted-rich-text>
+                </a>
+            </h5>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

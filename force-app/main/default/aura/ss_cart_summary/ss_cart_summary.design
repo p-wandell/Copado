@@ -1,0 +1,47 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 11/15/17.
+ -->
+
+<design:component label="7S Product Cart Summary">
+	<design:attribute name="setting"
+	                  label="Catalog Setting Name"
+	                  description="Enter the name of product catalog custom metadata type record. Leave blank to use Default"/>
+
+	<design:attribute name="showHeader"
+	                  label="Show Icon and header"
+	                  description="Show Cart icon and header text"/>
+	<design:attribute name="showTax"
+	                  label="Show Estimated tax"
+	                  description="Check to show the estimated tax"/>
+	<design:attribute name="showShipping"
+	                  label="Show Estimated shipping"
+	                  description="Check to show the estimated shipping cost"/>
+	<design:attribute name="showEstimate"
+	                  label="Show Calculated label"
+	                  description="Show the calculated during checkout label"/>
+	<design:attribute name="showDiscount"
+	                  label="Show Discount"
+	                  description="Show the discount row for this order. Discount must be enabled in CMT settings"/>
+	<design:attribute name="showTotal"
+	                  label="Show Estimated total"
+	                  description="Check to show estimated total"/>
+	<design:attribute name="showCheckout"
+	                  label="Show Checkout button"
+	                  description="Enable to show the checkout button"/>
+	<design:attribute name="checkoutUrl"
+	                  label="Checkout page URL"
+	                  description="Specify the check out page URL"/>
+	<design:attribute name="skipPayment"
+	                  label="Skip payment and place order"
+	                  description="If checked, direct user to Order detail page or specified page URL. Change Order Status from Draft to Activated."/>
+	<design:attribute name="orderDetailUrl"
+	                  label="Skip payment page URL"
+	                  description="Set the page URL to display after the order is placed- leave blank to go to standard order page"/>
+	<design:attribute name="showTerms"
+	                  label="Show Terms and Policy"
+	                  description="Show terms of use and privacy policy - custom label"/>
+</design:component>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Opportunity_Category3_Calculation__c</fullName>
+    <defaultValue>&quot;0.25&quot;</defaultValue>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <inlineHelpText>The multipliers used to calculate Category 3 for Opportunity Forecasts. For best practice, each multiplier should be higher than the previous Category value.</inlineHelpText>
+    <label>Opportunity Category3 Calculation</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

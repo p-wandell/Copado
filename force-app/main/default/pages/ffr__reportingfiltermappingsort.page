@@ -1,0 +1,31 @@
+<apex:page lightningStylesheets="true" standardcontroller="ffr__ReportingDataRange__c" extensions="ffr.ReportingFilterMappingSortController">
+	<apex:form >
+		<apex:pageBlock title="{!$Label.ffr__reportingfiltermappingsortpageheading}">
+			<apex:pageMessages />
+			<apex:pageBlockSection title="{!$Label.ffr__reportingfiltermappingpagecolumn}" rendered="{!ReportingFilterMappingColumns.size > 0}" collapsible="false">
+				<apex:pageBlockTable value="{!ReportingFilterMappingColumns}" var="filtercolumn">
+					<apex:column value="{!filtercolumn.Name}"/>
+					<apex:column headerValue="{!$Label.ffr__reportingfiltermappingpagetemplatekey}">
+						<apex:selectList value="{!filtercolumn.ffr__TemplateKey__c}" size="1">
+							<apex:selectOptions value="{!ColumnsTemplateKeyPickList}"/>
+						</apex:selectList>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="{!$Label.ffr__reportingfiltermappingpagerow}" rendered="{!ReportingFilterMappingRows.size > 0}" collapsible="false">
+				<apex:pageBlockTable value="{!ReportingFilterMappingRows}" var="filterrow">
+					<apex:column value="{!filterrow.Name}"/>
+					<apex:column headerValue="{!$Label.ffr__reportingfiltermappingpagetemplatekey}">
+						<apex:selectList value="{!filterrow.ffr__TemplateKey__c}" size="1">
+							<apex:selectOptions value="{!RowsTemplateKeyPickList}"/>
+						</apex:selectList>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!save}" value="{!$Label.ffr__reportingfiltermappingpagebuttonsave}"/>
+				<apex:commandButton action="{!cancel}" value="{!$Label.ffr__reportingfiltermappingpagebuttoncancel}"/>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

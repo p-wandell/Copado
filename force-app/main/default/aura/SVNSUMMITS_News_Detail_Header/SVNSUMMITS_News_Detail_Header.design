@@ -1,0 +1,28 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S News Detail Banner">
+    <design:attribute name="headerSize" label="Heading Size" description="Header Size" default="large" datasource="large,medium,small" />
+    <design:attribute name="showTopics"
+                      label="Show Topics?"
+                      description="Enable topics in the header"/>
+	<design:attribute name="debugMode"
+                      label="Debug Mode"
+                      description="Enable or disable debug mode, enabling debug mode will write messages to the browser console for debugging errors" />
+    <design:attribute name="newsListURL"
+                      label="News List URL"
+                      description="Enter the page name for News list view page"/>
+	<design:attribute name="editNewsLabel"
+	                  label="Edit News Button Label"
+	                  description="Button label for authorised users to edit the article."/>
+    <design:attribute name="deleteNewsLabel"
+                      label="Delete News Button Label"
+                      description="Button label for authorised users to delete the article."/>
+	<design:attribute name="showFollowButton"
+					  label="Enable follow button"
+					  description="Hide follow button if feed tracking is not enabled on the News object in the community"/>
+	<design:attribute name="showLikeButton"
+					  label="Enable like button"
+					  description="Allow users to like news articles"/>
+	<design:attribute name="limitToSpecificGroups"
+	                  label="Enable Limit to Specific Groups"
+	                  description="Check to limit to specified collaboration groups"/>
+</design:component>

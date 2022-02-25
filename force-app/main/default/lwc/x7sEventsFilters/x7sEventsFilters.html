@@ -1,0 +1,260 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper auto-slds-card>
+    	<lightning-layout multiple-rows="true">
+			<!--Topic filter-->
+      		<template if:true={showTopicFilter}>
+        		<lightning-layout-item size="12"
+						large-device-size="3"
+						medium-device-size="6"
+						small-device-size="12">
+					<div if:true={eventsTopics.length} class="slds-p-right_large topicDiv">
+						<c-x7s-events-multi-select items={eventsTopics}                                         
+											selected-item-ids={selectedTopicIds}
+											onitemchangeevent={handleTopicChangeEvent}
+											label-name={labels.labelTopicAddNew}
+											itemlabel={labels.labelTopicFilter}>
+						</c-x7s-events-multi-select>
+					</div>
+        		</lightning-layout-item>
+			  </template>
+			
+			<!--Event Type filter-->
+			<template if:true={showTypeFilter}>
+				<lightning-layout-item size="12"
+							large-device-size="3"
+							medium-device-size="6"
+							small-device-size="12"
+							class="slds-p-right_large slds-p-bottom--x-small">
+					<lightning-combobox name="eventTypeSelect"
+							data-id="eventTypeFilter"
+							label={labels.labelEventypefilter}
+							value={eventTypeFilter} 
+							options={eventTypeValues}
+							onchange={handleFilterEvent}>
+					</lightning-combobox>
+				</lightning-layout-item>
+			</template>
+
+			<!--Date filter-->
+			<template if:true={showDateFilter}>
+				<lightning-layout-item class="slds-p-right_xx-small slds-p-bottom--x-small">
+					<lightning-input type="date"
+									data-id="eventFromDate"
+									name="fromDate"
+									value={fromDate}
+									onchange={handleFilterEvent}
+									label={labels.labelFromDate}>
+					</lightning-input>
+				</lightning-layout-item>
+				<template if:false={isCalendarView}>
+					<lightning-layout-item class="slds-p-bottom--x-small">
+						<lightning-input type="date"
+										data-id="eventToDate"
+										name="toDate"
+										value={toDate}
+										onchange={handleFilterEvent}
+										label={labels.labelToDate}>
+						</lightning-input>
+					</lightning-layout-item>
+				</template>
+				<lightning-layout-item class="slds-m-top_large">
+					<lightning-button-icon alternative-text={labels.labelDescriptionClearDate}
+										icon-name="utility:close"
+										onclick={clearDates}
+										variant="container"
+										tooltip={labels.labelDescriptionClearDate}
+										disabled={disableDateClear}
+										size="medium">
+					</lightning-button-icon>
+				</lightning-layout-item>
+			</template>
+
+			<!--Event Location Filter-->
+			<template if:true={showLocationFilter}>
+				<lightning-layout-item size="12"
+									large-device-size="3"
+									medium-device-size="6"
+									small-device-size="12"
+									class="slds-p-bottom--x-small slds-p-right_large">
+					<template if:true={showPickLists}>
+						<lightning-input class="slds-p-bottom--x-small"
+										type="search"
+										data-id="locationTypeAhead"
+										value={locationTypeAhead}
+										onchange={handleLocationTypeAhead}
+										name="locationTypeAhead"
+										placeholder={labels.labelPlaceholderLocation}
+										label={labels.labelTypeaheadlocation}>
+						</lightning-input>
+						<lightning-combobox name="locationFilter"
+										data-id="locationFilter"
+										label={labels.labelSearchLocation}
+										value={locationFilter} 
+										options={locationValues}
+										onchange={handleFilterEvent} >
+						</lightning-combobox>
+					</template>
+					<template if:false={showPickLists}>
+						<lightning-input class="slds-p-bottom--x-small"
+									type="search"
+									data-id="locationSearch"
+									value={locationFilter}
+									onchange={handleFilterEvent}
+									name="locationSearch"
+									placeholder={labels.labelPlaceholderLocation}
+									label={labels.labelTypeaheadlocation}>
+						</lightning-input>
+					</template>
+        		</lightning-layout-item>
+			</template>
+		
+			<!-- CUSTOM FILTERS -->
+		
+			<!-- Custom Field1 -->
+			<template if:true={customField1HasVal}>
+				<lightning-layout-item size="12"
+								large-device-size="3"
+								medium-device-size="6"
+								small-device-size="12"
+								class="slds-p-bottom--x-small slds-p-right_large">
+					<template if:true={showPickLists}>
+						<!-- type ahead with dropdown -->
+						<lightning-input type="search"
+					                 value={typeAheadField1}
+					                 onchange={customTypeAheadHandle}
+					                 data-id="typeAheadCustomField1"
+					                 name="typeAheadCustomField1"
+					                 placeholder={placeHolderCustomField1}
+									 label={labelCustomField1}
+									 class="slds-p-bottom--x-small">
+						</lightning-input>
+						<lightning-combobox name="customField1Filter"
+										data-id="customField1Filter"
+										label={pickListLabelField1}
+										value={searchCustomField1} 
+										options={customValuesField1}
+										onchange={handleFilterEvent} >
+						</lightning-combobox>
+					</template>
+
+					<template if:false={showPickLists}>
+						<!-- no dropdown - just search -->
+						<lightning-input type="search"
+									class="slds-p-bottom--x-small"
+									value={searchCustomField1}
+									data-id="customField1Search"
+									onchange={handleFilterEvent}
+									name="customField1"
+									placeholder={placeHolderCustomField1}
+									label={labelCustomField1}>
+						</lightning-input>
+					</template>
+				</lightning-layout-item>
+			</template>
+
+			<!-- Custom Field2 -->
+			<template if:true={customField2HasVal}>
+				<lightning-layout-item size="12"
+								large-device-size="3"
+								medium-device-size="6"
+								small-device-size="12"
+								class="slds-p-right_large">
+					<template if:true={showPickLists}>
+						<!-- type ahead with dropdown -->
+						<lightning-input type="search"
+					                 value={typeAheadField2}
+					                 onchange={customTypeAheadHandle}
+					                 data-id="typeAheadCustomField2"
+					                 name="typeAheadCustomField2"
+					                 placeholder={placeHolderCustomField2}
+									 label={labelCustomField2}
+									 class="slds-p-bottom--x-small">
+						</lightning-input>
+						<lightning-combobox name="customField2Filter"
+										data-id="customField2Filter"
+										label={pickListLabelField2}
+										value={searchCustomField2} 
+										options={customValuesField2}
+										onchange={handleFilterEvent} >
+						</lightning-combobox>
+					</template>
+					<template if:false={showPickLists}>
+						<!-- no dropdown - just search -->
+						<lightning-input type="search"
+									class="slds-p-bottom--x-small"
+									value={searchCustomField2}
+									data-id="customField2Search"
+									onchange={handleFilterEvent}
+									name="customField2"
+									placeholder={placeHolderCustomField2}
+									label={labelCustomField2}>
+						</lightning-input>
+					</template>
+				</lightning-layout-item>
+			</template>
+
+			<!-- Custom Field3 -->
+			<template if:true={customField3HasVal}>
+				<lightning-layout-item size="12"
+								large-device-size="3"
+								medium-device-size="6"
+								small-device-size="12"
+								class="slds-p-right_large">
+					<template if:true={showPickLists}>
+						<!-- type ahead with dropdown -->
+						<lightning-input type="search"
+					                 value={typeAheadField3}
+					                 onchange={customTypeAheadHandle}
+					                 data-id="typeAheadCustomField3"
+					                 name="typeAheadCustomField3"
+					                 placeholder={placeHolderCustomField3}
+									 label={labelCustomField3}
+									 class="slds-p-bottom--x-small">
+						</lightning-input>
+						<lightning-combobox name="customField3Filter"
+										data-id="customField3Filter"
+										label={pickListLabelField3}
+										value={searchCustomField3} 
+										options={customValuesField3}
+										onchange={handleFilterEvent} >
+						</lightning-combobox>
+					</template>
+
+					<template if:false={showPickLists}>
+						<!-- no dropdown - just search -->
+						<lightning-input type="search"
+									class="slds-p-bottom--x-small"
+									value={searchCustomField3}
+									data-id="customField3Search"
+									onchange={handleFilterEvent}
+									name="customField3"
+									placeholder={placeHolderCustomField3}
+									label={labelCustomField3}>
+						</lightning-input>
+					</template>
+				</lightning-layout-item>
+			</template>
+		</lightning-layout>
+		<lightning-layout>
+			<!-- CLEAR ALL -->
+			<lightning-layout-item class="slds-p-top--x-small"
+									size="12"
+									large-device-size="3"
+									medium-device-size="6"
+									small-device-size="12">
+				<lightning-button icon-name="utility:close"
+									class="slds-float_left"
+									name="clearAllFilters"
+									label="Clear Filters"
+									title="Clear all filters"
+									onclick={clearAll}
+									disabled={disableClear}
+									variant="brand">
+				</lightning-button>
+			</lightning-layout-item>
+		</lightning-layout>
+  	</c-x7s-shr-component-wrapper>
+</template>

@@ -1,0 +1,294 @@
+<apex:page standardcontroller="rh2__RH_Job__c" title="Rollup Helper Schedule Definition" extensions="rh2.PS_DefineJob_Controller" sidebar="false" applyBodyTag="false" docType="html-5.0" showHeader="true">
+	<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	   	<head> 
+	    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	    
+        <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/RollupRun.js') }"/>                
+	    	<apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }"/>	       	
+	    	<apex:includeScript value="{! URLFOR($Resource.HS_Jquery, 'jquery-1.12.1.min.js')}" />
+	     </head>
+	
+	     <script type="text/javascript">
+    	//Verify namespace is ready
+        var rh = rh || {};
+        rh.rollupRun = new RollupRun();            
+        
+        rh.j$ = jQuery.noConflict();
+        rh.j$(document).ready(function() {
+			rh.rollupRun.batchSize = {!maxBatchSize};
+
+			pFilter = '{! JSENCODE(selectedFilter)}';
+
+            countRecords(pFilter); 
+            displayValidationError();
+        });
+    
+        var maxRecords, totalRecords;
+        var valueChecked = Boolean('{!JSENCODE(IF(RH_Job__c.RunForAllRecords__c, "non_emptystring", ""))}');
+         
+        
+      var objName = '{!JSENCODE(parentObjectName)}';
+      function countRecords(selectedFilter) {
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.PS_DefineJob_Controller.maxRecords}',
+			  objName, selectedFilter, ensureMaxRecsAndRunAllUpdated, {escape:true, timeout:120000}); 		
+		   
+	  }  
+	  
+	  function ensureMaxRecsAndRunAllUpdated(result, event){
+		  populateRecordCount(result, event);
+		  setRunAll();
+	  }
+
+      function displayValidationError(){
+      	var showMessage = false;
+      	if({!numRecsIssue}){
+      		document.getElementById('numRecs').class = 'slds-col slds-size_1-of-24 slds-align-middle slds-p-left_xxx-small slds-has-error';
+      		showMessage = true;
+      	}
+      	if({!runTimeIssue}){
+      		document.getElementById('runTime').class = 'slds-col_padded slds-align-middle slds-m-left_small slds-size_1-of-24 slds-has-error';   
+      		showMessage = true;     		
+      	}
+      	
+      	showModal(showMessage, 'validateSchedule');
+      }   
+ 		
+
+ 		</script>
+        
+    <script>
+  function changeValue() {
+    if (valueChecked == true) {
+      valueChecked = false;
+    } else if (valueChecked == false) {
+      valueChecked = true;
+      rfaCheck();
+      setRunAll();
+    } 
+  }
+
+    	</script>
+
+
+		<script> 
+      window.onload = function() {
+       if({!showScheduleWarning}){
+          document.getElementById('scheduleWarning').style.display = "block";
+       }
+     }
+    </script>
+
+        
+	     <body>
+	     <apex:form > 
+        <apex:slds />
+          <apex:actionFunction action="{!ensureRFAJobExists}" name="rfaCheck" />
+          <apex:actionFunction action="{!setMaxRecordsForRunAll}" name="setRunAll" rerender="amount"/>
+		  <apex:actionFunction name="rerenderFilterLinks" rerender="filterLinks"/>
+
+		     <div class="slds-scope" role="main"> 
+		     	<apex:inputHidden value="{!maxRecords}" id="maxRecords"/>   
+		     	<apex:inputHidden value="{!info.rollupRunTime}" id="rollupRunTime"/>   
+				
+			 	<apex:outputPanel id="ClonePopup">
+			 	<apex:outputPanel rendered="{!showClonepopup}" >
+            		<div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+			    		<div class="slds-modal__container">
+			      			<div class="slds-modal__header"> 
+			        			<h2 class="slds-text-heading_medium">{!$Label.CloneFromExistingSchedule}</h2>
+			        		</div>
+			      			<div class="slds-modal__content">	
+			      			<center>			      			
+			      				<apex:Selectlist value="{!selectedSchedule}" styleclass="slds-button slds-button_neutral slds-picklist__label" style="width: 80%;" multiselect="false" size="1">
+			      					<apex:selectOptions value="{!JobSchedules}"/>
+			      				</apex:Selectlist>		        
+			      			</center>
+			      			</div>  			
+			      			<div class="slds-modal__footer">
+         						<apex:commandButton styleClass="slds-button slds-button_neutral" action="{!closeClonePopup}" rerender="ClonePopup" value="{!$Label.rh2__cancel}"/>					        					       
+			        			<apex:commandButton styleClass="slds-button slds-button_brand" action="{!cloneSchedule}" rerender="ClonePopup, jobForm" value="{!$Label.rh2__clone}"/>
+			      			</div>
+			    		</div>
+			  		</div>
+			  		<div class="slds-backdrop slds-backdrop_open"></div>
+				</apex:outputPanel>	
+				</apex:outputPanel>
+				
+       				<div class="slds-card slds-card_empty">
+  					<header class="slds-card__header slds-grid grid_flex-spread">
+                		<nav role="navigation">
+        					<ol class="slds-breadcrumb slds-list_horizontal">
+                				<li class="slds-list__item slds-text-heading_label"><a href="{!URLFOR($Page.PS_Allsettings)}">{!$Label.AllRollupSetting}</a></li>
+             				</ol>
+        				</nav>
+  					</header>
+					</div>
+			    		
+    			<div class="slds-card">
+					<header class="slds-card__header slds-grid">
+           				<div class="slds-col">
+               				<h3 class="slds-text-heading_small slds-truncate">{!$Label.DefineRollupSchedle}</h3>
+             			</div>
+             			
+           				<div class="slds-col" align="right">
+							<!-- Note: Any changes to these buttons should also be applied to the buttons on the top/bottom of the page -->    
+         					<apex:commandButton styleClass="slds-button slds-button_brand" action="{! save }" value="{!$Label.rh2__save}"/>   
+         					<apex:commandButton styleClass="slds-button slds-button_neutral" action="{!openClonePopup}" rerender="ClonePopup" value="{!$Label.rh2__clonefromexisting}"/>					        					       
+         					<apex:commandButton styleClass="slds-button slds-button_neutral" rendered="{!not(isBlank(rh2__RH_Job__c.Id))}" action="{!oDelete}" value="{!$Label.rh2__delete}" />                   
+         					<apex:commandButton styleClass="slds-button slds-button_neutral" action="{!URLFOR($Page.PS_AllSettings)}" value="{!$Label.rh2__cancel}" />       
+         				</div>
+         			</header>
+         			<section class="slds-card__body">
+         			<div class="slds-grid slds-grid_align-center">
+	         			<table class="slds-table slds-col slds-size_1-of-1">
+	                		<tr style="width:100%">
+	                  			<th class="slds-text-heading_label" scope="col">
+	                    			<apex:outputText value="{!targetField} Rollup"/>
+	                   			 	<apex:inputHidden value="{!rh2__RH_Job__c.rh2__Rollup_Name__c}" />
+									<apex:inputHidden value="{!rh2__RH_Job__c.rh2__ParentFilter__c}" />	
+	                  			</th>                  
+	                    	</tr> 
+	                    </table>  
+                    </div>
+                    <apex:outputPanel id="jobForm">
+                        <br/>
+                    <div class="slds-grid">                    
+	        			<div class="slds-col_padded slds-text-align_right slds-size_1-of-12" >      				
+	        				{!$Label.Active}
+	                    </div>
+	                    <div class="slds-col slds-size_1-of-12" >
+                            <apex:inputcheckbox value="{!rh2__RH_Job__c.rh2__Active__c}" onclick=" if(!{!showScheduleWarning} && {!rh2__RH_Job__c.rh2__Active__c}) return confirm('{!$Label.rh2__thisscheduleappears}');"/>
+	                    </div>	
+                        <div class="slds-col slds-size_10-of-12"></div>
+          			</div>
+                        <br/>
+                        
+          			<div class="slds-grid">
+          				<div class="slds-col_padded slds-text-align_right slds-size_1-of-12">
+							{!$Label.ScheduleName}
+          				</div>
+          				<div class="slds-col  slds-size_2-of-12">
+	          				<apex:inputField value="{!rh2__RH_Job__c.rh2__Schedule_Name__c}"/>                    			                  
+          				</div>
+          				<div class="slds-col slds-size_9-of-12"> </div>
+          			</div>
+                        <br/>
+          			<div class="slds-grid">
+          				<div class="slds-col_padded slds-text-align_right slds-size_1-of-12">
+							{!$Label.rh2__runevery}
+          				</div>
+                        <div class="slds-col slds-size_1-of-12 " id="runTime">
+                            <apex:inputField value="{!rh2__RH_Job__c.rh2__Increment__c}" style="width:95%;"/>                    			                  
+                        </div>
+                        <div class="slds-col slds-size_1-of-12">
+                             <apex:inputField value="{!rh2__RH_Job__c.rh2__Unit__c}"/> 
+                        </div>         
+                        <div class="slds-col slds-size_9-of-12"></div>
+                               				        				          			
+          			</div>
+                        <br/>
+                    <div class="slds-grid">
+                        <div class="slds-col_padded slds-size_1-of-12   slds-text-align_right ">
+							{!$Label.For}      			
+						</div>
+						<div class="slds-col slds-size_11-of-12" id="numRecs">
+							<apex:outputPanel styleClass="slds-col slds-size_11-of-12">
+								<apex:inputText id="amount" value="{!rh2__RH_Job__c.rh2__BatchSize__c}" />  
+								&nbsp;  
+								{!parentObjectName} {!$Label.Records}. &nbsp;
+															(<apex:outputtext id="NumRecords" value="{!$Label.rh2__calculatingnumber}."/> &nbsp;
+															<apex:outputtext id="runEstTime" value="{!$Label.rh2__calculatingrun}."/>)
+							</apex:outputPanel>
+						</div>
+                    </div>  
+                    
+                        <br/>
+                    <div class="slds-grid">                    
+	        			<div class="slds-col_padded slds-text-align_right slds-size_1-of-12" >      				
+	        				{!$Label.RunForAllRecords}
+	                    </div>
+	                    <div class="slds-col slds-size_1-of-12" >
+                            <apex:inputcheckbox value="{!rh2__RH_Job__c.rh2__RunForAllRecords__c}" onchange="changeValue(); return false;"  />
+	                    </div>	
+                        <div class="slds-col slds-size_10-of-12"></div>
+          			</div>
+          			<br/>
+          			<div class="slds-grid">          		
+          				<div class="slds-col_padded slds-size_1-of-12 slds-text-align_right" >
+          					<span>{!$Label.LastRun}</span>
+          				</div>
+          				<div class="slds-col slds-grow slds-size_3-of-12"> 
+          					<apex:outputField value="{!rh2__RH_Job__c.rh2__PreviousFireTime__c}"/>
+						</div>
+                        <div class="slds-col slds-size_8-of-12"></div> 
+                    </div>
+                        <br/>
+          			<div class="slds-grid">
+          				
+          				<div class="slds-col_padded slds-size_1-of-12 slds-text-align_right" >
+							{!$Label.NextRun}
+          				</div>
+          				<div class="slds-col slds-size_2-of-12 " >
+          					<apex:inputField value="{!rh2__RH_Job__c.rh2__NextFireTime__c}"/>
+						</div>
+          				
+          				<div class="slds-col slds-size_9-of-12"></div>
+          			</div>
+                        <br/>
+					<div class="slds-grid">
+						<div class="slds-col_padded slds-size_1-of-12 slds-text-align_right" >
+							{!$Label.ParentFilter}
+          				</div>
+          				<div class="slds-col slds-size_1-of-12 ">
+          					<apex:selectList value="{!selectedFilter}" onchange="countRecords(this.value); rerenderFilterLinks();" size="1" style="width:100% !important;">
+								<apex:selectOptions value="{!ValidFiltersForObject}"/>
+							</apex:selectList>  
+						</div>
+						<div class="slds-col slds-size_1-of-12">							
+							<apex:outputPanel id="filterLinks">
+								<apex:outputPanel rendered="{!existingFilterSelected}">
+									<apex:commandLink style="padding-left:10px; padding-right:10px;" action="{!goToEditFilter}" value="{!$Label.rh2__edit}"/>|
+								</apex:outputPanel> 
+								<apex:commandLink style="padding-left:10px;" action="{!goToNewFilter}" value="{!$Label.rh2__new}"/>
+							</apex:outputPanel>
+						</div>
+          				
+          				<div class="slds-col slds-size_9-of-12"></div>
+					</div>	
+                    <div class="slds-grid">
+                    	
+                    	<div class="slds-col slds-size-1-of-1 slds-text-align_center"> {!$Label.PleaseNoteRollupsWillRestarted}
+											<br/>{!runAsUserString}
+          					
+                    	</div>
+                    </div>    
+                    	<br/>
+ 	    			<div id='validateSchedule' style="display:none; margin-left:auto; margin-right:auto;" class="slds-box slds-box_xsmall slds-theme_error slds-size_6-of-12">
+ 	    				{!invalidScheduleMessage}
+ 	    			</div>
+            <div id="scheduleWarning" style="display:none; margin-left:auto; margin-right:auto;" class="slds-box slds-box_xsmall slds-theme_error slds-size_6-of-12">
+              <center>
+                      <p>{!$Label.SchedulingARollupWithRealtime}</p>
+                      <br></br>
+                      <p>{!$Label.IfYouHaveAnyQuestionsRegardingRealtime}</p>
+              </center>        
+            </div>
+          			</apex:outputPanel>	
+           			</section>
+           			<footer class="slds-card__footer slds-grid" >
+           				<div class="slds-col" align="right"> 
+							<!-- Note: Any changes to these button should also be applied to the buttons on the top/bottom of the page -->  			
+           					<apex:commandButton styleClass="slds-button slds-button_brand" action="{! save }" value="{!$Label.rh2__save}"/>          
+           					<apex:commandButton styleClass="slds-button slds-button_neutral" action="{!openClonePopup}" rerender="ClonePopup" value="{!$Label.rh2__clonefromexisting}"/>					        					                  					
+           					<apex:commandButton styleClass="slds-button slds-button_neutral" rendered="{!not(isBlank(rh2__RH_Job__c.Id))}" action="{!oDelete}" value="{!$Label.rh2__delete}" />                   
+           					<apex:commandButton styleClass="slds-button slds-button_neutral" action="{!URLFOR($Page.PS_AllSettings)}" value="{!$Label.rh2__cancel}" />       
+         				</div>
+           			</footer>
+           		</div>     			     	
+       	</div>      	
+       		
+       	
+       	</apex:form>
+     	</body>
+	</html>
+</apex:page>

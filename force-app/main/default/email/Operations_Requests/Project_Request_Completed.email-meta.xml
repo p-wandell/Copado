@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>When an Operations Request that pertains to a project is completed, a notification email is sent to the PM.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Project Request Completed</name>
+    <style>none</style>
+    <subject>{!Operations_Requests__c.Name}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

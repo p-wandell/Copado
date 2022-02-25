@@ -1,0 +1,99 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.x7s-tile {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 0.25rem;
+  color: #fff;
+  border-radius: 0.5rem;
+  background-color: var(--lwc-colorBrand);
+  margin: 0 auto;
+}
+.x7s-tile:hover,
+.x7s-tile:focus {
+  text-decoration: none;
+}
+.x7s-tile:hover .x7s-tile__overlay,
+.x7s-tile:focus .x7s-tile__overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.x7s-tile:before {
+  float: left;
+  padding-top: 100%;
+  content: "";
+}
+.x7s-tile__title {
+  font-weight: bold;
+  display: block;
+  transition: color 0.25s ease-in-out;
+}
+.x7s-tile__description {
+  font-size: 0.875rem;
+  display: block;
+  transition: color 0.25s ease-in-out;
+  color: #555;
+}
+.x7s-tile__title + .x7s-tile__description {
+  margin-top: 3px;
+}
+.x7s-tile__info,
+.slds-rich-text-editor__output {
+  line-height: 1.1;
+}
+.x7s-tile__image {
+  background-repeat: no-repeat;
+  background-position: 50% 25%;
+  background-size: cover;
+}
+.x7s-tile__image-wrapper {
+  overflow: hidden;
+}
+.x7s-tile__info {
+  position: relative;
+}
+.x7s-tile__description {
+  color: rgba(255, 255, 255, 0.8);
+}
+.x7s-tile__image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.peak-tile__icon {
+  display: flex;
+  overflow: hidden;
+  text-align: center;
+  background-color: #f6f6f6;
+}
+.peak-tile__icon .slds-icon,
+.peak-tile__icon img {
+  display: block;
+  width: 56%;
+  height: 56%;
+  margin: 22%;
+  fill: currentColor;
+}
+.x7s-tile__overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transition: background-color 0.25s ease-in-out;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.x7s-tile_animated .x7s-tile__image {
+  transition: transform 0.25s ease-in-out;
+  transform: scale(1);
+  transform-origin: 50% 50%;
+}
+.x7s-tile_animated:hover .x7s-tile__image,
+.x7s-tile_animated:focus .x7s-tile__image {
+  transform: scale(1.1);
+}

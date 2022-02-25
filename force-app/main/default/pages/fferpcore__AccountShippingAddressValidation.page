@@ -1,0 +1,12 @@
+<apex:page standardController="Account" lightningStylesheets="true">
+	<apex:form >
+		<apex:sectionHeader title="Validate Address"/>
+		<apex:pageMessages />
+        <apex:variable var="dummy1" value="{!Account.ShippingStreet}"/>
+        <apex:variable var="dummy2" value="{!Account.ShippingCity}"/>
+        <apex:variable var="dummy3" value="{!Account.ShippingState}"/>
+        <apex:variable var="dummy4" value="{!Account.ShippingCountry}"/>
+        <apex:variable var="dummy5" value="{!Account.ShippingPostalCode}"/>
+		<c:AddressValidation validationRecord="{!Account}" validationAddressType="account-shipping"/>
+	</apex:form>
+</apex:page>

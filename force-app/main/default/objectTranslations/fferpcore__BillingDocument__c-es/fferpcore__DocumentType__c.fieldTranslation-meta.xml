@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Indica si el documento es una factura de venta o una nota de crédito de ventas.</help>
+    <label><!-- Document Type --></label>
+    <name>fferpcore__DocumentType__c</name>
+    <picklistValues>
+        <masterLabel>Credit Note</masterLabel>
+        <translation>Nota de crédito</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Invoice</masterLabel>
+        <translation>Factura</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,43 @@
+<apex:page lightningStylesheets="true">
+    <c:ffui_slds />
+    <apex:includeLightning />
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__ErrorsFixStyles)}"/>
+    <span class="content hidden">
+        <c:ffui_lightningOut outAppName="fferpcore:ExchangeRatesScheduledJobApp"/>
+        <apex:pageBlock >
+            <div id="lightning"/>
+        </apex:pageBlock>
+    </span>
+    <style>
+        /* Hide the asterisks created by the "required" attribute. */
+        .slds-required {
+            display: none;
+        }
+    </style>
+    <apex:outputPanel rendered="{! $User.UIThemeDisplayed != 'Theme4d' }">
+        <style>
+            /* Fix the background color in classic for the LWC */
+            fferpcore-exchange-rates-scheduled-job > lightning-layout {
+                background-color: white;
+            }
+        </style>
+    </apex:outputPanel>
+    <style>
+        /* Fix the page width in Edge/IE */
+        slot.slds-slot {
+            width: 100%;
+        }
+        /* Ensure buttons are clickable when toast is visible */
+        button.slds-button {
+            z-index: 2;
+        }
+    </style>
+    <script>
+        $Lightning.use("fferpcore:ExchangeRatesScheduledJobApp", function() {
+          	$Lightning.createComponent("fferpcore:ExchangeRatesScheduledJobAura", {}, "lightning", function(cmp) {
+                  document.querySelector('.content').classList.remove('hidden');
+                  document.querySelector('div.bPageBlock').classList.remove('bPageBlock');
+            });
+        });
+    </script>
+</apex:page>

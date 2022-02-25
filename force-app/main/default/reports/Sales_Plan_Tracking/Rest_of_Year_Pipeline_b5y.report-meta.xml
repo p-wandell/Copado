@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_93670940</developerName>
+        <masterLabel>Sales Region</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>FULL_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Adam Brown</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Andre Joly</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Craig Friedhoff</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dani Syed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Jamie Volpe</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Scott Richmond</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rob Hogervorst</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sam Brown</sourceValue>
+            </sourceValues>
+            <value>Central Region</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Mort Sayyed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>James Sharp</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justin Birt</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Mark DeGurian</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Max Hart</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sean Lowe</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Scott McKeon</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Lewis Jones</sourceValue>
+            </sourceValues>
+            <value>East Region</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Brad Hattendorf</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Bryan Alipiev</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Chris Pelletier</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Joe Fortino</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Matt Rasmussen</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Peter Hogan</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Stephen Tang</sourceValue>
+            </sourceValues>
+            <value>West Region</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Archan Tikoti</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>David Walsh</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Riz Ebrahim</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>RJ Reimers</sourceValue>
+            </sourceValues>
+            <value>Client Partners</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>AMOUNT</column>
+        </chartSummaries>
+        <chartType>HorizontalBar</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>CLOSE_DATE</groupingColumn>
+        <location>CHART_BOTTOM</location>
+        <showAxisLabels>false</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>EXP_AMOUNT</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>2 Qualified,3 Opportunity Shaped,4 Proposal,5 Agreements Delivered,6 Negotiating,7 Verbal Agreement</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_93670940</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FULL_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>FiscalQuarter</dateGranularity>
+        <field>CLOSE_DATE</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Rest of Year Pipeline</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

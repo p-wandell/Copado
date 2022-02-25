@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<description>File uploader input component</description>
+	<isExposed>true</isExposed>
+	<masterLabel>7S File Uploader</masterLabel>
+	<targets>
+		<target>lightning__RecordPage</target>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightning__AppPage, lightning__HomePage, lightning__RecordPage">
+			<property
+					name="showFileLists"
+					type="Boolean"
+					label="Show Valid And Invalid File Lists"
+					description="When checked this will display the valid and invalid file lists. This will allow the user to remove/delete files. This will also show if files don't meet the criteria to be uploaded. It is not recommended to uncheck this option."
+					default="true" />
+			<property
+					name="title"
+					type="String"
+					label="Title"
+					description="This is the text that will be displayed as the title. If blank the title will not display." />
+			<property
+					name="titleAlign"
+					type="String"
+					label="Title Alignment"
+					datasource="left, center, right" />
+			<property
+					name="message"
+					type="String"
+					label="Message Text"
+					description='This is a description of where the files will be uploaded, what file types are accepted and max file size. If you want to include max file size enter "{0}" anywhere in the message string. If you want to include a list of valid file extensions enter "{1}" anywhere in the message string.' />
+			<property
+					name="uploadLabel"
+					type="String"
+					label="Upload Label"
+					description="This is the text that will be display just above the upload button. If left blank the will not be displayed." />
+			<property
+					name="allTypesText"
+					type="String"
+					label="All Types Text"
+					description="If there are not file extension restrictions this is the text that will replace the valid file extensions list." />
+			<property
+					name="validListText"
+					type="String"
+					label="Valid List Title"
+					description="This is the text that will display above the valid file list. If left blank it will not display." />
+			<property
+					name="invalidListText"
+					type="String"
+					label="Invalid List Title"
+					description="This is the text that will display above the invalid file list. If left blank it will not display." />
+			<property
+					name="deleteText"
+					type="String"
+					label="Delete Text"
+					description="This is the text that will be displayed as the delete file link. If blank the title will not display." />
+			<property
+					name="removeText"
+					type="String"
+					label="Remove Text"
+					description="This is the text that will be displayed to remove the file from a file list. If blank the title will not display." />
+			<property
+					name="errorSize"
+					type="String"
+					label="Size Error Text"
+					description='This is the text that will displayed if the file failed to upload due to improper file size. If you want to include the max file size enter "{0}" anywhere in the error text string.' />
+			<property
+					name="errorExt"
+					type="String"
+					label="Extension Error Text"
+					description='This is the text that will displayed if the file failed to upload due to improper file extension. If you want to include the list of valid file extensions enter "{0}" anywhere in the error text string.' />
+			<property
+					name="uploadSuccessMessageSingular"
+					type="String"
+					label="Upload Successful Message (Singular)"
+					description="This is the text that will displayed if a single file was successfully uploaded." />
+			<property
+					name="uploadSuccessMessagePlural"
+					label="Upload Successful Message (Plural)"
+					type="String"
+					description="This is the text that will displayed if a set of files was successfully uploaded." />
+			<property
+					name="variant"
+					type="String"
+					label="Variant"
+					datasource="default, slds-card, featured"
+					description="Sets the style of the component wrapper." />
+			<property
+					name="customClass"
+					type="String"
+					label="Custom Classname"
+					placeholder="Custom Classname" />
+		</targetConfig>
+		<targetConfig targets="lightningCommunity__Default">
+			<property
+					name="parentId"
+					type="String"
+					label="Parent Record Id"
+					description='This is the id of the record you would like attach the uploaded files to. If this is placed on a record detail page enter "{!recordId}" to have the files upload to that specific record.'
+					default="{!recordId}" />
+			<property
+					name="showFileLists"
+					type="Boolean"
+					label="Show Valid And Invalid File Lists"
+					description="When checked this will display the valid and invalid file lists. This will allow the user to remove/delete files. This will also show if files don't meet the criteria to be uploaded. It is not recommended to uncheck this option."
+					default="true" />
+			<property
+					name="title"
+					type="String"
+					label="Title"
+					description="This is the text that will be displayed as the title. If blank the title will not display." />
+			<property
+					name="titleAlign"
+					type="String"
+					label="Title Alignment"
+					datasource="left, center, right" />
+			<property
+					name="message"
+					type="String"
+					label="Message Text"
+					description='This is a description of where the files will be uploaded, what file types are accepted and max file size. If you want to include max file size enter "{0}" anywhere in the message string. If you want to include a list of valid file extensions enter "{1}" anywhere in the message string.' />
+			<property
+					name="uploadLabel"
+					type="String"
+					label="Upload Label"
+					description="This is the text that will be display just above the upload button. If left blank the will not be displayed." />
+			<property
+					name="allTypesText"
+					type="String"
+					label="All Types Text"
+					description="If there are not file extension restrictions this is the text that will replace the valid file extensions list." />
+			<property
+					name="validListText"
+					type="String"
+					label="Valid List Title"
+					description="This is the text that will display above the valid file list. If left blank it will not display." />
+			<property
+					name="invalidListText"
+					type="String"
+					label="Invalid List Title"
+					description="This is the text that will display above the invalid file list. If left blank it will not display." />
+			<property
+					name="deleteText"
+					type="String"
+					label="Delete Text"
+					description="This is the text that will be displayed as the delete file link. If blank the title will not display." />
+			<property
+					name="removeText"
+					type="String"
+					label="Remove Text"
+					description="This is the text that will be displayed to remove the file from a file list. If blank the title will not display." />
+			<property
+					name="errorSize"
+					type="String"
+					label="Size Error Text"
+					description='This is the text that will displayed if the file failed to upload due to improper file size. If you want to include the max file size enter "{0}" anywhere in the error text string.' />
+			<property
+					name="errorExt"
+					type="String"
+					label="Extension Error Text"
+					description='This is the text that will displayed if the file failed to upload due to improper file extension. If you want to include the list of valid file extensions enter "{0}" anywhere in the error text string.' />
+			<property
+					name="uploadSuccessMessageSingular"
+					type="String"
+					label="Upload Successful Message (Singular)"
+					description="This is the text that will displayed if a single file was successfully uploaded." />
+			<property
+					name="uploadSuccessMessagePlural"
+					label="Upload Successful Message (Plural)"
+					type="String"
+					description="This is the text that will displayed if a set of files was successfully uploaded." />
+			<property
+					name="variant"
+					type="String"
+					label="Variant"
+					datasource="default, slds-card, featured"
+					description="Sets the style of the component wrapper." />
+			<property
+					name="customClass"
+					type="String"
+					label="Custom Classname"
+					placeholder="Custom Classname" />
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

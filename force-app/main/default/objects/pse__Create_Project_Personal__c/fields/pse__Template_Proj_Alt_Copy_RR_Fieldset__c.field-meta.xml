@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Template_Proj_Alt_Copy_RR_Fieldset__c</fullName>
+    <defaultValue>&apos;CreateProjFromTempAltCopyProjRRFields&apos;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>The API name of a field set used by the Resource Request object. Fields in this set define the resource request fields (if associated requests exist) to copy from template to new project. These fields are not shown on the Create Project from Template page. The default value is CreateProjFromTempAltCopyProjRRFields.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>API name of a field set used by the Resource Request object. Fields in this set define the resource request fields (if associated requests exist) to copy from template to new project. These fields are not shown on the Create Project from Template page.</inlineHelpText>
+    <label>Template Proj Alt Copy RR Fieldset</label>
+    <length>100</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

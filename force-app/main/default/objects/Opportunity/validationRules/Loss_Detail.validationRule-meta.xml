@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loss_Detail</fullName>
+    <active>true</active>
+    <description>When an Opportunity is lost, field Loss Detail is required</description>
+    <errorConditionFormula>AND(
+NOT(ISBLANK(TEXT(Loss_Reason__c))),
+CloseDate&gt;=DATE(2020,01,01),
+NOT(ISPICKVAL(Loss_Reason__c,&quot;Included in Separate SOW&quot;)),
+ISBLANK(Loss_Detail__c)
+)
+&amp;&amp; $Profile.Name != &quot;System Administrator&quot;</errorConditionFormula>
+    <errorDisplayField>Loss_Detail__c</errorDisplayField>
+    <errorMessage>Loss Detail is required</errorMessage>
+</ValidationRule>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__RestrictedPicklist__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Picklist</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>one</fullName>
+                <default>false</default>
+                <label>one</label>
+            </value>
+            <value>
+                <fullName>two</fullName>
+                <default>false</default>
+                <label>two</label>
+            </value>
+            <value>
+                <fullName>three</fullName>
+                <default>false</default>
+                <label>three</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

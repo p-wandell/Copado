@@ -1,0 +1,31 @@
+<apex:page standardController="fferpcore__TestPublication__c" extensions="fferpcore.TestPublicationController" recordSetVar="original" lightningStylesheets="true">
+  <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+  <apex:sectionHeader title="{!$Label.fferpcore__erptestpublicationsetupandpublishtitle}" help="{!URLFOR($Page.fferpcore__TestPublicationHelp, null, null)}" />
+  <apex:pageMessage rendered="{!successful}" severity="confirm" strength="2" summary="{!$Label.fferpcore__erptestpublicationsetupandpublishsuccessconfirmation}" />
+  <apex:pageMessage rendered="{!NOT(hasTestPublications)}" severity="error" strength="2" summary="{!$Label.fferpcore__erpnorecordsselectedtosetuperror}" />
+  <apex:form >
+    <apex:pageBlock >
+      <apex:pageBlockButtons >
+        <apex:commandButton value="{!$Label.fferpcore__erptestpublicationsetupandpublishbuttontext}" action="{!setupPublicationsAndSendMessages}" disabled="{!NOT(hasTestPublications)}"/>
+        <apex:commandButton value="{!$Label.fferpcore__erpcancel}" action="{!cancel}" immediate="true"/>
+      </apex:pageBlockButtons>
+      <apex:pageBlockTable value="{!testPublications}" var="testPublication">
+        <apex:column headerValue="{!$Label.fferpcore__erptestpublicationsetupandpublishcolumnheadingname}">
+          <c:LookupHover sObjectId="{!testPublication.Id}" text="{!testPublication.Name}"/>
+        </apex:column>
+        <apex:column headerValue="{!$Label.fferpcore__erptestpublicationsetupandpublishcolumnheadingmessagetype}">
+          <apex:outputfield value="{!testPublication.MessageType__r.fferpcore__DeveloperName__c}"/>
+        </apex:column>
+        <apex:column headerValue="{!$Label.fferpcore__erptestpublicationsetupandpublishcolumnheadingcorrelationid}">
+          <apex:outputField value="{!testPublication.fferpcore__CorrelationId__c}"/>
+        </apex:column>
+        <apex:column headerValue="{!$Label.fferpcore__erptestpublicationsetupandpublishcolumnheadingmessagebody}">
+          <apex:outputField value="{!testPublication.fferpcore__MessageBody__c}"/>
+        </apex:column>
+        <apex:column headerValue="{!$Label.fferpcore__erptestpublicationsetupandpublishcolumnheadingpublisher}">
+          <c:LookupHover sObjectId="{!testPublication.fferpcore__Publisher__c}" text="{!testPublication.Publisher__r.Name}"/>
+        </apex:column>
+      </apex:pageBlockTable>
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

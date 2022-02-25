@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_75291266</developerName>
+        <masterLabel>License Type</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>User$Profile</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>System Administrator</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S Custom Exec User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S Custom System Administrator</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S Delegated Admin</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S General Profile</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S Principal Consultant &amp; Solutions Architect</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S Sales Team Profile</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S SDR Sales Admin</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S System Admin</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Standard User</sourceValue>
+            </sourceValues>
+            <value>Full</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Force.com - App Subscription User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S Standard Platform User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7S Contractor Platform User</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Standard Platform User</sourceValue>
+            </sourceValues>
+            <value>Platform</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>User$Name</field>
+    </columns>
+    <columns>
+        <field>User$UserRole</field>
+    </columns>
+    <columns>
+        <field>User$Profile</field>
+    </columns>
+    <columns>
+        <field>User$Id</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>User$UserRole</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>Account Executive,VP of Sales,SVP of Sales,Client Partner</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Sales Team Users</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>SF_Users__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>User$Profile</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>User$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

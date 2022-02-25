@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>FK_$Contact.pse__Resource_Role__c</field>
+    </columns>
+    <columns>
+        <field>pse__Skill_Certification_Rating__c.Skill_Certification_Name__c</field>
+    </columns>
+    <columns>
+        <field>pse__Skill_Certification_Rating__c.Cert_Status__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Skill__c.pse__Skill_Or_Certification__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Certification</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Skill_Certification_Rating__c.Skill_Certification_Name__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>Field Service Lightning</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_$Contact.pse__Is_Resource_Active__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <name>7S Certifications - FSL</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntityCustomEntity$pse__Skill__c$pse__Skill_Certification_Rating__c@pse__Skill_Certification_Rating__c.pse__Resource__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

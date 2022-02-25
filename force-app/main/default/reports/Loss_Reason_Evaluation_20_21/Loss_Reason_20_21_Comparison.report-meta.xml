@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_15248128</developerName>
+        <masterLabel>Booking Amount Range</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>AMOUNT</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>300,000</to>
+            </sourceValues>
+            <value>Under 300K</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>300,000</from>
+                <to>600,000</to>
+            </sourceValues>
+            <value>300k - 600k</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>600,000</from>
+                <to>1,000,000</to>
+            </sourceValues>
+            <value>600k - 1m</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>1,000,000</from>
+            </sourceValues>
+            <value>Over 1m</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_57444351</developerName>
+        <masterLabel>Stage Prior to Close</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>FROM_OPPORTUNITY_STAGE_NAME</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1 Prospect</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2 Qualified</sourceValue>
+            </sourceValues>
+            <value>Prospect &amp; Qualified</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3 Opportunity Shaped</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>4 Proposal</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7 Verbal Agreement</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6 Negotiating</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>5 Agreements Delivered</sourceValue>
+            </sourceValues>
+            <value>Beyond Qualified</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_22690684</developerName>
+        <masterLabel>Won/Lost</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>9 Closed Lost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>10 No Opportunity</sourceValue>
+            </sourceValues>
+            <value>Lost</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>8 Closed Won</sourceValue>
+            </sourceValues>
+            <value>Won</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY.NAME</field>
+    </columns>
+    <columns>
+        <field>OWNER_NAME</field>
+    </columns>
+    <columns>
+        <field>FROM_OPPORTUNITY_STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>EXP_AMOUNT</field>
+    </columns>
+    <columns>
+        <field>PROBABILITY</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>LAST_UPDATE</field>
+    </columns>
+    <columns>
+        <field>LAST_UPDATE_NAME</field>
+    </columns>
+    <columns>
+        <field>TO_CATEGORY</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>9 Closed Lost,10 No Opportunity</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>OPPORTUNITY.NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>Filler,Test</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FROM_OPPORTUNITY_STAGE_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>1 Prospect,2 Qualified,8 Closed Won,9 Closed Lost,10 No Opportunity</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Project_Type__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>New Project</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_15248128</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>FISCAL_YEAR</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Loss_Reason__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Loss Reason 20/21 Comparison</name>
+    <params>
+        <name>include</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityHistory</reportType>
+    <scope>all</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>OPP_CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_PREVCURFY</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Tijdkaart Split</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Urenstaat onderdeel</value>
+    </caseValues>
+    <gender>Feminine</gender>
+    <nameFieldLabel>Tijdkaart Split ID</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- Invoice Number or Date is not allowed on record unless it is invoiced --></errorMessage>
+        <name>pse__Invoiced</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecard Split Project must match Assignment Project. --></errorMessage>
+        <name>pse__TimecardSplit_Assignment_Proj_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecard Split Resource must match Assignment Resource. --></errorMessage>
+        <name>pse__TimecardSplit_Assignment_Res_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Bill Date is locked if Billed or Invoiced. --></errorMessage>
+        <name>pse__TimecardSplit_Bill_Date_Locking</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- For a Timecard Split to be marked as Billed, it must also be marked as Included in Financials and Approved. --></errorMessage>
+        <name>pse__TimecardSplit_Billing_Requires_Inclusion</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Invoice Date is locked if Invoiced. --></errorMessage>
+        <name>pse__TimecardSplit_Invoice_Date_Locking</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- For a Timecard Split to be marked as Invoiced, it must also be marked as Billed. --></errorMessage>
+        <name>pse__TimecardSplit_Invoicing_Requires_Billing</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecard Split Project must match Milestone Project. --></errorMessage>
+        <name>pse__TimecardSplit_Milestone_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A Timecard Split&apos;s Project field value may not be blank and may not be updated once set (unless Admin Global Edit is checked and Audit Notes are provided on the parent Timecard Header and Actuals Calculation Mode is Scheduled). --></errorMessage>
+        <name>pse__Timecard_Split_Project_is_Constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecard Splits for this Project and/or Resource require an Assignment. --></errorMessage>
+        <name>pse__Timecard_Split_Requires_Assignment</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A Timecard Split&apos;s Resource field value may not be blank and may not be updated once set (unless Admin Global Edit is checked and Audit Notes are provided on the parent Timecard Header and Actuals Calculation Mode is Scheduled). --></errorMessage>
+        <name>pse__Timecard_Split_Resource_is_Constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The vendor invoice item cannot be changed once set. --></errorMessage>
+        <name>pse__Vendor_Invoice_Constant</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Clear_Billing_Data --></label>
+        <name>pse__Clear_Billing_Data</name>
+    </webLinks>
+</CustomObjectTranslation>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>pse__Timecard_Header__c.pse__Resource__c</field>
+    </columns>
+    <columns>
+        <field>pse__Timecard_Header__c.pse__Start_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Timecard_Header__c.pse__Assignment__c</field>
+    </columns>
+    <columns>
+        <field>pse__Timecard_Header__c.pse__Total_Hours__c</field>
+    </columns>
+    <columns>
+        <field>pse__Timecard_Header__c.pse__Billable__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Timecard_Header__c.pse__Project__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Clarios: Global CPQ Strat-2020 Global Definition</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Timecard_Header__c.pse__Resource__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>Rick,Rebecca,Zach</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Clarios Hours to be Moved for Hypercare</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$pse__Timecard_Header__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Timecard_Header__c.pse__Start_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2020-12-27</startDate>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,79 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__searchUi, 'css/CoveoFullSearchNewDesign.css')}" />
+    
+    <style>
+      body {
+        background-color: #f4f7f8;
+      }
+
+      #ieError {
+        padding: 10px;
+        visibility: hidden;
+      }
+
+      #ieError h1 {
+          color: #3b3c40;
+      }
+
+      #ieError h3 {
+        color: #4d4e53;
+      }
+    </style>
+
+    <div id="loading" class='coveo-first-loading-animation'>
+        <div class='coveo-loading-container'>
+            <div class='coveo-loading-dot'></div>
+            <div class='coveo-loading-dot'></div>
+            <div class='coveo-loading-dot'></div>
+            <div class='coveo-loading-dot'></div>
+        </div>
+    </div>
+
+    <div id="ieError">
+        <h1>Due to an Internet Explorer security settings, the requested action could not be performed.</h1>
+        <h3>Ensure you add *.coveo.com to your browser Trusted Sites, or use another supported browser.</h3>
+    </div>
+
+    <script>
+    if(!window.opener) {
+      // In some cases, IE will remove the "opener" 
+      // relationship. There's nothing we can do about it.
+      document.getElementById('loading').style.visibility = 'hidden';
+      document.getElementById('ieError').style.visibility = 'visible';
+    }
+
+    // Trigger the event.
+    var split = window.location.search.split('?code=');
+    if (split.length > 1) {
+      window.opener.OAuthHandler.onOauthCompleted(split[1]);
+    }
+
+    // Trigger the event.
+    split = window.location.search.split('?success=');
+    if (split.length > 1) {
+      window.opener.OAuthHandler.onHandshakeResponse(split[1] == "1");
+    }
+
+    // Trigger the event.
+    split = window.location.search.split('?error=');
+    if (split.length > 1) {
+      // Go fetch the custom error message
+      var description = split[1].split('error_description=');
+      if(description.length > 1) {
+        // Show the custom message
+        window.opener.OAuthHandler.handleError(decodeURIComponent(description[1]));
+      }
+      else {
+        // Since there is no custom message
+        // show the default handshake error
+        window.opener.OAuthHandler.onHandshakeResponse(false);
+      }      
+    }
+
+    // Trigger the event.
+    split = window.location.search.split('?refresh_token_guid=');
+    if (split.length > 1) {
+      window.opener.OAuthHandler.onRefreshTokenGuid(split[1].split('&')[0]);
+    }
+  </script>
+</apex:page>

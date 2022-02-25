@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Opp_and_Template_Proj_Budget_Fieldset__c</fullName>
+    <defaultValue>&apos;CreateProjectFromOppAndTempBudgetColumns&apos;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>The API name of a field set used by the Budget object. Fields in this set define the editable fields in the Budget Details section of the Create Project from Template and Create Project from Opportunity pages. The default value is CreateProjectFromOppAndTempBudgetColumns.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>API name of a field set used by the Budget object. Fields in this set define the editable fields in the Budget Details section of the Create Project from Template and Create Project from Opportunity pages.</inlineHelpText>
+    <label>Opp and Template Proj Budget Fieldset</label>
+    <length>100</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

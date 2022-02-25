@@ -1,0 +1,55 @@
+<!-- Chatter Answer-->
+<apex:page showHeader="true" sidebar="false" standardStylesheets="true" controller="SS_CommunitySiteChatterAnswerController" title="{!$Label.myQandA}">
+    <c:SSTab_CommunitySiteIncludes />
+<c:SS_CommunitySiteTerms />      
+    <title>{!$Label.myQandA}</title>
+    <script type="text/javascript">
+        /* Due to a Salesforce bug, the page refuses to default to the MyQuestions filter (the only one that I have surfaced).
+         * To fix that, we need to append the correct ending to the URL
+         */
+        
+        var fixHash = function() {
+            var hash = window.location.hash;
+            if (hash != null && hash.indexOf('#!/feedtype=RECENT') >= 0) {
+                window.location.hash = '#!/feedtype=MINE';
+            }
+        }
+
+        fixHash();
+
+        jQuery(window).on('hashchange', function() {
+            fixHash();
+            window.location.reload();
+        });
+    </script>
+    <div id="content">
+        <c:SS_PageHeader title="{!$Label.myQandA}" subtitle="{!$Label.myQandAExplanation}"/>
+        
+        <!-- Need to explicitly set this margin the same as the .title class -->
+        <div class="row">
+            <!-- Explicitly overriding styles from the ChatterAnswer.css file that Salesforce loads -->
+            <style type="text/css">
+                body {
+                    line-height: 1;
+                    /* Necessary here because the ChatterAnswer.css comes after our CSS includes */
+                    background-color: #FFFFFF;
+                }
+            </style>
+
+            <div class="col-md-4">
+                <chatteranswers:aboutme noSignIn="true" communityId="{!CommunityId}"/>
+                <chatteranswers:datacategoryfilter communityId="{!CommunityId}"/>
+                <!-- Creating some space for when they stack in mobile -->
+                <div class="clearingBox"></div>
+                <br/>
+            </div>
+            <div class="col-md-8">
+                <chatteranswers:searchask communityId="{!CommunityId}"/>
+                <!--<chatteranswers:feedfilter filterOptions="MyQuestions" />-->
+                <chatteranswers:feeds communityId="{!CommunityId}"/>
+            </div>
+            <div class="clearingBox"></div>
+            <!--<chatteranswers:allfeeds filterOptions="MyQuestions" noSignIn="true" communityId="{!CommunityId}"/>-->
+        </div>
+    </div>
+</apex:page>

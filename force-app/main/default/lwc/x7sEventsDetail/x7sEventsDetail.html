@@ -1,0 +1,63 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+-->
+<template>
+	<div if:false={showEventRecord}>
+		<div class="slds-text-body_small slds-text-color_weak">
+			{labels.labelNotAvailable}
+		</div>
+	</div>
+
+	<div if:true={showEventRecord}>
+		<c-x7s-shr-card
+				record-id={recordId}
+				image-src={imageURL}
+				image-height={imageHeight}
+				variant={layoutVariant}
+				custom-class={customClass}
+				hide-image={hideImage}
+				layout={layout}>
+
+			<slot>
+				<!--Display Event Details-->
+				<lightning-formatted-rich-text
+						value={eventDetails}>
+				</lightning-formatted-rich-text>
+
+				<!--Display Event Type-->
+				<div if:true={showEventType} class="slds-m-top_medium">
+					<template if:true={eventType}>
+						<lightning-formatted-text value={eventType}>
+						</lightning-formatted-text>
+					</template>
+				</div>
+
+				<!--Display Custom Fields-->
+				<div if:true={customField1} class="slds-m-top_medium">
+					<template if:true={customFieldValue1}>
+						<template if:true={customLabel1}>
+							{customLabel1}&nbsp;
+						</template>
+						{customFieldValue1}
+					</template>
+				</div>
+				<div if:true={customField2} class="slds-m-top_medium">
+					<template if:true={customFieldValue2}>
+						<template if:true={customLabel2}>
+							{customLabel2}&nbsp;
+						</template>
+						{customFieldValue2}
+					</template>
+				</div>
+				<div if:true={customField3} class="slds-m-top_medium">
+					<template if:true={customFieldValue3}>
+						<template if:true={customLabel3}>
+							{customLabel3}&nbsp;
+						</template>
+						{customFieldValue3}
+					</template>
+				</div>
+			</slot>
+		</c-x7s-shr-card>
+	</div>
+</template>

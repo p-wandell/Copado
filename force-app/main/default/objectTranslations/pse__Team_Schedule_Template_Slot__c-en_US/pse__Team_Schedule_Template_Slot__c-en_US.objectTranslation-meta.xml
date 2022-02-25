@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <validationRules>
+        <errorMessage><!-- Hours should be non-negative values in increments of 0.25. --></errorMessage>
+        <name>pse__Hours_Must_Positive</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Number of Resources should be between 1 to 99. --></errorMessage>
+        <name>pse__Resource_Should_Be_In_Range</name>
+    </validationRules>
+</CustomObjectTranslation>

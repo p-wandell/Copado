@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>Displays a featured user or list of users in a carousel</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Featured User</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" label="Title" type="String" />
+            <property name="titleAlignment" label="Title Alignment" type="String" datasource="left, center, right" />
+            <property name="viewProfileLabel" label="View profile link label" type="String" />
+            <property name="recordId" label="Featured User ID" type="String" />
+            <property name="intro" label="Intro Paragraph" type="String" />
+            <property name="ctaText" label="Call to Action Label" type="String" />
+            <property name="ctaLink" label="Call to Action Link" type="String" />
+            <property name="displayType" label="Display Type" type="String" datasource="Plain, Banner" />
+            <property name="customClass" label="CSS Class" type="String" description="Apply additional SLDS or custom CSS class" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

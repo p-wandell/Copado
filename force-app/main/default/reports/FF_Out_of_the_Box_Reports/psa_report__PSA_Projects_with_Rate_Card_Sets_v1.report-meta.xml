@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>pse__Rate_Card_Set__c.pse__Rate_Card_Set_Projects__r$Name</field>
+    </columns>
+    <columns>
+        <field>pse__Rate_Card_Set__c.pse__Rate_Card_Set_Projects__r$pse__Rate_Card_Percentage_Discount__c</field>
+    </columns>
+    <columns>
+        <field>pse__Rate_Card_Set__c.pse__Rate_Card_Set_Projects__r$pse__Rate_Card_Discount_Limit__c</field>
+    </columns>
+    <currency>USD</currency>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Rate_Card_Set__c$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>PSA Projects with Rate Card Sets v1</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>psa_report__Projects_with_Rate_Card_sets__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>false</showGrandTotal>
+    <showSubTotals>false</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Rate_Card_Set__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

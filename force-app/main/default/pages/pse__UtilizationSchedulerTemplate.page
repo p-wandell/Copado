@@ -1,0 +1,35 @@
+<apex:page controller="pse.UtilizationSchedulerController">
+
+<apex:insert name="sectionHeader"/>
+
+<apex:pageMessages id="messages"/>
+
+<apex:form >
+
+<apex:pageBlock title="{!$Label.pse__utilization_label_schedule_calc_ute}" mode="edit">
+    <apex:pageBlockButtons >
+        <apex:commandButton value="{!$Label.pse__utilization_label_schedule}" action="{!doSchedule}"/>
+        <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancel}"/>
+    </apex:pageBlockButtons>
+    
+    <apex:pageBlockSection title="{!$Label.pse__utilization_label_utilization}" columns="1">
+        <apex:outputField value="{!criteria.pse__Region__c}" rendered="{!criteria.pse__Region__c != null}"/>
+        <apex:outputField value="{!criteria.pse__Practice__c}" rendered="{!criteria.pse__Practice__c != null}"/>
+        <apex:outputField value="{!criteria.pse__Group__c}" rendered="{!criteria.pse__Group__c != null}"/>
+        <apex:inputField value="{!criteria.Name}" required="true"/>
+        <apex:inputField value="{!criteria.pse__Type__c}" required="true"/>
+        <apex:inputField value="{!criteria.pse__Historical_Utilization_Cut_Off_Date__c}" required="true"/>
+        <apex:inputField value="{!criteria.pse__Is_Report_Master__c}"/>
+        <apex:inputField value="{!criteria.pse__Include_Sublevels__c}"/>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection title="{!$Label.pse__utilization_label_schedule}" columns="1">
+        <c:ApexSchedule schedPattern="{!schedulePattern}"/>
+    </apex:pageBlockSection>
+</apex:pageBlock>
+
+
+</apex:form>
+
+
+</apex:page>

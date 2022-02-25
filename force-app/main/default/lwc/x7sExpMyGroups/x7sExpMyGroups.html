@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S My Groups -->
+<template>
+    <c-x7s-shr-component-wrapper title={componentTitle} title-align="left" custom-class={customClass} aria-label={label.labelAriaWrapper}>
+
+        <template if:false={isInAGroup}>
+            <p class="slds-m-vertical_x-small">{notInGroupIntro}</p>
+        </template>
+
+        <template if:true={myGroups} for:each={myGroups} for:item="group">
+            <c-x7s-exp-group-avatar-tile key={group.Id} group={group} show-description={showDescription} show-members={showMembers}></c-x7s-exp-group-avatar-tile>
+        </template>
+
+        <template if:true={showFeaturedGroups} for:each={featuredGroups} for:item="group">
+            <c-x7s-exp-group-avatar-tile key={group.Id} group={group} show-description={showDescription} show-members={showMembers}></c-x7s-exp-group-avatar-tile>
+        </template>
+
+        <footer class="slds-m-top_small">
+            <lightning-button icon-name="utility:chevronright" title={navigateToGroupButtonLabel} onclick={navigateToGroupsPage} label={navigateToGroupButtonLabel} icon-position="right"></lightning-button>
+        </footer>
+
+    </c-x7s-shr-component-wrapper>
+</template>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Bundle_Item__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Product Bundle Item (Child)</label>
+    <lookupFilter>
+        <active>true</active>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <errorMessage>A bundled product cannot be an entry in another bundle</errorMessage>
+        <filterItems>
+            <field>Product2.Bundle__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </filterItems>
+        <filterItems>
+            <field>Product2.Name</field>
+            <operation>equals</operation>
+            <value>Expedition Pack</value>
+        </filterItems>
+        <infoMessage>Please select a child product to add to the bundle</infoMessage>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Product2</referenceTo>
+    <relationshipLabel>Product Bundles (Parent Items)</relationshipLabel>
+    <relationshipName>Product_Bundles</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

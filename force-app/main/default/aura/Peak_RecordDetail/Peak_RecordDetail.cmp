@@ -1,0 +1,139 @@
+<!--
+ - Created by kentheberling on 8/23/18.
+ -->
+
+<aura:component implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId" extends="c:Peak_Base" controller="Peak_RecordDetailController">
+
+    <aura:attribute name="objectType" type="String" default="User"/> <!-- Fields to display, in order -->
+
+    <!-- Multiple field sections
+        fieldsString = Fields to display, in order
+        sectionTitle = title for this section
+        returnedFieldList = from Apex results, sort full field value list into sub-lists for each section!
+     -->
+    <aura:attribute name="fieldsString" type="String" default="Id,Name,Email"/>
+    <aura:attribute name="sectionTitle" type="String" default="Section"/>
+    <aura:attribute name="returnedFieldList" type="List" default="List"/>
+
+    <aura:attribute name="fieldsString2" type="String" default="Phone,Fax"/>
+    <aura:attribute name="sectionTitle2" type="String" default="Section Two"/>
+    <aura:attribute name="returnedFieldList2" type="List" default="List"/>
+
+    <aura:attribute name="fieldsString3" type="String" default="Title"/>
+    <aura:attribute name="sectionTitle3" type="String" default="Section Three"/>
+    <aura:attribute name="returnedFieldList3" type="List" default="List"/>
+
+    <aura:attribute name="fieldsString4" type="String" default="Alias"/>
+    <aura:attribute name="sectionTitle4" type="String" default="Section Four"/>
+    <aura:attribute name="returnedFieldList4" type="List" default="List"/>
+
+    <aura:attribute name="fieldsString5" type="String" default="ProfileId"/>
+    <aura:attribute name="sectionTitle5" type="String" default="Section Five"/>
+    <aura:attribute name="returnedFieldList5" type="List" default="List"/>
+
+    <aura:attribute name="sectionPadding" type="String" default="small" />
+    <aura:attribute name="horizontalAlign" type="String" default="center" /><!-- spread,center,space, end -->
+    <aura:attribute name="verticalAlign" type="String" default="center" /><!-- end,center,start, stretch -->
+    <aura:attribute name="pullToBoundary" type="String" default="" /><!-- small,medium,large -->
+
+    <aura:attribute name="smallColumns" type="String" default="2" />
+    <aura:attribute name="mediumColumns" type="String" default="3" />
+    <aura:attribute name="largeColumns" type="String" default="4" />
+
+    <aura:attribute name="itemPadding" type="String" default="" /><!-- horizontal-small, horizontal-medium, horizontal-large, around-small, around-medium, around-large -->
+    <aura:attribute name="itemClass" type="String" default="" />
+
+    <aura:attribute name="showLabels" type="Boolean" default="true"/>
+    <aura:attribute name="showEmptyFields" type="Boolean" default="true"/>
+
+    <aura:attribute name="isDetailInit" type="Boolean" default="default"/>
+
+    <aura:handler name="init" action="{!c.initRecordDetail}" value="{!this}"/>
+
+
+    <section class="{!'peak-component ' + v.CustomClassName}" id="{!v.CustomIdName}"> 
+        <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="{!v.objectType}">
+            <aura:if isTrue="{!v.isDetailInit}">
+
+
+                <!-- Display each section -->
+                <c:Peak_RecordDetailSection sectionTitle="{!v.sectionTitle}"
+                                            sectionPadding="{!v.sectionPadding}"
+                                            returnedFieldList="{!v.returnedFieldList}"
+                                            horizontalAlign="{!v.horizontalAlign}"
+                                            verticalAlign="{!v.verticalAlign}"
+                                            pullToBoundary="{!v.pullToBoundary}"
+                                            smallColumns="{!v.smallColumns}"
+                                            mediumColumns="{!v.mediumColumns}"
+                                            largeColumns="{!v.largeColumns}"
+                                            itemPadding="{!v.itemPadding}"
+                                            itemClass="{!v.itemClass}"
+                                            showLabels="{!v.showLabels}"
+                                            showEmptyFields="{!v.showEmptyFields}"
+                />
+
+                <c:Peak_RecordDetailSection sectionTitle="{!v.sectionTitle2}"
+                                            sectionPadding="{!v.sectionPadding}"
+                                            returnedFieldList="{!v.returnedFieldList2}"
+                                            horizontalAlign="{!v.horizontalAlign}"
+                                            verticalAlign="{!v.verticalAlign}"
+                                            pullToBoundary="{!v.pullToBoundary}"
+                                            smallColumns="{!v.smallColumns}"
+                                            mediumColumns="{!v.mediumColumns}"
+                                            largeColumns="{!v.largeColumns}"
+                                            itemPadding="{!v.itemPadding}"
+                                            itemClass="{!v.itemClass}"
+                                            showLabels="{!v.showLabels}"
+                                            showEmptyFields="{!v.showEmptyFields}"
+                />
+
+                <c:Peak_RecordDetailSection sectionTitle="{!v.sectionTitle3}"
+                                            sectionPadding="{!v.sectionPadding}"
+                                            returnedFieldList="{!v.returnedFieldList3}"
+                                            horizontalAlign="{!v.horizontalAlign}"
+                                            verticalAlign="{!v.verticalAlign}"
+                                            pullToBoundary="{!v.pullToBoundary}"
+                                            smallColumns="{!v.smallColumns}"
+                                            mediumColumns="{!v.mediumColumns}"
+                                            largeColumns="{!v.largeColumns}"
+                                            itemPadding="{!v.itemPadding}"
+                                            itemClass="{!v.itemClass}"
+                                            showLabels="{!v.showLabels}"
+                                            showEmptyFields="{!v.showEmptyFields}"
+                />
+
+                <c:Peak_RecordDetailSection sectionTitle="{!v.sectionTitle4}"
+                                            sectionPadding="{!v.sectionPadding}"
+                                            returnedFieldList="{!v.returnedFieldList4}"
+                                            horizontalAlign="{!v.horizontalAlign}"
+                                            verticalAlign="{!v.verticalAlign}"
+                                            pullToBoundary="{!v.pullToBoundary}"
+                                            smallColumns="{!v.smallColumns}"
+                                            mediumColumns="{!v.mediumColumns}"
+                                            largeColumns="{!v.largeColumns}"
+                                            itemPadding="{!v.itemPadding}"
+                                            itemClass="{!v.itemClass}"
+                                            showLabels="{!v.showLabels}"
+                                            showEmptyFields="{!v.showEmptyFields}"
+                />
+
+                <c:Peak_RecordDetailSection sectionTitle="{!v.sectionTitle5}"
+                                            sectionPadding="{!v.sectionPadding}"
+                                            returnedFieldList="{!v.returnedFieldList5}"
+                                            horizontalAlign="{!v.horizontalAlign}"
+                                            verticalAlign="{!v.verticalAlign}"
+                                            pullToBoundary="{!v.pullToBoundary}"
+                                            smallColumns="{!v.smallColumns}"
+                                            mediumColumns="{!v.mediumColumns}"
+                                            largeColumns="{!v.largeColumns}"
+                                            itemPadding="{!v.itemPadding}"
+                                            itemClass="{!v.itemClass}"
+                                            showLabels="{!v.showLabels}"
+                                            showEmptyFields="{!v.showEmptyFields}"
+                />
+
+            </aura:if>
+        </lightning:recordViewForm>
+    </section>
+
+</aura:component>

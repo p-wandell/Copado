@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldUpdates>
+        <fullName>In_Progress_Status</fullName>
+        <field>PSR_Status__c</field>
+        <literalValue>In Progress</literalValue>
+        <name>In Progress Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PSR_Approval_Requested_Status</fullName>
+        <field>PSR_Status__c</field>
+        <literalValue>LOE Review</literalValue>
+        <name>PSR Approval Requested Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PSR_Approved_Status</fullName>
+        <field>PSR_Status__c</field>
+        <literalValue>Completed</literalValue>
+        <name>PSR Approved Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+</Workflow>

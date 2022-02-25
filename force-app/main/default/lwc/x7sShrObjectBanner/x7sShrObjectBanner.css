@@ -1,0 +1,63 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.object-banner-wrapper {
+  background: #efefef;
+  border-radius: 0.5rem;
+}
+.x7s-component_transparent {
+  background: transparent;
+  border-color: transparent;
+}
+.object-banner__title {
+  font-size: 1.25rem;
+  line-height: 1.15;
+  margin-top: 0.5rem;
+}
+.object-banner__title:first-child {
+  margin-top: 0;
+}
+.object-banner__title:last-child {
+  margin-bottom: 0;
+}
+.object-banner__filter-slot {
+  display: none;
+}
+.object-banner--has-slot .object-banner_primary {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+.object-banner--has-slot .object-banner__filter-slot {
+  display: block;
+  border: 1px solid #efefef;
+  border-radius: 0 0 0.5rem 0.5rem;
+  border-top: 0;
+}
+.slds-card {
+  background: #fff;
+}
+.x7s-component_featured {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 2px -1px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.x7s-component_featured .x7s-component__body {
+  padding: 1rem;
+}
+.x7s-component_featured .x7s-component__header {
+  padding: 1rem 1rem 0 1rem;
+}
+.x7s-component_featured .x7s-component__branding {
+  background: #f6f6f6;
+  padding: 0.25rem 1rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+@media (max-width: 1023px) {
+  .object-banner__search-wrapper {
+    margin: 0.5rem 0 0.25rem;
+    padding: 0;
+  }
+}

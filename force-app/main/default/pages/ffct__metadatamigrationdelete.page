@@ -1,0 +1,20 @@
+<apex:page standardController="ffct__MetadataMigration__c" extensions="ffct.MetadataMigrationController" recordSetVar="metadataList" action="{!isToolMustBeActivated}">
+    <apex:form id="metadatamigrationdelete">
+        <apex:sectionheader title="{!$Label.ffct__metadatamigration}" help="helploader?topicid=1050" />
+        <apex:pagemessages id="pgMsg" escape="false"/>
+        <apex:outputPanel id="confirmPanel" rendered="{!ShowConfirmPanel}">
+        	<apex:pageBlock >
+        		<apex:outputPanel styleClass="pbTitle" >
+                    <h2>
+                        {!$Label.ffct__massdeletemetadataconfirmation}
+                    </h2>
+                </apex:outputPanel>
+        		<apex:pageBlockbuttons location="bottom">
+        			<apex:commandbutton value="{!$Label.ffct__confirm}" action="{!massDelete}" />
+        			<apex:commandbutton value="{!$Label.ffct__cancel}" action="{!redirectToList}"/>
+        		</apex:pageBlockbuttons>
+        	</apex:pageBlock>
+        </apex:outputPanel> 
+        <apex:outputLink value="/{!$ObjectType.ffct__MetadataMigration__c}" rendered="{!!ShowConfirmPanel}">{!$Label.ffct__gotolist}</apex:outputLink>
+    </apex:form>
+</apex:page>

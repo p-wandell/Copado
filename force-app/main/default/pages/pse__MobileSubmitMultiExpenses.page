@@ -1,0 +1,367 @@
+<apex:page title="{!$Label.pse__submit_multi_expenses_title}"
+			standardController="pse__Expense__c"
+			extensions="pse.MobileSubmitMultiExpensesController"
+			lightningStylesheets="true"
+			showHeader="false" sidebar="false"
+			tabStyle="pse__Expense__c" docType="html-5.0">
+
+	<!-- This loads the svg and related xml schemas to enable correct displaying of svg images -->
+	<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en"/>
+
+	<apex:slds />
+
+	<style type="text/css">
+
+		.slds-scope .pageHeader {
+			font-size: 20px;
+			font-weight: 300;
+		}
+
+		.pageHeaderSelectionCount {
+			padding-top: 30px;
+		}
+
+        .mobileArea {
+        	position: fixed;
+	    	top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+        }
+
+        .flex-col-container {
+          display: flex; /* displays flex-items (children) inline */
+          flex-direction: column; /* stacks them vertically */
+          height: 100%;
+        }
+
+        .middleRow {
+          flex: 1;
+          overflow: auto;
+        }
+
+        .flex-row-container {
+            display: flex;
+            flex-direction: row; /* stacks them horizontally */
+            height: 100%;
+        }
+
+        .middleTop, .center, .middleBottom {
+          flex: 1;
+          overflow: auto;
+        }
+
+        .leftTop   { background: white; border-bottom: 2px solid rgb(221, 219, 218); padding: 10px; }
+        .middleTop { background: white; border-bottom: 2px solid rgb(221, 219, 218); padding: 10px; height: 75px; }
+        .rightTop  { background: white; border-bottom: 2px solid rgb(221, 219, 218); padding: 10px; }
+
+		.leftMiddle {  }
+        .center      { background: white;  }
+
+        .leftBottom   { background: white; border-top: 2px solid rgb(221, 219, 218); padding: 10px; }
+        .middleBottom { background: white; border-top: 2px solid rgb(221, 219, 218); padding: 10px; height: 60px;  }
+        .rightBottom  { background: white; border-top: 2px solid rgb(221, 219, 218); padding: 10px; }
+
+		.centeredXY {
+		  position: fixed;
+		  top: 50%;
+		  left: 50%;
+		  transform: translate(-50%, -50%);
+		}
+
+		.centeredX {
+		  position: fixed;
+		  left: 50%;
+		  transform: translate(-50%, 0%);
+		}
+
+		.centeredY {
+		  position: fixed;
+		  top: 50%;
+		  transform: translate(0%, -50%);
+		}
+
+		.expenseDetailCls td, th {
+  			padding: 4px;
+		}
+
+		.expenseSelectionCell {
+			width: 30px;
+		}
+
+		td input[type="checkbox"] {
+		    margin-left: .5rem;
+		}
+
+		.attachmentCountCls {
+			transform: translate(-1px,5px);
+		}
+
+		.projectNameBold {
+			font-weight: bold;
+		}
+
+		.custPopup {
+			background-color: white;
+			border-radius: 4px;
+			padding:11px;
+			width: fit-content;
+			margin: auto;
+		}
+		.custPopupWrapper {
+			left: calc(100% / 2);
+			padding:11px;
+			position: absolute;
+			width: 90%;
+			margin-left: calc(-90% / 2);
+			top:100px;
+		}
+
+    	.popupBackground {
+			background-color:black;
+			opacity: 0.70;
+			filter: alpha(opacity = 70);
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+		}
+
+		.custPopupLink {
+			line-height: 2;
+		}
+
+		.errorBorder {
+			border: 1px solid red;
+		}
+
+		.selectedStyle {
+			background: rgb(236, 235, 234);
+		}
+
+		.THIS.closeCross svg {
+			fill: white;
+		}
+
+		.closeCross {
+			position: absolute;
+			top: -15%;
+			right: 10%;
+		}
+
+		.clickableDots {
+			padding-bottom: 30px;
+		}
+
+	</style>
+
+	<script type="text/javascript">
+		var selectionCount = {!selectionCount};
+
+		window.$Label = window.$Label || {};
+		$Label.Selected = '{!LOWER(JSENCODE($Label.common_label_selected))}';
+
+		document.addEventListener("DOMContentLoaded", function(event) {
+			onPageLoad();
+		});
+
+		function onPageLoad() {
+			// Disable or enable the submit button if necessary
+			checkDisableSubmitButton();
+
+			// Hide any success messages after 3 seconds
+			if({!submitSuccessful}){
+				setTimeout(function(){
+					var pageMessages = document.querySelector( '[id$="resultMessagesId"]' );
+					pageMessages.innerText = "";
+				}, 3000);
+			}
+		}
+
+		function onCancel() {
+			var cancelUrl = document.querySelector('[id$="cancelredirecturl-hidden"]').value;
+
+			sforce.one.navigateToURL(cancelUrl,true);
+			return true;
+		}
+
+		function updateSelectedCount() {
+			var selectedCounter = document.querySelector('[id$="pageHeaderSelectionCountId"]');
+
+			if (selectionCount < 0) {
+				selectionCount = 0;
+			}
+
+			selectedCounter.textContent = selectionCount + ' ' + $Label.Selected;
+			checkDisableSubmitButton();
+		}
+
+		function checkDisableSubmitButton() {
+			var submitButton = document.querySelector('[id$="submitbutton"]');
+
+			// Disable the submit button if no expenses selected
+			if (selectionCount === 0) {
+				submitButton.disabled = true;
+			} else {
+				submitButton.disabled = false;
+			}
+		}
+
+		// this method allows a click on the expense row to check the selection checkbox.
+		function expenseRowClick(event, rowArea) {
+			event.preventDefault();
+			checkbox = rowArea.getElementsByTagName("input")[0];
+			checkbox.checked = !checkbox.checked;
+			checkboxClick( event, checkbox );
+		}
+
+
+		// this method handles a direct click on the selection checkbox
+		function checkboxClick(event,checkbox) {
+			var rowArea = checkbox.parentNode.parentNode.parentNode.parentNode,
+				hasError = false;
+
+			if(rowArea.className.includes("errorBorder"))
+			{
+				hasError = true;
+			}
+
+			rowArea.className = checkbox.checked ? rowArea.className + "selectedStyle " : "expenseDetailCls ";
+
+			if(hasError)
+			{
+				rowArea.className += " errorBorder ";
+			}
+
+			event.stopPropagation();
+			if (checkbox.checked) {
+				selectionCount++;
+			} else {
+				selectionCount--;
+			}
+			updateSelectedCount();
+		}
+
+		function showLoadMask( visible ) {
+			var loadMask = document.querySelector( '[id$="load-mask"]' );
+			loadMask.style.display = visible ? 'block' : 'none';
+		}
+
+		function showPopup(visible, expenseId) {
+			var popUp = document.querySelector( '[id$="modalPopUp"]' ),
+				expId = document.querySelector( '[id$="expenseId-hidden"]' );
+			expId.value = expenseId;
+			popUp.style.display = visible ? 'block' : 'none';
+			event.preventDefault();
+			event.stopPropagation();
+		}
+
+	</script>
+
+
+   <apex:form id="mainForm">
+        <div class="mobileArea">
+	        <div class="flex-col-container">
+	            <header>
+	                <div class="flex-row-container">
+	                    <div class="leftTop">
+							<apex:commandButton styleClass="slds-button slds-button_neutral centeredXY" value="{!$Label.pse__common_label_cancel}" onclick="onCancel();"/>
+	                    </div>
+	                    <div class="middleTop">
+							<h2 class="pageHeader centeredX">{!$Label.pse__submit_multi_expenses_title}</h2>
+							<div id="pageHeaderSelectionCountId"
+								class="slds-text-align_center
+								pageHeaderSelectionCount">{!selectionCount} {!LOWER($Label.common_label_selected)}
+							</div>
+	                    </div>
+	                    <div class="rightTop">
+							<apex:commandButton id="submitbutton" reRender="" onclick="showLoadMask(true);" action="{!submitExpense}" styleClass="slds-button slds-button_brand centeredXY"
+							value="{!$Label.pse__common_label_submit}"/>
+	                    </div>
+	                </div>
+	            </header>
+
+				<apex:pageMessages id="resultMessagesId"/>
+
+	            <div id="resultId" class="middleRow">
+	                <div class="flex-row-container">
+ 						<div class="leftMiddle"></div>
+						<div class="center">
+
+							<apex:repeat value="{!selectableExpenseList}" var="expense" >
+								<table class="expenseDetailCls {!if(expense.hasError = true, 'errorBorder', '')} {!if(expense.selected = true, 'selectedStyle ', '')}" onclick="expenseRowClick(event,this);" >
+									<tr>
+										<td class="expenseSelectionCell" rowspan="3" >
+											<apex:inputCheckbox value="{!expense.selected}" onclick="checkboxClick(event,this);" />
+										</td>
+										<td colspan="2">
+											<!-- show assignment name if set else show project name -->
+											<apex:outputText value="{!expense.exp.Project__r.Name}" styleClass="projectNameBold"/><br/>
+											<apex:outputText value="{!expense.exp.Assignment__r.Name}" rendered="{!expense.exp.Assignment__r.Name!=''}"/>
+										</td>
+										<td rowspan="2">
+											<apex:outputLabel styleClass="slds-icon_container slds-file-selector__body slds-float--right slds-align_absolute-center clickableDots"
+											 onclick="showPopup(true, '{!expense.exp.Id}');">
+												<svg class="slds-icon slds-icon-text-default slds-align_absolute-center slds-icon_small" aria-hidden="true">
+													<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#threedots_vertical"></use>
+												</svg>
+											</apex:outputLabel>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<apex:outputText value="{!expense.exp.pse__Type__c}"/>
+										</td>
+										<td class="slds-float_right">
+											<apex:outputText value="{!expense.exp.pse__Amount__c}"/>&nbsp;
+											<apex:outputText value="{!expense.exp.CurrencyIsoCode}"/>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<apex:outputField value="{!expense.exp.pse__Expense_Date__c}" />
+										</td>
+										<td>
+											<apex:outputLabel styleClass="slds-icon_container slds-file-selector__body slds-float--right slds-align_absolute-center"
+											 rendered="{!expense.fileCount > 0}">
+												<svg class="slds-icon slds-icon-text-default slds-align_absolute-center slds-icon_small" aria-hidden="true" title="attachment">
+													<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#attach"></use>
+													<p class="attachmentCountCls">{!expense.fileIndicator}</p>
+												</svg>
+											</apex:outputLabel>
+										</td>
+									</tr>
+								</table>
+								<div class="slds-border_bottom"/>
+							</apex:repeat>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+		</div>
+
+		<div hidden="true">
+			<!-- Redirection URL to be used when the user presses Cancel -->
+			<apex:input id="cancelredirecturl-hidden" value="{!cancelRedirectUrl}" required="false"/>
+			<apex:input id="expenseId-hidden" value="{!selectedExpenseId}" required="false"/>
+		</div>
+		<c:DefaultLoadMask componentId="load-mask" />
+		<apex:outputPanel id="modalPopUp" style="display: none;">
+			<apex:outputPanel styleClass="popupBackground" layout="block" />
+			<div class="custPopupWrapper">
+				<svg class="slds-icon slds-align_absolute-center slds-icon_small closeCross" aria-hidden="true" onclick="showPopup(false, null);" rerender="modalPopUp">
+					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+				</svg>
+				<apex:outputPanel styleClass="custPopup" layout="block">
+					<apex:commandLink value="{!$Label.pse__common_label_edit_header}" styleClass="custPopupLink" action="{!openForEdit}" onclick="showLoadMask(true);" />
+					<br/>
+					<apex:commandLink value="{!$Label.pse__select_all_expenses_for_same_assignment}" styleClass="custPopupLink" action="{!selectAllForAssignment}" onclick="showLoadMask(true);"/>
+					<br/>
+					<apex:commandLink value="{!$Label.pse__select_all_expenses_for_same_project}" styleClass="custPopupLink" action="{!selectAllForProject}" onclick="showLoadMask(true);"/>
+				</apex:outputPanel>
+			</div>
+		</apex:outputPanel>
+	</apex:form>
+
+</apex:page>

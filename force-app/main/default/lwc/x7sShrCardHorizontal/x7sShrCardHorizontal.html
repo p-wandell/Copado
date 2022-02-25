@@ -1,0 +1,41 @@
+<template>
+    <div class={componentClass} style={componentStyle}>
+        <div class="card__image" style={imageStyle} if:true={showImage}>
+            <c-x7s-shr-card-image 
+                avatar-alignment={calculatedAvatarAlignment}
+                avatar-size={avatarSize}
+                avatar-border-radius={avatarBorderRadius}
+                emphasize-background={emphasizeAvatarBackground}
+                hide-avatar-background={hideAvatarBackground}
+                image-background-size={imageBackgroundSize}
+                image-background-color={imageBackgroundColor}
+                image-src={imageSrc}
+                image-label={imageLabel}
+                image-placeholder-icon={imagePlaceholderIcon}
+                icon-opacity={iconOpacity}
+                icon-color={iconColor}
+                use-avatar={useAvatar}
+            ></c-x7s-shr-card-image>
+        </div>
+        <div class={contentClass}>
+            <div class="card__body">
+                <c-x7s-shr-card-body
+                    description={description}
+                    description-lines={descriptionLines}
+                    ontitleclick={handleTitleClick}
+                    record-id={recordId}
+                    text-align={textAlign}
+                    title={title}
+                    title-lines={titleLines}
+                    topics={topics}
+                    use-href-only={useHrefOnly}
+                    href={href}
+                ></c-x7s-shr-card-body>
+                <slot></slot>
+            </div>
+            <div class={footerClass} style={footerStyle} if:true={showFooter}>
+                <slot name="footer"></slot>
+            </div>
+        </div>
+    </div>
+</template>

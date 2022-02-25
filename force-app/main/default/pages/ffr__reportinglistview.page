@@ -1,0 +1,49 @@
+<apex:page controller="ffr.ReportingListViewController" tabStyle="Reporting__tab" lightningStylesheets="true">
+    <style type="text/css">.ffdcTable thead tr{font-size:1em;}.hiddensubmit{display:none}</style>
+    <!-- Header --> 
+    <apex:sectionHeader title="{!$Label.ffr__reportinglistviewpagesubtitle}" subtitle="{!$Label.ffr__reportinglistviewpagehome}" help="{!helpLink}"/>
+    <apex:form id="theForm">
+        <apex:pageBlock >
+			<apex:pageMessages />
+	        <apex:pageBlockTable value="{!ReportingDefinitionViews}" var="reporting" styleClass="ffdcTable" rendered="{!!HasMessages}">
+	        	<apex:facet name="footer">
+	                   <apex:outputPanel layout="block">
+	                       <div class="paginator" style="text-align:left;padding-left:5px;">
+	                           <span class="pages">
+	                               {!$Label.ReportingListViewPagePage}&nbsp;<span class="page">{!pageNumber}</span>&nbsp;{!$Label.ReportingListViewPagePageOf}&nbsp;<span class="page">{!numberOfPages}</span>
+	                           </span>
+	                           <apex:outputPanel styleClass="prevNextLinks">
+	                               <apex:outputPanel styleClass="prevNext" rendered="{!hasPrevious}">
+	                                   <apex:commandLink id="previous" action="{!previous}"><img class="prev" src="/s.gif"></img>{!$Label.ReportingListViewPagePrevious}</apex:commandLink>
+	                               </apex:outputPanel>
+	                               
+	                               <apex:outputPanel styleClass="prevNext" rendered="{!!hasPrevious}">
+	                               	   <apex:outputPanel >
+	                                   		<img class="prevoff" src="/s.gif"></img>{!$Label.ReportingListViewPagePrevious}
+	                                   </apex:outputPanel>
+	                               </apex:outputPanel>
+	                               
+	                               <apex:outputPanel styleClass="prevNext" rendered="{!hasNext}">
+	                                   <apex:commandLink id="next" action="{!next}">{!$Label.ReportingListViewPagePageNext}<img class="next" src="/s.gif"></img></apex:commandLink>
+	                               </apex:outputPanel>
+	                               
+	                               <apex:outputPanel styleClass="prevNext" rendered="{!!hasNext}">
+	                               		<apex:outputPanel >
+	                               			{!$Label.ReportingListViewPagePageNext}<img class="nextoff" src="/s.gif"></img>
+	                               		</apex:outputPanel>
+	                               </apex:outputPanel>
+	                           </apex:outputPanel>
+	                       </div>
+	                   </apex:outputPanel>
+	            </apex:facet>  
+       	       <apex:column >
+               		<apex:facet name="header">{!$Label.ffr__reportinglistviewpageaction}</apex:facet>  
+                   		<a href="{!reporting.URLRunReport}">{!$Label.ffr__reportinglistviewpagerun}</a>
+               </apex:column>
+               <apex:column value="{!reporting.ReportingDefinition.Name}"/>
+               <apex:column value="{!reporting.ReportingDefinition.ffr__Description__c}"/>
+		        <apex:column value="{!reporting.ReportingDefinition.ffr__ReportingTemplate__c}"/>
+	    	</apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

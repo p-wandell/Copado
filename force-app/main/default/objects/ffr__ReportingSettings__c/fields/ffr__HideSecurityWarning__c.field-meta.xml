@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__HideSecurityWarning__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>This custom field allow user to hide an informative message in case there are non accessible fields for the user. This message appears at the top of the report listing the non accessible fields</description>
+    <externalId>false</externalId>
+    <label>Hide Security Warning</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

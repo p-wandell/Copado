@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Sent to an admin after they have installed the PMC app.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>PMC Welcome</name>
+    <style>none</style>
+    <subject>Welcome to PMC! Here are the next steps.</subject>
+    <textOnly>Congratulations!
+		
+		You’re on your way to grow your business and track your marketing. 
+
+		Here are some easy next steps to get you and your team up and running with Partner Marketing Center (PMC)!
+
+		Use This Easy to Follow Set-Up Checklist
+		Follow these simple steps in this Admin-specific training on Partner Learning Camp to ensure to maximize Partner Marketing Center for your team.You’ll learn how to set up your marketing and reporting tools and more!!
+		Go to Admin PMC Training - https://partnerlearningcamp.salesforce.com/login?ec=302&amp;startURL=%2Fs%2Fbrowse-catalog
+
+
+		Connect Your Team With These Self-Guided Courses
+		These quick, easy to follow courses show your team how to use PMC content to market your business and quickly set up reports for better lead insights.
+		Go to Marketing/Sales PMC Training - https://partnerlearningcamp.salesforce.com/login?ec=302&amp;startURL=%2Fs%2Fbrowse-catalog 
+
+
+		Join Us on Chatter
+		Stay up-to-date on the latest Partner Marketing Center features, newest content updates, marketing tips, and training. Chatter is also a great way to connect with other PMC users and subject matter experts!
+		Visit PMC Chatter - https://partners.salesforce.com/_ui/core/chatter/groups/GroupProfilePage?g=0F93A000000LgVm
+
+		That’s it!
+
+		Cheers,
+		The PMC Team
+
+		© 2020 salesforce.com, inc. All rights reserved.
+		Salesforce.com, Inc. Salesforce Tower, 415 Mission St, 3rd Floor, San Francisco, CA 94105</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

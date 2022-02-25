@@ -1,0 +1,40 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+  -->
+
+<template>
+    <ul>
+      <template if:true={isParentId}>
+        <li style={linkStyle}><a onclick={handleAllClick}> All </a></li>
+      </template>
+         <!--<c-x7s-files-breadcrumb-item folder-id={workspace.Id}
+                                       name={workspace.Name}
+                                       onclick={handleClick}
+                                       if:true={workspace.Name}
+        ></c-x7s-files-breadcrumb-item> -->
+        <c-x7s-files-breadcrumb-item  if:true={showLevel4}
+                                        folder-id={level4Id}
+                                        name={level4Name}
+                                        onclick={handleClick}
+                                        list-id={listId}
+        ></c-x7s-files-breadcrumb-item>
+        <c-x7s-files-breadcrumb-item  if:true={showLevel3}
+                                        folder-id={level3Id}
+                                        name={level3Name}
+                                        onclick={handleClick}
+                                        list-id={listId}
+        ></c-x7s-files-breadcrumb-item>
+        <c-x7s-files-breadcrumb-item  if:true={showLevel2}
+                                        folder-id={level2Id}
+                                        name={level2Name}
+                                        onclick={handleClick}
+                                        list-id={listId}
+        ></c-x7s-files-breadcrumb-item>
+        <c-x7s-files-breadcrumb-item  if:true={showLevel1}
+                                        folder-id={level1Id}
+                                        name={level1Name}
+                                        onclick={handleClick}
+                                        list-id={listId}
+        ></c-x7s-files-breadcrumb-item>
+    </ul>
+</template>

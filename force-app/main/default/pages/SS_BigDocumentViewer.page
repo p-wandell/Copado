@@ -1,0 +1,19 @@
+<apex:page standardController="Big_Document__c" showHeader="true" sidebar="true">
+    <apex:form >
+        <apex:pageBlock mode="maindetail" title="Document">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Edit" action="{!edit}"/>
+                <apex:commandButton value="Delete" action="{!delete}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+                <apex:outputField value="{!Big_Document__c.Name__c}"/>
+                <apex:outputField value="{!Big_Document__c.CreatedById}"/>
+                <apex:outputField value="{!Big_Document__c.CreatedDate}"/>
+                <apex:outputField value="{!Big_Document__c.LastModifiedDate}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <apex:outputText value="{!Big_Document__c.Content__c}" escape="false"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

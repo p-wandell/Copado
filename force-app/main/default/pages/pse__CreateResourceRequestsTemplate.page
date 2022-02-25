@@ -1,0 +1,188 @@
+<!--
+	Use a list controller in order to use this for a custom list button on the Resource Request related list.
+	This page is meant to be a template for the creation of requests for the opportunity and project pages.
+ -->
+<apex:page title="{!$Label.pse__create_res_req_title}" standardController="pse__Resource_Request__c" recordSetVar="resourceRequests"
+ extensions="pse.CreateResourceRequestsController" id="templatePage" action="{!init}" lightningStylesheets="true">
+
+	<script type="text/javascript">
+		// toggles the status div that displays a generic progress message and spinning icon
+		function toggleStatus(show)
+		{
+			var aDiv = document.getElementById("ajaxStatusDiv");
+			if (aDiv != null)
+				aDiv.style.display = show ? "block" : "none";
+		}
+
+		function deleteRow(deleteComp)
+		{
+			if (confirm("{!JSINHTMLENCODE($Label.Common_Label_Confirmation_Row_Delete)}"))
+			{
+				document.getElementById(deleteComp).value = "true";
+				toggleStatus(true);
+				jsDeleteRow();
+			}
+		}
+
+		function onAddClick()
+		{
+			toggleStatus(true);
+			jsAdd();
+		}
+
+		function onAddSkillClick()
+		{
+			toggleStatus(true);
+		}
+
+		function onSaveClick()
+		{
+			toggleStatus(true);
+			jsSave();
+		}
+
+		function processReturnedValue(navigateToUrl, navigateToURLAddress)
+		{
+			/* just redirecting to the record will not fire a refresh event in LEX. So if we create new resource requests and navigate to the project/opportunity , the new
+			 * resource request is not displayed in the related list.
+			 * sforce.one.back takes a "refresh" parameter.
+			 * jsSave() navigates users back to the project/opportunity record from where this page has been called . So we can go back using sforce.one.back.
+			 * Only problem is sforce.one.back([refresh]) - refreshes the page IF POSSIBLE . So it may fail few times. Its a SF issue.
+			 */
+
+			//navigatetoUrl will be false when there is any error on the page.
+			if (navigateToUrl) {
+				if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)) {
+					// If user access from Edge browser then use given method, because history.back depends on state and in Edge
+					// state maintains to resource request page due to project sumbmission.
+					if (window.navigator.userAgent.indexOf('Edge') !== -1) {
+						sforce.one.navigateToSObject(navigateToURLAddress);
+					} else {
+						// in case of IE below edge and chrome and firefox, sforce one back method working fine and trigger refresh event.
+						sforce.one.back(true);
+					}
+					// This method is use to forcely refresh the cache state in lightning.
+					Sfdc.canvas.publisher.publish({ name: "publisher.refresh", payload: { refresh: "true" } });
+				}
+				else {
+					// For classic redirection handle client side.
+					window.location.href = '/' + navigateToURLAddress;
+				}
+			}
+		}
+
+		// keep track of the current primary skill so we can quickly switch it's value to false
+		// when a new skill is made primary. note that it should be ok not to update this dynamically
+		// on a rerender because at worst we would just be re-setting an already false value to false again
+		var currentPrimarySkillHiddenId = null;
+		var defaultNoPrimarySkill = "{!defaultNoPrimarySkill}";
+
+		function updatePrimarySkillRadio(tableId, newHiddenId)
+		{
+
+			// NOTE: tableId includes the row number
+			var newHiddenId = tableId + ":primarySkillHidden";
+			tableId += "";
+			var rowNo = tableId.substring(tableId.lastIndexOf(":") + 1);
+			var primarySkillRadio = document.getElementsByName("primaryRadio");
+			if (defaultNoPrimarySkill == 'true') {
+				var hiddenElement = document.getElementById(newHiddenId);
+				if (hiddenElement.value == 'true') {
+					hiddenElement.value = "false";
+					primarySkillRadio[rowNo].checked = false;
+				} else {
+					hiddenElement.value = "true";
+					primarySkillRadio[rowNo].checked = true;
+				}
+			} else {
+				document.getElementById(newHiddenId).value = "true";
+			}
+			if (currentPrimarySkillHiddenId != newHiddenId &&
+				document.getElementById(currentPrimarySkillHiddenId) != null)
+				document.getElementById(currentPrimarySkillHiddenId).value = "false";
+
+			currentPrimarySkillHiddenId = newHiddenId;
+		}
+
+		function onCancelClick()
+		{
+			jsCancel();
+		}
+
+	</script>
+
+	<!-- To be used for a section header  -->
+	<apex:insert name="sectionHeader" />
+
+	<apex:pageMessages id="messageSection" />
+
+
+	<!-- include this panel in the rerender attribute in order to hide the status div when the operation has completed -->
+	<apex:outputPanel id="resetStatusPanel">
+		<script type="text/javascript">toggleStatus(false);</script>
+	</apex:outputPanel>
+
+	<apex:form id="mainForm" html-data-ffxtype="resourceRequestResults">
+
+		<apex:actionFunction name="jsDeleteRow" reRender="resRequestTable,messageSection,resetStatusPanel" action="{!deleteRow}" />
+		<apex:actionFunction name="jsSave" reRender="messageSection,resetStatusPanel,rrRowPB" action="{!save}" oncomplete="processReturnedValue({!navigateToUrl}, '{!navigateToURLAddress}');" />
+		<apex:actionFunction name="jsCancel" reRender="messageSection" action="{!cancel}" immediate="true" />
+
+		<apex:pageBlock id="rrRowPB" title="{!$Label.pse__create_res_req_label_new_resource_requests}" rendered="{!displayContent}">
+			<apex:pageBlockTable id="resRequestTable" value="{!requestWrappers}" var="reqWrapper" cellspacing="0" cellpadding="0" rowClasses="odd,even"
+			 styleClass="tableClass" border="0">
+				<apex:column >
+					<!-- to delete, the js function updates the hidden field. the controller will loop through
+				 and find the wrapper marked for deletion.  -->
+					<apex:image id="deleteIcon" value="{!URLFOR($Resource.pse__appirioCommon, '/delete-icon.gif')}" height="15" width="15" onclick="deleteRow('{!$Component.markedForDelete}')" />
+					<apex:inputHidden value="{!reqWrapper.isMarkedForDelete}" id="markedForDelete" />
+				</apex:column>
+
+				<apex:repeat value="{!createRRFromProjOrOppColumns}" var="fName">
+					<apex:column headerValue="{!fName.Label}" style="{!IF(reqWrapper.isError,'color:red;','')}">
+						<apex:outputField value="{!reqWrapper.req[fName]}" />
+					</apex:column>
+				</apex:repeat>
+				<apex:column headerValue="{!$Label.pse__create_res_req_label_skils_certs}" style="{!IF(reqWrapper.isError,'color:red;','')}">
+					<apex:outputText value="{!reqWrapper.skillsDescription}" />
+				</apex:column>
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+
+		<div id="ajaxStatusDiv" style="display:none;height:32px;" align="center">
+			<apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'progress-rotation.gif')}" />
+			<span style="line-height:32px;vertical-align:top;margin-left:6px;">{!$Label.pse__common_message_processing_wait}</span>
+		</div>
+
+	</apex:form>
+
+	<apex:pageBlock title="{!$Label.pse__create_res_req_label_add_resources}" mode="edit" id="resourceBlock" rendered="{!displayContent}">
+		<apex:pageBlockButtons >
+			<input type="button" value="{!$Label.common_label_add}" onclick="onAddClick()" class="btn" />
+		</apex:pageBlockButtons>
+
+		<!-- keep a separate form from the bottom section to avoid required field validation error when
+			performing actions in the bottom section. This form includes the skills panel in order
+			to allow an "Add" action to capture the currently entered skill that hasn't yet been committed
+			using the Add Skill button. In order to enable this functionality and avoid required field validation errors
+			the required fields should be defaulted with data or set to not required.  -->
+		<apex:form id="addForm">
+
+			<apex:actionFunction name="jsAdd" reRender="newResourceSection,skillFilter,resRequestTable,messageSection,resetStatusPanel"
+			 action="{!addResourceRequests}" />
+
+			<!-- this section is for rendering the fields for a new resource  -->
+			<apex:insert name="resourcesSection">
+				<!-- shown for reference only - this section should be overridden  -->
+				<apex:pageBlockSection title="{!$Label.pse__create_res_req_label_resources}" columns="2" id="newResourceSection" collapsible="false" />
+			</apex:insert>
+
+			<!-- Note: need to put the skills component in a action region - so the post back work correctly on it -->
+			<apex:actionRegion >
+				<c:SkillFilter id="skillFilter" parentComponent="{!this}" />
+			</apex:actionRegion>
+		</apex:form>
+
+	</apex:pageBlock>
+
+</apex:page>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Provides the ability to edit Project field SOW Budget ($), when Opportunity field Ops Override is checked.</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>pse__Proj__c.SOW_Budget__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Project SOW Budget ($) Access</label>
+    <license>Salesforce</license>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>pse__Proj__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <tabSettings>
+        <tab>pse__Proj__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

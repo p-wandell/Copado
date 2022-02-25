@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Featured Topics</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Featured Topics</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" default="Featured Topics" type="string" label="Title"/>
+            <property name="titleAlign" type="String" label="Title Alignment" datasource="left,center,right"/>
+            <property name="viewType" label="View type" type="string" description="Choose the type of layout to use for your featured topics." datasource="Tile,List,Icon"/>
+            <property name="topicFilterList" type="String" default="" label="Custom Topic IDs" description="Add a comma delimited list of topic IDs in the order you wish to display them. The IDs must be for an existing featured topic. Check your browser console for a list of the provided IDs."/>
+            <property name="animateHover" type="boolean" label="Animate tile hover state" description="If checked, will enhance the UI with animations for hover and focus states."/>
+            <property name="itemsPerRowSmall" label="Items Per Row - Mobile" type="string" description="Shows this many items in each row for Mobile-sized screens. 'auto' may be useful if the amount of items to be shown aren't divisible by 12." datasource="1,2,3,4,6,auto" default="2"/>
+            <property name="itemsPerRowMedium" label="Items Per Row - Tablet" type="string" description="Shows this many items in each row for Tablet-sized screens. 'auto' may be useful if the amount of items to be shown aren't divisible by 12." datasource="1,2,3,4,6,auto" default="3"/>
+            <property name="itemsPerRowLarge" label="Items Per Row - Desktop" type="string" description="Shows this many items in each row for Desktop-sized screens. 'auto' may be useful if the amount of items to be shown aren't divisible by 12." datasource="1,2,3,4,6,auto" default="4"/>
+            <property name="itemSpacing" label="Spacing between items (in px)" type="string" description="Enter the spacing between items in pixels as an integer. (i.e., '10', for 10 pixels)" default="10"/>
+            <property name="verticalAlignment" label="Vertical Text Alignment" type="string" description="The Vertical alignment of the text in 'Tile' view." datasource="Start,Center,End"/>
+            <property name="horizontalAlignment" label="Horizontal Text Alignment" type="string" description="The Horizontal alignment of the text in 'Tile' view." datasource="Left,Center,Right"/>
+            <property name="imageWidth" label="Icon or Image Width" type="string" description="For 'Tile' or 'Icon' view, enter the width (in px, em, %) of the image you are using" default="100%"/>
+            <property name="imageHeight" label="Icon or Image Height" type="string" description="For 'Tile' or 'Icon' view, enter the height (in px, em, %) of the image you are using" default="90px"/>
+            <property name="imageBorderRadius" label="Border radius of the image" type="string" description="Use a percentage like '50%' for a circle, or '0px' for a square."/>
+            <property name="titleColor" label="Topic title color" type="string" description="Use hex, RGB, or RGBA color values. Leave blank for default."/>
+            <property name="titleColorHover" label="Topic title color - hover" type="string" description="Use hex, RGB, or RGBA color values. Leave blank for default."/>
+            <property name="hideDescription" label="Hide topic description" type="boolean" description="If checked, will show the topic description. Long descriptions may cause display issues in 'Tile' view." default="false"/>
+            <property name="descriptionColor" label="Topic description color" type="string" description="Use hex, RGB, or RGBA color values. Leave blank for default."/>
+            <property name="descriptionColorHover" label="Topic description color - hover" type="string" description="Use hex, RGB, or RGBA color values. Leave blank for default."/>
+            <property name="hideOverlay" label="Hide image overlay" type="boolean" description="On the 'Tile' layout, de-selecting will darken the background image in order to increase text contrast and readability." default="false"/>
+            <property name="overlayColor" label="Overlay color" type="string" description="Use hex, RGB, or RGBA color values. RGBA is best for transparency. Leave blank for default." default="rgba(0,0,0,.3)"/>
+            <property name="overlayColorHover" label="Overlay color - hover" type="string" description="Use hex, RGB, or RGBA color values. RGBA is best for transparency. Leave blank for default." default="rgba(0,0,0,.6)"/>
+            <property name="customClass" label="Custom Class Name" type="string" description="Custom CSS class name. Usually remains blank."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

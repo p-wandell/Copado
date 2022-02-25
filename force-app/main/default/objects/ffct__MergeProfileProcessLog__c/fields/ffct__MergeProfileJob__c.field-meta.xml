@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__MergeProfileJob__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Merge Profile Job</label>
+    <referenceTo>ffct__MergeProfileJob__c</referenceTo>
+    <relationshipLabel>Merge Profile Process Logs</relationshipLabel>
+    <relationshipName>MergeProfileProcessLogs</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+
+.slds-card .slds-avatar {
+    border: 4px solid var(--lwc-colorBorder);
+}
+.slds-avatar {
+    max-width: 80%;
+    border-radius: 50%;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+}
+.slds-card__header {
+    padding: 0;
+}
+header > div {
+    position: absolute;
+    right: 0;
+    bottom: 50%;
+    left: 0;
+    overflow: hidden;
+    height: 50%;
+}
+header > div > div {
+    width: 125%;
+    height: 125%;
+    background-position: bottom left;
+    background-size: cover;
+    filter: blur(10px);
+}
+hr {
+    width: 40%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 30%;
+}

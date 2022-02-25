@@ -1,0 +1,326 @@
+<apex:page standardController="pse__Assignment__c" recordsetvar="assignments" extensions="pse.ResourceStafferController" tabStyle="Search_Resources__tab"
+ title="{!$Label.pse__assignment_label_assign_resource_to_project}" lightningStylesheets="true">
+	<style>
+		div#wait {
+			width: 100%;
+			height: 100%;
+			position: {!IF($User.UIThemeDisplayed=='Theme4d', 'fixed', 'absolute')};
+		}
+
+		div#loading {
+			width: 100%;
+			height: 100%;
+			position: {!IF($User.UIThemeDisplayed=='Theme4d', 'fixed', 'absolute')};
+			top: 0px;
+		}
+
+		img.sortIndicator {
+			padding-left: 5px;
+		}
+
+		span.modified {
+			color: red;
+		}
+
+		img.closeIcon {
+			display: none;
+		}
+
+		.billRatePanel .requiredInput {
+			display: inline-block;
+		}
+
+		#resourceResultsTable th+th {
+			border-left: 1px solid #dedede;
+		}
+
+		.detailList .data2Col {
+			width: 82% !important;
+		}
+
+		/*This is fix for slds alignment issue in pageBlockSection with 1 column layout*/
+
+		table#scheduleStrategy td {
+			vertical-align: middle;
+		}
+
+		.slds-vf-scope .errorMsg {
+			display: block;
+		}
+
+ 	</style>
+
+	<script type="text/javascript">
+		function setVisible(name, visible) {
+			var e = document.getElementById(name);
+			if (e != null) {
+				if (visible) {
+					e.setAttribute("style", "display: inline-block");
+					e.style.cssText = "display: inline-block";
+				} else {
+					e.setAttribute("style", "display: none");
+					e.style.cssText = "display: none";
+				}
+			}
+		}
+
+		function updateCostRate(id, id2, id3, optionValue, value) {
+			setVisible(id, !value);
+			setVisible(id2, !value);
+
+			if (optionValue == 'Project') {
+				setVisible(id3, !value);
+			} else {
+				setVisible(id3, false);
+			}
+		}
+
+		function hideProjectCurrency(value, id, isChecked) {
+			if (!isChecked) {
+				if (value == 'Resource') {
+					document.getElementById(id).style.display = 'none';
+				} else {
+					document.getElementById(id).style.display = '';
+				}
+			}
+		}
+
+		function wait(val) {
+			setVisible('loading', val);
+			setVisible('wait', val);
+		}
+
+		function stopRKey(evt) {
+			var evt = (evt) ? evt : ((event) ? event : null);
+			var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+			if ((evt.keyCode == 13) && ((node.type == "text") || (node.type == "checkbox") || (node.type == "select-one"))) { return false; }
+		}
+
+		document.onkeypress = stopRKey;
+	</script>
+
+	<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+	<div id="loading" class="waitingSearchDiv" style="display: none">
+		<div id="waitingHolder" class="waitingHolder">
+			<img class="waitingImage" src="/img/loading.gif" />
+			<span class="waitingDescription">{!$Label.common_loading_label}</span>
+		</div>
+	</div>
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<apex:pageMessages id="msgs" />
+	<apex:form >
+		<apex:pageBlock id="assignmentDetails" title="{!$Label.pse__assignment_label_assignment_details}" mode="edit" rendered="{!NOT isDisabled}">
+			<apex:pageBlockSection title="{!$Label.pse__assignment_label_project_information}" columns="2">
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_project_name}" />
+					<apex:outputLink value="../{!project.Id}" target="_blank">{!project.Name}</apex:outputLink>
+				</apex:pageBlockSectionItem>
+				<apex:repeat value="{!$ObjectType.pse__Proj__c.FieldSets.pse__AssignResourceProjectInfoSectionFieldSet}" var="f">
+					<apex:outputField value="{!project[f]}" rendered="{!f.Label != $ObjectType.pse__Proj__c.Fields.Name.Label}" />
+				</apex:repeat>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="{!$Label.pse__assignment_label_assignment_info}" columns="2" id="assignmentDetailSection">
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_resource}" for="resource" />
+					<apex:outputPanel >
+						<c:ResourceLookup required="true" value="{!assignment.pse__Resource__c}" rendered="{!assignResourceCustomLookup}" lookupContainerId="{!$Component.LookupContainer}" />
+						<apex:inputField id="resource" value="{!assignment.pse__Resource__c}" required="true" rendered="{!NOT(assignResourceCustomLookup)}" />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem id="costRateSectionItem">
+					<apex:outputLabel value="{!$Label.pse__assignment_label_use_default_cost_rate}" for="defaultCostRate" />
+					<apex:outputPanel >
+						<apex:inputField id="defaultCostRate" value="{!assignment.pse__Use_Resource_Default_Cost_Rate__c}" style="margin-top:2px;" onclick="updateCostRate('{!$Component.costRateAmountSectionItem.costRateAmount}', '{!$Component.costRateAmountSectionItem.costRateAmountLabel}',
+												'{!$Component.costRateAmountSectionItem.costRateCurrency}', document.getElementById('{!$Component.costRateOptions}').value, this.checked);" />
+						<apex:selectList id="costRateOptions" styleClass="slds-m-left_xx-small" value="{!selectedCostRateOption}" title="{!$Label.pse__assignment_label_cost_rate_currency_options}"
+						 size="1" rendered="{!MULTICURRENCY_ENABLED}" onChange="hideProjectCurrency(this.value, '{!$Component.costRateCurrency}', document.getElementById('{!$Component.defaultCostRate}').checked)">
+							<apex:selectOptions value="{!costRateOptions}" />
+						</apex:selectList>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_role}" for="role" rendered="{!NOT(isRoleHidden)}" />
+					<apex:inputField value="{!assignment.pse__Role__c}" required="{!isRoleRequiredOnCreation}" rendered="{!NOT(isRoleHidden)}" />
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_milestone}" for="milestone" />
+					<apex:outputPanel >
+						<c:MilestoneLookup isRequired="{!isMilestoneCustomLookupRequired}" value="{!assignment.pse__Milestone__c}" projectId="{!assignment.pse__Project__c}"
+						 rendered="{!assignMilestoneCustomLookup}" lookupContainerId="{!$Component.LookupContainer}" />
+						<apex:inputField id="milestone" value="{!assignment.pse__Milestone__c}" rendered="{!NOT(assignMilestoneCustomLookup)}" />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_bill_rate}" for="billRate" />
+					<apex:outputPanel styleClass="billRatePanel">
+						<apex:inputField id="billRate" value="{!assignment.pse__Bill_Rate__c}" required="true" rendered="{!project.pse__Is_Billable__c == true}"
+						 styleClass="billRate" />
+						<div class="dataCol" style="width:auto; display: inline-block; vertical-align:top; padding-left:0;">
+							<apex:outputText value="{!assignment.CurrencyIsoCode}" rendered="{!MULTICURRENCY_ENABLED}" />
+						</div>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem id="costRateAmountSectionItem">
+					<apex:outputLabel id="costRateAmountLabel" value="{!$Label.pse__assignment_label_cost_rate_amount}" for="costRateAmount" style="{!IF(assignment.pse__Use_Resource_Default_Cost_Rate__c, 'display: none', '')}" />
+					<apex:outputPanel >
+						<apex:inputField id="costRateAmount" value="{!assignment.pse__Cost_Rate_Amount__c}" style="{!IF(assignment.pse__Use_Resource_Default_Cost_Rate__c, 'display: none', '')}"
+						 styleClass="costRateAmount" />
+						<div class="dataCol" style="width:auto; display:inline-block; padding-left:0;">
+							<apex:outputText id="costRateCurrency" value="{!project.CurrencyIsoCode}" style="{!IF(assignment.pse__Use_Resource_Default_Cost_Rate__c, 'display: none', '')}"
+							 styleClass="costRateCurrency" />
+						</div>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_start_date}" for="startDate" />
+					<apex:inputField id="startDate" value="{!schedule.pse__Start_Date__c}" />
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_end_date}" for="endDate" />
+					<apex:inputField id="endDate" value="{!schedule.pse__End_Date__c}" />
+				</apex:pageBlockSectionItem>
+
+				<apex:inputField value="{!assignment.pse__Planned_Hours__c}" required="false" />
+				<apex:inputField value="{!assignment.pse__Is_Billable__c}" rendered="{!project.pse__Is_Billable__c}" />
+				<apex:inputField value="{!assignment.pse__Planned_Bill_Rate__c}" rendered="{!SHOW_PLANNED_BILL_RATE}" />
+
+				<apex:pageBlockSectionItem id="hiddenAssProjLookup">
+					<apex:inputField value="{!assignment.pse__Project__c}" style="display : none" />
+				</apex:pageBlockSectionItem>
+
+				<apex:repeat value="{!AssignmentInformationFieldsAfterFilter}" var="f">
+					<apex:inputField value="{!assignment[f]}" required="{!OR(f.required,f.DBRequired)}" />
+				</apex:repeat>
+
+			</apex:pageBlockSection>
+
+			<script>
+				updateCostRate('{!$Component.assignmentDetailSection.costRateAmountSectionItem.costRateAmount}', '{!$Component.assignmentDetailSection.costRateAmountSectionItem.costRateAmountLabel}', '{!$Component.assignmentDetailSection.costRateAmountSectionItem.costRateCurrency}', document.getElementById('{!$Component.assignmentDetailSection.costRateSectionItem.costRateOptions}').value, document.getElementById('{!$Component.assignmentDetailSection.costRateSectionItem.defaultCostRate}').checked);
+				hideProjectCurrency(document.getElementById('{!$Component.assignmentDetailSection.costRateSectionItem.costRateOptions}').value, '{!$Component.assignmentDetailSection.costRateAmountSectionItem.costRateCurrency}', document.getElementById('{!$Component.assignmentDetailSection.costRateSectionItem.defaultCostRate}').checked)
+			</script>
+		</apex:pageBlock>
+
+		<div style="" />
+
+		<apex:pageBlock id="scheduleDetails" title="{!$Label.pse__assignment_label_schedule_details}" mode="view" rendered="{!NOT isDisabled}">
+			<apex:actionFunction name="createAssignment" action="{!directAssign}" rerender="msgs, scheduleDetails, assignmentDetails"
+			 oncomplete="wait(false);" />
+			<apex:actionFunction name="doCancel" action="{!cancel}" />
+			<apex:pageBlockButtons >
+				<apex:commandButton value="{!$Label.pse__assignment_label_update_schedule}" action="{!updateSchedule}" onclick="wait(true);" disabled="{!zeroScheduleStrategyOption}"
+				 rerender="msgs, scheduleDetails, assignmentDetails, updateScheduleScriptPanel" oncomplete="wait(false);enableCreateAssignmentButton();"
+				 styleClass="btn" />
+			</apex:pageBlockButtons>
+
+			<apex:pageBlockSection columns="1" id="scheduleDetailSection">
+				<apex:pageBlockSectionItem id="scheduleDetailSectionItem">
+					<apex:outputLabel id="scheduleHourLabel" value="{!$Label.pse__assignment_label_scheduled_hours}" for="nameInput" />
+					<apex:outputPanel >
+						<div class="requiredInput">
+							<div id="requiredBlockDiv" class="requiredBlock" />
+							<apex:inputField id="requiredInputText" value="{!schedule.pse__Scheduled_Hours__c}" />
+						</div>
+						<apex:inputHidden id="showTotalScheduleHours" value="{!showTotalScheduleHoursRequired}" />
+
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+
+
+				<c:ScheduleBuilder resourceIdAttribute="{!assignment.pse__Resource__c}" resourceScheduleAttribute="{!directResourceSchedule}"
+				 id="schedule" isEditModeAttribute="{!isEditMode}" autoChangeStrategyAttribute="false" showTotalHoursId="{!$Component.scheduleDetailSectionItem}" />
+			</apex:pageBlockSection>
+
+			<script>
+				var strategyList = document.getElementById('{!$Component.scheduleDetailSection.schedule.ScheduleBuilderComponent.strategySelectList}');
+				if (strategyList != null && strategyList.selectedIndex != -1) {
+					// changes done for AT7455
+					if (strategyList.options[strategyList.selectedIndex].value == 'PercentAllocation' || strategyList.options[strategyList.selectedIndex].value == 'ZeroHourSchedule') {
+						document.getElementById('{!$Component.scheduleDetailSection.scheduleDetailSectionItem.showTotalScheduleHours}').value = false;
+						document.getElementById('requiredBlockDiv').style.display = 'none';
+						document.getElementById('{!$Component.scheduleDetailSection.scheduleDetailSectionItem.requiredInputText}').style.display = 'none';
+						document.getElementById('{!$Component.scheduleDetailSection.scheduleDetailSectionItem.scheduleHourLabel}').style.display = 'none';
+					} else {
+						document.getElementById('{!$Component.scheduleDetailSection.scheduleDetailSectionItem.showTotalScheduleHours}').value = true;
+						document.getElementById('requiredBlockDiv').style.display = 'inline';
+						document.getElementById('{!$Component.scheduleDetailSection.scheduleDetailSectionItem.requiredInputText}').style.display = 'inline';
+						document.getElementById('{!$Component.scheduleDetailSection.scheduleDetailSectionItem.scheduleHourLabel}').style.display = 'inline';
+					}
+				}
+			</script>
+		</apex:pageBlock>
+	</apex:form>
+	<apex:outputPanel id="updateScheduleScriptPanel" layout="block">
+		<script>
+			function enableCreateAssignmentButton() {
+				$FFHEADER.modifyButtons({
+					createAssignment: {
+						disabled: !('{!createAssignmentEnabled}' === 'true')
+					}
+				});
+			}
+		</script>
+	</apex:outputPanel>
+	<apex:outputPanel id="LookupContainer" layout="block" />
+	<script>
+		prepareVFConfig();
+
+		function prepareVFConfig() {
+			var config = {
+				recordName: "{!JSENCODE(project.Name)}",
+				objectName: "{!JSENCODE($Label.Assignment_Label_Assign_Resource_to_Project)}",
+				documentIcon: {
+					name: 'psa_staffing',
+					namespace: $FFOUTAPP.getNamespace()
+				},
+				helpUrl: "{!$Page.AssignmentAndScheduleHelp}",
+				recordId: '{!project.Id}',
+				objectApiName: '{!$ObjectType["Proj__c"].name}',
+				onRender: 'onHeaderLoadCallback',
+				fields: [{
+					id: 'startDate',
+					field: '{!$ObjectType["Proj__c"].fields["Start_Date__c"].name}'
+				}, {
+					id: 'endDate',
+					field: '{!$ObjectType["Proj__c"].fields["End_Date__c"].name}'
+				}, {
+					id: 'projectManager',
+					field: '{!$ObjectType["Proj__c"].fields["Project_Manager__c"].name}'
+				},
+				{
+					id: 'location',
+					field: '{!$ObjectType["Proj__c"].fields["Location__c"].name}'
+				}],
+				buttons: [{
+					id: "cancel",
+					label: "{!JSENCODE($Label.common_label_cancel)}",
+					actionFn: "doCancel"
+				},
+				{
+					id: "createAssignment",
+					label: "{!JSENCODE($Label.Assignment_Label_Create_Assignment)}",
+					actionFn: "onCreateAssignmentEvent",
+					disabled: '{!NOT createAssignmentEnabled}' === 'true'
+				}]
+
+			};
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+
+		function onCreateAssignmentEvent() {
+			wait(true);
+			createAssignment();
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+
+	</script>
+</apex:page>

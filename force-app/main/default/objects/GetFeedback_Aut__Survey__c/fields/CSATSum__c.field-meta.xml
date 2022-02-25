@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CSATSum__c</fullName>
+    <externalId>false</externalId>
+    <label>CSAT Sum</label>
+    <summarizedField>GetFeedback_Aut__Response__c.CSAT__c</summarizedField>
+    <summaryFilterItems>
+        <field>GetFeedback_Aut__Response__c.CSAT__c</field>
+        <operation>notEqual</operation>
+        <value>0</value>
+    </summaryFilterItems>
+    <summaryForeignKey>GetFeedback_Aut__Response__c.GetFeedback_Aut__Survey__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

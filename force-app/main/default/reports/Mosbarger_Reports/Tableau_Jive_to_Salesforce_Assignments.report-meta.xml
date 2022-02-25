@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>pse__Proj__c$Name</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Assignments__r$Name</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c$Opportunity_Close_Date__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Average</aggregateTypes>
+        <field>pse__Proj__c.pse__Assignments__r$pse__Bill_Rate__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Assignments__r$pse__Cost_Rate__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Assignments__r$pse__Planned_Hours__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Assignments__r$pse__Planned_Revenue__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Proj__c$Name</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Tableau- Jive to Salesforce Migration-Pr</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Tableau- Jive to Salesforce Assignments</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Projects_with_Assignments__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Proj__c$pse__Actuals_Last_Recalc_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

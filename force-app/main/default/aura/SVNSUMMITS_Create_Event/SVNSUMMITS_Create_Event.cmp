@@ -1,0 +1,505 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventListController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+	<!-- Base model -->
+	<aura:handler name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.doInit}"/>
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:attribute name="nameSpace" type="String" default="" access="global"/>
+	<aura:attribute name="debugMode" type="Boolean" default="true" access="global"/>
+
+	<aura:attribute name="isFileDeleted"    type="Boolean" default="false" access="global"/>
+	<aura:attribute name="isFileSelected"   type="Boolean" default="false" access="global"/>
+	<aura:attribute name="attachmentName"   type="String" access="global"/>
+	<aura:attribute name="attachments"      type="String[]" access="global"/>
+	<aura:attribute name="strAttachmentError" type="String[]" access="global"/>
+	<aura:attribute name="isAttachment"     type="Boolean" access="global"/>
+	<aura:attribute name="autoApproveEvents" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="strError"         type="String[]" access="global"/>
+	<aura:attribute name="isBrowseError"    type="Boolean" access="global"/>
+
+	<aura:attribute name="disableDateTime" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="disableButton"   type="Boolean" default="false" access="global"/>
+	<aura:attribute name="topicValues"     type="Map"                     access="global"/>
+
+	<!-- GROUPS -->
+	<aura:attribute name="groupValues"           type="Map"     access="global"/>
+	<aura:attribute name="limitToSpecificGroups" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="requireGroups"         type="Boolean" default="false" access="global"/>
+	<aura:attribute name="canPostToAll"          type="Boolean" default="false" access="global"/>
+	<aura:attribute name="selectAll"             type="String" default="{!$Label.c.ss_evt_label_selectGroupsAll}" />
+	<aura:attribute name="labelLimitToSpecificGroups" type="String" default="{!$Label.c.ss_evt_label_LimitToSpecificGroups}" access="global"/>
+
+	<!-- OPTIONAL FIELDS -->
+	<aura:attribute name="useTopics"       type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showEventType"   type="Boolean" default="false" access="global"/>
+	<aura:attribute name="eventTypeValues" type="Map"  access="public"/>
+
+	<aura:attribute name="sitePath" type="String" access="global"/>
+	<aura:attribute name="sitePrefix" type="String" access="global"/>
+	<aura:attribute name="allEventsUrl" type="String" default="/event-list-view-page/" access="global"/>
+	<aura:attribute name="detailPageUrl" type="String" default="/event/" access="global"/>
+	<aura:attribute name="pathToDetail" type="String" default="/event/" access="global"/>
+	<aura:attribute name="isEdit" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="eventObj" type="Event__c" default="{ 'sobjectType': 'Event__c','Name': ''}" access="global"/>
+
+	<aura:attribute name="selectedTopics" type="String" default="" access="global"/>
+	<aura:attribute name="sessionId" type="String" access="global"/>
+	<aura:attribute name="sfInstanceUrl" type="String" access="global"/>
+	<aura:attribute name="sObjectId" type="Id" access="global"/>
+
+	<aura:attribute name="validDetails"         type="Boolean"  access="public" default="true"/>
+	<aura:attribute name="errorDetails"         type="String"   access="public" default="{!$Label.c.ss_evt_errorEventDetails}"/>
+
+	<aura:attribute name="eventName"            type="String"   access="public"/>
+	<aura:attribute name="eventAllDay"          type="Boolean"  access="public"/>
+	<aura:attribute name="eventDetails"         type="String"   access="public"/>
+	<aura:attribute name="eventEnablePricing"   type="Boolean"  access="public"/>
+	<aura:attribute name="eventEnableRSVP"      type="Boolean"  access="public"/>
+	<aura:attribute name="eventEndTime"         type="DateTime" access="public"/>
+	<aura:attribute name="allDayEventEndDate"   type="String"   access="global"/>
+	<aura:attribute name="eventGroupId"         type="String"   access="public"/>
+	<aura:attribute name="eventLocationAddress" type="String"   access="public"/>
+	<aura:attribute name="eventLocationName"    type="String"   access="public"/>
+	<aura:attribute name="eventLocationURl"     type="String"   access="public"/>
+	<aura:attribute name="eventPaymentURL"      type="String"   access="public"/>
+	<aura:attribute name="eventRSVPThreshold"   type="Integer"  access="public"/>
+	<aura:attribute name="eventStartTime"       type="DateTime" access="public"/>
+	<aura:attribute name="allDayEventStartDate" type="String"   access="global"/>
+	<aura:attribute name="eventTicketPrice"     type="String"   access="public"/>
+	<aura:attribute name="eventVenueInfo"       type="String"   access="public"/>
+	<aura:attribute name="eventType"            type="String"   access="global" default=""/>
+
+	<aura:attribute name="customLabel1" type="String" default="" access="global"/>
+	<aura:attribute name="customField1" type="String" default="" access="global"/>
+	<aura:attribute name="customValue1" type="String" default="" access="public"/>
+
+	<aura:attribute name="customLabel2" type="String" default="" access="global"/>
+	<aura:attribute name="customField2" type="String" default="" access="global"/>
+	<aura:attribute name="customValue2" type="String" default="" access="public"/>
+
+	<aura:attribute name="customLabel3" type="String" default="" access="global"/>
+	<aura:attribute name="customField3" type="String" default="" access="global"/>
+	<aura:attribute name="customValue3" type="String" default="" access="public"/>
+
+	<aura:attribute name="headerText" type="String" access="global" default="Create Event"/>
+	<aura:attribute name="headerSize" type="String" access="global" default="large"/>
+	<aura:attribute name="headerAlignment" type="String" access="global" default="center"/>
+
+	<!--Handler Declaration Section Start-->
+
+	<!--<aura:handler name="change" value="{!v.eventStartTime}"         action="{!c.triggerButtonCheck}"/>-->
+	<!--<aura:handler name="change" value="{!v.allDayEventStartDate}"   action="{!c.triggerButtonCheck}"/>-->
+	<!--<aura:handler name="change" value="{!v.eventDetails}"           action="{!c.triggerButtonCheck}"/>-->
+	<!--<aura:handler name="change" value="{!v.eventLocationName}"      action="{!c.triggerButtonCheck}"/>-->
+
+	<style>
+		@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+			/* IE 11 only */
+			.select.uiDatePicker--default,
+			.uiDatePicker--default .select {
+				padding-right: 0 !important;
+			}
+		}
+	</style>
+
+	<div class="createEventBox">
+		<lightning:layoutItem size="12"
+	                            class="slds-p-bottom--small">
+
+			<div class="{!'slds-align--absolute-'+v.headerAlignment+' slds-text-heading--' + v.headerSize}">
+				{!v.headerText}
+			</div>
+
+		</lightning:layoutItem>
+
+		<!--Events Form Section Start-->
+		<div class="slds-grid slds-wrap slds-grid--pull-padded ">
+			<!--Events title Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+				{!$Label.c.ss_evt_label_EventTitle}*
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<div class="descriptiveText">{!$Label.c.ss_evt_label_EnterDescriptiveEventTitle}</div>
+					<ui:inputText aura:id="eventName" class="slds-input requiredField"
+					              labelClass="slds-form-element__label"
+					              change="{!c.triggerButtonCheck}"
+					              value="{!v.eventName}"
+					              required="true"/>
+				</div>
+			</div>
+
+			<!--Events date and time Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+					{!$Label.c.ss_evt_label_EventDatesAndLocation}*
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<div class="descriptiveText">{!$Label.c.ss_evt_label_EnterEventDatesAndLocation}</div>
+					<lightning:input type="checkbox"
+					                 label="{!$Label.c.ss_evt_label_AllDayEvent}"
+					                 name="alldayCheckBox"
+					                 aura:id="allDayEvent"
+					                 checked="{!v.eventAllDay}"
+					                 onchange="{!c.triggerButtonCheck}"/>
+
+					<div class="slds-grid slds-wrap slds-grid--pull-padded " aura:id="datesDiv">
+						<div class="slds-col--padded slds-form-element slds-size--1-of-2 slds-x-small-size--1-of-1 slds-small-size--1-of-1 slds-medium-size--3-of-6 slds-large-size--6-of-12 dtInput bgColorForInputs modalWidth"
+						     id="stDate">
+							<aura:renderIf isTrue="{!!v.disableDateTime}">
+								<ui:inputDateTime aura:id="eventStartDate"
+								                  label="{!$Label.c.ss_evt_label_StartDate}"
+								                  class="form-control requiredField stdate"
+								                  value="{!v.eventStartTime}"
+								                  change="{!c.triggerButtonCheck}"
+								                  select="{!c.triggerButtonCheck}"
+								                  displayDatePicker="true"
+								                  required="true"/>
+								<aura:set attribute="else">
+									<ui:inputDate aura:id="eventStartDate_dateOnly"
+									              label="{!$Label.c.ss_evt_label_StartDate}"
+									              class="form-control requiredField stdate"
+									              value="{!v.allDayEventStartDate}"
+									              change="{!c.triggerButtonCheck}"
+									              select="{!c.triggerButtonCheck}"
+									              displayDatePicker="true"
+									              required="true"/>
+								</aura:set>
+							</aura:renderIf>
+						</div>
+						<div class="slds-col--padded slds-form-element slds-size--1-of-2 slds-x-small-size--1-of-1 slds-small-size--1-of-1 slds-medium-size--3-of-6 slds-large-size--6-of-12  dtInput bgColorForInputs modalWidth"
+						     id="endDt">
+							<aura:renderIf isTrue="{!!v.disableDateTime}">
+								<ui:inputDateTime aura:id="eventEndDateTime"
+								                  label="{!$Label.c.ss_evt_label_EndDate}"
+								                  class="form-control endDate"
+								                  value="{!v.eventEndTime}"
+								                  change="{!c.triggerButtonCheck}"
+								                  select="{!c.triggerButtonCheck}"
+								                  displayDatePicker="true"/>
+								<aura:set attribute="else">
+									<ui:inputDate aura:id="eventEndDate"
+									              label="{!$Label.c.ss_evt_label_EndDate}"
+									              class="form-control endDate"
+									              value="{!v.allDayEventEndDate}"
+									              change="{!c.triggerButtonCheck}"
+									              select="{!c.triggerButtonCheck}"
+									              displayDatePicker="true"/>
+								</aura:set>
+							</aura:renderIf>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--Location And Venue Information Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1 bgColorForInputs slds-m-bottom--medium">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+					{!$Label.c.ss_evt_label_EventLocationName}:*
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<!--change="{!c.triggerButtonCheck}"-->
+					<ui:inputText aura:id="eventLocationName"
+					              class="slds-input requiredField"
+					              labelClass="slds-form-element__label"
+					              value="{!v.eventLocationName}"
+					              change="{!c.triggerButtonCheck}"
+					              required="true"/>
+				</div>
+				<div class="slds-text-heading--small slds-m-bottom--small">
+					{!$Label.c.ss_evt_label_Address}:
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<ui:inputText aura:id="eventAddress"
+					              class="slds-input"
+					              labelClass="slds-form-element__label"
+					              value="{!v.eventLocationAddress}"/>
+				</div>
+				<div class="slds-text-heading--small slds-m-bottom--small">
+					{!$Label.c.ss_evt_label_LocationURL}:
+				</div>
+				<div class="descriptiveText">
+						{!$Label.c.ss_evt_label_LocationUrlDescription}
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<ui:inputText aura:id="eventLocationURL"
+					              class="slds-input"
+					              labelClass="slds-form-element__label"
+					              value="{!v.eventLocationURl}"/>
+				</div>
+				<div class="slds-text-heading--small slds-m-bottom--small">
+					{!$Label.c.ss_evt_label_VenueInformation}:
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<ui:inputTextArea aura:id="eventVenueInfo"
+					                  class="slds-input"
+					                  value="{!v.eventVenueInfo}"
+					                  rows="5"/>
+				</div>
+			</div>
+
+			<!--Rich Text Area Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+				{!$Label.c.ss_evt_label_EventDescription}*
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<div class="descriptiveText">{!$Label.c.ss_evt_label_EventDescDescription}</div>
+					<lightning:inputRichText aura:id="eventDetail"
+					                         placeholder="{!$Label.c.ss_evt_label_EnterEventDetails}"
+					                         value="{!v.eventDetails}"
+					                         valid="{!v.validDetails}"
+					                         messageWhenBadInput="{!v.errorDetails}"
+					                         onblur="{!c.triggerButtonCheck}">
+					</lightning:inputRichText>
+				</div>
+			</div>
+
+			<!-- Event Type -->
+            <aura:if isTrue="{!v.showEventType}">
+				<div class="slds-col--padded slds-size--1-of-1">
+					<lightning:select label="{!$Label.c.ss_evt_label_EventType}"
+					                  name="selectType"
+                                      aura:id="event-type-input"
+					                  value="{!v.eventType}">
+						<aura:iteration items="{!v.eventTypeValues}" var="eventTypeItem">
+							<option text="{!eventTypeItem}"
+							        label="{!eventTypeItem}"
+							        selected="{!v.eventType == eventTypeItem}"/>
+						</aura:iteration>
+					</lightning:select>
+
+				</div>
+			</aura:if>
+
+			<!--Attachment Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+						{!$Label.c.ss_evt_label_UploadFeaturedPhoto}
+				</div>
+				<aura:if isTrue="{!v.isEdit}">
+					<div class="slds-form-element__control inputDiv modalInputBSpacing">
+						<div class="descriptiveText">
+								{!$Label.c.ss_evt_label_UploadFeaturedPhotoDescription}</div>
+						<input type="file"
+						       aura:id="image"
+						       id="upload"
+						       class="slds-input attachEdit"
+						       title=""
+						       onchange="{!c.notifyFileSelected}"/>
+						<label id="fileLabel">{!v.attachmentName}</label>
+						<aura:if isTrue="{!v.isBrowseError}">
+							<ui:inputDefaultError value="{!v.strError}"></ui:inputDefaultError>
+						</aura:if>
+					</div>
+					<aura:set attribute="else">
+						<div class="slds-form-element__control inputDiv modalInputBSpacing">
+							<div class="descriptiveText">
+									{!$Label.c.ss_evt_label_UploadFeaturedPhotoDescription}
+							</div>
+							<input type="file"
+							       aura:id="image"
+							       class="slds-input"/>
+							<aura:if isTrue="{!v.isBrowseError}">
+								<ui:inputDefaultError value="{!v.strError}"></ui:inputDefaultError>
+							</aura:if>
+						</div>
+					</aura:set>
+				</aura:if>
+			</div>
+
+			<!--Topics Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-p-bottom--small">
+					{!$Label.c.ss_evt_label_SelectTopics}
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<div class="slds-select_container">
+						<div class="slds-form-element__control modalInputBSpacing">
+							<ui:inputSelect aura:id="filterByTopic"
+							                multiple="true"
+							                aura:disabled="false"
+							                class="slds-input-select-multi fluid dropdown topic requiredField"
+							                change="{!c.triggerButtonCheck}">
+								<aura:iteration items="{!v.topicValues}" indexVar="key" var="item">
+									<ui:inputSelectOption text="{!item.key}"
+									                      label="{!item.value}"/>
+								</aura:iteration>
+							</ui:inputSelect>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--  Limit to Specific Groups  -->
+			<aura:if isTrue="{!v.limitToSpecificGroups}">
+				<div class="slds-col--padded slds-size--1-of-1 ">
+					<div class="slds-text-heading--small slds-m-bottom--small">
+							{!v.labelLimitToSpecificGroups}
+					</div>
+
+					<div class="slds-form-element__control inputDiv">
+						<div class="descriptiveText">
+								{!$Label.c.ss_evt_label_LimitToSpecificGroupsTxt}
+						</div>
+						<div class="slds-select_container">
+							<div class="slds-form-element__control"
+							     id="groupItem">
+								<ui:inputSelect aura:id="filterByGroup"
+								                multiple="false"
+								                aura:disabled="false"
+								                required="{!v.requireGroups}"
+								                change="{!c.triggerButtonCheck}"
+								                class="slds-input-select groups"
+								                value="{!v.eventGroupId}">
+
+									<!-- Only Authorised user can post to ALL if enforced -->
+									<aura:if isTrue="{! or(not(v.requireGroups), v.canPostToAll)}">
+										<ui:inputSelectOption text="" label="{!v.selectAll}"/>
+									</aura:if>
+									<aura:iteration items="{!v.groupValues}" indexVar="key" var="groupItem">
+										<ui:inputSelectOption text="{!groupItem.key}"
+										                      label="{!groupItem.value}"/>
+									</aura:iteration>
+								</ui:inputSelect>
+							</div>
+						</div>
+					</div>
+				</div>
+			</aura:if>
+
+			<aura:if isTrue="{! notequals(v.customField1, '')}">
+				<lightning:input type="text"
+				                 class="slds-p-around--small"
+				                 label="{!v.customLabel1}"
+				                 name="customInput1"
+				                 value="{!v.customValue1}"/>
+			</aura:if>
+
+			<aura:if isTrue="{! notequals(v.customField2, '')}">
+				<lightning:input type="text"
+				                 class="slds-p-around--small"
+				                 label="{!v.customLabel2}"
+				                 name="customInput2"
+				                 value="{!v.customValue2}"/>
+			</aura:if>
+
+			<aura:if isTrue="{! notequals(v.customField3, '')}">
+				<lightning:input type="text"
+				                 class="slds-p-around--small"
+				                 label="{!v.customLabel3}"
+				                 name="customInput3"
+				                 value="{!v.customValue3}"/>
+			</aura:if>
+
+
+			<!--Enabling RSVP Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+						{!$Label.c.ss_evt_label_EventParticipationOptions}
+				</div>
+				<div class="rsvpSelection epoChkbxLspacing">
+					<label class="slds-checkbox m5">
+						<ui:inputCheckbox label=""
+						                  value="{!v.eventEnableRSVP}"
+						                  class="checkboxCss"
+						                  click="{!c.enableThreshold}"
+						                  aura:id="enableRSVP"/>
+						<span class="slds-checkbox--faux"></span>
+						<span class="slds-form-element__label showlabel m_h5">
+								{!$Label.c.ss_evt_label_AddAbilityToRSVP}
+						</span>
+					</label>
+
+					<div class="slds-text-heading--small slds-m-bottom--small hideDiv"
+					     aura:id="eventThresholdCountBlock">
+					{!$Label.c.ss_evt_label_ShowRSVP_Counter}:
+						<div class="slds-col slds-size--1-of-1 slds-small-size--1-of-1">
+							<ui:inputText aura:id="eventThresholdCount"
+							              class="slds-input eventThresholdCountWidth w50"
+							              labelClass="slds-form-element__label"
+							              value="{!v.eventRSVPThreshold}"/>
+						</div>
+					</div>
+				</div>
+				<div class="rsvpSelection epoChkbxLspacing">
+					<label class="slds-checkbox m5">
+						<ui:inputCheckbox label=""
+						                  value="{!v.eventEnablePricing}"
+						                  class="checkboxCss"
+						                  click="{!c.enablePricing}"
+						                  aura:id="enablePricing"/>
+						<span class="slds-checkbox--faux"></span>
+						<span class="slds-form-element__label showlabel m_h5">
+								{!$Label.c.ss_evt_label_AddEventPricing}
+						</span>
+					</label>
+
+					<div aura:id="eventTicketPriceBlock" class="hideDiv">
+						<div class="slds-text-heading--small slds-m-bottom--small ">
+						{!$Label.c.ss_evt_label_TicketPrice}:<br/>
+							<ui:inputText aura:id="eventTicketPrice"
+							              class="slds-input eventThresholdCountWidth"
+							              labelClass="slds-form-element__label"
+							              value="{!v.eventTicketPrice}"/>
+						</div>
+						<div class="slds-text-heading--small slds-m-bottom--small">
+						{!$Label.c.ss_evt_label_ExternalEventPaymentURL}:<br/>
+							<ui:inputText aura:id="eventExternalPaymentURL"
+							              class="slds-input extrnlpymnt"
+							              labelClass="slds-form-element__label"
+							              value="{!v.eventPaymentURL}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--Notification -->
+			<!--<div class="slds-col&#45;&#45;padded slds-size&#45;&#45;1-of-1 buttoncss modalEPOTSpacing" id="FillHeader">-->
+				<!--<div class="slds-text-heading&#45;&#45;small slds-notify slds-notify&#45;&#45;toast slds-theme&#45;&#45;warning fontFix"-->
+				     <!--role="alert">-->
+					<!--{!$Label.c.ss_evt_label_InputRequired}-->
+				<!--</div>-->
+			<!--</div>-->
+
+			<!--Loading Section Start-->
+
+			<lightning:spinner size="small"
+			                   class="slds-hide"
+			                   aura:id="spinnerSubmit"
+			                   alternativeText="Loading..."/>
+
+			<!-- Error handler -->
+			<aura:if isTrue="{!v.strError.length > 0 }">
+				<div class="slds-size--1-of-1 slds-p-around--small slds-notify">
+					<ui:inputDefaultError aura:id="inputErrorMessage" value="{!v.strError}">{!v.strError}</ui:inputDefaultError>
+				</div>
+			</aura:if>
+
+			<aura:if isTrue="{!v.strAttachmentError.length > 0 }">
+				<div class="errorDiv">
+					<ui:inputDefaultError class="errordivcheck" value="{!v.strAttachmentError}"></ui:inputDefaultError>
+				</div>
+			</aura:if>
+
+			<!--Button Section Start-->
+			<div class="slds-size--1-of-1 slds-p-around--medium">
+				<lightning:button label="{!$Label.c.ss_evt_label_SaveButtonLabel}"
+				                  onclick="{!c.submitEvent}"
+				                  disabled="{!v.disableButton}"
+				                  variant="brand"/>
+
+				<lightning:button label="{!$Label.c.ss_evt_label_CancelButtonLabel}"
+				                  onclick="{!c.handleCancelButton}"
+				                  variant="neutral"/>
+
+			</div>
+			<!--Button Section Start-->
+		</div>
+		<!--Events Form Section End-->
+	</div>
+</aura:component>

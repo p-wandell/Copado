@@ -1,0 +1,124 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<aura:component controller="SVNSUMMITS_MembersController"
+                access="global"
+                extends="c:SVNSUMMITS_Members_Base"
+                implements="lightning:availableForFlowScreens,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+    <ltng:require styles="{!$Resource.SVNSUMMITS_LightningSlider + '/light-slider/light-slider/css/light-slider.css'}"
+                  scripts="{!join(',',
+		                  $Resource.SVNSUMMITS_LightningSlider + '/light-slider/light-slider/js/jquery-3.3.1.min.js',
+						  $Resource.SVNSUMMITS_LightningSlider + '/light-slider/light-slider/js/lightslider.js')}"
+                  afterScriptsLoaded="{!c.doInit}"/>
+
+	<aura:handler event="c:SVNSUMMITS_Members_Follow_Event"  action="{!c.handleFollowRecord}"/>
+
+	<aura:attribute name="membersListWrapper" type="SVNSUMMITS_WrapperMembers" access="global"/>
+	<aura:attribute name="featuredTitle" type="String" default="{!$Label.c.ss_mbr_label_Explore_Featured_Members}" access="global"/>
+	<aura:attribute name="featuredDescription" type="String" access="global" default="{!$Label.c.ss_mbr_label_Featured_Description}"/>
+    <aura:attribute name="headerAlignment" type="String" default="center" access="global"/>
+    <aura:attribute name="headerSize" type="String" default="large" access="global"/>
+
+	<aura:attribute name="recordNickName1" type="String" access="global"/>
+	<aura:attribute name="recordNickName2" type="String" access="global"/>
+	<aura:attribute name="recordNickName3" type="String" access="global"/>
+	<aura:attribute name="recordNickName4" type="String" access="global"/>
+	<aura:attribute name="recordNickName5" type="String" access="global"/>
+	<aura:attribute name="recordNickName6" type="String" access="global"/>
+	<aura:attribute name="recordNickName7" type="String" access="global"/>
+	<aura:attribute name="recordNickName8" type="String" access="global"/>
+
+	<aura:attribute name="membersURL" type="String" default="/members/" access="global"/>
+	<aura:attribute name="allMembersButtonText" type="String" default="{!$Label.c.ss_mbr_label_All_Members}" access="global"/>
+	<aura:attribute name="allMembersUrl" type="String" default="/members-list-view" access="global"/>
+
+    <aura:attribute name="layout" type="String" default="slider" access="global"/>
+    <aura:attribute name="showButtonsInHeader" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="displayTitle"        type="Boolean" default="true" access="global"/>
+	<aura:attribute name="displayPhone"        type="Boolean" default="true" access="global"/>
+	<aura:attribute name="clickToCall"         type="Boolean" default="false" access="global"/>
+	<aura:attribute name="displayEmail"        type="Boolean" default="true" access="global"/>
+	<aura:attribute name="displayKnowledge"    type="Boolean" default="false" access="global"/>
+	<aura:attribute name="displayFollowButton" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="displayChatterStats" type="Boolean" default="true" access="global"/>
+
+    <aura:attribute name="itemsShown"   type="String"  default="3" access="global"/>
+
+	<aura:if isTrue="{!v.membersListWrapper.membersList.length > 0}">
+        <lightning:layoutItem size="12" class="slds-p-bottom--small slds-m-bottom_-small">
+            <lightning:layout multipleRows="false" verticalAlign="start" horizontalAlign="end">
+                <lightning:layoutItem size="4">
+					<aura:if isTrue="{!v.headerAlignment == 'left'}">
+						<div class="{!'slds-text-align_' +v.headerAlignment+ ' slds-text-heading_' + v.headerSize}">
+								{!v.featuredTitle}
+						</div>
+						<div class="{!'slds-text-align_' +v.headerAlignment+ ' slds-text-title'}">
+								{!v.featuredDescription}
+						</div>
+					</aura:if>
+				</lightning:layoutItem>
+
+				<lightning:layoutItem size="4">
+					<aura:if isTrue="{!v.headerAlignment == 'center'}">
+						<div class="{!'slds-text-align_' +v.headerAlignment+ ' slds-text-heading_' + v.headerSize}">
+								{!v.featuredTitle}
+						</div>
+						<div class="{!'slds-text-align_' +v.headerAlignment+ ' slds-text-title'}">
+								{!v.featuredDescription}
+						</div>
+					</aura:if>
+				</lightning:layoutItem>
+
+				<lightning:layoutItem size="4">
+                    <aura:if isTrue="{!v.showButtonsInHeader}">
+                        <lightning:buttonGroup class="slds-float--right">
+                            <lightning:button label="{!v.allMembersButtonText}" onclick="{!c.gotoAllMembersUrl}" variant="neutral"/>
+						</lightning:buttonGroup>
+					</aura:if>
+				</lightning:layoutItem>
+            </lightning:layout>
+        </lightning:layoutItem>
+
+        <lightning:layoutItem size="12">
+			<aura:if isTrue="{!v.layout == 'list'}">
+				<aura:iteration items="{!v.membersListWrapper.membersList}" var="member">
+					<c:SVNSUMMITS_Members_Row member="{!member}"
+											  currentUser="{!v.membersListWrapper.currentUser}"
+											  displayTitle="{!v.displayTitle}"
+											  displayPhone="{!v.displayPhone}"
+											  clickToCall="{!v.clickToCall}"
+											  displayEmail="{!v.displayEmail}"
+											  displayKnowledge="{!v.displayKnowledge}"
+											  displayFollowButton="{!v.displayFollowButton}"
+											  displayChatterStats="{!v.displayChatterStats}" />
+				</aura:iteration>
+            </aura:if>
+
+            <aura:if isTrue="{!v.layout == 'slider'}">
+				<ul class="responsive" aura:id="_carouselViewer" id="{!globalId + '_carouselViewer'}">
+					<aura:iteration items="{!v.membersListWrapper.membersList}" var="member">
+						<li>
+							<c:SVNSUMMITS_Members_Tile member="{!member}"
+													   currentUser="{!v.membersListWrapper.currentUser}"
+													   displayTitle="{!v.displayTitle}"
+													   displayPhone="{!v.displayPhone}"
+													   clickToCall="{!v.clickToCall}"
+													   displayEmail="{!v.displayEmail}"
+													   displayKnowledge="{!v.displayKnowledge}"
+													   displayFollowButton="{!v.displayFollowButton}"
+													   displayChatterStats="{!v.displayChatterStats}"/>
+						</li>
+					</aura:iteration>
+				</ul>
+            </aura:if>
+		</lightning:layoutItem>
+
+        <aura:if isTrue="{!v.showButtonsInHeader == false}">
+			<lightning:layoutItem size="12" class="slds-text-align_center">
+				<lightning:button label="{!v.allMembersButtonText}" class="slds-m-top_large" onclick="{!c.gotoAllMembersUrl}" variant="neutral"/>
+			</lightning:layoutItem>
+		</aura:if>
+	</aura:if>
+</aura:component>

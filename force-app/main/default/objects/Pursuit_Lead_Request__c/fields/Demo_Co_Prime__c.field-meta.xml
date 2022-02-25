@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Demo_Co_Prime__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Used to designate anyone helping with the demo (ex. UX/UI, etc)</description>
+    <externalId>false</externalId>
+    <label>Demo Co-Prime</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Pursuit_Lead_Requests2</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

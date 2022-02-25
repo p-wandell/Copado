@@ -1,0 +1,110 @@
+<apex:page standardController="ffr__RelatedContentPane__c" extensions="ffr.RelatedContentPaneEditorController" showHeader="true" sidebar="true" docType="html-5.0">
+
+	<c:extjs_bootstrap applicationName="RelatedContentPaneEditor" staticResource="{!$Resource.ffr__RelatedContentPaneEditor}" developmentPrefix="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}">
+		<script>
+			window['$RemoteAction'] = window['$RemoteAction'] || {};
+			window['$Params'] = window['$Params'] || {};
+			window['$Label'] = window['$Label'] || {};
+			$Params.ExtraClasspaths = [];
+			$Params.ExtraAliases = {};
+			var Ext = Ext || {};
+			Ext.buildSettings = { baseCSSPrefix: "f-", scopeResetCSS: true };
+
+			<!-- Remote Actions -->
+			$RemoteAction.RelatedContentPaneEditorController = $RemoteAction.RelatedContentPaneEditorController || {};
+			$RemoteAction.RelatedContentPaneEditorController.save = '{!$RemoteAction.RelatedContentPaneEditorController.save}';
+			$RemoteAction.RelatedContentPaneEditorController.getDrivingEntityMetadata = '{!$RemoteAction.RelatedContentPaneEditorController.getDrivingEntityMetadata}';
+			$RemoteAction.RelatedContentPaneEditorController.getLookupMetadata = '{!$RemoteAction.RelatedContentPaneEditorController.getLookupMetadata}';
+			$RemoteAction.RelatedContentPaneEditorController.rcpPaletteCommand = '{!$RemoteAction.RelatedContentPaneEditorController.rcpPaletteCommand}';
+
+			<!-- Params -->
+			$Params.OpenRelatedContentPane = '{!JSENCODE(OpenRelatedContentPane)}';
+			$Params.ListPageUrl = '{!JSENCODE(ListPageUrl)}';
+			$Params.hasEditPermissions = Boolean({!hasEditPermissions});
+			$Params.ObjectList = '{!JSENCODE(ObjectList)}';
+			$Params.PaneWidthLabels = '{!JSENCODE(PaneWidthLabels)}';
+			$Params.RequiredPicklistFields = '{!JSENCODE(RequiredPicklistFields)}';
+			$Params.Metadata = '{!JSENCODE(Metadata)}';
+			$Params.RelatedContentPaneViewPageUrl = '{!JSENCODE(RelatedContentPaneViewPageUrl)}';
+
+			<!-- Labels -->
+			<!-- General Labels -->
+			$Label.RelatedContentPaneEditorTitle = '{!JSENCODE($Label.RelatedContentPaneEditorTitle)}';
+			$Label.RelatedContentPaneEditorNameLabel = '{!JSENCODE($ObjectType.RelatedContentPane__c.fields.Name.label)}';
+			$Label.RelatedContentPaneEditorDrivingEntityLabel = '{!JSENCODE($Label.RelatedContentPaneEditorDrivingEntityLabel)}';
+			$Label.RelatedContentPaneEditorSizeLabel = '{!JSENCODE($ObjectType.RelatedContentPane__c.fields.PaneWidth__c.label)}';
+			$Label.RcpPaletteSectionRemoved = '{!JSENCODE($Label.RcpPaletteSectionRemoved)}';
+			$Label.RelatedContentPaneEditorDockPalettePlaceholder = '{!JSENCODE($Label.RelatedContentPaneEditorDockPalettePlaceholder)}';
+			$Label.RelatedContentPaneEditorNoPaletteSections = '{!JSENCODE($Label.RelatedContentPaneEditorNoPaletteSections)}';
+			$Label.RelatedContentPaneEditorInUse = '{!JSENCODE($Label.RelatedContentPaneEditorInUse)}';
+			$Label.RelatedContentPaneEditorComponentNeedsConfig = '{!JSENCODE($Label.RelatedContentPaneEditorComponentNeedsConfig)}';
+			$Label.RelatedContentPaneEditorSaveAndRunButton = '{!JSENCODE($Label.RelatedContentPaneEditorSaveAndRunButton)}';
+
+			<!-- Titles -->
+			$Label.RelatedContentPaneEditorNewTitle = '{!JSENCODE($Label.RelatedContentPaneEditorNewTitle)}';
+			$Label.RelatedContentPaneEditorEditTitle = '{!JSENCODE($Label.RelatedContentPaneEditorEditTitle)}';
+			$Label.RelatedContentPaneEditorNewTabTitle = '{!JSENCODE($Label.RelatedContentPaneEditorNewTabTitle)}';
+			$Label.RelatedContentPaneEditorWarningTitle = '{!JSENCODE($Label.RelatedContentPaneEditorWarningTitle)}';
+			$Label.RelatedContentPaneEditorPaletteTitle = '{!JSENCODE($Label.RelatedContentPaneEditorPaletteTitle)}';
+			$Label.RelatedContentPaneEditorServiceErrorsTitle = '{!JSENCODE($Label.RelatedContentPaneEditorServiceErrorsTitle)}';
+
+			<!-- ToolTips -->
+			$Label.RelatedContentPaneEditorDrivingEntityToolTip = '{!JSENCODE($Label.RelatedContentPaneEditorDrivingEntityToolTip)}';
+
+			<!-- Messages -->
+			$Label.RelatedContentPaneEditorCloseTabWarning = '{!JSENCODE($Label.RelatedContentPaneEditorCloseTabWarning)}';
+			$Label.RelatedContentPaneEditorCloneWarningMessage = '{!JSENCODE($Label.RelatedContentPaneEditorCloneWarningMessage)}';
+			$Label.RelatedContentPaneEditorSavingMessage = '{!JSENCODE($Label.RelatedContentPaneEditorSavingMessage)}';
+			$Label.RelatedContentPaneEditorLoadingMetadataMessage = '{!JSENCODE($Label.RelatedContentPaneEditorLoadingMetadataMessage)}';
+
+			<!-- Button labels -->
+			$Label.GoToListButton = '{!JSENCODE($Label.GoToListButton)}';
+			$Label.RelatedContentPaneEditorCloneButton = '{!JSENCODE($Label.RelatedContentPaneEditorCloneButton)}';
+			$Label.RelatedContentPaneEditorSaveButton = '{!JSENCODE($Label.RelatedContentPaneEditorSaveButton)}';
+			$Label.OkButton = '{!JSENCODE($Label.Ok)}';
+			$Label.CancelButton = '{!JSENCODE($Label.Cancel)}';
+			$Label.YesButton = '{!JSENCODE($Label.Yes)}';
+			$Label.NoButton = '{!JSENCODE($Label.No)}';
+			$Label.ToolbarHelp = '{!JSENCODE($Label.ToolbarHelp)}';
+			$Label.ToolbarToggleFullscreen = '{!JSENCODE($Label.ToolbarToggleFullscreen)}';
+
+			<!-- Data Support Labels -->
+			$Label.DataSupportTitleBoolean = '{!JSENCODE($Label.DataSupportTitleBoolean)}';
+			$Label.DataSupportTitleDate = '{!JSENCODE($Label.DataSupportTitleDate)}';
+			$Label.DataSupportTitleDateTime = '{!JSENCODE($Label.DataSupportTitleDateTime)}';
+			$Label.DataSupportTitleId = '{!JSENCODE($Label.DataSupportTitleId)}';
+			$Label.DataSupportTitleNumber = '{!JSENCODE($Label.DataSupportTitleNumber)}';
+			$Label.DataSupportTitlePeriod = '{!JSENCODE($Label.DataSupportTitlePeriod)}';
+			$Label.DataSupportTitlePicklist = '{!JSENCODE($Label.DataSupportTitlePicklist)}';
+			$Label.DataSupportTitleText = '{!JSENCODE($Label.DataSupportTitleText)}';
+			$Label.DataSupportLabelLatitude = '{!JSENCODE($Label.DataSupportLabelLatitude)}';
+			$Label.DataSupportLabelLongitude = '{!JSENCODE($Label.DataSupportLabelLongitude)}';
+			$Label.DataSupportTipDisplayMap = '{!JSENCODE($Label.DataSupportTipDisplayMap)}';
+			$Label.DataSupportTipCallThisNumber = '{!JSENCODE($Label.DataSupportTipCallThisNumber)}';
+
+			<!-- Component labels -->
+			<apex:repeat value="{!requiredLabels}" var="labelName" id="componentLabels">
+				$Label.{!labelName} = '{!JSENCODE(requiredLabels[labelName])}';
+			</apex:repeat>
+
+		</script>
+
+		<!-- DEVELOPMENT -->
+		<apex:outputPanel layout="none" rendered="{!NOT(LEN($Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c) == 0)}">
+			<apex:repeat value="{!sectionsExtLoadingInfo}" var="packageInfo" id="packageLoadingDev">
+				<apex:stylesheet value="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}/packages/local/{!packageInfo.PackageName}/build/resources/{!packageInfo.PackageName}-all.css"/>
+				<script>
+					$Params.ExtraClasspaths.push({!packageInfo.DeveloperModeClassPaths});
+				</script>
+			</apex:repeat>
+		</apex:outputPanel>
+	</c:extjs_bootstrap>
+
+	<!-- PRODUCTION -->
+	<apex:outputPanel rendered="{!LEN($Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c) == 0}" layout="none">
+		<apex:repeat value="{!sectionsExtLoadingInfo}" var="packageInfo" id="packageLoadingProd">
+			<apex:stylesheet value="{!URLFOR(packageInfo.StaticResource, '/resources/' + packageInfo.PackageName + '-all.css')}"/>
+			<script src="{!URLFOR(packageInfo.StaticResource, '/' + packageInfo.PackageName + '.js')}"></script>
+		</apex:repeat>
+	</apex:outputPanel>
+</apex:page>

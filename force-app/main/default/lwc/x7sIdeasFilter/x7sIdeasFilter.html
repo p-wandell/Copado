@@ -1,0 +1,150 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<div if:true={showFilterRow} role="region">
+		<c-x7s-shr-component-wrapper 
+									custom-class={componentClass}
+									auto-slds-card={autoSlds} 
+									variant={displayVariant}
+									aria-label={labelAriaWrapper}>
+			<lightning-layout class="slds-wrap">
+				<template if:true={myIdeaShow}>
+					<lightning-layout-item flexibility="auto,no-grow" padding="around-small" class="slds-m-top_small">
+						<lightning-input label={myideaLabel}
+						                 type="checkbox"
+						                 checked={myIdeas}
+						                 onchange={filterByMyIdeas}>
+						</lightning-input>
+					</lightning-layout-item>
+				</template>
+				<template if:true={showTopicFilter}>
+					<lightning-layout-item>
+						<lightning-combobox name="selectTopic"
+						                    label={topicLabel}
+						                    value={selectAll}
+						                    onchange={filterByTopics}
+						                    options={topicNamesList}>
+						</lightning-combobox>
+					</lightning-layout-item>
+				</template>
+				<template if:true={showCategoryFilter}>
+					<lightning-layout-item class="slds-m-left_x-small">
+						<lightning-combobox name="selectCategory"
+						                    label={catLabel}
+						                    value={selectAll}
+						                    onchange={filterByCategory}
+						                    options={categoriesSet}>
+						</lightning-combobox>
+					</lightning-layout-item>
+				</template>
+				<template if:true={showStatusFilter}>
+					<lightning-layout-item class="slds-m-left_x-small">
+						<lightning-combobox name="selectCategory"
+						                    label={statusLabel}
+						                    value={selectAll}
+						                    onchange={filterByStatus}
+						                    options={statusList}>
+						</lightning-combobox>
+					</lightning-layout-item>
+				</template>
+				<template if:true={showThemesFilter}>
+					<lightning-layout-item class="slds-m-left_x-small">
+						<lightning-combobox name="selectCategory"
+						                    label={themeLabel}
+						                    value={selectAll}
+						                    onchange={filterByTheme}
+						                    options={themesList}>
+						</lightning-combobox>
+					</lightning-layout-item>
+				</template>
+				<template if:true={myIdeaVoted}>
+					<lightning-layout-item flexibility="auto,no-grow" padding="around-small" class="slds-m-top_small">
+						<lightning-input label={ideaVotedLabel}
+						                 type="checkbox"
+						                 checked={votedIdeas}
+						                 onchange={filterByIdeasVotedOn}>
+						</lightning-input>
+					</lightning-layout-item>
+				</template>
+				<template if:true={ideasCommentedOn}>
+					<lightning-layout-item flexibility="auto,no-grow" padding="around-small" class="slds-m-top_small">
+						<lightning-input label={ideasCommentedOnLabel}
+						                 type="checkbox"
+						                 checked={commentedIdeas}
+						                 onchange={filterBycommentedIdeas}>
+						</lightning-input>
+					</lightning-layout-item>
+				</template>
+				<template if:true={ideasSubscribedByMe}>
+					<lightning-layout-item flexibility="auto,no-grow" padding="around-small" class="slds-m-top_small">
+						<lightning-input label={ideasSubscribedOnLabel}
+						                 type="checkbox"
+						                 checked={subscribedIdeas}
+						                 onchange={filterByIdeasSubscribedOn}>
+						</lightning-input>
+					</lightning-layout-item>
+				</template>
+				<template if:true={ideasMultiFilter}>
+					<lightning-layout-item class="slds-m-left_x-small">
+						<c-x7s-ideas-multi-filter list-id={listId}
+						                          require-selection-ideas-filter={requireSelectionIdeasFilter}
+						                          show-my-ideas={showMyIdeas}
+						                          show-vote-by-me-filter={showVoteByMeFilter}
+						                          super-user={superUser}
+						                          show-ideas-commented-by-me-filter={showIdeasCommentedByMeFilter}
+						                          show-ideas-subscribed-by-me-filter={showIdeasSubscribedByMeFilter}
+						                          my-companies-ideas={myCompaniesIdeas}
+						                          my-companies-voted-ideas={myCompaniesVotedIdeas}
+						                          my-companies-commented-ideas={myCompaniesCommentedIdeas}
+						                          my-companies-subscribed-ideas={myCompaniesSubscribedIdeas}
+						                          filter-value={filterValue}>
+						</c-x7s-ideas-multi-filter>
+					</lightning-layout-item>
+				</template>
+				<template if:true={superUser}>
+					<template if:true={ideasFilterMyAccount}>
+						<lightning-layout-item flexibility="auto,no-grow" padding="around-small"
+						                       class="slds-m-top_small">
+							<lightning-input label={myAccountIdeasLabel}
+							                 type="checkbox"
+							                 checked={myAccountIdeas}
+							                 onchange={filterByMyCompanyIdeas}>
+							</lightning-input>
+						</lightning-layout-item>
+					</template>
+					<template if:true={ideasMyComapanyVotedIdeas}>
+						<lightning-layout-item flexibility="auto,no-grow" padding="around-small"
+						                       class="slds-m-top_small">
+							<lightning-input label={myCompanyVotedIdeasLabel}
+							                 type="checkbox"
+							                 checked={myAccountVotedIdeas}
+							                 onchange={filterByMyCompanyVotedIdeas}>
+							</lightning-input>
+						</lightning-layout-item>
+					</template>
+					<template if:true={ideasMyCompanyCommented}>
+						<lightning-layout-item flexibility="auto,no-grow" padding="around-small"
+						                       class="slds-m-top_small">
+							<lightning-input label={myCompanyCommentedIdeasLabel}
+							                 type="checkbox"
+							                 checked={myAccountCommentedIdeas}
+							                 onchange={filterByMyCompanyCommentedIdeas}>
+							</lightning-input>
+						</lightning-layout-item>
+					</template>
+					<template if:true={ideasmyAccountSubscribedIdeas}>
+						<lightning-layout-item flexibility="auto,no-grow" padding="around-small"
+						                       class="slds-m-top_small">
+							<lightning-input label={myCompanySubscribedIdeasLabel}
+							                 type="checkbox"
+							                 checked={myAccountSubscribedIdeas}
+							                 onchange={filterByMyCompanySubscribedIdeas}>
+							</lightning-input>
+						</lightning-layout-item>
+					</template>
+				</template>
+			</lightning-layout>
+		</c-x7s-shr-component-wrapper>
+	</div>
+</template>

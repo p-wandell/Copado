@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Goodwill request approval</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Letterhead_w_updated_IBM_logo</letterhead>
+    <name>Goodwill Approved</name>
+    <style>freeForm</style>
+    <subject>Goodwill Approved</subject>
+    <textOnly>Goodwill for {!GoodwillRequest__c.Project__c} has been approved</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

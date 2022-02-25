@@ -1,0 +1,187 @@
+<apex:page controller="rh2.PS_Manage_Trigger_Controller" title="Rollup Helper Real Time Enablement" sidebar="false"  applyBodyTag="false" docType="html-5.0" showHeader="true">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+	<head> 
+    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>   
+      <apex:includeScript value="{! URLFOR($Resource.HS_Jquery, 'jquery-1.12.1.min.js')}" />
+      <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }"/>
+      <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/hs_breadcrumbs.js')}" />
+     </head> 
+     
+     <script>
+        selectBreadcrumb_HS();
+
+     //Verify namespace is ready
+        var rh = rh || {};
+        var overwriteFlag;
+
+
+                
+        rh.j$ = jQuery.noConflict();
+        rh.j$(document).ready(function() {
+            if({!mdapiVars.MetadataConnectionWarning})
+            {
+              createRemoteSite('{!$Api.Session_ID}', 'mdapi', '{!deployVars.host}', '{!JSENCODE(deployVars.host)}');
+            }
+        });
+
+      function changeRealtimeScript(){
+        var runRealtime = {!runRealtimeRollup};
+        if(runRealtime == true){
+          var callMethod = confirm('{!$Label.rh2__areyousureyouwanttopreventrealtime}');          
+        } else {
+          var callMethod = confirm('{!$Label.rh2__areyousureyouwanttoallowrealtime}');
+        }
+        
+        if(callMethod){
+          EditRealtimeScript();
+        } else {
+          document.getElementById("{!$Component.form.realtime_script_check}").checked = !document.getElementById("{!$Component.form.realtime_script_check}").checked;
+        }        
+      }
+
+      function setShowTooltipFormatting(tooltip){
+          var tt = document.getElementById(tooltip);
+          
+          tt.style.display = 'block';
+          tt.style.overflow = 'visible';
+      }
+     </script>
+     
+     <style>
+        .checkmark2 {
+            background-image: url({!URLFOR($Resource.rh2__PT_Resources_v1, 'images/checkmark.png')});
+            margin-left: 6px;
+            width: 12px;
+            height: 12px;
+        }
+
+        .input {
+            width: 13px;
+            height: 13px;
+            padding: 0;
+            margin:0;
+            vertical-align: bottom;
+            position: relative;
+            top: -1px;
+            overflow: hidden;
+        }
+     </style>
+     
+     <body>
+     <apex:slds />
+	 <div class="slds-scope" role="main"> 
+	  	
+
+    	<div class="slds-card ">
+  			<header class="slds-card__header ">
+   		  		<nav role="navigation">
+        			<ol class="slds-breadcrumb slds-list_horizontal">
+                    <li class="slds-list__item slds-text-heading_label home-crumb"><a href="{!URLFOR($Page.rh2__PS_landingPage)}">{!$Label.rh2__home}</a></li>
+                		<li class="slds-list__item slds-text-heading_label setting-crumb"><a href="{!URLFOR($Page.rh2__PS_AllSettings)}">{!$Label.rh2__allrollupsetting}</a></li>
+             		</ol>
+        		</nav>
+  			</header>
+		</div>
+	   	<apex:form id="form" >
+      <apex:actionFunction action="{!setDisableRealtimeScript}" reRender="none" name="EditRealtimeScript" /> 
+     	<div class="slds-card slds-m-vertical_medium">
+     		<header class="slds-card__header slds-grid">
+     			<div class="slds-media__body">
+                	<h3 class="slds-text-heading_small slds-truncate">{!$Label.SelectSourceObjectTo}</h3>
+              	</div>
+     		</header>
+     		<body>
+     		<section class="slds-card__body ">
+          <div class="slds-box slds-box_x-small slds-theme_alt-inverse" style="width:85%; margin-left:auto; margin-right:auto;">{!$Label.PleaseNoteIfYouDoNotSee}</div>
+
+           <div class="slds-scrollable_y" style="width:95%;  margin-left:auto; margin-right:auto; padding-top:10px;" >
+            <apex:outputPanel style="float:right; padding-bottom:5px;">
+              <span class="slds-text-title_caps" style="padding-right:2px;">
+                {!$Label.rh2__allowrealtimedisablement}
+              </span>
+              <apex:inputCheckbox styleclass="input" id="realtime_script_check" value="{!runRealtimeRollup}" onchange="changeRealtimeScript();"/>
+              <span>                  
+                <a  id = 'helpIcon' onmouseover="setShowTooltipFormatting('realtimehelp');" onmouseout="document.getElementById('realtimehelp').style.display = 'none';">
+                    <img  class="slds-icon slds-icon--x-small" src="/apexpages/slds/latest/assets/icons/utility/info_60.png"></img>                 
+                </a> 
+                <br/>
+                </span> 
+              </apex:outputPanel>
+              <div style="max-height:0px;overflow:visible;overflow-y:visible;position:relative; left:10%; float:right;">
+                <div class="slds-popover slds-theme--info" id='realtimehelp' style="display:none; ">                       
+                    <div class="slds-popover__body">
+                      {!$Label.InOrderToDisableRealtime}   
+                    </div>
+                </div>    
+              </div>    
+            		<table class="slds-table slds-table_bordered slds-max-medium-table_stacked slds-col slds-shrink">
+              			<thead>
+              				<tr style="width:100%;">
+	                			<th class="slds-text-heading_label slds-cell-shrink" scope="col">{!$Label.Action}</th>
+	                			<th class="slds-text-heading_label slds-is-sortable slds-cell-shrink hidecol" scope="col">{!$Label.TriggerDeployed}?</th>
+                        <th class="slds-text-heading_label slds-is-sortable hidecol" scope="col">{!$Label.Label}</th>
+                        <th class="slds-text-heading_label slds-is-sortable" scope="col">{!$Label.APIName}</th> 
+                        <th class="slds-text-heading_label slds-is-sortable slds-cell-shrink" scope="col">{!$Label.DisableRealtime}?</th> 
+                        <th class="slds-text-heading_label slds-is-sortable slds-cell-shrink" scope="col">{!$Label.ForceAsynchronous}?</th> 
+                        <th class="slds-text-heading_label slds-is-sortable slds-cell-shrink" scope="col">{!$Label.DisableTrigger}?</th> 
+	                  		</tr>
+	                  	</thead>
+	                  	<tbody>
+                        <apex:actionStatus id="loading" onstart="loading(true)" onstop="loading(false)" />
+                        <c:Loading_Spinner opacity="1"/>
+                        <apex:actionFunction reRender="realtime_check, async_check, trigger_check" action="{!setObjectRealtimeSetting}" name="objRealtimeSet" status="loading">
+                          <apex:param name="itemObject" value="" assignTo="{!objRealtimeSetting.describeObject}" />
+                          <apex:param name="itemRealtime" value="" assignTo="{!objRealtimeSetting.describeDisableRealtime}" />
+                          <apex:param name="itemAsync" value="" assignTo="{!objRealtimeSetting.describeEnableAsync}" />
+                          <apex:param name="itemTrigger" value="" assignTo="{!objRealtimeSetting.describeDisableTrigger}" />
+                      </apex:actionFunction>
+
+                			<apex:repeat value="{! masterObjects }" var="item">
+                				<tr> 
+                					<td data-label="{!$Label.rh2__action}">
+                            <apex:outputPanel rendered="{!AND(item.isOverwriteEnabled, !item.isTriggerDeployed)}">
+                                <apex:commandLink value="{!$Label.rh2__select}" action="{!doSelectMasterObject}" rerender="error, table" onClick="if(!confirm('{!$Label.rh2__ifthisrealtimetriggerisdeployed}')) return false;">
+                                 	<apex:param name="masterAPI" value="{!item.ObjectName}" assignTo="{!deployVars.deployObjectName}"/>
+                       				</apex:commandLink>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!OR(!item.isOverwriteEnabled, item.isTriggerDeployed)}">
+                              <apex:commandLink value="{!$Label.rh2__select}" action="{!doSelectMasterObject}" rerender="error, table">
+                                  <apex:param name="masterAPI" value="{!item.ObjectName}" assignTo="{!deployVars.deployObjectName}"/>
+                              </apex:commandLink>
+                            </apex:outputPanel>
+                     			</td>
+                     			<td>
+                     				<apex:image value="{!URLFOR($Resource.rh2__PT_Resources_v1, 'images/s.gif')}" styleClass="checkmark2" rendered="{!item.isTriggerDeployed}" id="checkmark2"/>	
+                     			</td>
+                     			<td>
+                     				{!item.label}
+                     			</td>
+                     			<td>
+                     				{!item.objectName}
+                     			</td>
+                          <td>
+                          <apex:inputCheckbox id="realtime_check" value="{!item.isRealtimeDisabled}" onchange="(function(e) { objRealtimeSet('{!JSENCODE(item.objectName)}', e.target.checked, {!item.isAsyncEnabled}, {!item.isPackagedTriggerDisabled}); })(event)" />
+                          </td>
+                          <td>
+                            <apex:inputCheckbox id="async_check" value="{!item.isAsyncEnabled}" onchange="(function(e) { objRealtimeSet('{!JSENCODE(item.objectName)}', {!item.isRealtimeDisabled}, e.target.checked, {!item.isPackagedTriggerDisabled}); })(event)" />
+                          </td>
+                          <td>
+                            <apex:inputCheckbox id="trigger_check" value="{!item.isPackagedTriggerDisabled}" onchange="(function(e) { objRealtimeSet('{!JSENCODE(item.objectName)}', {!item.isRealtimeDisabled}, {!item.isAsyncEnabled}, e.target.checked); })(event)" />
+                          </td>
+                     		</tr>
+                			</apex:repeat>
+
+                		</tbody>
+	            	</table>
+	       		</div>
+	   		</section>
+     		</body>
+     	</div>
+     </apex:form>
+     </div>     
+     </body>
+</html>
+
+
+</apex:page>

@@ -1,0 +1,348 @@
+<!-- USER NOTE: EXAMPLES FOR BUILDING VISUALFORCE PAGES -->
+
+<!-- REGION 01: GENERAL CONFIGURATION -->
+<!-- USER NOTE: I WANT TO USE THE FINANCIALFORCE REPORTING ENGINE TO GENERATE REPORTS -->
+
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!
+RenderReportAs}">
+
+<!-- USER NOTE: I WANT TO HAVE A SINGLE FORMAT FOR ALL OF MY REPORTS SO THAT I CAN STYLE THE FONTS AND COLORS -->
+<!-- USER NOTE: FINANCIALFORCE HAS PROVIDED A STANDARD STYLESHEET IN THE STATIC RESOURCES -->
+<!-- USER NOTE: YOU CAN CREATE YOUR OWN STYLSHEET IN THE STATIC RESOURCES AND APPLY IT TO YOUR REPORTS -->
+<!-- USER NOTE: THE FINANCIALFORCE STYLE HAS BEEN DESIGNED TO ACCOMODATE VARIATIONS WITHIN DIFFERENT TYPES OF REPORTS -->
+<!-- USER NOTE: CHANGE THE LAST CHARACTER FROM D TO S ON THE STYLE CLASSES APPLIED TO EACH LINE WILL PRODUCE A SUMMARY REPORT -->
+<!-- USER NOTE: A SUMMARY REPORT HIDES THE LOWEST LEVEL OF ROWS BUT RETAINS CALCULATIONS -->
+
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:stylesheet value="{!StyleSheetName}"/>
+
+
+<!-- USER NOTE: I WANT TO FORMAT VALUES ON A REPORT IN DIFFERENT WAYS -->
+<!-- USER NOTE: FINANCIALFORCE HAS PROVIDED A NUMBER FORMATTER COMPONENT -->
+<!-- USER NOTE: THE CODING STRUCTURE FOR THE VARIABLE IS AS FOLLOWS VALUE/PERCENT NUMBEROFDECIMALS NORMAL/REVERSED BRAKETS/MINUS 3CHARCTERINTERNATIONALCURRENCYCODE/NONE-->
+<!-- USER NOTE: GOOD PRACTICE IS TO REVERSE VALUES USING A FORMAT RATHER THAN CREATE CALCULATIONS ON THE VISUALFORCE PAGE SO RUNNING TOTALS CAN BE EASILY MAINTAINED-->
+<!-- USER NOTE: YOU CAN ADD YOUR OWN FORMATS TO THE LIST BELOW TRY TO KEEP A GOOD CODING STRUCTURE-->
+
+<apex:variable var="V2NCB" value="#,###,###,##0.00;(#,###,###,##0.00);0.00"/>
+<apex:variable var="P2NCB" value="#,###,###,##0.00%;(#,###,###,##0.00%);0.00%"/>
+<apex:variable var="V0NCB" value="#,###,###,##0;(#,###,###,##0);0"/>
+<apex:variable var="P0NCB" value="#,###,###,##0%;(#,###,###,##0%);0%"/>
+<apex:variable var="V2RCB" value="(#,###,###,##0.00);#,###,###,##0.00;0.00"/>
+<apex:variable var="P2RCB" value="(#,###,###,##0.00%);#,###,###,##0.00%;0.00%"/>
+<apex:variable var="V0RCB" value="(#,###,###,##0);#,###,###,##0;0"/>
+<apex:variable var="P0RCB" value="(#,###,###,##0%);#,###,###,##0%;0%"/>
+<apex:variable var="V2NCBUSD" value="$#,###,###,##0.00;$(#,###,###,##0.00);$0.00"/>
+<apex:variable var="V2RCBUSD" value="$(#,###,###,##0.00);$#,###,###,##0.00;$0.00"/>
+
+<!-- USER NOTE: I WANT TO CHANGE ALL OF THE VALUE FORMATS QUICKLY ACROSS THE WHOLE OF THE REPORT -->
+<!-- USER NOTE: HAVING THE VARIABLES ABOVE ASSIGNED TO A SECOND VARIABLE HERE MEANS THAT JUST CHANGING THIS FIELD WILL -->
+<!-- USER NOTE: APPLY THE RESULTS TO ALL THE FIELDS WHERE IT IS USED -->
+<!-- USER NOTE: IT IS POSSIBLE TO USE INDIVIDUAL VARIABLES AGAINST A LINE THIS METHOD ALLOWS YOU TO MAKE A SINGLE CHANGE TO ALL RELATED FORMATS  -->
+
+<apex:variable var="VP" value="{!V2NCB}"/>
+<apex:variable var="CP" value="{!P2NCB}"/>
+<apex:variable var="VR" value="{!V2RCB}"/>
+<apex:variable var="CR" value="{!P2RCB}"/>
+
+<!-- REGION 02: REPORT HEADER -->
+<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+<!-- User Note: Show The Error Messages From The Reporting Engine -->
+
+<!-- USER NOTE: SHOW THE ERROR MESSAGES FROM FINANCIALFORCE REPORTING -->
+
+<apex:PageMessages />
+<div class="chatterPosition"></div>
+<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+<!-- USER NOTE: WHEN CREATING NEW TEMPLATES THIS WELL FORMATTED HEADER SHOULD BE COPIED AND USED ACROSS ALL THE REPORTS -->
+
+<table class="ffrgridd">
+	<tr>
+    	<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+    </tr>
+    <tr>
+        <td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+        <td align="right">{!NOW()}</td>
+    </tr>
+    <tr><td class="ffrgridspacer2"></td></tr>
+    <tr>
+        <td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+        <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+    </tr>
+    <tr><td class="ffrgridspacer2"></td></tr>
+    <tr>
+        <td align="left"><apex:outputField value="{!ffr__ReportingDefinition__c.ffr__Description__c}"/></td>
+        <td align="right">
+            <table>
+                <apex:repeat value="{!promptList}" var="prompt" >
+                <tr>
+                    <th>{!prompt.label} </th>
+                    <td align="right">{!prompt.value}</td>
+                </tr>
+                </apex:repeat>
+            </table>
+        </td>
+    </tr>
+<!-- USER NOTE: INSERT A SPACE AFTER THE INFORMATION IS THE HEADER INFORMATION -->
+<th class="ffrgridspacer"></th>
+</table>
+
+
+<!-- REGION 03: REPORT BODY-->
+
+
+
+<!-- EXAMPLE A: START -------------------------------------------------------------------------->
+<!-- EXAMPLE A: I WANT A SIMPLE LIST THAT HAS ONE GROUP AND ONE VALUE, WITH NO SUMS OR TOTALS -->
+<!-- EXAMPLE A: SELECT THE DATA RANGE YOU WANT TO SHOW INFORMATION FROM -->
+<apex:outputpanel rendered="{!!hasMessages}">
+    <apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+
+    <!-- EXAMPLE A: CREATE A TABLE TO SHOW DATA ON THE PAGE -->
+
+    <table class="ffgridd">
+    <tr>
+    <td class="ffrgridtitleleftd">EXAMPLE A</td>
+    <th class="ffrgridtitlerightd">{!dataRange.columnLabels['A']}</th>
+    </tr>
+
+    <!-- EXAMPLE A: ITERATE OVER THE ROWS AND LINES IN THE REPORT ENGINE. NOTE THERE ARE ALSO 2 REPEAT END TAGS AT THE END -->
+
+    <apex:repeat value="{!dataRange.rowList}" var="row" >
+    <apex:repeat value="{!row.lineList}" var="line" >
+    <tr class="ffrgridrowd">
+
+    <!-- EXAMPLE A: SALESFORCE CURRENTLY REQUIRES A VARIABLE TO BE CREATED TO HOLD THE EACH OF THE VALUES-->
+
+    <apex:variable value="{!line.columns['A'].values['A']}" var="LineIntersectAA"/>
+
+    <!-- EXAMPLE A: ONLY USE THE GROUP 01 LABEL TO DISPLAY ON THE RESULTS -->
+
+    <td class="ffrgridrowlabeld">{!line.groups['01']}</td>
+    <td class="ffrgridrowd"><c:NumberFormatter pattern="{!VP}" value="{!LineIntersectAA}"/></td>
+    </tr>
+
+    <!-- EXAMPLE  A: END THE REPEAT TAGS USED TO GENERATE THE VALUES FOR THE LINES AND COLUMNS -->
+    </apex:repeat>
+    </apex:repeat>
+    </table>
+
+    <!-- EXAMPLE A: END -------------------------------------------------------------------------->
+
+
+    <!-- EXAMPLE B: START -------------------------------------------------------------------------->
+    <!-- EXAMPLE B: I WANT A SIMPLE LIST THAT HAS ONE GROUP AND ONE VALUE, WITH NO SUMS OR TOTALS -->
+    <!-- EXAMPLE B: HERE WE HAVE CHANGED THE NUMBER FORMATTER TO REVERSE THE SIGN OF VALUES  -->
+    <!-- EXAMPLE B: SELECT THE DATA RANGE YOU WANT TO SHOW INFORMATION FROM -->
+
+    <apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+
+    <!-- EXAMPLE B: CREATE A TABLE TO SHOW DATA ON THE PAGE -->
+
+    <table class="ffgridd">
+    <tr>
+    <td class="ffrgridtitleleftd">EXAMPLE B</td>
+    <th class="ffrgridtitlerightd">{!dataRange.columnLabels['A']}</th>
+    </tr>
+
+    <!-- EXAMPLE B: ITERATE OVER THE ROWS AND LINES IN THE REPORT ENGINE. NOTE THERE ARE ALSO 2 REPEAT END TAGS AT THE END -->
+
+    <apex:repeat value="{!dataRange.rowList}" var="row" >
+    <apex:repeat value="{!row.lineList}" var="line" >
+    <tr class="ffrgridrowd">
+
+    <!-- EXAMPLE B: SALESFORCE CURRENTLY REQUIRES A VARIABLE TO BE CREATED TO HOLD THE EACH OF THE VALUES-->
+
+    <apex:variable value="{!line.columns['A'].values['A']}" var="LineIntersectAA"/>
+
+    <!-- EXAMPLE B: ONLY USE THE GROUP 01 LABEL TO DISPLAY ON THE RESULTS -->
+
+    <td class="ffrgridrowlabeld">{!line.groups['01']}</td>
+    <td class="ffrgridrowd"><c:NumberFormatter pattern="{!VR}" value="{!LineIntersectAA}"/></td>
+    </tr>
+
+    <!-- EXAMPLE  B: END THE REPEAT TAGS USED TO GENERATE THE VALUES FOR THE LINES AND COLUMNS -->
+    </apex:repeat>
+    </apex:repeat>
+    </table>
+
+    <!-- EXAMPLE B: END -------------------------------------------------------------------------->
+
+
+    <!-- EXAMPLE C: START -------------------------------------------------------------------------->
+    <!-- EXAMPLE C: I WANT A SIMPLE LIST THAT HAS ONE GROUP AND ONE VALUE, WITH JUST A GRANDTOTAL -->
+    <!-- EXAMPLE C: HERE WE HAVE CHANGED THE NUMBER FORMATTER TO REVERSE THE SIGN OF VALUES  -->
+    <!-- EXAMPLE C: SELECT THE DATA RANGE YOU WANT TO SHOW INFORMATION FROM -->
+
+    <apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+
+    <!-- EXAMPLE C: CREATE A TABLE TO SHOW DATA ON THE PAGE -->
+
+    <table class="ffgridd">
+    <tr>
+    <td class="ffrgridtitleleftd">EXAMPLE C</td>
+    <th class="ffrgridtitlerightd">{!dataRange.columnLabels['A']}</th>
+    </tr>
+
+    <!-- EXAMPLE C: BEFORE STARTING THE LINES CREATE A GRAND TOTAL VARIABLE ACCUMULATE ITS VALUE -->
+    <apex:variable value="{!0}" var="GrandTotalA"/>
+
+    <!-- EXAMPLE C: ITERATE OVER THE ROWS AND LINES IN THE REPORT ENGINE. NOTE THERE ARE ALSO 2 REPEAT END TAGS AT THE END -->
+
+    <apex:repeat value="{!dataRange.rowList}" var="row" >
+    <apex:repeat value="{!row.lineList}" var="line" >
+    <tr class="ffrgridrowd">
+
+    <!-- EXAMPLE C: SALESFORCE CURRENTLY REQUIRES A VARIABLE TO BE CREATED TO HOLD THE EACH OF THE VALUES-->
+
+    <apex:variable value="{!line.columns['A'].values['A']}" var="LineIntersectAA"/>
+
+    <!-- EXAMPLE C: AS EACH LINE IS CALCULATED, ADD THIS TO THE GRAND TOTAL-->
+
+    <apex:variable value="{!GrandTotalA+line.columns['A'].values['A']}" var="GrandTotalA"/>
+
+    <!-- EXAMPLE C: ONLY USE THE GROUP 01 LABEL TO DISPLAY ON THE RESULTS -->
+
+    <td class="ffrgridrowlabeld">{!line.groups['01']}</td>
+    <td class="ffrgridrowd"><c:NumberFormatter pattern="{!VR}" value="{!LineIntersectAA}"/></td>
+    </tr>
+
+    <!-- EXAMPLE  C: END THE REPEAT TAGS USED TO GENERATE THE VALUES FOR THE LINES AND COLUMNS -->
+    </apex:repeat>
+    </apex:repeat>
+
+    <tr>
+    <td class="ffrgrandsumlabeld">GRAND TOTAL LABEL</td>
+    <td class="ffrgrandsumd"><c:NumberFormatter pattern="{!VR}" value="{!GrandTotalA}"/></td>
+    </tr>
+
+    </table>
+
+    <!-- EXAMPLE C: END -------------------------------------------------------------------------->
+
+    <!-- EXAMPLE D: START -------------------------------------------------------------------------->
+    <!-- EXAMPLE D: I WANT A SIMPLE LIST THAT HAS ONE GROUP AND ONE VALUE, WITH JUST A GRANDTOTAL -->
+    <!-- EXAMPLE D: HERE WE HAVE CHANGED THE NUMBER FORMATTER TO REVERSE THE SIGN OF VALUES  -->
+    <!-- EXAMPLE D: SELECT THE DATA RANGE YOU WANT TO SHOW INFORMATION FROM -->
+
+    <apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+
+    <!-- EXAMPLE D: CREATE A TABLE TO SHOW DATA ON THE PAGE -->
+
+    <table class="ffgridd">
+    <tr>
+    <td class="ffrgridtitleleftd">EXAMPLE D</td>
+    <td class="ffrgridtitleleftd"></td>
+    <th class="ffrgridtitlerightd">{!dataRange.columnLabels['A']}</th>
+    </tr>
+
+    <!-- EXAMPLE D: BEFORE STARTING THE LINES CREATE A GRAND TOTAL VARIABLE ACCUMULATE ITS VALUE -->
+    <apex:variable value="{!0}" var="GrandTotalA"/>
+
+    <!-- EXAMPLE D: ITERATE OVER THE ROWS AND LINES IN THE REPORT ENGINE. NOTE THERE ARE ALSO 2 REPEAT END TAGS AT THE END -->
+
+    <apex:repeat value="{!dataRange.rowList}" var="row" >
+    <apex:repeat value="{!row.lineList}" var="line" >
+    <tr class="ffrgridrowd">
+
+    <!-- EXAMPLE D: SALESFORCE CURRENTLY REQUIRES A VARIABLE TO BE CREATED TO HOLD THE EACH OF THE VALUES-->
+
+    <apex:variable value="{!line.columns['A'].values['A']}" var="LineIntersectAA"/>
+
+    <!-- EXAMPLE D: AS EACH LINE IS CALCULATED, ADD THIS TO THE GRAND TOTAL-->
+
+    <apex:variable value="{!GrandTotalA+line.columns['A'].values['A']}" var="GrandTotalA"/>
+
+    <!-- EXAMPLE D: ONLY USE THE GROUP 01 LABEL TO DISPLAY ON THE RESULTS -->
+
+    <td class="ffrgridrowlabeld">{!line.groups['02']}</td>
+    <td class="ffrgridrowlabeld">{!line.groups['01']}</td>
+    <td class="ffrgridrowd"><c:NumberFormatter pattern="{!VR}" value="{!LineIntersectAA}"/></td>
+    </tr>
+
+    <!-- EXAMPLE  D: END THE REPEAT TAGS USED TO GENERATE THE VALUES FOR THE LINES AND COLUMNS -->
+    </apex:repeat>
+    </apex:repeat>
+
+    <tr>
+    <td class="ffrgrandsumlabeld">GRAND TOTAL LABEL</td>
+    <td class="ffrgrandsumlabeld"></td>
+    <td class="ffrgrandsumd"><c:NumberFormatter pattern="{!VR}" value="{!GrandTotalA}"/></td>
+    </tr>
+
+    </table>
+
+    <!-- EXAMPLE D: END -------------------------------------------------------------------------->
+
+
+
+    <!-- EXAMPLE A: I WANT A SORTS AND SUBTOTALS LIST WHICH HAS THE GROUP AND THE VALUE, WITH NO SUMS OR TOTALS -->
+    <!-- EXAMPLE A: I WANT A SORTS AND SUBTOTALS LIST WHICH HAS THE GROUP AND THE VALUE, WITH NO SUMS OR TOTALS -->
+    <!-- EXAMPLE A: I WANT A SORTS AND SUBTOTALS LIST WHICH HAS THE GROUP AND THE VALUE, WITH NO SUMS OR TOTALS -->
+    <!-- EXAMPLE A: I WANT A SORTS AND SUBTOTALS LIST WHICH HAS THE GROUP AND THE VALUE, WITH NO SUMS OR TOTALS -->
+    <apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+
+    <table class="ffgridd">
+        <tr>
+            <td class="ffrnoclassdefined">THESE LINES ARE THE HEADERS</td>
+            <td class="ffrgridtitleleftd">Example E</td>
+            <th class="ffrgridtitlerightd">{!dataRange.columnLabels['A']}</th>
+
+        </tr>
+
+        <apex:variable value="{!0}" var="GrandTotalA"/>
+
+        <!-- Iterate over the Rows -->
+        <apex:repeat value="{!dataRange.rowList}" var="row" >
+        <apex:variable value="{!0}" var="GroupSubTotalA"/>
+
+
+            <!-- Iterate over the Lines -->
+                <apex:repeat value="{!row.lineList}" var="line" >
+                <apex:variable value="{!GroupSubTotalA+line.columns['A'].values['A']}" var="GroupSubTotalA"/>
+
+    <!--Not sure why this one is here - removing tr-->
+            <tr class="ffrgridrowd">
+     <!-- workaround bug by creating variables -->
+     <apex:variable value="{!line.columns['A'].values['A']}" var="LineIntersectAA"/>
+
+
+    <!-- EXAMPLE A: ONLY USE THE GROUP 01 LABEL TO DISPLAY ON THE RESULTS -->
+                    <td class="ffrnoclassdefined">THESE ARE THE LINES</td>
+                    <td class="ffrgridrowlabeld">{!line.groups['01']}</td>
+                    <td class="ffrgridrowd"><c:NumberFormatter pattern="{!VR}" value="{!LineIntersectAA}"/></td>
+
+                </tr>
+            </apex:repeat>
+            <tr>
+                <td class="ffrnoclassdefined">THESE LINES ARE THE GROUP SUB TOTALS</td>
+                <td class="ffrgridsumlabeld">{!row.label}</td>
+                <td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!GroupSubTotalA}"/></td>
+
+            </tr>
+    <!--think this is the gap -->
+    <!--        <tr><td class="ffrgridspacers"></td></tr> -->
+            <apex:variable value="{!GrandTotalA+GroupSubTotalA}" var="GrandTotalA"/>
+
+        </apex:repeat>
+
+        <tr>
+                <td class="ffrnoclassdefined">THESE LINES ARE THE GRAND</td>
+                <td class="ffrgrandsumlabeld">GRAND TOTAL LABEL</td>
+            <td class="ffrgrandsumd"><c:NumberFormatter pattern="{!VR}" value="{!GrandTotalA}"/></td>
+
+        </tr>
+    </table>
+</apex:outputpanel>
+<!-- REGION 06: REPORT CHATTER START -->
+<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

@@ -1,0 +1,1856 @@
+<apex:page id="expPage"
+	title="{!$Label.pse__expense_entry_title_expense_entry}" sidebar="false"
+	action="{!init}" tabStyle="pse__Expense__c" standardController="pse__Expense__c"
+	extensions="pse.ExpenseEntryController" lightningStylesheets="true">
+
+	<apex:stylesheet value="{!URLFOR($Resource.pse__jsComponentsResources, 'componentStyles.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:variable var="isLightning"
+		value="{!$User.UIThemeDisplayed!='Theme3'}" />
+	<style>
+		.yuiOverlayDiv {
+			    top: 0;
+			    bottom: 0;
+			    position: fixed;
+			    display: block;
+			    z-index: auto;
+		}
+		.waitingSearchDivOpacity {
+			opacity: 0.90 !important;
+		}
+		.resourceNameDiv {
+			margin-left: 0px;
+		}
+
+		.no-border {
+			border: none!important;
+		}
+
+		span.notesHeaderSpan div.body {
+		    text-align: initial;
+		}
+		/* Added Width as fix for agile task: 000011243, Dated: Jan 31 2012 */
+		.projAssigNameDiv {
+			overflow: hidden;
+			margin-left: 0px;
+			padding-right: 0px;
+			width: {!projAssignLookupWidth}px;
+		}
+		.expenseTable td {
+			vertical-align: top !important;
+		}
+		.notesHeaderSpan {
+			font-weight: bold;
+			font-size: 0.9em;
+		}
+
+		/**
+		the image useed in following style is not in right location...move it to some other loacation
+		**/
+		.toolTipOverlay {
+			color: #000;
+			padding: .45em;
+			background: url("{!URLFOR($Resource.jsComponentsResources,'/popupMenuBg.gif')}") repeat-x scroll left bottom #FFFFFF;
+			border: 1px solid #7EABCD;
+		}
+		.loadingImageStyle {
+			background-image: url("{!URLFOR($Resource.appirioCommon, 'progress-rotation.gif')}");
+		}
+		ul#tabs {
+			list-style-type: none;
+			margin: 30px 0 0 0;
+			padding: 0 0 0.3em 0;
+		}
+		ul#tabs li {
+			display: inline;
+			margin-left: 0px !important;
+		}
+		ul#tabs li a {
+			color: #42454a;
+			background-color: #dedbde;
+			border: 1px solid #c9c3ba;
+			border-bottom: none;
+			padding: 3px;
+			text-decoration: none;
+			cursor: pointer;
+			padding-right: 130px;
+		}
+		ul#tabs li h2 {
+			font-family: Arial, Helvetica, sans-serif !important;
+		}
+		ul#tabs li a:hover {
+			background-color: #f1f0ee;
+		}
+		ul#tabs li a.selected {
+			color: #000;
+			background-color: #f1f0ee;
+			font-weight: bold;
+			padding: 0.7em 130px 0.38em 0.3em;
+		}
+		div.tabContent {
+			border: 1px solid #c9c3ba;
+			padding: 0.5em;
+			background-color: #f1f0ee;
+		}
+		div.tabContent.hide {
+			display: none;
+		}
+		#searchResultsLink {
+			padding-right: 208px !important;
+		}
+
+		/*@todo remove Scrollable class or merge it to main css files*/
+		.bottomScrollable {
+			max-height: 300px !important;
+			width: 587px !important;
+			position: inherit !important;
+			padding-right: 3px !important;
+		}
+		.bottomScrollable-Encrypted {
+			max-height: 300px !important;
+			width: 587px !important;
+			position: inherit !important;
+			padding-right: 3px !important;
+		}
+		.topScrollable {
+			max-height: 300px !important;
+			width: 587px !important;
+			padding-right: 3px !important;
+		}
+		.myRequired {
+			background-color: #CC0000;
+			margin-right: 2px;
+			display: inline;
+			width: 3px;
+			float: left;
+		}
+		.myRequiredHidden {
+			background-color: #CC0000;
+			margin-right: 2px;
+			display: none;
+			width: 3px;
+			float: left;
+		}
+		.descriptionText-Encrypted {
+			color: red;
+			font-size: small;
+		}
+		.scrollable-Encrypted{
+			max-height: {!IF($User.UIThemeDisplayed == 'Theme4d', '308px !important', '340px !important')};
+			width: {!IF($User.UIThemeDisplayed == 'Theme4d', '614px !important', '625px !important')};
+		}
+		.scrollable{
+			max-height: {!IF($User.UIThemeDisplayed == 'Theme4d', '325px !important', '370px !important')};
+			width: {!IF($User.UIThemeDisplayed == 'Theme4d', '614px !important', '625px !important')};
+		}
+		.notesTable {
+			padding: 0px;
+			border:none !important;
+			vertical-align: top !important;
+		}
+		.notes-dimension {
+			max-height:110px;
+		}
+
+		.notesOuterDiv {
+			overflow: scroll;
+			max-width: 100%;
+		}
+
+		#resourceLoadWaitImageID img, #assignmentLoadWaitImageID img {
+			background-size: 30px;
+			background-repeat: no-repeat;
+			vertical-align: middle;
+			background-position: center 7px;
+			margin-bottom: 0;
+		}
+
+		div#resourceOverlayContainer .yui3-overlay{top: 0px !important;}
+		#resLookupDelegatedResParent .pbBody { overflow: inherit; }
+		div#assigORProjOverlay .overlayBody {
+            width: {!IF($User.UIThemeDisplayed == 'Theme4d', '601px !important', '598px !important')};
+        }
+        div#assigORProjOverlay .overlarCaptionBar{
+            width: {!IF($User.UIThemeDisplayed == 'Theme4d', '647px !important', '652px !important')};
+        }
+</style>
+
+	<script type="text/javascript">
+var _hasUnsavedChanges ;
+var _DEC_SEP = '{!JSENCODE(GBL_DEC_SEP)}';
+var _THO_SEP = '{!JSENCODE(GBL_THO_SEP)}';
+
+/* For some reason VF appends the id for the row if the component reference
+ * comes after the table tag so define these methods above the tags */
+function getLineItemsTable()
+{
+    return document.getElementById("itemsTable");
+}
+
+function getTableItemParentId()
+{
+    return "{!$Component.expEntryForm.itemsBlock}:tblRepeat";
+}
+
+var _currencyExchangeRatesMap = {};
+var expenseRatesMap = {};
+var expenseRatesCurrencyRateMap = {};
+
+_expenseRatesByExpenseRowMap = {};
+_expenseRatesCurrencyRateByExpenseRowMap = {};
+
+var currentNodeNumber= '';
+
+/* FIXME:TODO fix this globally
+ * Try using DIRTY custom event to mark the stuff dirty in more automated way ! */
+function setDirty(statusId, dirtyId){
+    _hasUnsavedChanges = true;
+    document.getElementById(statusId).innerHTML = "Unsaved";
+    document.getElementById(dirtyId).value = "true";
+}
+
+var _MilestonesHandler = {
+    cache : new Object(),
+
+    toCache : function (rowId, mileStoneOptions)
+    {
+         _MilestonesHandler.cache [rowId] = mileStoneOptions;
+    },
+
+    fromCache : function (rowId)
+    {
+         return _MilestonesHandler.cache [rowId];
+    },
+
+    copyTo : function (rowId, domSelectReference, selectedMilestone) {
+        if (domSelectReference.options) domSelectReference.options.length = 0;
+        var milestoneOptions = _MilestonesHandler.fromCache(rowId);
+        //It should not happen
+        if(milestoneOptions != null){
+            for(idx = 0 ; idx < milestoneOptions.length ; idx++){
+               domSelectReference.options[idx] = new Option(milestoneOptions[idx].text, milestoneOptions[idx].value);
+               if(milestoneOptions[idx].value == selectedMilestone){
+                    domSelectReference.options[idx].selected = true;
+               }
+            }
+        }
+    },
+
+    onMilestoneSelect : function (newSelectValue, hiddenMilestoneFieldID){
+        _yui.one(document.getElementById(hiddenMilestoneFieldID)).set('value',newSelectValue);
+    }
+}
+
+var _MethodologiesHandler = {
+    cache : new Object(),
+
+    toCache : function (rowId, methodologyOptions)
+    {
+         _MethodologiesHandler.cache [rowId] = methodologyOptions;
+    },
+
+    fromCache : function (rowId)
+    {
+         return _MethodologiesHandler.cache [rowId];
+    },
+
+    copyTo : function (rowId, domSelectReference, selectedMethodology) {
+        if (domSelectReference.options) domSelectReference.options.length = 0;
+        var methodologyOptions = _MethodologiesHandler.fromCache(rowId);
+        //It should not happen
+        if(methodologyOptions != null){
+            for(idx = 0 ; idx < methodologyOptions.length ; idx++){
+               domSelectReference.options[idx] = new Option(methodologyOptions[idx].text, methodologyOptions[idx].value);
+               if(methodologyOptions[idx].value == selectedMethodology){
+                    domSelectReference.options[idx].selected = true;
+               }
+            }
+        }
+    },
+
+    onMethodologySelect : function (newSelectValue, hiddenMethodologyFieldID){
+        _yui.one(document.getElementById(hiddenMethodologyFieldID)).set('value',newSelectValue);
+    }
+}
+
+var _PhasesHandler = {
+    cache : new Object(),
+
+    toCache : function (rowId, phaseOptions)
+    {
+         _PhasesHandler.cache [rowId] = phaseOptions;
+    },
+
+    fromCache : function (rowId)
+    {
+         return _PhasesHandler.cache [rowId];
+    },
+
+    copyTo : function (rowId, domSelectReference, selectedPhase) {
+        if (domSelectReference.options) domSelectReference.options.length = 0;
+        var phaseOptions = _PhasesHandler.fromCache(rowId);
+        //It should not happen
+        if(phaseOptions != null){
+            for(idx = 0 ; idx < phaseOptions.length ; idx++){
+               domSelectReference.options[idx] = new Option(phaseOptions[idx].text, phaseOptions[idx].value);
+               if(phaseOptions[idx].value == selectedPhase){
+                    domSelectReference.options[idx].selected = true;
+               }
+            }
+        }
+    },
+
+    onPhaseSelect : function (newSelectValue, hiddenPhaseFieldID){
+        _yui.one(document.getElementById(hiddenPhaseFieldID)).set('value',newSelectValue);
+    }
+}
+
+function showAssignmnetLookup(obj) {
+	_AssignmentLookupHandler.show(obj);
+}
+
+function showAttachmentLookup(obj, expId) {
+	_AttachmentLookupHandler.show(obj, expId);
+}
+
+function closeAttachmentIFrame(){
+     _AttachmentLookupHandler.hide();
+}
+
+function autoAssignmentSelect(){
+	if(isSelectDefaultAssignmentCall=='true'){
+		_AssignmentLookupHandler.refreshAssigDependentDetails(_DefaultAssignment.Id,_DefaultAssignment.Name,_DefaultAssignment.nickName,true,_DefaultAssignment.isBillable,_DefaultAssignment.projectId,_DefaultAssignment.tooltip,_DefaultAssignment.milestoneId,_DefaultAssignment.currencyIsoCode);
+	}
+}
+
+function setRateAmount(amount, distance, rowNum, rateUnitDecimalDigits){
+	if(amount.trim() !='' && distance.trim() !=''){
+        var rate = (amount/distance).toFixed(rateUnitDecimalDigits);
+ 		document.getElementById('rateUnit'+rowNum).innerHTML = '('+rate+')';
+	}
+}
+</script>
+
+	<apex:outputPanel rendered="{!isLightning}" layout="none">
+		<style>
+			.bDescription {
+				padding: 0 !important;
+			}
+			.nickNameHolder textarea {
+				margin-bottom: 3px;
+				height: 35px !important;
+			}
+			.editNickNameImageActive {
+				background: url("{!URLFOR($Asset.SLDS, 'assets/icons/utility/edit_60.png')}");
+				background-size: 12px;
+			}
+			.loadingImageStyle {
+    			background-repeat: no-repeat;
+   				background-image: url("{!URLFOR($Asset.SLDS, 'assets/images/spinners/slds_spinner.gif')}");
+     			padding: 3rem 3rem 0px 0px;
+    			background-size: 3rem;
+    			vertical-align: middle;
+			}
+			ul#tabs li h2 { display: inline; font-size: 1em; }
+			ul#tabs li a, ul#tabs li a.selected { padding-right: 100px; }
+		</style>
+	</apex:outputPanel>
+
+	<c:WaitComponent />
+	<script type="text/javascript">try{wait(true)}catch(e){};</script>
+	<apex:sectionHeader title="{!$Label.pse__expense_entry_title_expense_entry}" help="{!$Page.pse__MultipleExpensesEntryHelp}" />
+	<apex:pageMessages id="messageSection" />
+	<apex:form id="expEntryForm" rendered="{!isEverythingOk}">
+		<apex:actionFunction name="jsOnAddRows"
+			reRender="messageSection,itemsBlock" action="{!addRows}"
+			status="ajaxStatus" oncomplete="javascript:bindAll();" />
+		<apex:actionFunction name="jsDeleteRows"
+			reRender="messageSection,itemsBlock" action="{!deleteRows}"
+			status="ajaxStatus" oncomplete="javascript:onDeleteRowsDone();" />
+		<apex:actionFunction name="jsOnSaveExpenses"
+			rerender="messageSection,itemsBlock" action="{!saveExpenses}"
+			status="ajaxStatus" oncomplete="javascript:bindAll();" />
+		<apex:actionFunction name="jsOnSubmitExpenses"
+			rerender="messageSection,itemsBlock,erGridComponentPanel,batchResultPB"
+			action="{!submitExpenses}" oncomplete="javascript:bindAll();" />
+		<apex:actionFunction name="jsBatchSubmit" reRender="batchResultPB"
+			action="{!attachmentBatchProcess}" immediate="true" />
+		<apex:actionFunction name="jsResetBatchProcessor"
+			reRender="messageSection,itemsBlock,erGridComponentPanel,batchResultPB"
+			action="{!resetBatchProcessor}" status="ajaxStatus"
+			oncomplete="javascript:bindAll();wait(false);" />
+		<apex:actionFunction name="jsUpdateAttachmentCount"
+			rerender="messageSection,itemsBlock"
+			action="{!updateAttachmentCount}" status="ajaxStatus"
+			oncomplete="javascript:bindAll();" />
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)"
+			onstop="wait(false)" />
+
+		<apex:actionRegion >
+			<apex:inputHidden id="lineNumber" value="{!lineNumber}" />
+			<apex:actionFunction name="jsGetNotesDetail"
+				reRender="messageSection, notesContainerHolderPanel, quickTooltipComponent"
+				action="{!getNotesDetail}"
+				oncomplete="_NotesHandler.onNotesDetailFetched();" />
+		</apex:actionRegion>
+
+		<apex:inputhidden value="{!selectedResourceId}"
+			id="selectedResourceId" />
+		<apex:actionFunction name="jsChangeResource"
+			reRender="messageSection,itemsBlock,assigOrProjectLookUpOverlay,erGridComponentPanel"
+			action="{!onResourceChange}" status="ajaxStatus"
+			oncomplete="wait(false);onResourceChangeDone();" />
+		<apex:actionFunction status="ajaxStatus"
+			action="{!onExpenseDateChange}" name="jsOnExpenseDateChange"
+			reRender="totalPanel,messages,systemExchangeRatePanel,expenseRateLimitsByExpenseRowPanel"
+			oncomplete="onExpenseDateChangeDone();" />
+		<apex:actionFunction status="ajaxStatus"
+			action="{!onExpenseAmountChange}" name="jsOnExpenseAmountChange"
+			reRender="totalPanel,messages"
+			oncomplete="onExpenseAmountChangeDone();" />
+		<apex:actionFunction status="ajaxStatus"
+			action="{!onExpenseCurrencyChange}" name="jsOnExpenseCurrencyChange"
+			reRender="totalPanel,messages"
+			oncomplete="onExpenseCurrencyChangeDone();" />
+		<apex:actionFunction action="{!doCancel}" name="jsdoCancel" />
+		<apex:actionFunction action="{!loadExpenseRateLimits}"
+			name="jsLoadExpenseRateLimits"
+			reRender="messages,expenseRateLimitsByExpenseRowPanel" />
+		<apex:actionRegion id="nickNameUpdateSection">
+			<apex:inputhidden value="{!pageData.nickNameVO.assignmentId}"
+				id="assignmentId" />
+			<apex:inputhidden value="{!pageData.nickNameVO.nickName}"
+				id="nickName" />
+			<apex:actionFunction name="jsUpdateAssignmentNickName"
+				reRender="nickNameUpdateSection"
+				action="{!updateAssignmentNickName}" />
+		</apex:actionRegion>
+
+		<apex:pageBlock mode="edit" id="itemsBlock">
+			<script>
+		var isSelectDefaultAssignmentCall = '{!isAutoAssignmentSelect}';
+		var _DefaultAssignment = {
+		    Id: '{!defaultSelectedAssignment.Id}',
+		    Name: '{!JSENCODE(defaultSelectedAssignment.name)}',
+		    nickName: '{!JSENCODE(defaultSelectedAssignment.nickName)}',
+		    isBillable: {!defaultSelectedAssignment.isBillable
+		    },
+		    projectId: '{!defaultSelectedAssignment.projectId}',
+		    milestoneId: '{!defaultSelectedAssignment.selectedMilestoneID}',
+		    currencyIsoCode: '{!defaultSelectedAssignment.currencyIsoCode}',
+		    tooltip: '{!JSENCODE(defaultSelectedAssignment.tooltip)}'
+		}
+		</script>
+			<!-- Added this input hidden inside pageblock, added changes against AT5361   Dated:13 Sep, 2012 -->
+			<input type="hidden" id="selectedResourceCurrencyCode"
+				value="{!pageData.resourceCurrencyCode}" />
+			<!--  Code to create a Map to hold expense rate for each project of saved expense row. -->
+			<apex:outputPanel id="expenseRatePanel">
+				<script type="text/javascript">
+			      <apex:repeat value="{!pageData.expenseRatesByProjectId}" var="erKey">
+			      	var projId = "{!JSENCODE(erKey)}";
+			      	<apex:repeat value="{!pageData.expenseRatesByProjectId[erKey]}" var="rate">
+			      		expType = "{!JSENCODE(rate.Type__c)}";
+			      	    expUnit = "{!JSENCODE(rate.Rate_Unit__c)}";
+
+			      	    var proj_expType = projId +'_'+ expType;
+			      	    var expRateISOCode = expUnit +'_code';
+			      	    var expUnitRate = expUnit +'_rate';
+			      	    if (expenseRatesMap[proj_expType] == null) {
+			      	        expenseRatesMap[proj_expType] = {};
+			      	    }
+			      	    // using parseFloat here in order to avoid JS compile error if the rate.Amount__c field is not visible via FLS
+			       				expenseRatesMap[proj_expType][expUnit] = parseFloat("{!rate.Amount__c}");
+			       				expenseRatesMap[proj_expType][expRateISOCode] = "{!rate.CurrencyIsoCode}";
+			       				expenseRatesMap[proj_expType][expUnitRate] = "{!rate.Id}";
+			      	</apex:repeat>
+			           	</apex:repeat>
+
+			      <apex:repeat value="{!pageData.expLimitCurrencyRatesByProjectId}" var="expRateKey">
+			      	var projId = "{!JSENCODE(expRateKey)}";
+			      	<apex:repeat value="{!pageData.expLimitCurrencyRatesByProjectId[expRateKey]}" var="expRateList">
+			      		var expRateType = "{!JSENCODE(expRateList.expType)}";
+			      	    var expRateUnit = "{!JSENCODE(expRateList.unitType)}";
+
+			      	    var projTypeUnitIndex = projId + '_' + expRateType + '_' + expRateUnit;
+			      	    <apex:repeat value="{!expRateList.conversionRatesByCode}" var="rc" >
+			      	    	if (expenseRatesCurrencyRateMap[projTypeUnitIndex] == null) {
+			      	        	expenseRatesCurrencyRateMap[projTypeUnitIndex] = {};
+			      	        }
+			      	        var currencyCode = "{!rc.currencyIsoCode}";
+			      	    	expenseRatesCurrencyRateMap[projTypeUnitIndex][currencyCode] = parseFloat("{!rc.ratesByCurrencyCode}");
+			      	    </apex:repeat>
+			      	</apex:repeat>
+			      </apex:repeat>
+		   </script>
+			</apex:outputPanel>
+
+			<!--  Code to create a Map to hold currency exchange rate for each expense row shown on UI. -->
+			<apex:outputPanel id="systemExchangeRatePanel">
+				<script type="text/javascript">
+            // Resetting the currency map to laod new values.
+            _currencyExchangeRatesMap = {};
+            <apex:repeat value="{!pageData.systemExchangeRateList}" var="erw">
+                expLineNo = "{!erw.expenseLineNumber}";
+
+                <apex:repeat value="{!erw.conversionRatesByCode}" var="ratePair">
+                    currencyCode = "{!ratePair.currencyIsoCode}";
+                    currencyRate = "{!ratePair.ratesByCurrencyCode}";
+                    if (_currencyExchangeRatesMap[expLineNo] == null)
+                        _currencyExchangeRatesMap[expLineNo] = {};
+
+                    _currencyExchangeRatesMap[expLineNo][currencyCode] = currencyRate;
+                </apex:repeat>
+            </apex:repeat>
+        </script>
+			</apex:outputPanel>
+
+			<apex:outputPanel id="expenseRateLimitsByExpenseRowPanel">
+				<script type="text/javascript">
+            // Resetting the map to laod new values.
+            _expenseRatesByExpenseRowMap = {};
+            _expenseRatesCurrencyRateByExpenseRowMap = {};
+            <apex:repeat value="{!pageData.expanceRatesByExpenseRowList}" var="exprateWrp">
+                expLineNo = "{!exprateWrp.expenseLineNumber}";
+
+
+                <apex:repeat value="{!exprateWrp.expCurrencyRateWrapperList}" var="expCurrencyRW">
+                	expType = "{!JSENCODE(expCurrencyRW.expType)}";
+				    expUnit = "{!JSENCODE(expCurrencyRW.unitType)}";
+
+				    var rateKey = expType +'_'+ expUnit;
+
+                	if (_expenseRatesByExpenseRowMap[expLineNo] == null)
+                        _expenseRatesByExpenseRowMap[expLineNo] = {};
+
+                   	// adding rate amount for each expense row and expense type and unit
+                   	_expenseRatesByExpenseRowMap[expLineNo][rateKey] = parseFloat("{!expCurrencyRW.expRateAmount}");
+
+				    var expRateISOCodeKey = rateKey +'_code';
+				    _expenseRatesByExpenseRowMap[expLineNo][expRateISOCodeKey] = "{!JSENCODE(expCurrencyRW.rateCurrencyCode)}";
+
+				    var expRateIdKey = rateKey + '_id';
+				    _expenseRatesByExpenseRowMap[expLineNo][expRateIdKey] = "{!JSENCODE(expCurrencyRW.expRateId)}";
+
+				    // processing currency rate for expense types.
+				    <apex:repeat value="{!expCurrencyRW.conversionRatesByCode}" var="ratePair">
+	                    currencyCode = "{!JSENCODE(ratePair.currencyIsoCode)}";
+	                    currencyRate = "{!ratePair.ratesByCurrencyCode}";
+	                    if (_expenseRatesCurrencyRateByExpenseRowMap[expLineNo] == null)
+	                        _expenseRatesCurrencyRateByExpenseRowMap[expLineNo] = {};
+
+	                    _expenseRatesCurrencyRateByExpenseRowMap[expLineNo][currencyCode] = currencyRate;
+	                </apex:repeat>
+
+                </apex:repeat>
+
+            </apex:repeat>
+        </script>
+			</apex:outputPanel>
+
+			<apex:pageBlockButtons id="pbb">
+				<apex:commandButton value="{!$Label.pse__expense_label_add_new_rows}"
+					onclick="onAddRowsClick(); return false;" styleClass="actionButton" />
+				<apex:commandButton value="{!$Label.pse__timecard_entry_label_delete_lines}"
+					onclick="onDeleteRowsClick(); return false;"
+					styleClass="actionButton"
+					title="{!$Label.pse__expense_entry_label_select_rows_to_delete}"
+					id="deleteLinesButton" />
+				<apex:commandButton value="{!$Label.pse__common_label_saveall}"
+					onclick="onSaveClick(); return false;" styleClass="actionButton" />
+				<apex:commandButton value="{!$Label.pse__common_label_submit}"
+					onclick="onSubmitClick(); return false;" styleClass="actionButton"
+					title="{!$Label.pse__expense_entry_label_select_rows_to_submit}" />
+				<apex:commandButton value="{!$Label.pse__common_label_cancel}"
+					onclick="onCancelClick(); return false;" styleClass="actionButton" />
+				<span class="lookupInput" style="float: right;"> <b> <apex:outputLabel value="{!$Label.pse__common_label_resource}" for="resourceSelect" />
+						&nbsp;
+				</b> <apex:outputPanel id="resourceSelect" styleClass="lookupInput "
+						layout="block" onclick="javascript:_ResourceLookupHandler.show();">
+						<input type="text" id='resourceInputComponent'
+							onclick="_ResourceLookupHandler.show();"
+							class="resourceNameDiv editableNameBox" value="{!resource.name}"
+							readonly="readonly" />
+
+						<apex:image title="{!$Label.pse__timecard_entry_label_resource_lookup}"
+							id="resourceLookUpIconImageID2"
+							onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+							onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';"
+							styleClass="lookupIcon"
+							alt="{!$Label.pse__timecard_entry_label_resource_lookup}"
+							value="/s.gif"
+							onclick="javascript:_ResourceLookupHandler.show(); return false;" />
+					</apex:outputPanel>
+
+				</span>
+			</apex:pageBlockButtons>
+
+
+			<apex:pageBlockSection id="pbs" collapsible="false"
+				title="{!$Label.pse__expense_label_expenses_header}" columns="1">
+				<apex:outputPanel id="rowRegion" layout="block">
+					<table id="itemsTable" cellspacing="0"
+						class="list expenseTable slds-table slds-table_bordered"
+						style="border: 0px !important;">
+						<thead>
+							<tr class="headerRow dataRow">
+								<th><input type="checkbox" id="selectAllProjCheckbox"
+									onclick="selectAllRecords(this, 'expenseSelector', 'assignmentnamePanel')" /></th>
+								<th scope="col">{!$Label.timecard_entry_label_proj_assign}</th>
+								<th></th>
+								<th scope="col"><apex:outputText value="{!$Label.pse__common_label_milestone}"
+										rendered="{!AND(NOT(showMilestoneOnPopup),displayMilestone)}" />
+								</th>
+								<th scope="col"><apex:outputText value="{!$Label.pse__common_label_methodology}"
+										rendered="{!AND(NOT(showMethodologyOnPopup),displayMethodology)}" />
+								</th>
+								<th scope="col"><apex:outputText value="{!$Label.pse__common_label_phase}"
+										rendered="{!AND(NOT(showPhaseOnPopup),displayPhase)}" /></th>
+								<th scope="col">{!$Label.pse__common_label_date}</th>
+								<th scope="col">{!$Label.pse__common_label_type}</th>
+								<apex:outputText rendered="{!displayBillable}">
+									<th scope="col">{!$Label.pse__common_label_billable}</th>
+								</apex:outputText>
+								<!-- Added code as a fix for Agile Task : : 000011014  Dated : 28 April,2011   By: Aditi -->
+								<apex:outputText rendered="{!AND(displayNonReimbursable, NOT(displayNonReimbursableOnPopup))}">
+									<th scope="col">
+										<div style="margin-right: 15px;">
+											{!$Label.common_label_non_reimbursable}
+											<!-- Added as fix for agile task: AT0043 -->
+											<span id="nonRemHeaderId-_help" class="helpButton"> <img
+												class="helpOrb" title="" alt="" src="/s.gif" /> <script
+													type="text/javascript">sfdcPage.setHelp('nonRemHeaderId', '{!$ObjectType.Expense__c.Fields.Non_Reimbursible__c.inlineHelpText}');</script>
+											</span>
+										</div>
+									</th>
+								</apex:outputText>
+								<th scope="col">{!$Label.pse__common_label_description}</th>
+								<th scope="col">{!$Label.pse__common_label_amount}</th>
+								<th scope="col">{!$Label.pse__common_label_currency}</th>
+								<th scope="col"><apex:outputText value="{!$Label.pse__common_label_tax_type}"
+										rendered="{!NOT(showTaxtypeOnPopup)}" /></th>
+								<th align="center">{!$Label.pse__common_label_status}</th>
+								<th align="center"><apex:outputText value="{!$Label.pse__expense_lost_receipt_column}"
+										rendered="{!(minExpenseAmountForAttachment > 0)}" /></th>
+								<th align="center" colspan="2">{!$Label.pse__common_label_attachment}</th>
+								<apex:repeat value="{!expenseHeaderEditableFields}" var="f"
+									rendered="{!useFieldSet}">
+									<th scope="col"><apex:outputText value="{!f.label}" /></th>
+								</apex:repeat>
+								<apex:repeat value="{!expenseHeaderReadonlyFields}" var="f"
+									rendered="{!useFieldSet}">
+									<th scope="col"><apex:outputText value="{!f.label}" /></th>
+								</apex:repeat>
+							</tr>
+						</thead>
+						<tbody id="editDetailRowParentTbody">
+							<apex:variable var="count" value="{!0}" />
+							<apex:repeat value="{!pageData.expenseRows}" var="wr"
+								id="tblRepeat">
+								<apex:variable var="isRowEditable" value="{!wr.isRowEditable}" />
+								<tr class="dataRow">
+									<td><apex:inputCheckbox value="{!wr.isRowSelected}"
+											id="expenseSelector" styleClass="fakeClassForYUISelection"
+											onclick="checkIsAllSelected('expenseSelector', 'assignmentnamePanel');"
+											disabled="{!wr.isMilestoneClosed}" /> <apex:inputField value="{!wr.expense.pse__Exchange_Rate_Resource_Defined__c}"
+											id="exchangeRateResDefined" style="display:none;" /></td>
+									<td><apex:outputPanel layout="block"
+											id="assignmentnamePanel"
+											onclick="{!IF(wr.isProjAssigEditable,'javascript:showAssignmnetLookup(this);','')}"
+											styleClass="lookupInput projAssigNameDiv">
+											<input type="text" id='assignmentInputComponent'
+												value="{!wr.projectOrAssignmentName}"
+												class="{!IF(wr.isProjAssigEditable,'projAssigNameDiv editableNameBox','projAssigNameDiv')}"
+												readonly="readonly" />
+											<apex:image title="{!$Label.pse__timecard_entry_label_choose_assignment}"
+												rendered="{!IF(wr.isProjAssigEditable,'true','false')}"
+												id="poraLookUp"
+												onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+												onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';"
+												styleClass="lookupIcon"
+												alt="{!$Label.pse__timecard_entry_label_assignment_lookup}"
+												value="/s.gif"
+												onclick="javascript:_AssignmentLookupHandler.show(this); return false;" />
+										</apex:outputPanel></td>
+									<td>
+										<div style="white-space: nowrap;" align="center">
+											<apex:outputPanel id="infoImage">
+                                                <img src="/s.gif" class="infoIcon" data-tooltip="{!IF(wr.tooltip == '',$Label.timecard_entry_label_no_project_assignment_selected,wr.tooltip)}"/>
+                                            </apex:outputPanel>
+
+										</div>
+									</td>
+									<td><apex:outputPanel style="width:auto;float:left;white-space: nowrap"
+											id="milestoneListPanel"
+											rendered="{!AND(NOT(showMilestoneOnPopup),displayMilestone,isRowEditable)}">
+											<span
+												class="{!IF(requiredFixedHeaderField[NameSpacePrefix+'Milestone__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+											<select size="1" style="width:{!milestoneDropDownWidth}px;"
+												onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); _MilestonesHandler.onMilestoneSelect(this.value,'{!$Component.hiddenMilestone}');">
+											</select>
+										</apex:outputPanel> <apex:outputText value="{!wr.milestoneName}"
+											rendered="{!AND(NOT(showMilestoneOnPopup),displayMilestone,NOT(isRowEditable),NOT(wr.expense.pse__Milestone__c = ''))}" />
+										<!-- <apex:outputText value="{!wr.milestoneName}" style="width:{!milestoneDropDownWidth}px;" rendered="{!AND(NOT(isRowEditable),wr.isMilestoneClosed)}"/>  -->
+									</td>
+									<td><apex:outputPanel style="width:auto;float:left;white-space: nowrap"
+											id="methodologyListPanel"
+											rendered="{!AND(NOT(showMethodologyOnPopup),displayMethodology,isRowEditable)}">
+											<span
+												class="{!IF(requiredFixedHeaderField[NameSpacePrefix+'Project_Methodology__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+											<select size="1" style="width: {!methodologyDropDownWidth}px;"
+												onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); _MethodologiesHandler.onMethodologySelect(this.value,'{!$Component.hiddenMethodology}');">
+											</select>
+										</apex:outputPanel> <apex:outputText value="{!wr.methodologyName}"
+											rendered="{!AND(NOT(showMethodologyOnPopup),displayMethodology,NOT(isRowEditable),NOT(wr.expense.pse__Project_Methodology__c = ''))}" />
+									</td>
+									<td><apex:outputPanel style="width:auto;float:left;white-space: nowrap"
+											id="phaseListPanel"
+											rendered="{!AND(NOT(showPhaseOnPopup),displayPhase,isRowEditable)}">
+											<span
+												class="{!IF(requiredFixedHeaderField[NameSpacePrefix+'Project_Phase__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+											<select size="1" style="width: {!phaseDropDownWidth}px;"
+												onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); _PhasesHandler.onPhaseSelect(this.value,'{!$Component.hiddenPhase}');">
+											</select>
+										</apex:outputPanel> <apex:outputText value="{!wr.phaseName}"
+											rendered="{!AND(NOT(showPhaseOnPopup),displayPhase,NOT(isRowEditable),NOT(wr.expense.pse__Project_Phase__c = ''))}" />
+									</td>
+									<td class="expTableCol2">
+										<!--  Added Width as fix for agile task: 000011243,  Dated: Jan 31 2012  -->
+										<apex:inputField value="{!wr.expense.pse__Expense_Date__c}"
+											id="date"
+											onchange="onExpenseDateChange(this);setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"
+											style="min-width:{!IF(isLightning, '110px', '')}; width:{!dateWidth}px;" rendered="{!isRowEditable}" />
+										<apex:outputField value="{!wr.expense.pse__Expense_Date__c}"
+											style="min-width:100px; width:{!dateWidth}px;"
+											rendered="{!NOT(isRowEditable)}" />
+									</td>
+									<td
+										class="{!IF(displayBillable,'expTableCol3','expTableCol3_1')}">
+										<div class="requiredInput">
+											<div class="requiredBlock"></div>
+											<!--  Added Width as fix for agile task: 000011243,  Dated: Feb 01 2012  -->
+											<apex:inputField value="{!wr.expense.pse__Type__c}"
+												onFocus="_focusedExpenseTypeOldValue = this.value;"
+												onchange="onTypeChange(this,'{!$Component.autoMileagePanel}', '{!$Component.projectId}'); onExpenseTypeChange(this);setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); this.focus(); if('{!$Component.distText}' != null) recalculateMileageAmt('{!$Component.type}', '{!$Component.distText}', '{!$Component.amountText}', '{!$Component.unitField}', '{!$Component.currencyISOCodeInput}', '{!$Component.projectId}', '{!$Component.rateIdPanel}', {!rateUnitDecimalDigits});"
+												id="type" required="false" style="width:{!typeWidth}px"
+												rendered="{!isRowEditable}" />
+											<apex:outputField value="{!wr.expense.pse__Type__c}"
+												style="width:{!typeWidth}px;"
+												rendered="{!NOT(isRowEditable)}" />
+										</div>
+									</td>
+									<apex:outputText rendered="{!displayBillable}">
+										<td class="expTableCol4"><span
+											class="{!IF(requiredFixedHeaderField[NameSpacePrefix+'billable__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+											<apex:inputField value="{!wr.expense.pse__Billable__c}"
+												id="billableLine"
+												rendered="{!AND(displayBillable,isRowEditable)}"
+												styleClass="billableLineInputStyle"
+												onchange="onExpenseBillableStatusChange(this);setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+											<apex:outputField value="{!wr.expense.pse__Billable__c}"
+												rendered="{!AND(displayBillable,NOT(isRowEditable))}"
+												styleClass="billableLineInputStyle" /></td>
+									</apex:outputText>
+									<apex:outputText rendered="{!AND(displayNonReimbursable, NOT(displayNonReimbursableOnPopup))}">
+										<td align="center"><span
+											class="{!IF(requiredFixedHeaderField[NameSpacePrefix+'Non_Reimbursible__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+											<apex:inputField rendered="{!AND(displayNonReimbursable, NOT(displayNonReimbursableOnPopup), isRowEditable)}"
+												value="{!wr.expense.pse__Non_Reimbursible__c}"
+												id="nonReimburOnFrontPage"
+												styleClass="nonReimFieldFakeYUIStyle"
+												onchange="onNonReimbursableChange(this);setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+											<apex:outputField value="{!wr.expense.pse__Non_Reimbursible__c}"
+												rendered="{!AND(displayNonReimbursable, NOT(displayNonReimbursableOnPopup), NOT(isRowEditable))}"
+												styleClass="nonReimFieldFakeYUIStyle" /></td>
+									</apex:outputText>
+									<!--  Added Width as fix for agile task: 000011243, Dated: Feb 01 2012  -->
+									<td class="expTableCol5"><apex:inputField value="{!wr.expense.pse__Description__c}" id="descr"
+											style="width:{!descriptionWidth}px"
+											styleClass="descriptionFieldsStyle"
+											rendered="{!isRowEditable}"
+											onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+										<apex:outputField value="{!wr.expense.pse__Description__c}"
+											style="width:{!descriptionWidth}px"
+											rendered="{!NOT(isRowEditable)}"
+											styleClass="descriptionFieldsStyle" /></td>
+									<td class="expTableCol6"><apex:outputPanel id="amountPanel">
+											<div class="requiredInput">
+												<div class="requiredBlock"></div>
+												<!--  Added Width as fix for agile task: 000011243, Dated: Feb 01 2012  -->
+												<apex:inputField required="false" id="amountText"
+													value="{!wr.expense.pse__Amount__c}"
+													style="width:{!totalAmountWidth}px"
+													rendered="{!isRowEditable}"
+													onchange="onExpenseAmountChange(this);setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"
+													styleClass="amountInputFieldFakeYUIStyle amountFieldsStyle" />
+												<apex:outputField value="{!wr.expense.pse__Amount__c}"
+													style="width:{!totalAmountWidth}px"
+													rendered="{!NOT(isRowEditable)}"
+													styleClass="amountInputFieldFakeYUIStyle amountFieldsStyle" />
+												<apex:outputPanel layout="inline" id="autoMileagePanel"
+													style="display:{!IF(AND(LEN(wr.expense.pse__Type__c)>0,CONTAINS(wr.expenseRateTypes, wr.expense.pse__Type__c)),'inline','none')}">
+													<table>
+														<tr class="excludeFromRowHighlighting">
+															<td align="left"><span class="notesHeaderSpan">{!$Label.expense_label_distance}</span>
+																<br /> <apex:inputField style="width:60px" id="distText"
+																	value="{!wr.expense.pse__Distance__c}"
+																	rendered="{!isRowEditable}"
+																	onchange="recalculateMileageAmt('{!$Component.type}', this.id, '{!$Component.amountText}', '{!$Component.unitField}', '{!$Component.currencyISOCodeInput}', '{!$Component.projectId}', '{!$Component.rateIdPanel}', {!rateUnitDecimalDigits});setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+																<apex:outputField value="{!wr.expense.pse__Distance__c}"
+																	style="width:60px" rendered="{!NOT(isRowEditable)}" />
+																<span class="notesHeaderSpan">{!$Label.expense_label_unit}</span>
+																<span class="notesHeaderSpan" id="rateUnit{!count}"></span>
+																<br /> <apex:inputField value="{!wr.expense.pse__Rate_Unit__c}" id="unitField"
+																	rendered="{!isRowEditable}"
+																	onchange="recalculateMileageAmt('{!$Component.type}', '{!$Component.distText}', '{!$Component.amountText}', this.id, '{!$Component.currencyISOCodeInput}', '{!$Component.projectId}', '{!$Component.rateIdPanel}', {!rateUnitDecimalDigits});setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+																<apex:outputField value="{!wr.expense.pse__Rate_Unit__c}"
+																	rendered="{!NOT(isRowEditable)}" /></td>
+															<td><apex:inputHidden id="rateIdPanel"
+																	value="{!wr.expense.pse__Applied_Expense_Rate__c}" /></td>
+														</tr>
+													</table>
+													<script type="text/javascript">
+	                              setRateAmount('{!wr.expense.pse__Amount__c}', '{!wr.expense.pse__Distance__c}', '{!count}', {!rateUnitDecimalDigits});
+	                           </script>
+													<apex:variable var="count" value="{!count+ 1}" />
+												</apex:outputPanel>
+											</div>
+										</apex:outputPanel></td>
+									<td class="expTableCol7">
+										<!--  Added Width(max-width) as fix for agile task: 000011243, Dated: Feb 01 2012  -->
+										<apex:inputField onchange="onExpenseCurrencyChange(this,'{!CONTAINS(wr.expenseRateTypes, wr.expense.pse__Type__c)}', '{!$Component.type}', '{!$Component.unitField}', '{!$Component.distText}', '{!$Component.projectId}','{!$Component.rateIdPanel}', {!rateUnitDecimalDigits});setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"
+											value="{!wr.expense.CurrencyIsoCode}"
+											styleClass="currencyCodeInputFieldFakeYUIStyle"
+											style="width:{!currencyWidth}px;" id="currencyISOCodeInput"
+											rendered="{!isRowEditable}" /> <apex:outputField value="{!wr.expense.CurrencyIsoCode}"
+											rendered="{!NOT(isRowEditable)}"
+											style="width:{!currencyWidth}px;"
+											styleClass="currencyCodeInputFieldFakeYUIStyle" />
+									</td>
+									<td style="width: auto; float: left; white-space: nowrap">
+										<span
+										class="{!IF(requiredFixedHeaderField[NameSpacePrefix+'Tax_Type__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+										<apex:inputField onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"
+											value="{!wr.expense.pse__Tax_Type__c}" id="expTaxType"
+											style="width:75px"
+											rendered="{!AND(NOT(showTaxtypeOnPopup),(isRowEditable))}"></apex:inputField>
+										<apex:outputField value="{!wr.expense.pse__Tax_Type__c}"
+											rendered="{!AND(NOT(showTaxtypeOnPopup),NOT(isRowEditable))}"
+											style="width:75px" />
+									</td>
+									<td>
+										<!--  Added Width as fix for agile task: 000011243, Dated: Feb 01 2012 -->
+										<div
+											style="IF (wr.status=='Error','color: red; white-space: nowrap; ',' white-space: nowrap;')} ; width:{!statusWidth}px">
+											<apex:outputText id="statusValue" value="{!wr.status}" />
+											<apex:outputPanel rendered="{!wr.isMilestoneClosed}">
+												<img height="14px" style="padding-left: 2px;"
+													src="/img/msg_icons/warning24.png"
+													title="{!$Label.expense_entry_label_saved_milestone_closed_and_expense_not_editable}" />
+											</apex:outputPanel>
+										</div>
+									</td>
+									<td><apex:outputPanel rendered="{!(minExpenseAmountForAttachment > 0)}">
+											<apex:inputField rendered="{!NOT(ISNULL(wr.expense.id))}"
+												value="{!wr.expense.pse__Lost_Receipt__c}"
+												onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+											<apex:outputField rendered="{!ISNULL(wr.expense.id)}"
+												value="{!wr.expense.pse__Lost_Receipt__c}" />
+										</apex:outputPanel></td>
+									<td>
+										<!-- Added for Agile Task: AT6971   Dated : 3 Nov, 2012    -->
+										<apex:outputPanel rendered="{!NOT(ISNULL(wr.expense.id))}">
+											<div style="white-space: nowrap;" align="center">
+												<apex:outputpanel rendered="{!NOT(wr.isMilestoneClosed)}">
+													<apex:image id="attachinfoImage"
+														value="{!URLFOR($Resource.pse__sldsAssets, 'icons/attach_60.png')}" styleClass="attachmentImage"
+														alt="{!$Label.pse__attach_files_to_expense}" width="20px"
+														onclick="javascript:showAttachmentLookup(this, '{!wr.expense.id}');" />
+												</apex:outputpanel>
+												<apex:outputPanel rendered="{!wr.isMilestoneClosed}">
+													<apex:image value="{!URLFOR($Asset.SLDS, 'assets/icons/utility/attach_60.png')}"
+														styleClass="attachmentImage" id="attachinfoImageMile"
+														alt="{!$Label.pse__attach_files_to_expense}" width="20px" />
+												</apex:outputPanel>
+												<script type="text/javascript">
+	                           var imgTag;
+	                           if(document.getElementById("{!$Component.attachinfoImage}") != null){
+	                           	imgTag = document.getElementById("{!$Component.attachinfoImage}");
+	                           }else if(document.getElementById("{!$Component.attachinfoImageMile}") != null){
+	                           	imgTag = document.getElementById("{!$Component.attachinfoImageMile}");
+	                           }
+
+	                           if(imgTag != null){
+	                           	var imgAlt = imgTag.alt;
+	                           	imgAlt = imgAlt.replace("{expAttachmentCount}","{!wr.expAttachmentCount}");
+	                           	imgTag.alt = imgAlt;
+	                           }
+	                        </script>
+											</div>
+										</apex:outputPanel>
+									</td>
+									<td class="hiddenTCInputCell"><span
+										class='fakeSelectorClassForRowBaseId'> <apex:inputHidden id="projectOrAssignmentId"
+												value="{!wr.projectOrAssignmentId}" /> <apex:inputHidden id="rowIndex" value="{!wr.rowIndex}" />
+									</span> <!-- {IF(ISNULL(tw.timecard.id),'n','y')} --> <apex:inputHidden id="expenseRateTypes" value="{!wr.expenseRateTypes}" /> <apex:inputHidden id="projectId" value="{!wr.projectId}" /> <input
+										type="hidden"
+										value="{!IF(ISNULL(wr.expense.id),IF(NOT(wr.dirty),'n','y'),'y')}"
+										class="fakeSelectorClassToDecideRowStatus" /> <apex:inputHidden id="projectOrAssignmentNameHidden"
+											value="{!wr.projectOrAssignmentName}" /> <apex:inputHidden id="projOrAssig" value="{!wr.projOrAssig}" /> <apex:inputHidden id="dirtyHidden" value="{!wr.dirty}" /> <apex:inputHidden id="hiddenMilestone" value="{!wr.expense.pse__Milestone__c}" /> <apex:inputHidden id="hiddenIsMSClosed" value="{!wr.isMilestoneClosed}" /> <apex:inputHidden id="hiddenMilestoneName" value="{!wr.milestoneName}" /> <apex:inputHidden id="hiddenMethodology"
+											value="{!wr.expense.pse__Project_Methodology__c}" /> <apex:inputHidden id="hiddenMethodologyName" value="{!wr.methodologyName}" />
+										<apex:inputHidden id="hiddenPhase"
+											value="{!wr.expense.pse__Project_Phase__c}" /> <apex:inputHidden id="hiddenPhaseName" value="{!wr.phaseName}" /> <apex:inputHidden id="isRowEditable" value="{!wr.isRowEditable}" /> <input
+										type="hidden" id="rateUnitDecimalDigits"
+										value="{!rateUnitDecimalDigits}" /> <apex:outputPanel rendered="{!NOT(displayBillable)}" style="display:none;">
+											<apex:inputField id="billableHiddenLine"
+												value="{!wr.expense.pse__Billable__c}" />
+										</apex:outputPanel> <!-- @todo config.ShowMilestone --> <apex:outputPanel rendered="true">
+											<apex:outputPanel rendered="{!displayMilestone}">
+												<script type="text/javascript">
+	                           var milestoneOptions = new Array();
+	                           <apex:repeat value="{!wr.projectMilestoneOptions}" var="milestoneOption">
+	                               var value = "{!JSENCODE(milestoneOption.value)}";
+	                               var label = "{!JSENCODE(milestoneOption.label)}";
+	                               if(document.getElementById('{!$Component.hiddenMilestone}').value == value){
+	                                   o = new Option(label, value);
+	                                   o.selected = true;
+	                                   milestoneOptions.push(o);
+	                               } else{
+	                                   milestoneOptions.push(new Option(label, value));
+	                               }
+	                           </apex:repeat>
+	                           /*If milestone is close*/
+	                           _MilestonesHandler.toCache('{!wr.rowIndex}', milestoneOptions);
+	                        </script>
+											</apex:outputPanel>
+											<apex:outputPanel rendered="{!displayMethodology}">
+												<script type="text/javascript">
+	                           var methodologyOptions = new Array();
+	                           <apex:repeat value="{!wr.projectMethodologyOptions}" var="methodologyOption">
+	                               var value = "{!JSENCODE(methodologyOption.value)}";
+	                               var label = "{!JSENCODE(methodologyOption.label)}";
+	                               if(document.getElementById('{!$Component.hiddenMethodology}').value == value){
+	                                   o = new Option(label, value);
+	                                   o.selected = true;
+	                                   methodologyOptions.push(o);
+	                               } else{
+	                                   methodologyOptions.push(new Option(label, value));
+	                               }
+	                           </apex:repeat>
+	                           _MethodologiesHandler.toCache('{!wr.rowIndex}', methodologyOptions);
+	                        </script>
+											</apex:outputPanel>
+											<apex:outputPanel rendered="{!displayPhase}">
+												<script type="text/javascript">
+	                           var phaseOptions = new Array();
+	                           <apex:repeat value="{!wr.projectPhaseOptions}" var="phaseOption">
+	                               var value = "{!JSENCODE(phaseOption.value)}";
+	                               var label = "{!JSENCODE(phaseOption.label)}";
+	                               if(document.getElementById('{!$Component.hiddenPhase}').value == value){
+	                                   o = new Option(label, value);
+	                                   o.selected = true;
+	                                   phaseOptions.push(o);
+	                               } else{
+	                                   phaseOptions.push(new Option(label, value));
+	                               }
+	                           </apex:repeat>
+	                            _PhasesHandler.toCache('{!wr.rowIndex}', phaseOptions);
+	                        </script>
+											</apex:outputPanel>
+										</apex:outputPanel></td>
+									<apex:repeat value="{!expenseHeaderEditableFields}" var="f"
+										rendered="{!useFieldSet}">
+										<td>
+											<div style="width: auto; float: left; white-space: nowrap">
+												<span
+													class="{!IF(AND(OR(f.required,f.DBRequired),isRowEditable), 'myRequired' , 'myRequiredHidden')}">
+													&nbsp;</span>
+												<apex:inputField value="{!wr.expense[f.fieldPath]}"
+													rendered="{!AND(isRowEditable,f.type!='textarea')}"
+													onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"
+													styleClass="disableExpenseAdditionalEditableFields" />
+												<apex:inputField value="{!wr.expense[f.fieldPath]}"
+													rendered="{!AND(isRowEditable,f.type='textarea')}"
+													styleClass="disableExpenseAdditionalEditableFields"
+													style="height: 30px;"
+													onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+												<apex:outputField value="{!wr.expense[f.fieldPath]}"
+													rendered="{!NOT(isRowEditable)}" />
+											</div>
+										</td>
+									</apex:repeat>
+									<apex:repeat value="{!expenseHeaderReadonlyFields}" var="f"
+										rendered="{!useFieldSet}">
+										<td><apex:outputField value="{!wr.expense[f.fieldPath]}" />
+										</td>
+									</apex:repeat>
+								</tr>
+							</apex:repeat>
+						</tbody>
+					</table>
+					<!-- page total and footer section   -->
+					<table width="100%" border="0" class="list"
+						style="border: 0px !important;" cellspacing="0">
+						<tbody>
+							<tr class="dataRow">
+								<td colspan="3" align="right">
+									<div align="right" style="margin-right: 45px;">
+										<apex:outputLabel for="expenseTotal"
+											value="{!$Label.pse__common_label_total}"
+											style="font-weight:bold;" />
+										&nbsp;
+										<apex:outputPanel id="totalPanel">
+											<apex:outputText id="expenseTotal"
+												value="{!pageData.expenseTotal}" />
+										</apex:outputPanel>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<script type="text/javascript">
+	      _hasUnsavedChanges = {!pageData.hasUnsavedExpenses};
+	   </script>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+
+			<apex:outputPanel id="quickTooltipComponent">
+				<c:QuickTooltip tooltipTextAttrName="data-tooltip"/>
+			</apex:outputPanel>
+		</apex:pageBlock>
+
+		<!-- The resource lookup section -->
+		<div id="resourceOverlayContainer" class="overlayContainer">
+			<div class='overlayContainer yuiOverlayDiv'></div>
+			<div id="resourceOverlay">
+				<div class="yui-widget-hd overlarCaptionBar"
+					onclick="javascript:_ResourceLookupHandler.hide();"></div>
+				<div class="yui-widget-bd overlayBody">
+					<apex:sectionHeader title="{!$Label.pse__timecard_entry_label_resource_lookup}" />
+					<apex:panelGrid columns="4">
+						<label for="delegatedResSearchString">{!$Label.common_label_search}</label>
+						<input type="text" id="delegatedResSearchString" />
+						<input type="button" id="resourceOverlay_Go_Button"
+							onclick="_ResourceLookupHandler.search(true); return false;"
+							class="btn" value="{!$Label.expense_label_go}" />
+						<input type="button" id="resourceOverlay_All_Button"
+							onclick="_ResourceLookupHandler.search(false); return false;"
+							class="btn" value="{!$Label.common_label_all}" />
+						<div class="waitingHolder"
+							style="display: inline-block; visibility: hidden;"
+							id='resourceLoadWaitImageID'>
+							<img class="waitingImage" src="/img/loading.gif"
+								style="display: inline-block;"/>
+						</div>
+					</apex:panelGrid>
+					<div class="bDescription">{!$Label.pse__timecard_entry_message_search_description}</div>
+					<apex:outputText id="resLookupDelegatedResEncryptionInfo"
+						styleclass="bDescription descriptionText-Encrypted"
+						rendered="{!!areEncryptionSupportedFieldsFilterable}"
+						value="{!$Label.pse__common_text_to_refine_search_results_when_pe_is_enabled}"
+						style="display:none" />
+					<div id="resLookupDelegatedResParent" class="scrollable">
+						<apex:pageBlock id="resLookupDelegatedRes">
+							<div id="yuiRequestResultPanel">
+								<table id="resourceResultsTable">
+									<tr>
+										<td><i>{!$Label.pse__timecard_entry_message_enter_resource_name_to_search}!</i></td>
+									</tr>
+								</table>
+							</div>
+						</apex:pageBlock>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- The project/assignment lookup section -->
+		<apex:outputPanel layout="none" id="assigOrProjectLookUpOverlay">
+			<div id="assigORProjOverlayContainer" class="overlayContainer">
+				<div class='overlayContainer yuiOverlayDiv'></div>
+				<div id="assigORProjOverlay">
+					<div class="yui-widget-hd overlarCaptionBar"
+						onclick="javascript:_AssignmentLookupHandler.hide();"></div>
+					<div class="yui-widget-bd overlayBody">
+						<apex:sectionHeader title="{!$Label.pse__timecard_entry_label_project_assignment_lookup}" />
+						<apex:panelGrid columns="4">
+							<label for="assigORProjSearchString">{!$Label.common_label_search}</label>
+							<input type="text" id="assigORProjSearchString" />
+							<input type="button" id="assigOverlay_Go_Button"
+								onclick="_AssignmentLookupHandler.search(true); return false;"
+								class="btn" value="{!$Label.expense_label_go}" />
+							<input type="button" id="assigOverlay_All_Button"
+								onclick="_AssignmentLookupHandler.search(false); return false;"
+								class="btn" value="{!$Label.common_label_all}" />
+							<div class="waitingHolder" style="display: inline-block; visibility: hidden;" id='assignmentLoadWaitImageID'>
+								<img class="waitingImage" src="/img/loading.gif" style="display: inline-block;" />
+							</div>
+						</apex:panelGrid>
+						<div class="bDescription">{!$Label.pse__timecard_entry_message_search_description}</div>
+						<apex:outputText id="assignmentDecriptionEncryptionInfo"
+							styleclass="bDescription descriptionText-Encrypted"
+							rendered="{!!areEncryptionSupportedFieldsFilterable}"
+							value="{!$Label.pse__common_text_to_refine_search_results_when_pe_is_enabled}"
+							style="display:none" />
+
+						<!--<div class="ajaxResultTableLabel"><h2>{!$Label.timecard_entry_label_recent_project_assignment}</h2></div> -->
+						<ul id="tabs">
+							<li><h2>
+									<a class="selected" onclick="toggleAssigResultTabs(this)"
+										id="recentResultsLink">{!$Label.timecard_entry_label_recent_project_assignment}</a>
+								</h2></li>
+							<li><h2>
+									<a onclick="toggleAssigResultTabs(this)" id="searchResultsLink">{!$Label.timecard_entry_label_search_results}</a>
+								</h2></li>
+						</ul>
+						<div class="topScrollable tabContent" id="recentResultsTab">
+							<apex:pageBlock id="assigORProjLookupPB">
+
+								<apex:outputPanel rendered="{!AND(ISNULL(recentAssignments),ISNULL(recentProjects))}">
+									<i>{!$Label.pse__timecard_entry_message_no_recent_project_assignment_available}</i>
+								</apex:outputPanel>
+								<!--  Block for rendering the recent assignments  -->
+								<apex:actionRegion >
+									<apex:outputPanel rendered="{!NOT(ISNULL(recentAssignments))}" styleClass="pbody">
+										<div style="overflow: auto !important;">
+											<table  id="recentAssignmentTable"
+												cellspacing="0" class="list slds-table slds-table_bordered slds-table_cell-buffer">
+												<thead>
+													<tr class="projAssigDemarcation">
+														<th colspan="{!pageData.assignmentColSpan+1}">
+															{!$Label.timecard_entry_label_my_assignments}</th>
+													</tr>
+													<tr class="headerRow">
+														<th>{!$Label.common_label_name}</th>
+														<apex:repeat value="{!pageData.assignmentLookupFields}"
+															var="assignField">
+															<th>{!assignField.label}</th>
+														</apex:repeat>
+													</tr>
+												</thead>
+												<tbody>
+
+													<apex:repeat value="{!recentAssignments}"
+														var="assignmentDetail">
+														<tr class="dataRow"
+															onmouseout="if (window.hiOff){hiOff(this);}"
+															onmouseover="if (window.hiOn){hiOn(this);}">
+															<td class="assigNameTD"><apex:inputHidden id="hiddenTempAssigName"
+																	value="{!assignmentDetail.name}" /> <apex:inputHidden id="hiddenTempNickName"
+																	value="{!assignmentDetail.nickName}" /> <apex:inputHidden id="hiddenTempToolTip"
+																	value="{!assignmentDetail.tooltip}" /> <a href="#"
+																onclick="_AssignmentLookupHandler.refreshAssigDependentDetails('{!JSENCODE(assignmentDetail.id)}',escape(document.getElementById('{!$Component.hiddenTempAssigName}').value), escape(document.getElementById('{!$Component.hiddenTempNickName}').value),{!assignmentDetail.isAssignment},{!assignmentDetail.isBillable}, '{!assignmentDetail.projectId}',escape(document.getElementById('{!$Component.hiddenTempToolTip}').value),'{!assignmentDetail.selectedMilestoneID}', '{!JSENCODE(assignmentDetail.currencyIsoCode)}');return false;">
+																	<apex:outputText value="{!assignmentDetail.name}" />
+															</a></td>
+															<apex:repeat value="{!pageData.assignmentLookupFields}"
+																var="assignField">
+																<apex:variable rendered="{!assignField.localRelatedAPIName == 'Nick_Name__c'}"
+																	value="" var="tempOuter0">
+																	<td
+																		class="assigNickNameTD {!JSENCODE(assignmentDetail.id)}">
+																		<div class="nickNameHolder"
+																			onmouseover="_AssignmentLookupHandler.onNickNameMouseOver(this)"
+																			onmouseout="_AssignmentLookupHandler.onNickNameMouseOut(this)">
+																			<div
+																				style="text-decoration: {!IF(assignmentDetail.isNickNameAdded, 'none', 'underline')}"
+																				onclick="_AssignmentLookupHandler.doEnterNickName('{!assignmentDetail.id}', this);return false;">
+																				<apex:outputText value="{!IF(assignmentDetail.isNickNameAdded,assignmentDetail.nickName, $Label.pse__common_label_add)}" />
+																				<img class="nickNameImageHolder"
+																					title="{!$Label.timacard_entry_label_edit_nickname}"
+																					alt="{!$Label.timacard_entry_label_edit_nickname}"
+																					src="/s.gif" height="12" width="0"></img>
+																			</div>
+																		</div>
+																	</td>
+																</apex:variable>
+
+																<apex:variable rendered="{!NOT(assignField.localRelatedAPIName == 'Nick_Name__c')}"
+																	value="" var="tempOuter1">
+																	<td><apex:outputText value="{!assignmentDetail.assignment[assignField.relatedAPIName]}"
+																			rendered="{!AND(NOT(OR(assignField.fieldTypeString == 'DATETIME', assignField.fieldTypeString == 'DATE')), !ISBLANK(assignmentDetail.assignment[assignField.relatedAPIName]))}" />
+																		<apex:outputField value=" {!assignmentDetail.assignment[assignField.relatedAPIName]}"
+																			rendered="{!AND(OR(assignField.fieldTypeString == 'DATETIME', assignField.fieldTypeString == 'DATE'), !ISBLANK(assignmentDetail.assignment[assignField.relatedAPIName]))}" />
+																		<apex:outputText value="--"
+																			rendered="{! ISBLANK(assignmentDetail.assignment[assignField.relatedAPIName])}" />
+																	</td>
+																</apex:variable>
+															</apex:repeat>
+
+														</tr>
+													</apex:repeat>
+
+												</tbody>
+											</table>
+										</div>
+									</apex:outputPanel>
+									<!--  Block for rendering the recent global projects  -->
+									<apex:outputPanel rendered="{!NOT(ISNULL(recentProjects))}">
+										<div style="overflow: auto !important;">
+											<table width="100%" id="recentProjectTable" cellspacing="0"
+												class="list slds-table slds-table_bordered slds-table_cell-buffer">
+												<thead>
+													<tr class="projAssigDemarcation">
+														<th colspan="{!pageData.projectColSpan+1}">
+															{!$Label.timacard_entry_label_global_projects}</th>
+													</tr>
+													<tr class="headerRow">
+														<th>{!$Label.common_label_name}</th>
+														<apex:repeat value="{!pageData.projectLookupFields}"
+															var="projField">
+															<th>{!projField.label}</th>
+														</apex:repeat>
+													</tr>
+												</thead>
+												<tbody>
+													<apex:repeat value="{!recentProjects}" var="project">
+														<tr class="dataRow"
+															onmouseout="if (window.hiOff){hiOff(this);}"
+															onmouseover="if (window.hiOn){hiOn(this);}">
+															<td><apex:inputHidden id="hiddenTempProjName"
+																	value="{!project.name}" /> <apex:inputHidden id="hiddenTempProjToolTip" value="{!project.tooltip}" />
+
+																<a href="#"
+																onclick="_AssignmentLookupHandler.refreshAssigDependentDetails('{!JSENCODE(project.id)}',escape(document.getElementById('{!$Component.hiddenTempProjName}').value), null, {!project.isAssignment}, {!project.isBillable}, '{!JSENCODE(project.projectId)}',escape(document.getElementById('{!$Component.hiddenTempProjToolTip}').value), '{!JSENCODE(project.selectedMilestoneID)}', '{!JSENCODE(project.currencyIsoCode)}');return false;"><apex:outputText value="{!project.name}" /></a></td>
+
+															<apex:repeat value="{!pageData.projectLookupFields}"
+																var="projField">
+																<td><apex:outputText value="{!project.project[projField.relatedAPIName]}"
+																		rendered="{!AND(NOT(OR(projField.fieldTypeString == 'DATETIME', projField.fieldTypeString == 'DATE')), !ISBLANK(project.project[projField.relatedAPIName]))}" />
+																	<apex:outputField value=" {!project.project[projField.relatedAPIName]}"
+																		rendered="{!AND(OR(projField.fieldTypeString == 'DATETIME', projField.fieldTypeString == 'DATE'), !ISBLANK(project.project[projField.relatedAPIName]))}" />
+																	<apex:outputText value="--"
+																		rendered="{! ISBLANK(project.project[projField.relatedAPIName])}" />
+																</td>
+															</apex:repeat>
+														</tr>
+													</apex:repeat>
+												</tbody>
+											</table>
+										</div>
+									</apex:outputPanel>
+								</apex:actionRegion>
+							</apex:pageBlock>
+						</div>
+
+						<div class="bottomScrollable tabContent hide"
+							id="searchResultsTab">
+							<apex:pageBlock id="assigORProjResultPB">
+								<div id="yuiAssigmentRequestResultPanel">
+									<table id="assigORProjResultTable">
+										<tr>
+											<td><i>{!$Label.pse__timecard_entry_message_enter_project_assignment_name_to_search}
+													!</i></td>
+										</tr>
+									</table>
+								</div>
+							</apex:pageBlock>
+						</div>
+					</div>
+				</div>
+			</div>
+		</apex:outputPanel>
+
+		<!-- Expense attachment section -->
+		<div id="attachmentOverlayContainer" class="overlayContainer">
+			<div class='overlayContainer yuiOverlayDiv'></div>
+			<div id="attachmentOverlay">
+				<div class="yui-widget-hd overlarCaptionBar"
+					onclick="javascript:_AttachmentLookupHandler.hide();"></div>
+				<div class="yui-widget-bd overlayBody">
+					<iframe id="expenseAttachmentFrame" src="" frameborder="0"
+						width="100%" style="min-height: 100%;"></iframe>
+				</div>
+			</div>
+		</div>
+
+		<!-- Notes detail section -->
+		<apex:actionRegion >
+
+			<apex:inputHidden id="lineNumberToSaveNotesData"
+				value="{!lineNumberToSaveNotesData}" />
+			<apex:actionFunction name="jsSetNotesDetail"
+				reRender="messageSection, notesContainerHolderPanel,lineNumberToSaveNotesData"
+				action="{!setNotesDetail}"
+				oncomplete="_NotesHandler.onNotesDetailSaved();" status="ajaxStatus" />
+			<apex:outputPanel rendered="{!isLightning}" layout="none">
+				<style>
+					.notesSubCol3_A1 > .lookupInput > input {
+						width: 100%;
+					}
+				</style>
+			</apex:outputPanel>
+			<style>
+				.notes-block-container {
+					width: auto;
+               		min-width: 1350px;
+				}
+				.notesTableCol1 {
+					width:40%;
+					min-width:40%;
+				  	max-width: 40%;
+				}
+				.notesTableCol2{
+				 	width:60%;
+					min-width:60%;
+					max-width: 60%;
+				}
+				.descriptionFieldsStyle { width: 270px;}
+
+				.notesSubCol1 {
+					width: 20%;
+					text-align: right;
+				}
+				.notesSubCol1_A1 {
+					width: 35%;
+					text-align: right;
+				}
+
+				.notesSubCol2 {
+					width: 2%;
+					text-align: center;
+				}
+				.notesSubCol2_A1 {
+					width: 5%;
+					text-align: center;
+				}
+
+				.notesSubCol3 {
+					width: 30%;
+					text-align: left;
+				}
+
+				.notesSubCol3_A1 {
+					width: 60%;
+					text-align: left;
+				}
+
+				.notesSubCol3_A1 textarea {
+					width: 100%;
+					height: 90px;
+				}
+
+				.notesSubCol3_A1 input, select {
+					width: 74%;
+				}
+
+				.notesSubCol4 {
+					width: 20%;
+					text-align: left;
+				}
+
+				.notesSubCol5 {
+					width: 30%;
+					text-align: left;
+				}
+
+				.notesSubCol4_5 {
+					width: 174px;
+					text-align: left;
+				}
+
+				.notesSubCol1_1 {
+					width: 261px;
+					text-align: left;
+				}
+
+				.notesSubCol1_1 span.exchangeLabel img.infoIcon {
+					vertical-align: bottom!important;
+				}
+
+				.notes_description {
+					width: 98%;
+					max-width: 98% !important;
+					max-height: 90px !important;
+               height: 90px;
+				}
+			</style>
+
+	<apex:outputPanel id="notesContainerHolderPanel" style="display:none">
+	   <div id="notesContainerHolder">
+	      <div id="notesContainer" class="notes-block-container">
+	         <table cellspacing="0" class="notesTable" id="notesMainTable" width="100%" >
+	            <tbody>
+	               <tr class="dataRow">
+	                  <td class="notesTableCol1">
+	                     <table width="100%" cellpadding="0" cellspacing="0">
+	                        <tr>
+	                           <td>
+	                              <fieldset>
+	                              	<legend>{!$Label.common_label_notes}</legend>
+	                              	<apex:inputField value="{!selectedExpense.pse__Notes__c}" id="expNotes"
+	                                 styleClass="fakeSelectorClassForNotesInput descriptionFieldsStyle notes-dimension notes_description"></apex:inputField>
+	                              </fieldset>
+	                           </td>
+	                        </tr>
+	                        <tr>
+	                           <td>
+	                              <!--  Added below section for Agile Task: AT2575     Dated : 17 Sep, 2012 -->
+	                              <apex:outputpanel rendered="{!showAdditionalFieldsOnPopUP}">
+	                                 <fieldset>
+	                                    <legend>{!$Label.timecard_entry_label_additional_fields}</legend>
+	                                    <table width="100%" cellpadding="0" cellspacing="0">
+	                                       <tr>
+	                                          <td class="notesSubCol1_A1">
+	                                             <apex:outputpanel rendered="{!AND(showMilestoneOnPopup,displayMilestone)}">{!$Label.pse__timecard_entry_label_milestone}</apex:outputpanel>
+	                                          </td>
+	                                          <td class="notesSubCol2_A1"></td>
+	                                          <td class="notesSubCol3_A1">
+	                                             <apex:outputpanel rendered="{!AND(showMilestoneOnPopup,displayMilestone)}"
+	                                                style="width:100%;float:left;white-space: nowrap">
+	                                                <span
+	                                                   class="{!IF(requiredFixedNotesField[NameSpacePrefix+'Milestone__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                                <select id="milestoneSelect"
+	                                                   class="fakeSelectorClassForNotesInput popupInputField">
+	                                                </select>
+	                                             </apex:outputpanel>
+	                                          </td>
+	                                       </tr>
+	                                       <tr>
+	                                          <td class="notesSubCol1_A1">
+	                                             <apex:outputpanel rendered="{!AND(showMethodologyOnPopup,displayMethodology)}">{!$Label.pse__timecard_entry_label_methodology}</apex:outputpanel>
+	                                          </td>
+	                                          <td class="notesSubCol2_A1"></td>
+	                                          <td class="notesSubCol3_A1">
+													<apex:outputpanel rendered="{!AND(showMethodologyOnPopup,displayMethodology)}" style="width:100%;float:left;white-space: nowrap">
+	                                                <span
+	                                                   class="{!IF(requiredFixedNotesField[NameSpacePrefix+'Project_Methodology__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                                <select id="methodologySelect"
+	                                                   class="fakeSelectorClassForNotesInput popupInputField">
+	                                                </select>
+	                                             </apex:outputpanel>
+	                                          </td>
+	                                       </tr>
+	                                       <tr>
+	                                          <td class="notesSubCol1_A1">
+	                                             <apex:outputpanel rendered="{!AND(showPhaseOnPopup,displayPhase)}">{!$Label.pse__timecard_entry_label_phase}</apex:outputpanel>
+	                                          </td>
+	                                          <td class="notesSubCol2_A1"></td>
+	                                          <td class="notesSubCol3_A1">
+													<apex:outputpanel rendered="{!AND(showPhaseOnPopup,displayPhase)}" style="width:100%;float:left;white-space: nowrap">
+	                                                <span
+	                                                   class="{!IF(requiredFixedNotesField[NameSpacePrefix+'Project_Phase__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                                <select id="phaseSelect"
+	                                                   class="fakeSelectorClassForNotesInput popupInputField">
+	                                                </select>
+	                                             </apex:outputpanel>
+	                                          </td>
+	                                       </tr>
+	                                       <apex:repeat value="{!additionalExpenseFields}" var="af"
+	                                          rendered="{!NOT(useFieldSet)}">
+	                                          <tr>
+	                                             <td class="notesSubCol1_A1">{!af.label}</td>
+	                                             <td class="notesSubCol2_A1"></td>
+	                                             <td class="notesSubCol3_A1">
+	                                                <apex:inputField value="{!selectedExpense[af.fieldAPIName]}"
+	                                                   styleClass="{!IF(af.isBooleanField, ' fakeSelectorClassForNotesInputCheckBox ', 'fakeSelectorClassForNotesInput dialogNotes')}" />
+	                                             </td>
+	                                          </tr>
+	                                       </apex:repeat>
+	                                       <apex:repeat value="{!expenseNotesEditableFields}"
+	                                          var="f" rendered="{!useFieldSet}">
+	                                          <tr>
+	                                             <td class="notesSubCol1_A1">{!f.label}</td>
+	                                             <td class="notesSubCol2_A1"></td>
+	                                             <td class="notesSubCol3_A1">
+	                                                <span
+	                                                   class="{!IF(OR(f.required,f.DBRequired), 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                                <apex:inputField value="{!selectedExpense[f.fieldPath]}"
+	                                                   styleClass="{!IF(f.Type == 'boolean', ' fakeSelectorClassForNotesInputCheckBox ', 'fakeSelectorClassForNotesInput dialogNotes')}" />
+	                                             </td>
+	                                          </tr>
+	                                       </apex:repeat>
+	                                       <apex:repeat value="{!expenseNotesReadonlyFields}"
+	                                          var="f" rendered="{!useFieldSet}">
+	                                          <tr>
+	                                             <td class="notesSubCol1_A1">{!f.label}</td>
+	                                             <td class="notesSubCol2_A1"></td>
+	                                             <td class="notesSubCol3_A1">
+	                                                <apex:outputField value="{!selectedExpense[f.fieldPath]}" />
+	                                             </td>
+	                                          </tr>
+	                                       </apex:repeat>
+	                                    </table>
+	                                 </fieldset>
+	                              </apex:outputpanel>
+	                           </td>
+	                        </tr>
+	                     </table>
+	                  </td>
+	                  <td class="notesTableCol2">
+	                     <table cellpadding="0" cellspacing="0">
+	                        <tr>
+	                           <td>
+	                              <fieldset>
+	                                 <legend>{!$Label.expense_label_billable_info}</legend>
+	                                 <table width="100%" cellpadding="0" cellspacing="0">
+	                                    <tr>
+	                                       <td class="notesSubCol1">
+	                                          <apex:outputPanel rendered="{!displayNonBillableIncurred}"
+	                                             styleClass="notesHeaderSpan">{!$Label.pse__common_label_non_billable_amount}</apex:outputPanel>
+	                                       </td>
+	                                       <td class="notesSubCol2"></td>
+	                                       <td class="notesSubCol3">
+	                                          <span
+	                                             class="{!IF(AND(requiredFixedNotesField[NameSpacePrefix+'Non_Billable_Incurred_Amount__c'], displayNonBillableIncurred), 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                          <apex:inputField rendered="{!displayNonBillableIncurred}"
+	                                             value="{!selectedExpense.pse__Non_Billable_Incurred_Amount__c}"
+	                                             id="nonBillIncurred"
+	                                             styleClass="fakeSelectorClassForNotesInput nonBillableIncurredAmountFieldFakeYUIStyle amountFieldsStyle"
+	                                             onchange="calculateBillableAmount(null,this.value,null,null,null);" />
+	                                       </td>
+	                                       <td class="notesSubCol4">
+	                                          <apex:outputPanel rendered="{!showTaxtypeOnPopup}"
+	                                             styleClass="notesHeaderSpan"
+	                                             style="padding-right:0px;">{!$Label.pse__common_label_tax_type}</apex:outputPanel>
+	                                       </td>
+	                                       <td class="notesSubCol5">
+	                                       	  <span
+	                                             class="{!IF(AND(requiredFixedNotesField[NameSpacePrefix+'Tax_Type__c'], showTaxtypeOnPopup), 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                          <apex:inputField rendered="{!showTaxtypeOnPopup}"
+	                                             value="{!selectedExpense.pse__Tax_Type__c}" id="expTaxType"
+	                                             styleClass="fakeSelectorClassForNotesInput"
+	                                             style="width:75px"></apex:inputField>
+                                            </td>
+	                                    </tr>
+	                                    <tr>
+	                                       <td class="notesSubCol1"><span
+	                                          class="notesHeaderSpan" style="margin-top: 10px;">{!$Label.common_label_incurred_tax}</span></td>
+	                                       <td class="notesSubCol2"></td>
+	                                       <td class="notesSubCol3">
+	                                          <span
+	                                             class="{!IF(requiredFixedNotesField[NameSpacePrefix+'Incurred_Tax__c'], 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                          <apex:inputField value="{!selectedExpense.pse__Incurred_Tax__c}"
+	                                             id="expIncurredTax"
+	                                             styleClass="fakeSelectorClassForNotesInput amountFieldsStyle incurredTaxAmountFieldFakeYUIStyle"
+	                                             onchange="onIncurredTaxAmountChange(this);">
+	                                          </apex:inputField>
+	                                       </td>
+	                                       <td class="notesSubCol4">
+	                                       	   <apex:outputPanel rendered="{!displayTaxNonBillable}"
+	                                             styleClass="notesHeaderSpan"
+	                                             style="padding-right:0px;">{!$Label.pse__common_label_incurred_tax_non_billable}</apex:outputPanel>
+
+	                                       </td>
+	                                       <td class="notesSubCol5">
+	                                         <span
+	                                             class="{!IF(AND(requiredFixedNotesField[NameSpacePrefix+'Incurred_Tax_Non_Billable__c'], displayTaxNonBillable), 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                          <apex:inputField rendered="{!displayTaxNonBillable}"
+	                                             value="{!selectedExpense.pse__Incurred_Tax_Non_Billable__c}"
+	                                             id="taxNonBillable"
+	                                             styleClass="taxNonBillableFieldFakeYUIStyle fakeSelectorClassForNotesInputCheckBox"
+	                                             style="margin-left:0;"
+	                                             onchange="calculateBillableAmount(null,null,null,null,this); _NotesHandler.currentNotesInEditingDirty = true;"></apex:inputField>
+	                                       </td>
+	                                    </tr>
+	                                    <tr>
+	                                       <td class="notesSubCol1"></td>
+	                                       <td class="notesSubCol2"></td>
+	                                       <td class="notesSubCol3">
+	                                          <apex:outputText rendered="{!displayBillableAmount}">
+	                                             <hr style="width: 100%; float: left; margin-top: 5px;" />
+	                                          </apex:outputText>
+	                                       </td>
+	                                       <td class="notesSubCol4"></td>
+	                                       <td class="notesSubCol5"></td>
+	                                    </tr>
+	                                    <tr>
+	                                       <td class="notesSubCol1">
+	                                          <apex:outputPanel rendered="{!displayBillableAmount}"
+	                                             styleClass="notesHeaderSpan">{!$Label.pse__common_label_billable_amount}</apex:outputPanel>
+	                                       </td>
+	                                       <td class="notesSubCol2"></td>
+	                                       <td class="notesSubCol3">
+	                                          <apex:outputText rendered="{!displayBillableAmount}">
+	                                             <div id="billableAmountDiv"
+	                                                style="float: left; min-width: 80px; text-align: left; padding-left: 5px;">
+	                                                <apex:outputField rendered="{!displayBillableAmount}"
+	                                                   id="billable"
+	                                                   value="{!selectedExpense.pse__Billable_Amount__c}" />
+	                                                &nbsp;
+	                                             </div>
+	                                          </apex:outputText>
+	                                       </td>
+	                                       <td class="notesSubCol4"></td>
+	                                       <td class="notesSubCol5"></td>
+	                                    </tr>
+	                                 </table>
+	                              </fieldset>
+	                           </td>
+	                        </tr>
+	                        <tr>
+	                           <td>
+	                              <fieldset>
+	                                 <legend>{!$Label.expense_label_reimbursement_Info}</legend>
+	                                 <table width="100%" cellpadding="0" cellspacing="0">
+	                                    <tr>
+	                                       <td class="notesSubCol1_1">
+	                                       		<span class="notesHeaderSpan fakeSelectorClassForExchangeRateSection exchangeLabel">
+	                                       			{!$Label.common_label_exchange_rate}
+	                                           		<img src="/s.gif" id="infoImage" class="infoIcon" data-tooltip="{!$Label.expense_label_exchange_rate_tooltip_message}" />
+												</span>
+											</td>
+	                                       <td class="notesSubCol2 infoImageOff fakeSelectorClassForExchangeRateSection">
+
+	                                       </td>
+	                                       <td class="notesSubCol3">
+	                                          <!-- Modified as fix for agile task:  000009297, Dated: Dec 29 2010, Added By: Nitin Jain -->
+	                                          <input type="text" value="{!ExchangeRateString}"
+	                                             id="exchangeRateResDefinedMock"
+	                                             class="fakeSelectorClassForNotesInput fakeSelectorClassForExchangeRateSection amountFieldsStyle exchangeRateFieldFakeYUIStyle"
+	                                             onchange="onExchangeRateChange(this);" />
+	                                       </td>
+	                                       <td class="notesSubCol4_5" colspan="2">
+	                                          <div
+	                                             id="fromToCurrencyCode"
+	                                             class="fakeSelectorClassForExchangeRateSection"
+	                                             style="">{!JSENCODE(defaultFromToCurrencyLabel)}&nbsp;</div>
+	                                       </td>
+	                                    </tr>
+	                                    <tr>
+	                                       <td class="notesSubCol1_1"><span
+	                                          class="notesHeaderSpan fakeSelectorClassForExchangeRateSection">{!$Label.common_label_reimbursable_amount}</span></td>
+	                                       <td class="notesSubCol2"></td>
+	                                       <td class="notesSubCol3">
+	                                          <div
+	                                             id="ReimbursableAmountDiv"
+	                                             class="fakeSelectorClassForExchangeRateSection"
+	                                             style="float: left; min-width: 80px;">{!defaultReimbursibleAmount}</div>
+	                                       </td>
+	                                       <td class="notesSubCol4_5" colspan="2" >
+	                                          <!-- Modified code as a fix for Agile Task : : 000011014  Dated : 28 April,2011   By: Aditi -->
+	                                          <apex:outputPanel rendered="{!AND(displayNonReimbursable, displayNonReimbursableOnPopup)}"
+	                                             styleClass="notesHeaderSpan"
+	                                             style="display: inline-flex;">
+	                                             <apex:variable var="nonReimbursableInlineHelpText" value="{!IF(ISNULL($ObjectType.pse__Expense__c.Fields.pse__Non_Reimbursible__c.inlineHelpText), ' ', $ObjectType.pse__Expense__c.Fields.pse__Non_Reimbursible__c.inlineHelpText)}"/>
+	                                             {!$Label.common_label_non_reimbursable}
+	                                             <!-- Added as fix for agile task: AT0043 -->
+	                                             <span id="nonRemPopupId-_help" class="helpButton">
+	                                                <img class="helpOrb" title="" alt="" src="/s.gif" />
+	                                                <script type="text/javascript">sfdcPage.setHelp('nonRemPopupId', '{!JSENCODE(nonReimbursableInlineHelpText)}');</script>
+	                                             </span>
+	                                             <span
+	                                             class="{!IF(AND(requiredFixedNotesField[NameSpacePrefix+'Non_Reimbursible__c'],AND(displayNonReimbursable, displayNonReimbursableOnPopup)), 'myRequired' , 'myRequiredHidden')}">&nbsp;</span>
+	                                          </apex:outputPanel>
+	                                          <apex:inputField rendered="{!AND(displayNonReimbursable, displayNonReimbursableOnPopup)}"
+	                                             value="{!selectedExpense.pse__Non_Reimbursible__c}"
+	                                             id="nonReimbur" style="margin-left: 20px;"
+	                                             styleClass="nonReimFieldFakeYUIStyle fakeSelectorClassForNotesInputCheckBox"
+	                                             onchange="_NotesHandler.currentNotesInEditingDirty = true;onNonReimbursableChange(null);" />
+	                                       </td>
+	                                    </tr>
+	                                    <tr>
+	                                       <td class="notesSubCol1"></td>
+	                                       <td class="notesSubCol2"></td>
+	                                       <td class="notesSubCol3"></td>
+	                                       <td class="notesSubCol4_5" colspan="2"></td>
+	                                    </tr>
+	                                 </table>
+	                              </fieldset>
+	                           </td>
+	                        </tr>
+	                     </table>
+	                  </td>
+	               </tr>
+	            </tbody>
+	            <tfoot>
+	               <tr>
+	                  <td colspan="4" align="center">
+	                     <button id="notesDivOKButton" type="button" class="btn"
+	                        onclick="javascript:_NotesHandler.onOK();">{!$Label.common_label_done}</button>
+	                  </td>
+	               </tr>
+	            </tfoot>
+	         </table>
+	      </div>
+	   </div>
+	</apex:outputPanel>
+		</apex:actionRegion>
+
+		<!-- Added this block as fix for Bug: B-2949  Dated: 28 Jan, 2013  -->
+		<apex:outputPanel layout="block" id="batchResultPB">
+			<script type="text/javascript">
+		        if({!NOT(ISNULL(erAttachmentBatch))}){
+		            if({!OR(erAttachmentBatch.isBatchProcessComplete,erAttachmentBatch.isBatchProcessFailed)}){
+		                jsResetBatchProcessor();
+		            }else{
+		                jsBatchSubmit();
+		            }
+		        } else {
+		        	wait(false);
+		        }
+		    </script>
+		</apex:outputPanel>
+
+		<!-- Expense Report grid section. Added for Agile Task : AT9392  Dated: 22 Jan, 2013 -->
+		<apex:inputhidden value="{!erSectionShowHideStyle}"
+			id="erSectionShowHideStyle" />
+		<apex:outputPanel rendered="{!AND(isEverythingOk,showMostRecentlyCreatedERs)}" id="erGridComponentPanel" styleClass="bPageBlock no-border">
+			<div class="pbSubheader first tertiaryPalette">
+				<img title="{!$Label.expense_entry_label_show_hide_recent_er}"
+					style="cursor: pointer;" onclick="showHideExpenseReportGrid(this);"
+					class="{!erSectionShowHideStyle}" src="/s.gif" />
+				<h3>{!showMostRecentlyERHeaderLabel}</h3>
+			</div>
+			<apex:outputPanel rendered="{!erSectionShowHideStyle=='hideListButton'}">
+				<iframe id="ExpenseReportFrame"
+					src="{!$Page.ExpenseReportGrid}?resid={!resource.id}"
+					frameborder="0" width="100%" style="min-height: 300px;"></iframe>
+			</apex:outputPanel>
+			<apex:outputPanel rendered="{!erSectionShowHideStyle=='showListButton'}">
+				<iframe id="ExpenseReportFrame" src="" frameborder="0" width="100%"
+					style="min-height: 300px;"></iframe>
+			</apex:outputPanel>
+
+			<script type="text/javascript">
+			    var expenseReportGridURL = '{!$Page.ExpenseReportGrid}?resid={!resource.id}';
+			</script>
+		</apex:outputPanel>
+
+	</apex:form>
+
+	<script>
+var _yui;
+var isLightningMode = {!$User.UIThemeDisplayed == 'Theme4d'};
+var _ajaxBrokerURL = "{!$Page.ExpenseAjaxBroker}";
+var _expEntryFileAttacherURL =  "{!$Page.ExpenseEntryFileAttacher}";
+
+var _VFComponent = {
+    nickNameSection_assignmentId : '{!$Component.expEntryForm.assignmentId}',
+    nickNameSection_nickName : '{!$Component.expEntryForm.nickName}',
+
+    expForm_selectedResourceId : '{!$Component.expPage.expEntryForm.selectedResourceId}',
+    expForm_resourceSelect : '{!$Component.expPage.expEntryForm.itemsBlock.pbb.resourceSelect}',
+    notesSection_selectedLineID : '{!$Component.expEntryForm.lineNumber}',
+    notesSection_selectedLineToSaveNoteDataID : '{!$Component.expEntryForm.lineNumberToSaveNotesData}',
+    expForm_erSectionShowHideStyle : '{!$Component.expPage.expEntryForm.erSectionShowHideStyle}',
+    defaultAssignmentRowId : 'expPage:expEntryForm:itemsBlock:pbs:tblRepeat:0:'
+}
+
+var _Label = {
+    editDetails : "{!JSINHTMLENCODE($Label.common_label_edit_details)}",
+    viewDetails : "{!JSINHTMLENCODE($Label.common_label_view_details)}",
+    noResultsFound : "{!JSINHTMLENCODE($Label.timecard_entry_label_no_matching_results_found)}",
+    cancel : "{!JSINHTMLENCODE($Label.common_label_cancel)}",
+    save : "{!JSINHTMLENCODE($Label.common_label_save)}",
+    add : "{!JSINHTMLENCODE($Label.common_label_add)}",
+    myAssignments : "{!JSINHTMLENCODE($Label.timecard_entry_label_my_assignments)}",
+    globalProjects : "{!JSINHTMLENCODE($Label.timacard_entry_label_global_projects)}",
+    nickName : "{!JSINHTMLENCODE($Label.timacard_entry_label_nick_name)}",
+    name : "{!JSINHTMLENCODE($Label.common_label_name)}",
+    account : "{!JSINHTMLENCODE($Label.common_label_account)}",
+    region : "{!JSINHTMLENCODE($Label.common_label_region)}",
+    practice : "{!JSINHTMLENCODE($Label.common_label_practice)}",
+    group : "{!JSINHTMLENCODE($Label.common_label_group)}",
+    confirmDeleteRows : "{!JSINHTMLENCODE($Label.expense_entry_label_confirm_delete)}",
+    confirmUnsavedChanges : "{!JSINHTMLENCODE($Label.timecard_entry_message_unsaved_changes_discard_changes_and_continue)}",
+    unsavedNotesChanges : "{!JSINHTMLENCODE($Label.expense_entry_label_unsave_notes_save_now)}",
+    loadingDetails : "{!JSINHTMLENCODE($Label.common_label_loading_details)}" ,
+    noRowSelectedForDelete : "{!JSINHTMLENCODE($Label.expense_entry_label_no_row_selected_for_delete)}" ,
+    noRowSelectedForSubmit : "{!JSINHTMLENCODE($Label.expense_entry_label_no_row_selected_for_submit)}",
+    /* Added as fix for agile task: 000011239, Dated: Feb 2 2012  */
+    invalidExpenseSubtotal : "{!JSINHTMLENCODE($Label.expense_entry_label_invalid_expense_subtotal)}",
+    /* Added as fix for agile task: AT0376, Dated: Mar 19 2012   By: Shankar*/
+    invalidIncurredTaxAmount : "{!JSINHTMLENCODE($Label.expense_entry_label_invalid_incurred_tax_amount)}",
+    /* Added as fix for agile task: AT12158 */
+    errorNoExchangeRate : "{!JSINHTMLENCODE($Label.expensereport_error_no_exchange_rate_defined)}",
+    selectProjectAssignment : "{!JSINHTMLENCODE($Label.Timecard_entry_label_select_project_assignment)}",
+    recordSelectorSuffix :  "expenseSelector"
+}
+
+var _Config = {
+    showMilestoneOnFrontPage : true,
+    showMethodologyOnFrontPage : true,
+    showPhaseOnFrontPage : true,
+    displayTaxNonBillable : {!displayTaxNonBillable},
+    defaultTaxNonBillable : {!defaultTaxNonBillable},
+    displayNonBillableIncurred : {!displayNonBillableIncurred},
+    displayNonReimbursable : {!displayNonReimbursable},
+    displayBillable : {!displayBillable},
+    displayAccountOnResourcePopup : {!displayAccountOnResourcePopup},
+    /* Added code as a fix for Agile Task : : 000011014  Dated : 28 April,2011   By: Aditi */
+    displayNonReimbursableOnPopup : {!displayNonReimbursableOnPopup},
+    /* Added for Agile Task: AT5085    Dated: 24 Aug, 2012   */
+    expenseDateToConvertRatesLimits : {!expenseDateToConvertRatesLimits},
+    showMilestoneOnPopup : {!showMilestoneOnPopup},
+    showMethodologyOnPopup : {!showMethodologyOnPopup},
+    showPhaseOnPopup : {!showPhaseOnPopup},
+    uiAjaxTimeoutMs : {!uiAjaxTimeoutMs},
+    displayMilestone : {!displayMilestone},
+    displayMethodology : {!displayMethodology},
+    displayPhase : {!displayPhase},
+    showTaxtypeOnPopup : {!showTaxtypeOnPopup}
+}
+</script>
+
+	<script type="text/javascript"
+		src="{!URLFOR($Resource.yui3_1, 'yui/yui-min.js')}"></script>
+	<script type='text/javascript' src="{!$Resource.jsComponents}"></script>
+	<script type="text/javascript" src="{!$Resource.moment_min_js}"></script>
+	<script type='text/javascript' src="{!$Resource.expenseEntryjs}"></script>
+
+	<script language="javascript">
+var yuiControlledOnDomReady = function (){
+    prepareOverlays();
+    bindAll();
+
+    document.body.className += " yui-skin-sam ";
+
+    /*We don't need these*/
+    _AssignmentLookupHandler.config.toggleEditOverlay = false;
+    _ResourceLookupHandler.config.toggleEditOverlay = false;
+    wait(false);
+    autoAssignmentSelect();
+
+    if(isLightningMode){
+    	_ResourceLookupHandler.overlayContainer.setStyle('height',document.body.scrollHeight);
+    	_AssignmentLookupHandler.overlayContainer.setStyle('height',document.body.scrollHeight);
+    	_AttachmentLookupHandler.overlayContainer.setStyle('height',document.body.scrollHeight);
+    }
+}
+
+window.onresize = function onresize() {
+    if(isLightningMode)
+    {
+    	_ResourceLookupHandler.overlayContainer.setStyle('height',document.body.scrollHeight);
+    	_AssignmentLookupHandler.overlayContainer.setStyle('height',document.body.scrollHeight);
+    	_AttachmentLookupHandler.overlayContainer.setStyle('height',document.body.scrollHeight);
+    }
+}
+
+
+YUI().use("node", "NodeList", "io", "event-key", "overlay", "anim","node-event-simulate",function(Y) {
+    /*Recent release of Chrome (V7) have broken the UI.
+      This is because YUI's NODE creation API is failing while creating some specific type of NODE.
+      The cause of broken functionality is the YUI code [Y.Node.create()] which creates THEAD/TR/TD.
+      In latest chrome release any call to Y.Node.create() which creates THEAD/TR/TD without TABLE tag fails.*/
+    Y.mix(Y.DOM.creators, {
+        tbody: function(html, doc) {
+            return Y.DOM.create('<table>' + html + '</table>', doc);
+        },
+        thead: function(html, doc) {
+            return Y.DOM.create('<table>' + html + '</table>', doc);
+        },
+        tr: function(html, doc) {
+            return Y.DOM.create('<tbody>' + html + '</tbody>', doc);
+        },
+        td: function(html, doc) {
+            return Y.DOM.create('<tr>' + html + '</tr>', doc);
+        },
+        th: function(html, doc) {
+            return Y.DOM.create('<tr>' + html + '</tr>', doc);
+        }
+
+    });
+
+    _yui = Y;
+    _yui.on('domready',yuiControlledOnDomReady,_yui);
+
+});
+
+/*Code to move focus set by SFDC JS libs*/
+function setFocusOnLoad() {}
+</script>
+<!-- Added this component to include jquery library for tooltip -->
+<c:fflib_thirdparty jQuery="true" jQueryUI="true" />
+
+</apex:page>

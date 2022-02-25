@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ETC_Billable_OLD_DNU__c</fullName>
+    <description>Billable forecasted hours multiplied by Assignment&apos;s bill rate (current week forward). Populated  from the field &quot;Scheduled Hours ($)&quot; on all Est vs Actuals records where Time Period = Week.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Billable forecasted hours multiplied by Assignment&apos;s bill rate (current week forward).</inlineHelpText>
+    <label>ETC Billable ($) - OLD DNU</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

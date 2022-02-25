@@ -1,0 +1,31 @@
+<apex:page controller="CoveoV2.SelectDynamicResourcesController" docType="html-5.0" sidebar="false">
+    <c:AdminCheck >
+            <apex:form >
+                <apex:pageBlock id="DynamicResourcesForm">
+                    <apex:pageMessages />
+                    <apex:sectionHeader title="Dynamic Static Resources" subtitle="Select Resources"/>
+                    <apex:pageBlockTable value="{!dynamicResourceSelects}" var="drs">
+                        <apex:column headerValue="Resource Name" value="{!drs.name}" />
+                        <apex:column headerValue="Value">
+                            <apex:selectList value="{!drs.selectedValue}" multiselect="false" size="1">
+                                <apex:selectOptions value="{!drs.options}"/>
+                            </apex:selectList>
+                        </apex:column>
+                        <apex:column headerValue="Path" value="{!drs.path}" />
+                        <apex:column headerValue="Description" value="{!drs.description}"/>
+                    </apex:pageBlockTable>
+                    <apex:pageBlockButtons location="bottom">
+                        <apex:commandbutton value="Refresh" reRender="DynamicResourcesForm"/>
+                        <apex:commandButton value="Save" action="{!updateDynamicResources}"/>
+                        <apex:commandButton value="Restore defaults" action="{!restoreDefaultDynamicResources}" onclick="confirmRestoreDefaultDynamicResources()"/>
+                    </apex:pageBlockButtons>
+                </apex:pageBlock>
+            </apex:form>
+
+            <script type="text/javascript">
+            function confirmRestoreDefaultDynamicResources() {
+                return confirm('Are you sure you want to reset all dynamic resources?');
+            }
+            </script>
+    </c:AdminCheck>
+</apex:page>

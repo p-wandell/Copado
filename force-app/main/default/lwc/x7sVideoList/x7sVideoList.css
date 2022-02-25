@@ -1,0 +1,109 @@
+/**
+ * Copyright (c) 2020.  7Summits Inc. All rights reserved.
+ */
+
+:host {
+    --x7s-videoGalleryPlusArrowColor: var(--lwc-colorTextButtonBrand);
+    --x7s-videoGalleryPlusArrowBorderColor: var(--lwc-colorBrand);
+    --x7s-videoGalleryPlusArrowBorderRadius: var(--lwc-borderRadiusMedium);
+    --x7s-videoGalleryPlusArrowHoverOpacity: 0.8;
+}
+
+.x7s-video-list__video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background-color: #E8E8E8;
+}
+
+.x7s-video-list__video {
+    display: flex;
+    flex-direction: column;
+}
+
+.x7s-video-list__video-embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.x7s-video-list__video-description {
+    display: flex;
+    overflow: hidden;
+}
+
+.x7s-video-list__video-description a {
+    word-break: break-all;
+}
+
+.x7s-video-list__carousel-arrow button {
+    padding: 0.25rem;
+    color: var(--x7s-videoGalleryPlusArrowColor);
+}
+
+.x7s-video-list__carousel-arrow button:hover {
+    opacity: var(--x7s-videoGalleryPlusArrowHoverOpacity);
+}
+
+.x7s-video-list__arrow {
+    background-color: var(--x7s-videoGalleryPlusArrowBorderColor);
+    border-radius: var(--x7s-videoGalleryPlusArrowBorderRadius);
+}
+
+.x7s-video-list__video-item {
+    animation: fadein 1s ease forwards;
+}
+
+.x7s-video-list__video-item:nth-child(2) {
+    animation-delay: .25s
+}
+
+.x7s-video-list__video-item:nth-child(3) {
+    animation-delay: .5s
+}
+
+.x7s-video-list__video-item:nth-child(4) {
+    animation-delay: .75s
+}
+
+.x7s-video-list__video-item:nth-child(5) {
+    animation-delay: 1s
+}
+
+.x7s-video-list__video-item:nth-child(6) {
+    animation-delay: 1.25s
+}
+
+.x7s-video-list__video-item:nth-child(7) {
+    animation-delay: 1.5s
+}
+
+.x7s-video-list__video-item:nth-child(8) {
+    animation-delay: 1.75s
+}
+
+.x7s-video-list__video-item:nth-child(9) {
+    animation-delay: 2s
+}
+
+.x7s-video-list__video-item:nth-child(10) {
+    animation-delay: 2.25s
+}
+
+.x7s-video-list__video-item:nth-child(11) {
+    animation-delay: 2.5s
+}
+
+.x7s-video-list__video-item:nth-child(12) {
+    animation-delay: 2.75s
+}
+
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}

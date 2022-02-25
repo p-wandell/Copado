@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <validationRules>
+        <errorMessage><!-- The Skill Zone must specify either a Region or a Practice or a Group for which it applies (but no more than one). --></errorMessage>
+        <name>pse__Skill_Must_be_for_Exactly_One_Zone_RPG</name>
+    </validationRules>
+</CustomObjectTranslation>

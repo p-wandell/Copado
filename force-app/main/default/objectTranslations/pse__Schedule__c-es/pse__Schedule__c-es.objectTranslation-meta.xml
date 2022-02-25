@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Programar</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Horarios</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Nombre del programa</nameFieldLabel>
+    <sharingReasons>
+        <label><!-- PSE Member Share --></label>
+        <name>pse__PSE_Member_Share</name>
+    </sharingReasons>
+    <sharingReasons>
+        <label><!-- PSE PM Share --></label>
+        <name>pse__PSE_PM_Share</name>
+    </sharingReasons>
+    <validationRules>
+        <errorMessage><!-- End date cannot occur before start date. --></errorMessage>
+        <name>pse__Check_End_Date</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Hours cannot be negative or greater than 24. --></errorMessage>
+        <name>pse__Check_Hours</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Start Time must be earlier than the End Time. --></errorMessage>
+        <name>pse__Start_Time_must_be_before_End_Time</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Zero_Schedule --></label>
+        <name>pse__Zero_Schedule</name>
+    </webLinks>
+</CustomObjectTranslation>

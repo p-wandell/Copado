@@ -1,0 +1,31 @@
+<!--
+  - Copyright (c) 2020. 7Summits Inc.
+-->
+<template>
+    <template if:true={isvolunteerNeeds}>
+        <c-x7s-shr-component-wrapper 
+                custom-class={componentClass}
+                variant={variant}
+                title="Volunteers Needed!"
+                description={volunteerNeedsdesc}
+                shaded-header>
+            <slot>
+                <template for:each={volunteerNeeds} for:item="wrapper">
+                    <c-x7s-events-volunteers-need 
+                            key={wrapper.volunteerNeed.Id}
+                            wrapper={wrapper} 
+                            current-user={currentUser} 
+                            site-path={sitePath}>
+                    </c-x7s-events-volunteers-need>
+                </template>
+            </slot>
+            <template if:true={isGuestUser}>
+                <div name="footer">
+                    <div class="slds-p-around_x-small">
+                        <a href={loginPath}>{labels.labelLoginRegister}</a>&nbsp;{labels.labelGuestUserVolunteerAction}
+                    </div>
+                </div>
+            </template>
+        </c-x7s-shr-component-wrapper>
+    </template>
+</template>

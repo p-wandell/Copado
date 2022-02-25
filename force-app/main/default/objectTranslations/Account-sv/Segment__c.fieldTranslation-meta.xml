@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Choose the value that describes the number of employees: 4500+ = Enterprise, less than 4501 = Commercial --></help>
+    <label><!-- Segment --></label>
+    <name>Segment__c</name>
+    <picklistValues>
+        <masterLabel>Commercial</masterLabel>
+        <translation><!-- Commercial --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Enterprise</masterLabel>
+        <translation><!-- Enterprise --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

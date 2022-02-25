@@ -1,0 +1,39 @@
+<!--
+ - Created by kentheberling on 4/24/18.
+ -->
+
+<aura:component description="RSSFeedList" controller="Peak_RSS" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" extends="c:Peak_Base">
+
+    <aura:attribute name="feedTitle" type="String" default=""/>
+    <aura:attribute name="feedUrlEndpoint" type="String" default=""/>
+    <aura:attribute name="recordsToShow" type="String" default="10" />
+
+    <aura:attribute name="isListEmpty" type="Boolean" default="True"/>
+    <aura:attribute name="emptyListText" type="String" default="No RSS feed items found"/>
+    <aura:attribute name="errorListText" type="String" default="Failed to return any items. Ensure a remote site setting record is created for the URL you're using."/>
+    <aura:attribute name="responseText" type="String"/>
+
+    <aura:attribute name="feed" type="Peak_RSS"/>
+
+    <aura:attribute name="CustomClassName" type="String" default=""/>
+    <aura:attribute name="CustomIdName" type="String" default=""/>
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
+    <section class="{!'peak-component ' + v.CustomClassName}" id="{!v.CustomIdName}">
+        <h3>{!v.feedTitle}</h3>
+        <lightning:layout multipleRows="true" pullToBoundary="true">
+            <aura:if isTrue="{!!(v.isListEmpty)}">
+                <aura:iteration items="{!v.feed}" var="feedItem">
+                    <lightning:layoutItem size="12" flexibility="no-flex" class="rss-feed-item slds-m-bottom_medium" >
+                        <h3 class="slds-text-heading_medium"><ui:outputURL label="{!feedItem.title}" value="{!feedItem.link}" target="_blank" /></h3>
+                        <p>{!feedItem.author}&nbsp;&bull;&nbsp;<ui:outputDateTime value="{!feedItem.publishDate}" format="MMMM d, YYYY"/></p>
+                    </lightning:layoutItem>
+                </aura:iteration>
+                <aura:set attribute="else">
+                    <ui:outputText value="{!v.responseText}"/>
+                </aura:set>
+            </aura:if>
+        </lightning:layout>
+    </section>
+</aura:component>

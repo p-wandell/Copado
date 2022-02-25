@@ -1,0 +1,28 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+
+<!--
+ - Created by francoiskorb on 1/5/18.
+ -->
+
+<aura:component description="SVNSUMMITS_Members_Follow_Button">
+
+	<aura:attribute name="member"       type="Map" access="global"/>
+
+	<aura:registerEvent name="followEvent" type="c:SVNSUMMITS_Members_Follow_Event"/>
+
+	<lightning:layout verticalAlign="center"
+	                  horizontalAlign="center">
+		<lightning:layoutItem size="12">
+			<lightning:buttonStateful labelWhenOff="{!$Label.c.ss_mbr_button_Follow}"
+			                          labelWhenOn="{!$Label.c.ss_mbr_button_Following}"
+			                          labelWhenHover="{!$Label.c.ss_mbr_button_Unfollow}"
+			                          iconNameWhenOff="utility:add"
+			                          iconNameWhenOn="utility:check"
+			                          iconNameWhenHover="utility:close"
+			                          state="{!v.member.isFollowing}"
+			                          onclick="{!c.handleFollowClick}"/>
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

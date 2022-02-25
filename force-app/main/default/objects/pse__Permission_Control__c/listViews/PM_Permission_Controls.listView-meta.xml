@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PM_Permission_Controls</fullName>
+    <columns>pse__User__c</columns>
+    <columns>pse__Cascading_Permission__c</columns>
+    <columns>pse__Resource_Request_Entry__c</columns>
+    <columns>pse__Staffing__c</columns>
+    <columns>pse__Skills_And_Certifications_Entry__c</columns>
+    <columns>pse__Skills_And_Certifications_View__c</columns>
+    <columns>pse__Forecast_Edit__c</columns>
+    <columns>pse__Forecast_View__c</columns>
+    <columns>pse__Edit_Task_Manager__c</columns>
+    <columns>pse__View_Task_Manager__c</columns>
+    <columns>pse__Timecard_Entry__c</columns>
+    <columns>pse__Timecard_Ops_Edit__c</columns>
+    <columns>pse__Expense_Entry__c</columns>
+    <columns>pse__Expense_Ops_Edit__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Resource_Role__c</field>
+        <operation>equals</operation>
+        <value>PM</value>
+    </filters>
+    <label>PM Permission Controls</label>
+    <language>en_US</language>
+</ListView>

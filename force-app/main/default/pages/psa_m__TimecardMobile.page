@@ -1,0 +1,334 @@
+<apex:page doctype="html-5.0" showHeader="false" standardStylesheets="false" standardController="pse__Timecard_Header__c" extensions="psa_m.TimecardMobileController">
+
+<head>
+    <title>{!$Label.timecard_page_title}</title>
+
+    <!-- Sets the width of the viewport to match the width of the device.
+     The initial-scale value ensures that no zoom will be applied to the page when it first loads.-->
+     <meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+
+    <!-- iOS: sets title of the app when user does "add to homescreen" -->
+    <meta name="apple-mobile-web-app-title" content="Timecards" />
+
+    <!-- iOS: tells ios/safari to the hide status bar -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!-- iOS: icon Image for homescreen icons only -->
+    <link href="{!URLFOR($Resource.TimecardMobile, '/resources/icons/FF_icon_200x200.png')}" rel="apple-touch-icon" />
+    <!-- iOS: don't try to turn numbrers into links unless they are explicitly tagged as <href a="tel://...  -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Android: Lets chrome know app should be run in stand alone mode -->
+    <meta name="mobile-web-app-capable" content="yes" / >
+    <!-- Android: icon link for android devices - only on browser homepage links. not in native-wrapped containers-->
+    <link rel="icon" sizes="200x200" href="{!URLFOR($Resource.TimecardMobile, '/resources/icons/FF_icon_200x200.png')}" />
+
+
+
+    <c:fflib_bridgeUserInfo />
+</head>
+
+    <style type="text/css">
+         /**
+         * Loading Background Color
+         */
+        html, body {
+            height: 100%;
+            background-color: #0096DE
+        }
+
+        #appLoadingIndicator {
+            position: absolute;
+            top: 50%;
+            margin-top: -15px;
+            text-align: center;
+            width: 100%;
+            height: 30px;
+            -webkit-animation-name: appLoadingIndicator;
+            -webkit-animation-duration: 0.5s;
+            -webkit-animation-iteration-count: infinite;
+            -webkit-animation-direction: linear;
+        }
+
+        #appLoadingIndicator > * {
+            background-color: #FFFFFF;
+            display: inline-block;
+            height: 30px;
+            -webkit-border-radius: 15px;
+            margin: 0 5px;
+            width: 30px;
+            opacity: 0.8;
+        }
+
+        @-webkit-keyframes appLoadingIndicator{
+            0% {
+                opacity: 0.8
+            }
+            50% {
+                opacity: 0
+            }
+            100% {
+                opacity: 0.8
+            }
+        }
+    </style>
+
+    <div id="appLoadingIndicator">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <c:fflib_touchBootstrap staticResource="{!$Resource.psa_m__TimecardMobile}" developmentPrefix="" useLocalhostCordova="{!isMobileApp}">
+
+        window.$RemoteAction                                           = window.$RemoteAction || {};
+        $RemoteAction.TimecardMobileController                         = $RemoteAction.TimecardMobileController || {};
+        $RemoteAction.TimecardMobileController.createTimecard          = '{!$RemoteAction.TimecardMobileController.createTimecard }';
+        $RemoteAction.TimecardMobileController.readTimecards           = '{!$RemoteAction.TimecardMobileController.readTimecards }';
+        $RemoteAction.TimecardMobileController.updateTimecard          = '{!$RemoteAction.TimecardMobileController.updateTimecard }';
+        $RemoteAction.TimecardMobileController.deleteTimecard          = '{!$RemoteAction.TimecardMobileController.deleteTimecard }';
+        $RemoteAction.TimecardMobileController.readResourceInfo        = '{!$RemoteAction.TimecardMobileController.readResourceInfo }';
+        $RemoteAction.TimecardMobileController.readAssignments         = '{!$RemoteAction.TimecardMobileController.readAssignments }';
+        $RemoteAction.TimecardMobileController.submitTimecard          = '{!$RemoteAction.TimecardMobileController.submitTimecard }';
+        $RemoteAction.TimecardMobileController.submitTimecards         = '{!$RemoteAction.TimecardMobileController.submitTimecards }';
+        $RemoteAction.TimecardMobileController.copyTimecard            = '{!$RemoteAction.TimecardMobileController.copyTimecard }';
+        $RemoteAction.TimecardMobileController.copyTimecards           = '{!$RemoteAction.TimecardMobileController.copyTimecards }';
+        $RemoteAction.TimecardMobileController.copyAssignmentSchedules = '{!$RemoteAction.TimecardMobileController.copyAssignmentSchedules }';
+        $RemoteAction.TimecardMobileController.createTimecardHard      = '{!$RemoteAction.TimecardMobileController.createTimecardHard }';
+        $RemoteAction.TimecardMobileController.validateSession         = '{!$RemoteAction.TimecardMobileController.validateSession }';
+        $RemoteAction.TimecardMobileController.readTaskListForProject  = '{!$RemoteAction.TimecardMobileController.readTaskListForProject}';
+        $RemoteAction.TimecardMobileController.readPicklistOptions     = '{!$RemoteAction.TimecardMobileController.readPicklistOptions}';
+        $RemoteAction.TimecardMobileController.readLookupOptions       = '{!$RemoteAction.TimecardMobileController.readLookupOptions}';
+
+        // Note: Dot notation used for JavaScript objects, as opposed to underscore notation for
+        // namespaced labels in VisualForce global variables
+        window.$ObjectType                                 = window.$ObjectType || {};
+        $ObjectType.pse                                    = $ObjectType.pse || {};
+        $ObjectType.pse.Assignment__c                      = $ObjectType.pse.Assignment__c || {};
+        $ObjectType.pse.Assignment__c.label                = '{!JSINHTMLENCODE($ObjectType.pse__Assignment__c.label)}';
+        $ObjectType.pse.Assignment__c.labelPlural          = '{!JSINHTMLENCODE($ObjectType.pse__Assignment__c.labelPlural)}';
+
+        // Creating $Label object to house getter method
+        window.$Label = window.$Label || {};
+        // Get function throws Error when Label not found instead of just returning undefined
+        $Label.get = function(labelName){
+            if(this.hasOwnProperty(labelName) &amp;&amp; this[labelName]){
+                return this[labelName];
+            } else {
+                throw Error("Unable to load custom label: "+labelName);
+            }
+        }
+
+        // Labels alphabetized to help reconcile with CustomLabels.labels files
+        window.pse_m                                                          = window.pse_m || {};
+        pse_m.$Label                                                          = pse_m.$Label || $Label;
+        pse_m.$Label.timecard_add_task_time                                   = '{!JSINHTMLENCODE($Label.timecard_add_task_time)}';
+        pse_m.$Label.timecard_assignment_invalid                              = '{!JSINHTMLENCODE($Label.timecard_assignment_invalid)}';
+        pse_m.$Label.timecard_back                                            = '{!JSINHTMLENCODE($Label.timecard_back)}';
+        pse_m.$Label.timecard_billable                                        = '{!JSINHTMLENCODE($Label.timecard_billable)}';
+        pse_m.$Label.timecard_billable_on_nonbill_assign                      = '{!JSINHTMLENCODE($Label.timecard_billable_on_nonbill_assign)}';
+        pse_m.$Label.timecard_billable_on_nonbill_project                     = '{!JSINHTMLENCODE($Label.timecard_billable_on_nonbill_project)}';
+        pse_m.$Label.timecard_cancel                                          = '{!JSINHTMLENCODE($Label.timecard_cancel)}';
+        pse_m.$Label.timecard_cancel_request_body                             = '{!JSINHTMLENCODE($Label.timecard_cancel_request_body)}';
+        pse_m.$Label.timecard_cancel_request_header                           = '{!JSINHTMLENCODE($Label.timecard_cancel_request_header)}';
+        pse_m.$Label.timecard_canceling                                       = '{!JSINHTMLENCODE($Label.timecard_canceling)}';
+        pse_m.$Label.timecard_cannot_copy_tcs_to_target_week                  = '{!JSINHTMLENCODE($Label.timecard_cannot_copy_tcs_to_target_week)}';
+        pse_m.$Label.timecard_cannot_doAction_with_zero_hours                 = '{!JSINHTMLENCODE($Label.timecard_cannot_doAction_with_zero_hours)}';
+        pse_m.$Label.timecard_cannot_have_billable_for_nonbillable_assign     = '{!JSINHTMLENCODE($Label.timecard_cannot_have_billable_for_nonbillable_assign)}';
+        pse_m.$Label.timecard_cannot_have_billable_tc_for_nonbillable_assign  = '{!JSINHTMLENCODE($Label.timecard_cannot_have_billable_tc_for_nonbillable_assign)}';
+        pse_m.$Label.timecard_cannot_have_billable_tc_for_nonbillable_project = '{!JSINHTMLENCODE($Label.timecard_cannot_have_billable_tc_for_nonbillable_project)}';
+        pse_m.$Label.timecard_cannot_populate_no_start_date                   = '{!JSINHTMLENCODE($Label.timecard_cannot_populate_no_start_date)}';
+        pse_m.$Label.timecard_cannot_populate_no_tc_attached                  = '{!JSINHTMLENCODE($Label.timecard_cannot_populate_no_tc_attached)}';
+        pse_m.$Label.timecard_cannot_submit_read_only_timecards               = '{!JSINHTMLENCODE($Label.timecard_cannot_submit_read_only_timecards)}';
+        pse_m.$Label.timecard_close                                           = '{!JSINHTMLENCODE($Label.timecard_close)}';
+        pse_m.$Label.timecard_communication_error                             = '{!JSINHTMLENCODE($Label.timecard_communication_error)}';
+        pse_m.$Label.timecard_connectivity_error                              = '{!JSINHTMLENCODE($Label.timecard_connectivity_error)}';
+        pse_m.$Label.timecard_copied                                          = '{!JSINHTMLENCODE($Label.timecard_copied)}';
+        pse_m.$Label.timecard_copy_all                                        = '{!JSINHTMLENCODE($Label.timecard_copy_all)}';
+        pse_m.$Label.timecard_copy_errors_on_x_tcs                            = '{!JSINHTMLENCODE($Label.timecard_copy_errors_on_x_tcs)}';
+        pse_m.$Label.timecard_copy_errors_with_msg                            = '{!JSINHTMLENCODE($Label.timecard_copy_errors_with_msg)}';
+        pse_m.$Label.timecard_copy_from_prev_week                             = '{!JSINHTMLENCODE($Label.timecard_copy_from_prev_week)}';
+        pse_m.$Label.timecard_copy_from_schedule                              = '{!JSINHTMLENCODE($Label.timecard_copy_from_schedule)}';
+        pse_m.$Label.timecard_copy_schedule                                   = '{!JSINHTMLENCODE($Label.timecard_copy_schedule)}';
+        pse_m.$Label.timecard_copy_schedule_failure_no_assigments             = '{!JSINHTMLENCODE($Label.timecard_copy_schedule_failure_no_assigments)}';
+        pse_m.$Label.timecard_copy_tc                                         = '{!JSINHTMLENCODE($Label.timecard_copy_tc)}';
+        pse_m.$Label.timecard_copy_tc_error                                   = '{!JSINHTMLENCODE($Label.timecard_copy_tc_error)}';
+        pse_m.$Label.timecard_copy_tc_unable                                  = '{!JSINHTMLENCODE($Label.timecard_copy_tc_unable)}';
+        pse_m.$Label.timecard_copying_schedule                                = '{!JSINHTMLENCODE($Label.timecard_copying_schedule)}';
+        pse_m.$Label.timecard_copying_schedules                               = '{!JSINHTMLENCODE($Label.timecard_copying_schedules)}';
+        pse_m.$Label.timecard_copying_tc                                      = '{!JSINHTMLENCODE($Label.timecard_copying_tc)}';
+        pse_m.$Label.timecard_copying_tcs                                     = '{!JSINHTMLENCODE($Label.timecard_copying_tcs)}';
+        pse_m.$Label.timecard_create_error                                    = '{!JSINHTMLENCODE($Label.timecard_create_error)}';
+        pse_m.$Label.timecard_create_task_time_singular                       = '{!JSINHTMLENCODE($Label.timecard_create_task_time_singular)}';
+        pse_m.$Label.timecard_create_task_time_plural                         = '{!JSINHTMLENCODE($Label.timecard_create_task_time_plural)}';
+        pse_m.$Label.timecard_creating_tc                                     = '{!JSINHTMLENCODE($Label.timecard_creating_tc)}';
+        pse_m.$Label.timecard_data_load_failure                               = '{!JSINHTMLENCODE($Label.timecard_data_load_failure)}';
+        pse_m.$Label.timecard_day                                             = '{!JSINHTMLENCODE($Label.timecard_day)}';
+        pse_m.$Label.timecard_day_view                                        = '{!JSINHTMLENCODE($Label.timecard_day_view)}';
+        pse_m.$Label.timecard_day_cannot_have_negative_hours                  = '{!JSINHTMLENCODE($Label.timecard_day_cannot_have_negative_hours)}';
+        pse_m.$Label.timecard_day_cant_have_neg_hrs                           = '{!JSINHTMLENCODE($Label.timecard_day_cant_have_neg_hrs)}';
+        pse_m.$Label.timecard_day_detail_notes                                = '{!JSINHTMLENCODE($Label.timecard_day_detail_notes)}';
+        pse_m.$Label.timecard_day_hours_must_be_above_floor                   = '{!JSINHTMLENCODE($Label.timecard_day_hours_must_be_above_floor)}';
+        pse_m.$Label.timecard_day_hours_must_be_below_ceiling                 = '{!JSINHTMLENCODE($Label.timecard_day_hours_must_be_below_ceiling)}';
+        pse_m.$Label.timecard_day_requires_notes_for_nonzero_hours            = '{!JSINHTMLENCODE($Label.timecard_day_requires_notes_for_nonzero_hours)}';
+        pse_m.$Label.timecard_day_time_additional_fieldset                    = '{!JSINHTMLENCODE($Label.timecard_day_time_additional_fieldset)}';
+        pse_m.$Label.timecard_dayofweek_friday                                = '{!JSINHTMLENCODE($Label.timecard_dayofweek_friday)}';
+        pse_m.$Label.timecard_dayofweek_monday                                = '{!JSINHTMLENCODE($Label.timecard_dayofweek_monday)}';
+        pse_m.$Label.timecard_dayofweek_saturday                              = '{!JSINHTMLENCODE($Label.timecard_dayofweek_saturday)}';
+        pse_m.$Label.timecard_dayofweek_sunday                                = '{!JSINHTMLENCODE($Label.timecard_dayofweek_sunday)}';
+        pse_m.$Label.timecard_dayofweek_thursday                              = '{!JSINHTMLENCODE($Label.timecard_dayofweek_thursday)}';
+        pse_m.$Label.timecard_dayofweek_tuesday                               = '{!JSINHTMLENCODE($Label.timecard_dayofweek_tuesday)}';
+        pse_m.$Label.timecard_dayofweek_wednesday                             = '{!JSINHTMLENCODE($Label.timecard_dayofweek_wednesday)}';
+        pse_m.$Label.timecard_delete                                          = '{!JSINHTMLENCODE($Label.timecard_delete)}';
+        pse_m.$Label.timecard_delete_error                                    = '{!JSINHTMLENCODE($Label.timecard_delete_error)}';
+        pse_m.$Label.timecard_delete_selected_tc                              = '{!JSINHTMLENCODE($Label.timecard_delete_selected_tc)}';
+        pse_m.$Label.timecard_delete_tc                                       = '{!JSINHTMLENCODE($Label.timecard_delete_tc)}';
+        pse_m.$Label.timecard_delete_tc_confirmation                          = '{!JSINHTMLENCODE($Label.timecard_delete_tc_confirmation)}';
+        pse_m.$Label.timecard_deleting_tc                                     = '{!JSINHTMLENCODE($Label.timecard_deleting_tc)}';
+        pse_m.$Label.timecard_detail                                          = '{!JSINHTMLENCODE($Label.timecard_detail)}';
+        pse_m.$Label.timecard_displaying_thing                                = '{!JSINHTMLENCODE($Label.timecard_displaying_thing)}';
+        pse_m.$Label.timecard_error                                           = '{!JSINHTMLENCODE($Label.timecard_error)}';
+        pse_m.$Label.timecard_error_code_with_method_and_msg                  = '{!JSINHTMLENCODE($Label.timecard_error_code_with_method_and_msg)}';
+        pse_m.$Label.timecard_etc                                             = '{!JSINHTMLENCODE($Label.timecard_etc)}';
+        pse_m.$Label.timecard_filter                                          = '{!JSINHTMLENCODE($Label.timecard_filter)}';
+        pse_m.$Label.timecard_global_project                                  = '{!JSINHTMLENCODE($Label.timecard_global_project)}';
+        pse_m.$Label.timecard_go                                              = '{!JSINHTMLENCODE($Label.timecard_go)}';
+        pse_m.$Label.timecard_go_to_date                                      = '{!JSINHTMLENCODE($Label.timecard_go_to_date)}';
+        pse_m.$Label.timecard_hours_must_be_number                            = '{!JSINHTMLENCODE($Label.timecard_hours_must_be_number)}';
+        pse_m.$Label.timecard_hours_must_be_number_etc                        = '{!JSINHTMLENCODE($Label.timecard_hours_must_be_number_etc)}';
+        pse_m.$Label.timecard_invalid_date_range                              = '{!JSINHTMLENCODE($Label.timecard_invalid_date_range)}';
+        pse_m.$Label.timecard_invalid_dayofweek                               = '{!JSINHTMLENCODE($Label.timecard_invalid_dayofweek)}';
+        pse_m.$Label.timecard_list_no_methodology                             = '{!JSINHTMLENCODE($Label.timecard_list_no_methodology)}';
+        pse_m.$Label.timecard_list_no_milestone                               = '{!JSINHTMLENCODE($Label.timecard_list_no_milestone)}';
+        pse_m.$Label.timecard_list_no_phase                                   = '{!JSINHTMLENCODE($Label.timecard_list_no_phase)}';
+        pse_m.$Label.timecard_load_tcs_error_body                             = '{!JSINHTMLENCODE($Label.timecard_load_tcs_error_body)}';
+        pse_m.$Label.timecard_load_tcs_error_header                           = '{!JSINHTMLENCODE($Label.timecard_load_tcs_error_header)}';
+        pse_m.$Label.timecard_loading_assignments_error                       = '{!JSINHTMLENCODE($Label.timecard_loading_assignments_error)}';
+        pse_m.$Label.timecard_loading_next_week                               = '{!JSINHTMLENCODE($Label.timecard_loading_next_week)}';
+        pse_m.$Label.timecard_loading_previous_tcs                            = '{!JSINHTMLENCODE($Label.timecard_loading_previous_tcs)}';
+        pse_m.$Label.timecard_loading_previous_week                           = '{!JSINHTMLENCODE($Label.timecard_loading_previous_week)}';
+        pse_m.$Label.timecard_loading_project_tasks                           = '{!JSINHTMLENCODE($Label.timecard_loading_project_tasks)}';
+        pse_m.$Label.timecard_loading_schedules                               = '{!JSINHTMLENCODE($Label.timecard_loading_schedules)}';
+        pse_m.$Label.timecard_loading_tc                                      = '{!JSINHTMLENCODE($Label.timecard_loading_tc)}';
+        pse_m.$Label.timecard_log_out                                         = '{!JSINHTMLENCODE($Label.timecard_log_out)}';
+        pse_m.$Label.timecard_logging_out                                     = '{!JSINHTMLENCODE($Label.timecard_logging_out)}';
+        pse_m.$Label.timecard_lookups_loading_options                         = '{!JSINHTMLENCODE($Label.timecard_lookups_loading_options)}';
+        pse_m.$Label.timecard_lookups_search_field_placeholder                = '{!JSINHTMLENCODE($Label.timecard_lookups_search_field_placeholder)}';
+        pse_m.$Label.timecard_lookups_unable_to_load_options                  = '{!JSINHTMLENCODE($Label.timecard_lookups_unable_to_load_options)}';
+        pse_m.$Label.timecard_max_hours_per_day                               = '{!JSINHTMLENCODE($Label.timecard_max_hours_per_day)}';
+        pse_m.$Label.timecard_max_hours_per_week                              = '{!JSINHTMLENCODE($Label.timecard_max_hours_per_week)}';
+        pse_m.$Label.timecard_methodology                                     = '{!JSINHTMLENCODE($Label.timecard_methodology)}';
+        pse_m.$Label.timecard_methodology_abbrev                              = '{!JSINHTMLENCODE($Label.timecard_methodology_abbrev)}';
+        pse_m.$Label.timecard_milestone                                       = '{!JSINHTMLENCODE($Label.timecard_milestone)}';
+        pse_m.$Label.timecard_milestone_abbrev                                = '{!JSINHTMLENCODE($Label.timecard_milestone_abbrev)}';
+        pse_m.$Label.timecard_min_hours_per_week                              = '{!JSINHTMLENCODE($Label.timecard_min_hours_per_week)}';
+        pse_m.$Label.timecard_missing_required_field                          = '{!JSINHTMLENCODE($Label.timecard_missing_required_field)}';
+        pse_m.$Label.timecard_month_january                                   = '{!JSINHTMLENCODE($Label.timecard_month_january)}';
+        pse_m.$Label.timecard_month_february                                  = '{!JSINHTMLENCODE($Label.timecard_month_february)}';
+        pse_m.$Label.timecard_month_march                                     = '{!JSINHTMLENCODE($Label.timecard_month_march)}';
+        pse_m.$Label.timecard_month_april                                     = '{!JSINHTMLENCODE($Label.timecard_month_april)}';
+        pse_m.$Label.timecard_month_may                                       = '{!JSINHTMLENCODE($Label.timecard_month_may)}';
+        pse_m.$Label.timecard_month_june                                      = '{!JSINHTMLENCODE($Label.timecard_month_june)}';
+        pse_m.$Label.timecard_month_july                                      = '{!JSINHTMLENCODE($Label.timecard_month_july)}';
+        pse_m.$Label.timecard_month_august                                    = '{!JSINHTMLENCODE($Label.timecard_month_august)}';
+        pse_m.$Label.timecard_month_september                                 = '{!JSINHTMLENCODE($Label.timecard_month_september)}';
+        pse_m.$Label.timecard_month_october                                   = '{!JSINHTMLENCODE($Label.timecard_month_october)}';
+        pse_m.$Label.timecard_month_november                                  = '{!JSINHTMLENCODE($Label.timecard_month_november)}';
+        pse_m.$Label.timecard_month_december                                  = '{!JSINHTMLENCODE($Label.timecard_month_december)}';
+        pse_m.$Label.timecard_new_tc                                          = '{!JSINHTMLENCODE($Label.timecard_new_tc)}';
+        pse_m.$Label.timecard_no_project_tasks_available                      = '{!JSINHTMLENCODE($Label.timecard_no_project_tasks_available)}';
+        pse_m.$Label.timecard_no_tcs_to_copy_this_week                        = '{!JSINHTMLENCODE($Label.timecard_no_tcs_to_copy_this_week)}';
+        pse_m.$Label.timecard_no_tcs_to_display_this_week                     = '{!JSINHTMLENCODE($Label.timecard_no_tcs_to_display_this_week)}';
+        pse_m.$Label.timecard_nonbillable                                     = '{!JSINHTMLENCODE($Label.timecard_nonbillable)}';
+        pse_m.$Label.timecard_notes_missing                                   = '{!JSINHTMLENCODE($Label.timecard_notes_missing)}';
+        pse_m.$Label.timecard_ok                                              = '{!JSINHTMLENCODE($Label.timecard_ok)}';
+        pse_m.$Label.timecard_page_title                                      = '{!JSINHTMLENCODE($Label.timecard_page_title)}';
+        pse_m.$Label.timecard_phase                                           = '{!JSINHTMLENCODE($Label.timecard_phase)}';
+        pse_m.$Label.timecard_phase_abbrev                                    = '{!JSINHTMLENCODE($Label.timecard_phase_abbrev)}';
+        pse_m.$Label.timecard_picklist_loading_options                        = '{!JSINHTMLENCODE($Label.timecard_picklist_loading_options)}';
+        pse_m.$Label.timecard_picklist_search_field_placeholder               = '{!JSINHTMLENCODE($Label.timecard_picklist_search_field_placeholder)}';
+        pse_m.$Label.timecard_picklist_unable_to_load_options                 = '{!JSINHTMLENCODE($Label.timecard_picklist_unable_to_load_options)}';
+        pse_m.$Label.timecard_problem_saving                                  = '{!JSINHTMLENCODE($Label.timecard_problem_saving)}';
+        pse_m.$Label.timecard_project_abbrev                                  = '{!JSINHTMLENCODE($Label.timecard_project_abbrev)}';
+        pse_m.$Label.timecard_project_task                                    = '{!JSINHTMLENCODE($Label.timecard_project_task)}';
+        pse_m.$Label.timecard_read_only_postfix                               = '{!JSINHTMLENCODE($Label.timecard_read_only_postfix)}';
+        pse_m.$Label.timecard_reload_app                                      = '{!JSINHTMLENCODE($Label.timecard_reload_app)}';
+        pse_m.$Label.timecard_refresh_data                                    = '{!JSINHTMLENCODE($Label.timecard_refresh_data)}';
+        pse_m.$Label.timecard_refreshing_session                              = '{!JSINHTMLENCODE($Label.timecard_refreshing_session)}';
+        pse_m.$Label.timecard_save                                            = '{!JSINHTMLENCODE($Label.timecard_save)}';
+        pse_m.$Label.timecard_saving_tc                                       = '{!JSINHTMLENCODE($Label.timecard_saving_tc)}';
+        pse_m.$Label.timecard_search                                          = '{!JSINHTMLENCODE($Label.timecard_search)}';
+        pse_m.$Label.timecard_select_all                                      = '{!JSINHTMLENCODE($Label.timecard_select_all)}';
+        pse_m.$Label.timecard_select_assignment                               = '{!JSINHTMLENCODE($Label.timecard_select_assignment)}';
+        pse_m.$Label.timecard_select_none                                     = '{!JSINHTMLENCODE($Label.timecard_select_none)}';
+        pse_m.$Label.timecard_select_tasks                                    = '{!JSINHTMLENCODE($Label.timecard_select_tasks)}';
+        pse_m.$Label.timecard_selecting_assignment                            = '{!JSINHTMLENCODE($Label.timecard_selecting_assignment)}';
+        pse_m.$Label.timecard_selecting_methodology                           = '{!JSINHTMLENCODE($Label.timecard_selecting_methodology)}';
+        pse_m.$Label.timecard_selecting_milestone                             = '{!JSINHTMLENCODE($Label.timecard_selecting_milestone)}';
+        pse_m.$Label.timecard_selecting_phase                                 = '{!JSINHTMLENCODE($Label.timecard_selecting_phase)}';
+        pse_m.$Label.timecard_session_expired                                 = '{!JSINHTMLENCODE($Label.timecard_session_expired)}';
+        pse_m.$Label.timecard_software_update_header                          = '{!JSINHTMLENCODE($Label.timecard_software_update_header)}';
+        pse_m.$Label.timecard_software_update_body                            = '{!JSINHTMLENCODE($Label.timecard_software_update_body)}';
+        pse_m.$Label.timecard_status                                          = '{!JSINHTMLENCODE($Label.timecard_status)}';
+        pse_m.$Label.timecard_status_approved                                 = '{!JSINHTMLENCODE($Label.timecard_status_approved)}';
+        pse_m.$Label.timecard_status_error                                    = '{!JSINHTMLENCODE($Label.timecard_status_error)}';
+        pse_m.$Label.timecard_status_rejected                                 = '{!JSINHTMLENCODE($Label.timecard_status_rejected)}';
+        pse_m.$Label.timecard_status_saved                                    = '{!JSINHTMLENCODE($Label.timecard_status_saved)}';
+        pse_m.$Label.timecard_status_submitted                                = '{!JSINHTMLENCODE($Label.timecard_status_submitted)}';
+        pse_m.$Label.timecard_status_unsaved                                  = '{!JSINHTMLENCODE($Label.timecard_status_unsaved)}';
+        pse_m.$Label.timecard_still_loading_tcs_body                          = '{!JSINHTMLENCODE($Label.timecard_still_loading_tcs_body)}';
+        pse_m.$Label.timecard_still_loading_tcs_header                        = '{!JSINHTMLENCODE($Label.timecard_still_loading_tcs_header)}';
+        pse_m.$Label.timecard_submit_error                                    = '{!JSINHTMLENCODE($Label.timecard_submit_error)}';
+        pse_m.$Label.timecard_submit_line_confirm_button                      = '{!JSINHTMLENCODE($Label.timecard_submit_line_confirm_button)}';
+        pse_m.$Label.timecard_submit_single_line                              = '{!JSINHTMLENCODE($Label.timecard_submit_single_line)}';
+        pse_m.$Label.timecard_submit_line_confirmation                        = '{!JSINHTMLENCODE($Label.timecard_submit_line_confirmation)}';
+        pse_m.$Label.timecard_submit_line_button                              = '{!JSINHTMLENCODE($Label.timecard_submit_line_button)}';
+        pse_m.$Label.timecard_submit_timesheet                                = '{!JSINHTMLENCODE($Label.timecard_submit_timesheet)}';
+        pse_m.$Label.timecard_submit_timesheet_confirmation                   = '{!JSINHTMLENCODE($Label.timecard_submit_timesheet_confirmation)}';
+        pse_m.$Label.timecard_submit_timesheet_for_week                       = '{!JSINHTMLENCODE($Label.timecard_submit_timesheet_for_week)}';
+        pse_m.$Label.timecard_submit_timesheet_button_text                    = '{!JSINHTMLENCODE($Label.timecard_submit_timesheet_button_text)}';
+        pse_m.$Label.timecard_submitting_timesheet                            = '{!JSINHTMLENCODE($Label.timecard_submitting_timesheet)}';
+        pse_m.$Label.timecard_success                                         = '{!JSINHTMLENCODE($Label.timecard_success)}';
+        pse_m.$Label.timecard_swipe_to_delete                                 = '{!JSINHTMLENCODE($Label.timecard_swipe_to_delete)}';
+        pse_m.$Label.timecard_tap_to_copy_one                                 = '{!JSINHTMLENCODE($Label.timecard_tap_to_copy_one)}';
+        pse_m.$Label.timecard_taskhours_label                                 = '{!JSINHTMLENCODE($Label.timecard_taskhours_label)}';
+        pse_m.$Label.timecard_task_time                                       = '{!JSINHTMLENCODE($Label.timecard_task_time)}';
+        pse_m.$Label.timecard_tc_deleted                                      = '{!JSINHTMLENCODE($Label.timecard_tc_deleted)}';
+        pse_m.$Label.timecard_tc_detail                                       = '{!JSINHTMLENCODE($Label.timecard_tc_detail)}';
+        pse_m.$Label.timecard_tc_has_no_proj_assign_data                      = '{!JSINHTMLENCODE($Label.timecard_tc_has_no_proj_assign_data)}';
+        pse_m.$Label.timecard_tc_has_no_resource                              = '{!JSINHTMLENCODE($Label.timecard_tc_has_no_resource)}';
+        pse_m.$Label.timecard_tc_saved                                        = '{!JSINHTMLENCODE($Label.timecard_tc_saved)}';
+        pse_m.$Label.timecard_tc_submitted                                    = '{!JSINHTMLENCODE($Label.timecard_tc_submitted)}';
+        pse_m.$Label.timecard_time                                            = '{!JSINHTMLENCODE($Label.timecard_time)}';
+        pse_m.$Label.timecard_too_many_in_date_range                          = '{!JSINHTMLENCODE($Label.timecard_too_many_in_date_range)}';
+        pse_m.$Label.timecard_toolbar_title                                   = '{!JSINHTMLENCODE($Label.timecard_toolbar_title)}';
+        pse_m.$Label.timecard_total                                           = '{!JSINHTMLENCODE($Label.timecard_total)}';
+        pse_m.$Label.timecard_travel                                          = '{!JSINHTMLENCODE($Label.timecard_travel)}';
+        pse_m.$Label.timecard_user_resource_error                             = '{!JSINHTMLENCODE($Label.timecard_user_resource_error)}';
+        pse_m.$Label.timecard_wc_and_cs_hold_invalid_value                    = '{!JSINHTMLENCODE($Label.timecard_wc_and_cs_hold_invalid_value)}';
+        pse_m.$Label.timecard_week                                            = '{!JSINHTMLENCODE($Label.timecard_week)}';
+        pse_m.$Label.timecard_weekhours_label                                 = '{!JSINHTMLENCODE($Label.timecard_weekhours_label)}';
+        pse_m.$Label.timecard_week_detail_notes                               = '{!JSINHTMLENCODE($Label.timecard_week_detail_notes)}';
+        pse_m.$Label.timecard_week_detail_summary                             = '{!JSINHTMLENCODE($Label.timecard_week_detail_summary)}';
+        pse_m.$Label.timecard_week_notes                                      = '{!JSINHTMLENCODE($Label.timecard_week_notes)}';
+        pse_m.$Label.timecard_week_of_startdate_to_enddate                    = '{!JSINHTMLENCODE($Label.timecard_week_of_startdate_to_enddate)}';
+        pse_m.$Label.timecard_week_view                                       = '{!JSINHTMLENCODE($Label.timecard_week_view)}';
+        pse_m.$Label.timecard_working                                         = '{!JSINHTMLENCODE($Label.timecard_working)}';
+        pse_m.$Label.timecard_taskhours_label                                 = '{!JSINHTMLENCODE($Label.timecard_taskhours_label)}';
+        pse_m.$Label.timecard_weekhours_label                                 = '{!JSINHTMLENCODE($Label.timecard_weekhours_label)}';
+    </c:fflib_touchBootstrap>
+
+    <!-- This is to work around a Safari Mobile issue/feature. Safari Mobile isn't firing touch events for DOM elements
+    which they consider to be non-clickable (e.g. divs) when using delegated events. Sencha Touch uses delegated
+    events and their buttons are constructed from styled divs so buttons are non-clickable. Adding this empty event
+    handler to the document for touchend events causes Safari Mobile to start firing delegated events again and buttons
+    become clickable once again. -->
+    <script type="text/javascript">
+        function handleTouchEnd (event) {}
+
+        (function () {
+            document.ontouchend = handleTouchEnd;
+        })();
+    </script>
+
+</apex:page>

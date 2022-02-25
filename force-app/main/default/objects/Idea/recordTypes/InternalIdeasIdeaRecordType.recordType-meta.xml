@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>InternalIdeasIdeaRecordType</fullName>
+    <active>true</active>
+    <description>Record Type used to associate ideas with a specific community</description>
+    <label>Internal Ideas: Idea Record Type</label>
+    <picklistValues>
+        <picklist>Idea_Extension_Status__c</picklist>
+        <values>
+            <fullName>Linked</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>None</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Pending</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

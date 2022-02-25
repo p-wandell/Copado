@@ -1,0 +1,170 @@
+<!--
+ - Copyright (c) 2018. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 3/17/18.
+-->
+<aura:component description="Peak_FileUploader" access="global" controller="Peak_FileUploadController" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId" extends="c:Peak_FileUploadBase">
+
+    <!--NOTE DUE TO A SALESFORCE HEAP LIMIT THE MAX FILE SIZE ALLOWED FOR THIS UPLOADED IS ~4.2MB-->
+
+    <aura:attribute name="isInit" type="Boolean" default="false"/>
+
+    <!--Used internally by the component-->
+    <aura:attribute name="sizeAbbr" type="List" default="KB,MB,GB"/>
+    <aura:attribute name="chunkSize" type="Integer" default="950000"/>
+    <aura:attribute name="validList" type="List"/>
+    <aura:attribute name="invalidList" type="List"/>
+    <aura:attribute name="fileInfo" type="Object"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="attributesToConvert" type="List" default="message,allTypesText,errorSize,errorExt,uploadLabel"/>
+    <aura:attribute name="showList" type="Boolean" default="false"/>
+
+    <!--These are in the design file and can be set by the property panel or another component-->
+    <aura:attribute name="showFileLists" type="Boolean" default="false"/>
+
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="title" type="String" default="Have an attachment?"/>
+    <aura:attribute name="message" type="String" default="If you have an attachment (such as a screenshot or other documentation) that may be helpful, add it here. {0} limit for each file. Allowed file types: {1}"/>
+    <aura:attribute name="uploadLabel" type="String" default="Have an attachment?"/>
+    <aura:attribute name="allTypesText" type="String" default="All files are accepted"/>
+
+    <aura:attribute name="validListText" type="String" default="Your attached files"/>
+    <aura:attribute name="invalidListText" type="String" default="These files have errors and will not be uploaded"/>
+    <aura:attribute name="deleteText" type="String" default="Delete file"/>
+    <aura:attribute name="removeText" type="String" default="Remove file from list"/>
+    <aura:attribute name="errorSize" type="String" default="This file was not uploaded because it exceeds the file size limit of {0}"/>
+    <aura:attribute name="errorExt" type="String" default="This file type is not allowed. Allowed file types are: {0}"/>
+
+    <!--These should only be set by another component-->
+    <aura:attribute name="inForm" type="Boolean" default="false"/>
+
+
+    <aura:attribute name="CustomClassName" type="String" default=""/>
+    <aura:attribute name="CustomIdName" type="String" default=""/>
+
+    <aura:registerEvent name="setFileList" type="c:Peak_SetFileListEvent"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.initUploader}"/>
+
+
+    <section class="{!'peak-component ' + v.CustomClassName}" id="{!v.CustomIdName}">
+        <aura:if isTrue="{!v.isInit}">
+            <aura:if isTrue="{!or(v.title != '', v.message != '')}">
+                <lightning:layout class="upload-info slds-p-bottom_small">
+                    <lightning:layoutItem flexibility="grow">
+                        <aura:if isTrue="{!v.title != ''}">
+                            <lightning:layout >
+                                <lightning:layoutItem >
+                                    <h4 class="slds-text-heading_small"><c:Peak_Base labelText="{!v.title}"/></h4>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </aura:if>
+                        <aura:if isTrue="{!v.message != ''}">
+                            <lightning:layout >
+                                <lightning:layoutItem >
+                                    <p>
+                                        <aura:unescapedHtml value="{!format(v.message, v.fileInfo.maxFileSize, v.fileInfo.prettyExtensions)}"/>
+                                    </p>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </aura:if>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </aura:if>
+
+            <lightning:layout multipleRows="true" class="spinner-container">
+                <lightning:layoutItem size="12">
+                    <lightning:layout class="file-input">
+                        <lightning:layoutItem flexibility="grow">
+                            <lightning:input aura:id="fileInput" type="file" label="{!v.uploadLabel}" name="file" multiple="true" accept="{!v.fileInfo.extensions}" onchange="{!c.handleFilesChange}" disabled="{!v.isLoading}" variant="{!v.uploadLabel != '' ? 'standard' : 'label-hidden'}"/>
+                        </lightning:layoutItem>
+                        <aura:if isTrue="{!and(!v.showList, v.isLoading)}">
+                            <lightning:layoutItem flexibility="grow">
+                                <lightning:layoutItem padding="" size="12" class="container-item">
+                                    <c:Peak_LoadingGif size="small" variant="brand"/>
+                                </lightning:layoutItem>
+                            </lightning:layoutItem>
+                        </aura:if>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <aura:if isTrue="{!and(v.showList, v.showFileLists)}">
+                    <aura:if isTrue="{!v.validList.length > 0}">
+                        <lightning:layoutItem padding="" size="12" class="slds-p-top_small">
+                            <lightning:layout horizontalAlign="" verticalAlign="" multipleRows="true">
+                                <aura:if isTrue="{!v.validListText != ''}">
+                                    <lightning:layoutItem padding="" size="12">
+                                        <h4><c:Peak_Base labelText="{!v.validListText}"/></h4>
+                                    </lightning:layoutItem>
+                                </aura:if>
+                                <aura:iteration items="{!v.validList}" var="file">
+                                    <lightning:layoutItem padding="" size="12" class="file-details">
+                                        <lightning:layout verticalAlign="center" class="slds-truncate">
+                                            <lightning:layoutItem padding="" size="" class="file-name slds-p-right_xx-small slds-truncate">
+                                                <p class="slds-truncate" title="{!file.name}">
+                                                        {!file.name}
+                                                </p>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem padding="" size="" class="file-info slds-text-color_weak">
+                                                <p>
+                                                    (
+                                                    <span class="file-size slds-p-right_xx-small">{!file.formattedSize}</span>
+                                                    <aura:if isTrue="{!!v.inForm}">
+                                                        |<span class="file-delete slds-p-left_xx-small"><a href="javascript:void(0)" onclick="{!c.deleteFile}" data-name="{!file.name}" data-valid="{!file.valid}"><c:Peak_Base labelText="{!v.deleteText}"/></a></span>
+                                                        <aura:set attribute="else">
+                                                            |<span class="file-remove slds-p-left_xx-small"><a href="javascript:void(0)" onclick="{!c.removeFile}" data-name="{!file.name}" data-valid="{!file.valid}"><c:Peak_Base labelText="{!v.removeText}"/></a></span>
+                                                        </aura:set>
+                                                    </aura:if>
+                                                    )
+                                                </p>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:layoutItem>
+                                </aura:iteration>
+                            </lightning:layout>
+                        </lightning:layoutItem>
+                    </aura:if>
+                    <aura:if isTrue="{!v.invalidList.length > 0}">
+                        <lightning:layoutItem padding="" size="12" class="slds-p-top_small">
+                            <lightning:layout horizontalAlign="" verticalAlign="" multipleRows="true">
+                                <aura:if isTrue="{!v.invalidListText != ''}">
+                                    <lightning:layoutItem padding="" size="12">
+                                        <h4><c:Peak_Base labelText="{!v.invalidListText}"/></h4>
+                                    </lightning:layoutItem>
+                                </aura:if>
+                                <aura:iteration items="{!v.invalidList}" var="file">
+                                    <lightning:layoutItem padding="" size="12" class="file-details">
+                                        <lightning:layout verticalAlign="center" class="slds-truncate">
+                                            <lightning:layoutItem padding="" size="" class="file-name slds-p-right_xx-small slds-truncate">
+                                                <p class="slds-truncate slds-text-color_error" title="{!file.name}">
+                                                        {!file.name}
+                                                </p>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem padding="" size="" class="file-info slds-text-color_weak slds-text-color_error">
+                                                <p>
+                                                    (
+                                                    <span class="file-size slds-p-right_xx-small">{!file.formattedSize}</span>
+                                                    |<span class="file-remove slds-p-left_xx-small"><a href="javascript:void(0)" onclick="{!c.removeFile}" data-name="{!file.name}" data-valid="{!file.valid}"><c:Peak_Base labelText="{!v.removeText}"/></a></span>
+                                                    )
+                                                </p>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem padding="" size="" class="help-icon slds-text-color_error">
+                                                <lightning:helptext content="{!if(file.errorType == 'size', format(v.errorSize, file.errorMessage), format(v.errorExt, file.errorMessage))}"/>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:layoutItem>
+                                </aura:iteration>
+                            </lightning:layout>
+                        </lightning:layoutItem>
+                    </aura:if>
+                </aura:if>
+                <aura:if isTrue="{!v.isLoading}">
+                    <lightning:layoutItem padding="" size="12" class="container-item">
+                        <c:Peak_LoadingGif size="small" variant="brand"/>
+                    </lightning:layoutItem>
+                </aura:if>
+            </lightning:layout>
+            <aura:set attribute="else">
+                <c:Peak_LoadingGif size="small" variant="brand"/>
+            </aura:set>
+        </aura:if>
+    </section>
+</aura:component>

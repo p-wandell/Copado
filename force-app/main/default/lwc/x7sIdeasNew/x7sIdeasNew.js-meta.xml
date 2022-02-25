@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel> 7S Ideas Create Edit</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default">
+            <property name="zoneName" label="Zone Name" type="String" description="Enter the zone name"/>
+            <property name="headingTitle" label="Heading Title" type="String" description="Heading title for author."/>
+            <property name="headerAlignment" label="Heading Alignment" type="String" description="Header Alignment" datasource="left,center,right"/>
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="allowImages" label="Allow Image Upload?" type="Boolean" description="Enable image upload."/>
+            <property name="attachmentAccept" label="Image File Types" type="String" description="Specify allowed image file types (CSV list of file extensions)"/>
+            <property name="topicRequired" label="Require Topics" type="Boolean" description="Make topic as required field."/>
+            <property name="useTopics" label="Display a Topic" type="Boolean" description="Enable to display a topic selection"/>
+            <property name="allowCategories" label="Allow Categories" type="Boolean" description="Enable optional category selection"/>
+            <property name="allowThemes" label="Allow Themes" type="Boolean" description="Enable optional theme selection"/>
+            <property name="showDuplicates" label="Show Similar Ideas" type="Boolean" description="Search for ideas with a similar title"/>
+            <property name="simIdeasLimit" label="Set Similar Idea Search Limit" type="Integer" description="Maximum number of similar ideas to search for (less is faster)"/>
+            <property name="editStatus" label="Edit: Allow Status" type="Boolean" description="Check to enable idea status change"/>
+            <property name="requireComment" label="Edit: Require Status Comment" type="Boolean" description="Check to require a comment on status change in edit mode"/>
+            <property name="showRelatedFiles" label="Enable Related Files Upload" type="Boolean" description="Check to enable the idea creator to upload a related file"/>
+            <property name="relatedFilesAccept" label="Related File Types" type="String" description="Enter the related file types allowed (CSV list of file extensions)"/>
+            <property name="showCustomFields" label="Show Custom Fields" type="Boolean" description="Enable to display all defined custom fields on the detail page"/>
+            <property name="customFieldSetName" label="Custom Field Set Name" type="String" description="Specify the custom metadata field set API name. Leave blank to fall back to the Ideas Settings field set."/>
+            <property name="presetField" label="Preset Field" type="String" description="Specify the API name for a custom field on the Idea object that will be populated with the provided preset value. Leave blank to ignore."/>
+            <property name="presetValue" label="Preset Value" type="String" description="Enter a value for the specified preset field on the Idea object. This value will be added to every new Idea created."/>
+            <property name="showRequestedBy" label="Show Requested By" type="Boolean" description="Requested By for Idea Detail Page"/>
+            <property name="ideaListURL" label="Idea List Page API Name" type="String" description="Enter the API name for the Idea List page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="ideaDetailURL" label="Idea Detail Page API Name" type="String" description=" Enter the API name for the Idea Detail page.  API name can be found in page properties and shall include '__c.'"/>
+            <property name="topicSet" label="Topics" type="String" description="Enter a CSV list of topics to limit the topic selection"/>
+            <property name="categoriesAllowed" label="Categories" type="String" description="Categories allowed for zone - Enter a CSV list of categories for the current zone"/>
+            <property name="statusAllowed" label="Idea Status List" type="String" description="Enter the allowed idea status list (csv) for the current zone"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

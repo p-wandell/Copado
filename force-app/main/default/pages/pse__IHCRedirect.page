@@ -1,0 +1,21 @@
+<apex:page controller="pse.IHCRedirectController" lightningStyleSheets="true">
+	<c:fflib_LoadIndicator startLoadFn="startLoad" stopLoadFn="stopLoad" asSlds="true"/>
+
+	<apex:form id="confirmationForm" >
+		<apex:sectionHeader title="Confirm Authentication"/>
+		<!--apex:pageMessages /-->
+		<apex:pageBlock rendered="{!actionCompleted}">
+			{!confirmationMsg}
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!doCancel}" onclick="startLoad('Loading');" oncomplete="stopLoad('Loading');" reRender="confirmationForm"/>
+				<apex:commandButton value="{!$Label.pse__common_label_confirm}" action="{!handleStepStatusAndCustomSetting}" onclick="startLoad('Loading');" oncomplete="stopLoad('Loading');" reRender="confirmationForm"/>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+        <apex:pageBlock rendered="{!NOT(actionCompleted)}">
+            <apex:pageMessages />
+			<apex:pageBlockButtons location="bottom" >
+				<apex:commandButton value="{!$Label.pse__common_label_close}" action="{!doCancel}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

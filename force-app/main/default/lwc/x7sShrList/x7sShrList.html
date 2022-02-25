@@ -1,0 +1,23 @@
+<!--
+  ~ Copyright (c) 2021.  7Summits Inc. All rights reserved.
+  -->
+
+<template>
+    <div
+        class={listClass}
+        style={listStyle}
+        if:false={isLightning}
+    >
+        <slot></slot>
+    </div>
+    <lightning-layout
+        if:true={isLightning}
+        class={listClass}
+        horizontal-align={horizontalAlign}
+        multiple-rows={multipleRows}
+        pull-to-boundary={pullToBoundary}
+        vertical-align={verticalAlign}
+    >
+        <slot></slot>
+    </lightning-layout>
+</template>

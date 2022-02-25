@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>选择描述历史利用率计算应何时停止的值。这通常是输入所有时间卡的一周中的最后一天。</help>
+    <label><!-- Historical Utilization Cut-Off Date --></label>
+    <name>pse__Historical_Utilization_Cut_Off_Date__c</name>
+    <picklistValues>
+        <masterLabel>End of Last Week</masterLabel>
+        <translation>上周末</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>End of This Week</masterLabel>
+        <translation>本周末</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Today</masterLabel>
+        <translation>今天</translation>
+    </picklistValues>
+</CustomFieldTranslation>

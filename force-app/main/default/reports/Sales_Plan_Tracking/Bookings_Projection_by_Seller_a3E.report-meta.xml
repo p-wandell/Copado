@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_57421370</developerName>
+        <masterLabel>Sales Team</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>FULL_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Mark Degurian</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Max Hart</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Scott McKeon</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sean Lowe</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justin Birt</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Lewis Jones</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Chris Engelhardt</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Kyle Steffen</sourceValue>
+            </sourceValues>
+            <value>East</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Brad Hattendorf</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Bryan Alipiev</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Stephen Tang</sourceValue>
+            </sourceValues>
+            <value>West</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Archan Tikoti</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>David Walsh</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Riz Ebrahim</sourceValue>
+            </sourceValues>
+            <value>Client Partner</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Craig Friedhoff</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sam Brown</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Scott Richmond</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rob Hogervorst</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Adam Brown</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dani Syed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Jamie Volpe</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Miles Smith</sourceValue>
+            </sourceValues>
+            <value>Central</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>AMOUNT</column>
+        </chartSummaries>
+        <chartType>HorizontalBar</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>BucketField_57421370</groupingColumn>
+        <location>CHART_BOTTOM</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>ACCOUNT_OWNER</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Bookings_Projection_Current_Month__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Bookings_Projection_Next_Month__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Bookings_Projection_2_Months_Out__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>1 AND (2 OR 3 OR 4 OR 5)</booleanFilter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>1 Prospect,2 Qualified,3 Opportunity Shaped,4 Proposal,5 Agreements Delivered,6 Negotiating,7 Verbal Agreement,8 Closed Won</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ROLLUP_DESCRIPTION</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Acct Exec East</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ROLLUP_DESCRIPTION</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Acct Exec West</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ROLLUP_DESCRIPTION</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Client Partner</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ROLLUP_DESCRIPTION</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Acct Exec Central</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>CLOSE_DATE</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_57421370</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FULL_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Bookings Projection by Seller</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURNEXTQ</interval>
+    </timeFrameFilter>
+</Report>

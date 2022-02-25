@@ -1,0 +1,21 @@
+<apex:page standardController="ob1__Output_Template__c" extensions="ob1.OutputTemplateValidator">
+
+  <apex:pageBlock >
+  <apex:form >  
+
+  <apex:commandButton action="{!validate}" value="validate" />
+  <br/>
+
+  <apex:pageBlockSection columns="1" title="Parser Status">
+  <apex:InputTextArea rows="5"  cols="1000" style="width:100%;white-space:pre;" readonly="true" value="{!ValidateTemplate}"  />
+  </apex:pageBlockSection>
+  
+  <apex:pageBlockSection columns="1" title="Template Body">
+  <apex:InputTextArea rows="50" cols="1000" style="width:100%;white-space:pre;" readonly="true" value="{!TemplateBody}"  />
+  </apex:pageBlockSection>
+
+  
+  </apex:form>
+  </apex:pageBlock>
+
+</apex:page>

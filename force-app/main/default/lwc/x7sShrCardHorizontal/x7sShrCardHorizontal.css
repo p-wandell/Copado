@@ -1,0 +1,76 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.card-horizontal {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+.card__body {
+  padding: 0 0 0 1.5rem;
+}
+.card__content {
+  margin: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+.card__image {
+  flex-basis: 102px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.card_no-image .card__image {
+  display: none;
+}
+.card__footer {
+  margin: auto;
+  padding: 0.5rem 0 0 1.5rem;
+}
+.card__footer:empty {
+  display: none;
+}
+.card_variant-featured {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 2px -1px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  border-radius: 0.5rem;
+}
+.card_variant-featured .card__body {
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+}
+.card_variant-featured .card__footer {
+  padding-bottom: 1.5rem;
+}
+.card_variant-featured .card__image {
+  overflow: hidden;
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+.card_variant-featured .card__avatar-container {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+.card__image {
+  flex-basis: 102px;
+}
+@media (min-width: 48em) {
+  .card__body {
+    flex-grow: 1;
+  }
+  .card_variant-featured .card__body {
+    padding: 1.5rem;
+  }
+  .card__content {
+    display: flex;
+    flex-direction: row;
+  }
+  .card__image {
+    flex-basis: 240px;
+  }
+  .card__footer {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 240px;
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Action_Set__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Associate an action set for this product setting</inlineHelpText>
+    <label>Action Set</label>
+    <referenceTo>SS_Product_Action_Set__mdt</referenceTo>
+    <relationshipLabel>SS Product Settings</relationshipLabel>
+    <relationshipName>SS_Product_Settings_Set</relationshipName>
+    <required>false</required>
+    <type>MetadataRelationship</type>
+    <unique>false</unique>
+</CustomField>

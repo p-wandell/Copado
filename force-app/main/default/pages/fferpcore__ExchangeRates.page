@@ -1,0 +1,99 @@
+<apex:page controller="fferpcore.ExchangeRatesController" extensions="fferpcore.ErpCurrencyRatesRedirectController" lightningStylesheets="true">
+    <c:ffui_slds />
+    <apex:includeLightning />
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__ErrorsFixStyles)}"/>
+    <style>
+        /* Stop table footer being in front of loader and date picker. */
+        .root .slds-docked-form-footer {
+            z-index: 90;
+        }
+
+        /* Stop currency cell being highlighted when rate is modified. */
+        .root .slds-table th {
+            background-color: inherit;
+        }
+
+        /* Stop non-editable but modified cells going grey when highlighted. */
+        .root .slds-table:not(.slds-no-row-hover) tbody tr:hover>td.slds-is-edited {
+            background-color: rgb(250, 255, 189);
+        }
+
+        /* Remove background in Lightning Out. */
+        #lightning .root {
+            background-color: initial;
+        }
+
+        /* Fix vertical positioning of error dialog in Lightning Out in Lightning Experience. */
+        .slds-popover_error {
+            position: fixed !important;
+        }
+
+        /* Stop combo box options being hidden behind bottom of page block. */
+        body .apexp .pbBody {
+            overflow: visible;
+        }
+
+        /* Hide everything until Aura component loaded. */
+        .content.hidden {
+            display: none;
+        }
+
+        /* Hide row numbers in lightning table. */
+        .slds-row-number {
+            display: none;
+        }
+    </style>
+    <apex:form >
+        <apex:actionFunction name="redirectToExchangeRateGroups" action="{!redirectToExchangeRateGroups}"/>
+        <apex:actionFunction name="redirectToErpCurrencies" action="{!redirectToErpCurrencies}"/>
+        <apex:actionFunction name="redirectToExchangeRateHistory" action="{!redirectToExchangeRateHistory}"/>
+    </apex:form>
+    <span class="content hidden">
+        <c:ffui_lightningOut outAppName="fferpcore:ExchangeRatesApp"/>
+        <c:ffui_header instanceName="$FFHEADER"/>
+        <apex:pageBlock >
+            <div id="lightning"/>
+        </apex:pageBlock>
+    </span>
+    <script>
+        var headerButtons = [];
+
+        if({!hasErpCurrenciesPermissions}) {
+            headerButtons.push({
+                id: 'erpCurrencies',
+                label: '{!JSENCODE($Label.ExchangeRateEntriesRedirectCurrencies)}',
+                actionFn: 'redirectToErpCurrencies'
+            });
+        }
+
+        if({!hasExchangeRateGroupsPermissions}) {
+            headerButtons.push({
+                id: 'groups',
+                label: '{!JSENCODE($Label.ExchangeRateEntriesRedirectGroups)}',
+                actionFn: 'redirectToExchangeRateGroups'
+            });
+        }
+
+        if({!hasExchangeRateHistoryPermissions}) {
+            headerButtons.push({
+                id: 'history',
+                label: '{!JSENCODE($Label.ExchangeRateEntriesRedirectHistory)}',
+                actionFn: 'redirectToExchangeRateHistory'
+            });
+        }
+
+        $FFHEADER.renderHeader({
+            recordName: '{!JSENCODE($Label.ExchangeRateEntriesTitle)}',
+            objectName: '{!JSENCODE($Label.ExchangeRatePageSubtitle)}',
+            icon: '{!iconUrl}',
+            helpUrl: '{!helpUrl}',
+            buttons: headerButtons
+        });
+
+        $Lightning.use("fferpcore:ExchangeRatesApp", function() {
+          	$Lightning.createComponent("fferpcore:ExchangeRatesAura", {}, "lightning", function(cmp) {
+                  document.querySelector('.content').classList.remove('hidden');
+            });
+        });
+    </script>
+</apex:page>

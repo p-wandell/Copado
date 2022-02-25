@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>false</plural>
+        <value>Berichtseite Tabellenspalte</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>true</plural>
+        <value>Berichtseite Tabellenspalten</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>false</plural>
+        <value><!-- Berichtseite Tabellenspalte --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>true</plural>
+        <value><!-- Berichtseite Tabellenspalten --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>false</plural>
+        <value><!-- Berichtseite Tabellenspalte --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>true</plural>
+        <value><!-- Berichtseite Tabellenspalten --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>false</plural>
+        <value><!-- Berichtseite Tabellenspalte --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>true</plural>
+        <value><!-- Berichtseite Tabellenspalten --></value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Bericht Seitenname Spaltenname</nameFieldLabel>
+    <recordTypes>
+        <description><!-- Use this record type to add a column calculation to your reporting table. --></description>
+        <label><!-- Column Calculation --></label>
+        <name>ffr__ColumnCalculation</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add a group column to your reporting table. --></description>
+        <label><!-- Group --></label>
+        <name>ffr__Group</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add a value column to your reporting table. --></description>
+        <label><!-- Value --></label>
+        <name>ffr__Value</name>
+    </recordTypes>
+</CustomObjectTranslation>

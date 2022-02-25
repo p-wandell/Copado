@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>bethany.perkins@7summitsinc.com</contactEmail>
+    <contactPhone>414-918-2076</contactPhone>
+    <label>PardotWordPressConnector</label>
+    <oauthConfig>
+        <callbackUrl>https://www.7summitsinc.com/wp-admin/options-general.php?page=pardot</callbackUrl>
+        <consumerKey>3MVG9oZtFCVWuSwOvwwAVjUooDbmJcVXuD3AN681ivDXDRJcJ3580D1nYSYU5Kf5apSK5frejg86cm6IFZO8.</consumerKey>
+        <isAdminApproved>false</isAdminApproved>
+        <isConsumerSecretOptional>false</isConsumerSecretOptional>
+        <isIntrospectAllTokens>false</isIntrospectAllTokens>
+        <isSecretRequiredForRefreshToken>false</isSecretRequiredForRefreshToken>
+        <scopes>Web</scopes>
+        <scopes>RefreshToken</scopes>
+        <scopes>Pardot</scopes>
+    </oauthConfig>
+    <oauthPolicy>
+        <ipRelaxation>BYPASS</ipRelaxation>
+        <refreshTokenPolicy>infinite</refreshTokenPolicy>
+    </oauthPolicy>
+</ConnectedApp>

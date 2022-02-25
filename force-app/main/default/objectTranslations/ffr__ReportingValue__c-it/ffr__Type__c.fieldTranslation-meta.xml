@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Se il tipo di intervallo di dati del rapporto è Riepilogo, è necessario selezionare un metodo di query di aggregazione: Gruppo o Somma. Se il tipo di intervallo dati è Dettagli, è necessario selezionare il metodo di query elenco: Dettagli. Non è possibile combinare questi metodi di query.</help>
+    <label><!-- Type --></label>
+    <name>ffr__Type__c</name>
+    <picklistValues>
+        <masterLabel>Count</masterLabel>
+        <translation>Contare</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Detail</masterLabel>
+        <translation>Dettaglio</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Group</masterLabel>
+        <translation>Gruppo</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sum</masterLabel>
+        <translation>Somma</translation>
+    </picklistValues>
+</CustomFieldTranslation>

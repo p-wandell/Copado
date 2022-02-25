@@ -1,0 +1,359 @@
+<apex:page standardController="ffr__InquiryTemplate__c" extensions="ffr.InquiryTemplateController" sidebar="true" docType="html-5.0">
+	<c:extjs_bootstrap applicationName="InquiryTemplate" staticResource="{!$Resource.ffr__InquiryTemplate}" developmentPrefix="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}">
+		<script>
+			window['$RemoteAction'] = window['$RemoteAction'] || {};
+			window['$Params'] = window['$Params'] || {};
+			window['$Label'] = window['$Label'] || {};
+
+			<!-- Remote Actions -->
+			$RemoteAction.InquiryTemplateController = $RemoteAction.InquiryTemplateController || {};
+			$RemoteAction.InquiryTemplateController.save = '{!$RemoteAction.InquiryTemplateController.save}';
+			$RemoteAction.InquiryTemplateController.lookup = '{!$RemoteAction.InquiryTemplateController.lookup}';
+			$RemoteAction.InquiryTemplateController.selectAllDataviews = '{!$RemoteAction.InquiryTemplateController.selectAllDataviews}';
+			$RemoteAction.InquiryTemplateController.getDataview = '{!$RemoteAction.InquiryTemplateController.getDataview}';
+			$RemoteAction.InquiryTemplateController.getIdentifiersOfTemplatesWithSpecifiedDestination = '{!$RemoteAction.InquiryTemplateController.getIdentifiersOfTemplatesWithSpecifiedDestination}';
+ 
+			<!-- Params -->
+			$Params.Template = '{!JSENCODE(Template)}';
+			$Params.DataviewData = '{!JSENCODE(DataviewData)}';
+			$Params.ListPageUrl = '{!JSENCODE(ListPageUrl)}';
+			$Params.ActionViewsUrl = '{!JSENCODE(ActionViewsUrl)}';
+			$Params.NewPageUrl = '{!JSENCODE(NewPageUrl)}';
+			$Params.hasEditPermissions = Boolean({!hasEditPermissions});
+			$Params.CommonNames = '{!JSENCODE(CommonNames)}';
+			$Params.ConditionLabels = '{!JSENCODE(ConditionLabels)}';
+			$Params.ScalingLabels = '{!JSENCODE(ScalingLabels)}';
+			$Params.NegativeNumberFormatLabels = '{!JSENCODE(NegativeNumberFormatLabels)}';
+			$Params.ModeLabels = '{!JSENCODE(ModeLabels)}';
+			$Params.ColumnTypeLabels = '{!JSENCODE(ColumnTypeLabels)}';
+			$Params.ChartScalingLabels = '{!JSENCODE(ChartScalingLabels)}';
+			$Params.ChartLabelTypeLabels = '{!JSENCODE(ChartLabelTypeLabels)}';
+			$Params.ChartModeLabels = '{!JSENCODE(ChartModeLabels)}';
+			$Params.Namespace = '{!JSENCODE(Namespace)}';
+			$Params.AllTemplates = '{!JSENCODE(AllTemplates)}';
+			$Params.PeriodsEnabled = Boolean({!PeriodsEnabled});
+			$Params.PeriodObjectName = '{!JSENCODE(PeriodObjectName)}';
+			$Params.CurrentPeriodName = '{!JSENCODE(CurrentPeriodName)}';
+			$Params.PeriodsPerYear = Number({!PeriodsPerYear});
+
+			<!-- Labels -->
+			<!-- General Labels -->
+			$Label.BaseReferencePeriodError = '{!JSENCODE($Label.BaseReferencePeriodError)}';
+			$Label.InquiryTemplateTitle = '{!JSENCODE($ObjectType.InquiryTemplate__c.label)}';
+			$Label.InquiryTemplateNewTitle = '{!JSENCODE($Label.InquiryTemplateNewTitle)}';
+			$Label.InquiryTemplateEditTitle = '{!JSENCODE($Label.InquiryTemplateEditTitle)}';
+			$Label.InquiryTemplateAggregationPanel = '{!JSENCODE($Label.InquiryTemplateAggregationPanel)}';
+			$Label.InquiryTemplateAvailableActions = '{!JSENCODE($Label.InquiryTemplateAvailableActions)}';
+			$Label.InquiryTemplateRowsPanel = '{!JSENCODE($Label.InquiryTemplateRowsPanel)}';
+			$Label.InquiryTemplateReverseSignPanel = '{!JSENCODE($Label.InquiryTemplateReverseSignPanel)}';
+			$Label.InquiryTemplateColumnsPanel = '{!JSENCODE($Label.InquiryTemplateColumnsPanel)}';
+			$Label.InquiryTemplatePreviewPanel = '{!JSENCODE($Label.InquiryTemplatePreviewPanel)}';
+			$Label.InquiryTemplateColGridDisplayName = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.Name.label)}';
+			$Label.InquiryTemplateColGridFilter = '{!JSENCODE($Label.InquiryTemplateColGridFilter)}';
+			$Label.InquiryTemplateColGridModeToolTip = '{!JSENCODE($Label.InquiryTemplateColGridModeToolTip)}';
+			$Label.InquiryTemplateErrorsTitle = '{!JSENCODE($Label.InquiryTemplateErrorsTitle)}';
+			$Label.ToolbarHelp = '{!JSENCODE($Label.ToolbarHelp)}';
+			$Label.ToolbarToggleFullscreen = '{!JSENCODE($Label.ToolbarToggleFullscreen)}';
+			$Label.InquiryTemplateGeneral = '{!JSENCODE($Label.InquiryTemplateGeneral)}';
+			$Label.InquiryTemplateLedgerPanel = '{!JSENCODE($Label.InquiryTemplateLedgerPanel)}';
+			$Label.InquiryTemplatePeriodPanel = '{!JSENCODE($Label.InquiryTemplatePeriodPanel)}';
+			$Label.InquiryTemplateWarningTitle = '{!JSENCODE($Label.InquiryTemplateWarningTitle)}';
+			$Label.InquiryTemplateNoPresentableFields = '{!JSENCODE($Label.InquiryTemplateNoPresentableFields)}';
+			$Label.InquiryTemplateFormulaNoNumericFields = '{!JSENCODE($Label.InquiryTemplateFormulaNoNumericFields)}';
+			$Label.InquiryTemplateRowsPanelDescription = '{!JSENCODE($Label.InquiryTemplateRowsPanelDescription)}';
+			$Label.InquiryTemplateCommonNamePanelTitle = '{!JSENCODE($Label.InquiryTemplateCommonNamePanelTitle)}';
+			$Label.InquiryTemplateRowsPanelDescriptionInfo = '{!JSENCODE($Label.InquiryTemplateRowsPanelDescriptionInfo)}';
+			$Label.InquiryTemplateRowFilterIncludeIfDestinationDrill = '{!JSENCODE($Label.InquiryTemplateRowFilterIncludeIfDestinationDrill)}';
+			$Label.InquiryTemplateColumnShowTotals = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.ShowSummary__c.label)}';
+			$Label.InquiryTemplateReverseSignPanelDescription = '{!JSENCODE($Label.InquiryTemplateReverseSignPanelDescription)}';
+			$Label.InquiryTemplateReverseSignPanelDescriptionInfo = '{!JSENCODE($Label.InquiryTemplateReverseSignPanelDescriptionInfo)}';
+			$Label.InquiryTemplateReverseSignCriteriaTitle = '{!JSENCODE($Label.InquiryTemplateReverseSignCriteriaTitle)}';
+			$Label.InquiryTemplateCosmeticSignReversal = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.SignFilterCosmetic__c.label)}';
+			$Label.InquiryTemplateApplyFiltersIfDrill = '{!JSENCODE($Label.InquiryTemplateApplyFiltersIfDrill)}';
+			$Label.InquiryTemplateCosmeticSignReversalTooltipText = '{!JSENCODE($Label.InquiryTemplateCosmeticSignReversalTooltipText)}';
+			$Label.ReportingBasePeriodTooltipText = '{!JSENCODE($Label.ReportingBasePeriodTooltipText)}';
+
+			<!-- Field Labels -->
+			$Label.InquiryTemplateNameLabel = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.Name.label)}';
+			$Label.InquiryTemplateTemplateTypeLabelActionView = '{!JSENCODE($Label.InquiryTemplateTemplateTypeActionView)}';
+			$Label.InquiryTemplateTemplateTypeLabelLedgerInquiry = '{!JSENCODE($Label.InquiryTemplateTemplateTypeLedgerInquiry)}';
+			$Label.InquiryTemplateDataViewLabel = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.Dataview__c.label)}';
+			$Label.InquiryTemplateSummarizeDuplicateRowsLabel = '{!JSENCODE($Label.InquiryTemplateSummarizeDuplicateRows)}';
+			$Label.InquiryTemplateBasePeriodLabel = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.BasePeriod__c.label)}';
+			$Label.InquiryTemplatePromptBasePeriodLabel = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.PromptBasePeriod__c.label)}';
+			$Label.InquiryTemplateColGridType = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.Type__c.label)}';
+			$Label.InquiryTemplateColGridField = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.DataViewField__c.label)}';
+			$Label.InquiryTemplateColGridHidden = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.Hidden__c.label)}';
+			$Label.InquiryTemplateColGridMode = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.Mode__c.label)}';
+			$Label.InquiryTemplateColGridFormula = '{!JSENCODE('Formula')}';
+			$Label.InquiryTemplateColGridFormatting = '{!JSENCODE($Label.InquiryTemplateColGridFormatting)}';
+			$Label.InquiryTemplateColGridDrillTemplate = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.DrillInquiryTemplate__c.label)}';
+			$Label.InquiryTemplateColGridCommonName = '{!JSENCODE($ObjectType.DataViewField__c.fields.CommonName__c.label)}';
+			$Label.InquiryTemplateFormulaNumber = '{!JSENCODE($Label.InquiryTemplateFormulaNumber)}';
+			$Label.InquiryTemplateFormulaField = '{!JSENCODE($Label.InquiryTemplateFormulaField)}';
+			$Label.InquiryTemplateFormulaTitle = '{!JSENCODE($Label.InquiryTemplateFormulaTitle)}';
+			$Label.InquiryTemplateFormulaMoreInfo = '{!JSENCODE($Label.InquiryTemplateFormulaMoreInfo)}';
+			$Label.FilterFieldFilterTooltip = '{!JSENCODE($Label.FilterFieldFilterTooltip)}';
+			$Label.InquiryTemplateCommonNameGridField = '{!JSENCODE($Label.InquiryTemplateCommonNameGridField)}';
+			$Label.InquiryTemplateCommonNameOverrideTab = '{!JSENCODE($Label.InquiryTemplateCommonNameOverrideTab)}';
+			$Label.InquiryTemplateCommonNameGridName = '{!JSENCODE($ObjectType.InquiryTemplateCommonName__c.fields.CommonName__c.label)}';
+			$Label.InquiryTemplateRelatedContentPaneAvailableList = '{!JSENCODE($Label.InquiryTemplateRelatedContentPaneAvailableList)}';
+			$Label.InquiryTemplateRelatedContentPaneSelectedList = '{!JSENCODE($Label.InquiryTemplateRelatedContentPaneSelectedList)}';
+			$Label.InquiryTemplateRelatedContentPaneDefault = '{!JSENCODE($Label.InquiryTemplateRelatedContentPaneDefault)}';
+			$Label.InquiryTemplateRelatedContentPaneTabName = '{!JSENCODE($Label.InquiryTemplateRelatedContentPaneTabName)}';
+			$Label.InquiryTemplateRelatedContentPaneParentAvailableLabel = '{!JSENCODE($Label.InquiryTemplateRelatedContentPaneParentAvailableLabel)}';
+			$Label.InquiryTemplateChart = '{!JSENCODE($Label.InquiryTemplateChart)}';
+			$Label.InquiryTemplateChartGeneral = '{!JSENCODE($Label.InquiryTemplateChartGeneral)}';
+			$Label.InquiryTemplateChartShow = '{!JSENCODE($Label.InquiryTemplateChartShow)}';
+			$Label.InquiryTemplateChartSettings = '{!JSENCODE($Label.InquiryTemplateChartSettings)}';
+			$Label.InquiryTemplateChartType = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.ChartType__c.label)}';
+			$Label.InquiryTemplateChartSubType = '{!JSENCODE($Label.ActionViewsChartSubType)}';
+			$Label.ChartGroupAxis = '{!JSENCODE($Label.ChartGroupAxis)}';
+			$Label.ChartStacking = '{!JSENCODE($Label.ChartStacking)}';
+			$Label.ChartValue = '{!JSENCODE($Label.ChartValue)}';
+			$Label.ChartXAxis = '{!JSENCODE($Label.ChartXAxis)}';
+			$Label.ChartYAxis = '{!JSENCODE($Label.ChartYAxis)}';
+			$Label.ChartLabelRotate0 = '{!JSENCODE($Label.ChartLabelRotate0)}';
+			$Label.ChartLabelRotate45 = '{!JSENCODE($Label.ChartLabelRotate45)}';
+			$Label.ChartLabelRotate90 = '{!JSENCODE($Label.ChartLabelRotate90)}';
+			$Label.InquiryTemplateChartMode = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.ChartMode__c.label)}';
+			$Label.InquiryTemplateChartSubTypeBasic = '{!JSENCODE($Label.InquiryTemplateChartSubTypeBasic)}';
+			$Label.InquiryTemplateChartSubTypeBubble = '{!JSENCODE($Label.InquiryTemplateChartSubTypeBubble)}';
+			$Label.InquiryTemplateChartSubTypeDonut = '{!JSENCODE($Label.InquiryTemplateChartSubTypeDonut)}';
+			$Label.InquiryTemplateChartSubTypeFullStacked = '{!JSENCODE($Label.InquiryTemplateChartSubTypeFullStacked)}';
+			$Label.InquiryTemplateChartSubTypePie = '{!JSENCODE($Label.InquiryTemplateChartSubTypePie)}';
+			$Label.InquiryTemplateChartSubTypeRadial = '{!JSENCODE($Label.InquiryTemplateChartSubTypeRadial)}';
+			$Label.InquiryTemplateChartSubTypeSmooth = '{!JSENCODE($Label.InquiryTemplateChartSubTypeSmooth)}';
+			$Label.InquiryTemplateChartSubTypeStacked = '{!JSENCODE($Label.InquiryTemplateChartSubTypeStacked)}';
+			$Label.InquiryTemplateChartTypeBar = '{!JSENCODE($Label.InquiryTemplateChartTypeBar)}';
+			$Label.InquiryTemplateChartTypeColumn = '{!JSENCODE($Label.InquiryTemplateChartTypeColumn)}';
+			$Label.InquiryTemplateChartTypeLine = '{!JSENCODE($Label.InquiryTemplateChartTypeLine)}';
+			$Label.InquiryTemplateChartTypePolar = '{!JSENCODE($Label.InquiryTemplateChartTypePolar)}';
+			$Label.InquiryTemplateChartTypeScatter = '{!JSENCODE($Label.InquiryTemplateChartTypeScatter)}';
+			$Label.InquiryTemplateChartRotate = '{!JSENCODE($Label.InquiryTemplateChartRotate)}';
+			$Label.InquiryTemplateChartWarning = '{!JSENCODE($Label.InquiryTemplateChartWarning)}';
+			$Label.InquiryTemplateChartValueScaling = '{!JSENCODE($Label.InquiryTemplateChartValueScaling)}';
+			$Label.InquiryTemplateChartMaximum = '{!JSENCODE($Label.InquiryTemplateChartMaximum)}';
+			$Label.InquiryTemplateChartLabelType = '{!JSENCODE($Label.InquiryTemplateChartLabelType)}';
+
+			<!-- Button Labels -->
+			$Label.GoToListButton = '{!JSENCODE($Label.GoToListButton)}';
+			$Label.InquiryTemplateAddColumnsButton = '{!JSENCODE($Label.InquiryTemplateAddColumnsButton)}';
+			$Label.InquiryTemplateAddCommonNameButton = '{!JSENCODE($Label.InquiryTemplateAddCommonNameButton)}';
+			$Label.InquiryTemplateAddAllFieldsButton = '{!JSENCODE($Label.InquiryTemplateAddAllFieldsButton)}';
+			$Label.InquiryTemplateDeleteColumnsButton = '{!JSENCODE($Label.InquiryTemplateDeleteColumnsButton)}';
+			$Label.InquiryTemplateDeleteCommonNameButton = '{!JSENCODE($Label.InquiryTemplateDeleteCommonNameButton)}';
+			$Label.InquiryTemplateCloneButton = '{!JSENCODE($Label.InquiryTemplateCloneButton)}';
+			$Label.InquiryTemplateSaveButton = '{!JSENCODE($Label.InquiryTemplateSaveButton)}';
+			$Label.InquiryTemplateOK = '{!JSENCODE($Label.InquiryTemplateOK)}';
+			$Label.InquiryTemplateCancel = '{!JSENCODE($Label.InquiryTemplateCancel)}';
+			$Label.InquiryTemplateFormulaCancel = '{!JSENCODE($Label.InquiryTemplateFormulaCancel)}';
+			$Label.InquiryTemplateFormulaClear = '{!JSENCODE($Label.InquiryTemplateFormulaClear)}';
+			$Label.InquiryTemplateFormulaOk = '{!JSENCODE($Label.InquiryTemplateFormulaOk)}';
+			$Label.InquiryTemplateFormulaReset = '{!JSENCODE($Label.InquiryTemplateFormulaReset)}';
+			$Label.InquiryTemplateFormulaSave = '{!JSENCODE($Label.InquiryTemplateFormulaSave)}';
+			$Label.InquiryTemplateSaveAndRunButton = '{!JSENCODE($Label.InquiryTemplateSaveAndRunButton)}';
+			$Label.DataViewMenuDeselectAll = '{!JSENCODE($Label.DataViewMenuDeselectAll)}';
+			$Label.DataViewMenuSelectAll = '{!JSENCODE($Label.DataViewMenuSelectAll)}';
+
+			<!-- Messages -->
+			$Label.InquiryTemplateSavingMessage = '{!JSENCODE($Label.InquiryTemplateSavingMessage)}';
+			$Label.InquiryTemplateSavingComplete = '{!JSENCODE($Label.InquiryTemplateSavingComplete)}';
+			$Label.InquiryTemplateNameCannotBeNull = '{!JSENCODE($Label.InquiryTemplateNameCannotBeNull)}';
+			$Label.InquiryTemplateColumnNameCannotBeNull = '{!JSENCODE($Label.InquiryTemplateColumnNameCannotBeNull)}';
+			$Label.InquiryTemplateColumnFieldOrFormula = '{!JSENCODE($Label.InquiryTemplateColumnFieldOrFormula)}';
+			$Label.InquiryTemplateLoadingDataview = '{!JSENCODE($Label.InquiryTemplateLoadingDataview)}';
+			$Label.InquiryTemplateDataViewCannotBeNull = '{!JSENCODE($Label.InquiryTemplateDataViewCannotBeNull)}';
+			$Label.InquiryTemplateCloneWarningMessage = '{!JSENCODE($Label.InquiryTemplateCloneWarningMessage)}';
+			$Label.InquiryTemplateFormulaPanelHelpText = '{!JSENCODE($Label.InquiryTemplateFormulaPanelHelpText)}';
+			$Label.InquiryTemplateFormulaDpLabel = '{!JSENCODE($Label.InquiryTemplateFormulaDpLabel)}';
+			$Label.InquiryTemplateDataViewInvalid = '{!JSENCODE($Label.InquiryTemplateDataViewInvalid)}';
+			$Label.InquiryTemplateFieldInvalid = '{!JSENCODE($Label.InquiryTemplateFieldInvalid)}';
+			$Label.InquiryTemplateErrorsNoSummarizationTemplates = '{!JSENCODE($Label.InquiryTemplateErrorsNoSummarizationTemplates)}';
+
+			<!-- Filter Component -->
+			$Label.FilterPanelField = '{!JSENCODE($Label.FilterPanelField)}';
+			$Label.FilterPanelAnd = '{!JSENCODE($Label.FilterPanelAnd)}';
+			$Label.FilterPanelOr = '{!JSENCODE($Label.FilterPanelOr)}';
+			$Label.FilterProperties = '{!JSENCODE($Label.FilterSelectionTitle)}';
+			$Label.FilterCancel = '{!JSENCODE($Label.FilterCancel)}';
+			$Label.FilterOk = '{!JSENCODE($Label.FilterSelectionOk)}';
+			$Label.FilterField = '{!JSENCODE($Label.FilterField)}';
+			$Label.FilterOperator = '{!JSENCODE($Label.FilterOperator)}';
+			$Label.FilterValue = '{!JSENCODE($Label.FilterValue)}';
+			$Label.FilterFrom = '{!JSENCODE($Label.FilterFrom)}';
+			$Label.FilterTo = '{!JSENCODE($Label.FilterTo)}';
+			$Label.FilterPrompt = '{!JSENCODE($Label.FilterPrompt)}';
+			$Label.FilterOpEquals = '{!JSENCODE($Label.FilterOpEquals)}';
+			$Label.FilterOpNotEquals = '{!JSENCODE($Label.FilterOpNotEquals)}';
+			$Label.FilterOpLessThan = '{!JSENCODE($Label.FilterOpLessThan)}';
+			$Label.FilterOpGreaterThan = '{!JSENCODE($Label.FilterOpGreaterThan)}';
+			$Label.FilterOpLessOrEqual = '{!JSENCODE($Label.FilterOpLessOrEqual)}';
+			$Label.FilterOpGreaterOrEqual = '{!JSENCODE($Label.FilterOpGreaterOrEqual)}';
+			$Label.FilterOpContains = '{!JSENCODE($Label.FilterOpContains)}';
+			$Label.FilterOpDoesNotContain = '{!JSENCODE($Label.FilterOpDoesNotContain)}';
+			$Label.FilterOpStartsWith = '{!JSENCODE($Label.FilterOpStartsWith)}';
+			$Label.FilterOpRange = '{!JSENCODE($Label.FilterOpRange)}';
+			$Label.FilterOpNotRange = '{!JSENCODE($Label.FilterOpNotRange)}';
+			$Label.FilterEmptyExpression = '{!JSENCODE($Label.FilterEmptyExpression)}';
+			$Label.FilterFieldSingleFormat = '{!JSENCODE($Label.FilterFieldSingleFormat)}';
+			$Label.FilterFieldRangeFormat = '{!JSENCODE($Label.FilterFieldRangeFormat)}';
+			$Label.FilterBooleanTrue = '{!JSENCODE($Label.FilterBooleanTrue)}';
+			$Label.FilterBooleanFalse = '{!JSENCODE($Label.FilterBooleanFalse)}';
+			$Label.FilterInvalidDateValue = '{!JSENCODE($Label.FilterInvalidDateValue)}';
+			$Label.FilterInvalidTimeValue = '{!JSENCODE($Label.FilterInvalidTimeValue)}';
+			$Label.FilterRangeValidation = '{!JSENCODE($Label.FilterRangeValidation)}';
+
+			<!-- Formula Component -->
+			$Label.FormulaPanelLiteralValue = '{!JSENCODE($Label.FormulaPanelLiteralValue)}';
+			$Label.FormulaPanelFieldValue = '{!JSENCODE($Label.FormulaPanelFieldValue)}';
+			$Label.FormulaPanelColumnValue = '{!JSENCODE($Label.FormulaPanelColumnValue)}';
+			$Label.FormulaPanelAdd = '{!JSENCODE($Label.FormulaPanelAdd)}';
+			$Label.FormulaPanelSubtract = '{!JSENCODE($Label.FormulaPanelSubtract)}';
+			$Label.FormulaPanelMultiply = '{!JSENCODE($Label.FormulaPanelMultiply)}';
+			$Label.FormulaPanelDivide = '{!JSENCODE($Label.FormulaPanelDivide)}';
+			$Label.FormulaPanelOpenParenthesis = '{!JSENCODE($Label.FormulaPanelOpenParenthesis)}';
+			$Label.FormulaPanelCloseParenthesis = '{!JSENCODE($Label.FormulaPanelCloseParenthesis)}';
+			$Label.FormulaValueColumn = '{!JSENCODE($Label.FormulaValueColumn)}';
+			$Label.FormulaValueField = '{!JSENCODE($Label.FormulaValueField)}';
+			$Label.FormulaValueLiteral = '{!JSENCODE($Label.FormulaValueLiteral)}';
+			$Label.FormulaValueEditTooltip = '{!JSENCODE($Label.FormulaValueEditTooltip)}';
+			$Label.FormulaValueLiteralOutOfRange = '{!JSENCODE($Label.FormulaValueLiteralOutOfRange)}';
+			$Label.FormulaValueRequired = '{!JSENCODE($Label.FormulaValueRequired)}';
+			$Label.ValueDropZoneText = '{!JSENCODE($Label.ValueDropZoneText)}';
+			$Label.FormulaOpenBracket = '{!JSENCODE($Label.FormulaOpenBracket)}';
+			$Label.FormulaCloseBracket = '{!JSENCODE($Label.FormulaCloseBracket)}';
+			$Label.FormulaValidationErrorBracketsDoNotMatch = '{!JSENCODE($Label.FormulaValidationErrorBracketsDoNotMatch)}';
+			$Label.FormulaValidationErrorIncompleteFormula = '{!JSENCODE($Label.FormulaValidationErrorIncompleteFormula)}';
+			$Label.FormulaValidationErrorMustHaveAnOperator = '{!JSENCODE($Label.FormulaValidationErrorMustHaveAnOperator)}';
+			$Label.FormulaValidationErrorMustHaveAValidFormula = '{!JSENCODE($Label.FormulaValidationErrorMustHaveAValidFormula)}';
+			$Label.FormulaValidationErrorMustHaveAValue = '{!JSENCODE($Label.FormulaValidationErrorMustHaveAValue)}';
+			$Label.FormulaPanelBinHelp = '{!JSENCODE($Label.FormulaPanelBinHelp)}';
+
+			<!-- Ledger Inquiry components/labels etc -->
+			$Label.LedgerInquiryTitle = '{!JSENCODE($Label.LedgerInquiryTitle)}';
+			$Label.LedgerInquiryShowDocumentCount = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.ShowDocumentCount__c.label)}';
+			$Label.LedgerInquiryColumnFilterDrill = '{!JSENCODE($ObjectType.InquiryTemplate__c.fields.ColumnFilterDrill__c.label)}';
+			$Label.LedgerInquirySummarizationTemplateComboBox = '{!JSENCODE($Label.LedgerInquirySummarizationTemplateComboBox)}';
+
+
+			<!-- Conditional Formatter Component -->
+			$Label.ConditionalFormattingCancelButton = '{!JSENCODE($Label.ConditionalFormattingCancelButton)}';
+			$Label.ConditionalFormattingDecimalPlacesTitle = '{!JSENCODE($Label.ConditionalFormattingDecimalPlacesTitle)}';
+			$Label.ConditionalFormattingFormatTitle = '{!JSENCODE($Label.ConditionalFormattingFormatTitle)}';
+			$Label.ConditionalFormattingFillColor = '{!JSENCODE($Label.ConditionalFormattingFillColor)}';
+			$Label.ConditionalFormattingNegativeNumberTitle = '{!JSENCODE($Label.ConditionalFormattingNegativeNumberTitle)}';
+			$Label.ConditionalFormattingResetButton = '{!JSENCODE($Label.ConditionalFormattingResetButton)}';
+			$Label.ConditionalFormattingClearButton = '{!JSENCODE($Label.ConditionalFormattingClearButton)}';
+			$Label.ConditionalFormattingOkButton = '{!JSENCODE($Label.ConditionalFormattingOkButton)}';
+			$Label.ConditionalFormattingScalingTitle = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.Scaling__c.label)}';
+			$Label.ConditionalFormattingSaveButton = '{!JSENCODE($Label.ConditionalFormattingSaveButton)}';
+			$Label.ConditionalFormattingTextColor = '{!JSENCODE($Label.ConditionalFormattingTextColor)}';
+			$Label.ConditionalFormattingTitle = '{!JSENCODE($Label.ConditionalFormattingTitle)}';
+			$Label.ConditionalFormattingNoColor = '{!JSENCODE($Label.ConditionalFormattingNoColor)}';
+			$Label.ConditionalFormattingConditionOperatorTitle = '{!JSENCODE($Label.ConditionalFormattingConditionOperatorTitle)}';
+			$Label.ConditionalFormattingConditionValueTitle = '{!JSENCODE($Label.ConditionalFormattingConditionValueTitle)}';
+			$Label.ConditionalFormattingConditionFromValueTitle = '{!JSENCODE($Label.ConditionalFormattingConditionFromValueTitle)}';
+			$Label.ConditionalFormattingConditionToValueTitle = '{!JSENCODE($Label.ConditionalFormattingConditionToValueTitle)}';
+			$Label.ConditionalFormattingConditionTrueColors = '{!JSENCODE($Label.ConditionalFormattingConditionTrueColors)}';
+			$Label.ConditionalFormattingConditionFalseColors = '{!JSENCODE($Label.ConditionalFormattingConditionFalseColors)}';
+			$Label.ConditionalFormattingNumberTitle = '{!JSENCODE($Label.ConditionalFormattingNumberTitle)}';
+			$Label.ConditionalFormattingNegativeColors = '{!JSENCODE($Label.ConditionalFormattingNegativeColors)}';
+			$Label.ConditionalFormattingPositiveColors = '{!JSENCODE($Label.ConditionalFormattingPositiveColors)}';
+			$Label.ConditionalFormattingShowNumberSeparatorsTitle = '{!JSENCODE($ObjectType.InquiryTemplateColumn__c.fields.ShowNumberSeparators__c.label)}';
+			$Label.ConditionalFormattingConditionalFormattingSectionTitle = '{!JSENCODE($Label.ConditionalFormattingConditionalFormattingSectionTitle)}';
+			$Label.ConditionalFormattingPositiveNumberFormattingTitle = '{!JSENCODE($Label.ConditionalFormattingPositiveNumberFormattingTitle)}';
+			$Label.ConditionalFormattingPositiveNegativeFormattingTitle = '{!JSENCODE($Label.ConditionalFormattingPositiveNegativeFormattingTitle)}';
+			$Label.ConditionalFormattingPositiveNegativeColor = '{!JSENCODE($Label.ConditionalFormattingPositiveNegativeColor)}';
+			$Label.ConditionalFormattingNoValueError = '{!JSENCODE($Label.ConditionalFormattingNoValueError)}';
+			$Label.ConditionalFormattingNoRangeValueError = '{!JSENCODE($Label.ConditionalFormattingNoRangeValueError)}';
+			$Label.ConditionalFormattingNoCondition = '{!JSENCODE($Label.ConditionalFormattingNoCondition)}';
+			$Label.ConditionalFormattingTitle = '{!JSENCODE($Label.ConditionalFormattingTitle)}';
+
+			<!-- Soft Date Component -->
+			$Label.DatePickerHardDateTabTitle = '{!JSENCODE($Label.DatePickerHardDateTabTitle)}';
+			$Label.DatePickerSoftDateTabTitle = '{!JSENCODE($Label.DatePickerSoftDateTabTitle)}';
+			$Label.DatePickerSoftDateNLabel = '{!JSENCODE($Label.DatePickerSoftDateNLabel)}';
+			$Label.DatePickerSoftDateNBlank = '{!JSENCODE($Label.DatePickerSoftDateNBlank)}';
+			$Label.DatePickerSelectButton = '{!JSENCODE($Label.DatePickerSelectButton)}';
+			$Label.SoftDateLastWeek = '{!JSENCODE($Label.SoftDateLastWeek)}';
+			$Label.SoftDateLastYear = '{!JSENCODE($Label.SoftDateLastYear)}';
+			$Label.SoftDateNextWeek = '{!JSENCODE($Label.SoftDateNextWeek)}';
+			$Label.SoftDateNextYear = '{!JSENCODE($Label.SoftDateNextYear)}';
+			$Label.SoftDateThisWeek = '{!JSENCODE($Label.SoftDateThisWeek)}';
+			$Label.SoftDateThisYear = '{!JSENCODE($Label.SoftDateThisYear)}';
+			$Label.SoftDateToday = '{!JSENCODE($Label.SoftDateToday)}';
+			$Label.SoftDateTomorrow = '{!JSENCODE($Label.SoftDateTomorrow)}';
+			$Label.SoftDateYesterday = '{!JSENCODE($Label.SoftDateYesterday)}';
+			$Label.SoftDateLastNDaysWithN = '{!JSENCODE($Label.SoftDateLastNDaysWithN)}';
+			$Label.SoftDateNextNDaysWithN = '{!JSENCODE($Label.SoftDateNextNDaysWithN)}';
+			$Label.FilterInvalidDateValueAllowSoft = '{!JSENCODE($Label.FilterInvalidDateValueAllowSoft)}';
+
+			<!-- Soft Period Component -->
+			$Label.SoftPeriodIllegalPeriodName = '{!JSENCODE($Label.SoftPeriodIllegalPeriodName)}';
+			$Label.SoftPeriodIllegalYearOffset = '{!JSENCODE($Label.SoftPeriodIllegalYearOffset)}';
+			$Label.SoftPeriodIllegalPeriod = '{!JSENCODE($Label.SoftPeriodIllegalPeriod)}';
+			$Label.SoftPeriodIllegalPeriodOffset = '{!JSENCODE($Label.SoftPeriodIllegalPeriodOffset)}';
+			$Label.SoftPeriodOffsetMinus = '{!JSENCODE($Label.SoftPeriodOffsetMinus)}';
+			$Label.SoftPeriodOffsetPlus = '{!JSENCODE($Label.SoftPeriodOffsetPlus)}';
+			$Label.SoftPeriodSeparator = '{!JSENCODE($Label.SoftPeriodSeparator)}';
+			$Label.PeriodNameBadPeriod = '{!JSENCODE($Label.PeriodNameBadPeriod)}';
+			$Label.PeriodNameBadYear = '{!JSENCODE($Label.PeriodNameBadYear)}';
+			$Label.PeriodNameMissingSeparator = '{!JSENCODE($Label.PeriodNameMissingSeparator)}';
+
+			<!-- Column Filter Component -->
+			$Label.InquiryTemplateColFilterWindowTitle = '{!JSENCODE($Label.InquiryTemplateColFilterWindowTitle)}';
+			$Label.InquiryTemplateColumnFilterDialogCancel = '{!JSENCODE($Label.InquiryTemplateColumnFilterDialogCancel)}';
+			$Label.InquiryTemplateColumnFilterDialogHelpText = '{!JSENCODE($Label.InquiryTemplateColumnFilterDialogHelpText)}';
+			$Label.InquiryTemplateColumnFilterDialogOk = '{!JSENCODE($Label.InquiryTemplateColumnFilterDialogOk)}';
+			$Label.InquiryTemplateColumnFilterDialogReset = '{!JSENCODE($Label.InquiryTemplateColumnFilterDialogReset)}';
+			$Label.InquiryTemplateColumnFilterCriteriaTitle = '{!JSENCODE($Label.InquiryTemplateColumnFilterCriteriaTitle)}';
+
+			<!-- Sort Labels -->
+			$Label.SortTitle = '{!JSENCODE($Label.SortTitle)}';
+			$Label.SortDisplayField = '{!JSENCODE($Label.SortDisplayField)}';
+			$Label.SortOrder = '{!JSENCODE($Label.SortOrder)}';
+			$Label.SortUsePicklistOrder = '{!JSENCODE($Label.SortUsePicklistOrder)}';
+			$Label.SortOrderTooltip = '{!JSENCODE($Label.SortOrderTooltip)}';
+			$Label.SortOrderDisplayText = '{!JSENCODE($Label.SortOrderDisplayText)}';
+			$Label.SortGroupBy = '{!JSENCODE($Label.SortGroupBy)}';
+			$Label.SortHideDetail = '{!JSENCODE($Label.SortHideDetail)}';
+			$Label.SortClear = '{!JSENCODE($Label.SortClear)}';
+			$Label.SortApplySort = '{!JSENCODE($Label.SortApplySort)}';
+			$Label.SortDisplayFieldSelect = '{!JSENCODE($Label.SortDisplayFieldSelect)}';
+			$Label.SortAscending = '{!JSENCODE($Label.SortAscending)}';
+			$Label.SortDescending = '{!JSENCODE($Label.SortDescending)}';
+
+			<!-- DataSupport -->
+			$Label.DataSupportTitleBoolean = '{!JSENCODE($Label.DataSupportTitleBoolean)}';
+			$Label.DataSupportTitleDate = '{!JSENCODE($Label.DataSupportTitleDate)}';
+			$Label.DataSupportTitleDateTime = '{!JSENCODE($Label.DataSupportTitleDateTime)}';
+			$Label.DataSupportTitleId = '{!JSENCODE($Label.DataSupportTitleId)}';
+			$Label.DataSupportTitleNumber = '{!JSENCODE($Label.DataSupportTitleNumber)}';
+			$Label.DataSupportTitlePeriod = '{!JSENCODE($Label.DataSupportTitlePeriod)}';
+			$Label.DataSupportTitlePicklist = '{!JSENCODE($Label.DataSupportTitlePicklist)}';
+			$Label.DataSupportTitleText = '{!JSENCODE($Label.DataSupportTitleText)}';
+			$Label.DataSupportLabelLatitude = '{!JSENCODE($Label.DataSupportLabelLatitude)}';
+			$Label.DataSupportLabelLongitude = '{!JSENCODE($Label.DataSupportLabelLongitude)}';
+			$Label.DataSupportTipDisplayMap = '{!JSENCODE($Label.DataSupportTipDisplayMap)}';
+			$Label.DataSupportTipCallThisNumber = '{!JSENCODE($Label.DataSupportTipCallThisNumber)}';
+
+			<!-- Transpose Drill Action View Template -->
+			$Label.InquiryTemplateTransposeCancel = '{!JSENCODE($Label.InquiryTemplateTransposeCancel)}';
+			$Label.InquiryTemplateTransposeClear = '{!JSENCODE($Label.InquiryTemplateTransposeClear)}';
+			$Label.InquiryTemplateTransposeOk = '{!JSENCODE($Label.InquiryTemplateTransposeOk)}';
+			$Label.InquiryTemplateTransposeReset = '{!JSENCODE($Label.InquiryTemplateTransposeReset)}';
+			$Label.InquiryTemplateTransposeWindowTitle = '{!JSENCODE($Label.InquiryTemplateTransposeWindowTitle)}';
+
+			<!-- Item Grid Selector -->
+			$Label.ItemGridSelectorTop = '{!JSENCODE($Label.ItemGridSelectorTop)}';
+			$Label.ItemGridSelectorUp = '{!JSENCODE($Label.ItemGridSelectorUp)}';
+			$Label.ItemGridSelectorDown = '{!JSENCODE($Label.ItemGridSelectorDown)}';
+			$Label.ItemGridSelectorBottom = '{!JSENCODE($Label.ItemGridSelectorBottom)}';
+			$Label.ItemGridSelectorAdd = '{!JSENCODE($Label.ItemGridSelectorAdd)}';
+			$Label.ItemGridSelectorRemove = '{!JSENCODE($Label.ItemGridSelectorRemove)}';
+			$Label.ItemGridSelectorAddAll = '{!JSENCODE($Label.ItemGridSelectorAddAll)}';
+			$Label.ItemGridSelectorRemoveAll = '{!JSENCODE($Label.ItemGridSelectorRemoveAll)}';
+		</script>
+	</c:extjs_bootstrap>
+</apex:page>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Onboarding action type (e.g., join, leave, follow, unfollow, etc.) --></help>
+    <label><!-- Action Type --></label>
+    <name>Action_Type__c</name>
+    <picklistValues>
+        <masterLabel>Follow</masterLabel>
+        <translation><!-- Follow --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Join</masterLabel>
+        <translation><!-- Join --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Leave</masterLabel>
+        <translation><!-- Leave --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Unfollow</masterLabel>
+        <translation><!-- Unfollow --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

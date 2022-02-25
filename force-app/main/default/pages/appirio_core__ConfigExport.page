@@ -1,0 +1,36 @@
+<apex:page controller="appirio_core.ConfigExportController" >
+  
+  <h1>{!$Label.appirio_core__config_export_label_export_configuration} </h1>
+  <apex:pageMessages />
+  <apex:form rendered="{!canUsePage}">
+      <!-- <apex:commandButton action="{!exportData}" value="Get Config"/> -->
+      
+      <apex:outputText value="{!saveMessage}" /> 
+      
+      <apex:pageBlock title="{!$Label.appirio_core__config_export_label_config_xml_for_org}"  rendered="{! configXML!= null }" >
+       
+       <apex:pageBlockSection columns="1" >
+           <apex:pageBlockSectionItem >
+           
+          <apex:inputText value="{!fileName}" id="fileName" title="{!$Label.appirio_core__config_export_label_file_name}" />
+           
+          <apex:commandButton action="{!saveFile}" value="{!$Label.appirio_core__config_export_label_save_file}" id="saveFileButton"/>
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+          <apex:inputText value="{!emailAddress}" id="emailAddress" /> 
+          <apex:commandButton action="{!emailFile}" value="{!$Label.appirio_core__config_export_label_email_file}" id="emailFileButton"/>
+          </apex:pageBlockSectionItem>
+         
+          
+       </apex:pageBlockSection>
+      
+       <apex:InputTextArea rows="30" cols="1000" style="width:100%;white-space:pre;" readonly="true" value="{!configXML}"  />
+
+      </apex:pageBlock>
+      
+  </apex:form>
+   
+  
+
+  
+</apex:page>

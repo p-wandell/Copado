@@ -1,0 +1,323 @@
+<apex:page docType="html-5.0" sidebar="false" controller="CoveoV2.SetupController">
+    <c:AdminCheck >
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" />
+        <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__styleguide, 'css/CoveoStyleGuide.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__assets, 'legacy/css/setup.css')}" />
+        <script type="text/javascript">
+      // Holder of all variables salesforce for JS script
+      var SalesforceContext = {
+        pageResources  : '{!URLFOR($Resource.assets, 'legacy/img/setup/')}',
+        currentPageURL : '{!JSENCODE($CurrentPage.URL)}',
+        isIndexless    : {!isIndexless}
+      }
+
+      document.addEventListener("DOMContentLoaded", function(event) {
+
+        // IE browser check
+        var isIE = function() {
+          var ua = window.navigator.userAgent
+          return ( ua.indexOf('MSIE ') > 0 || ua.indexOf('Trident/') > 0 || ua.indexOf('Edge/') > 0 )
+        }
+
+        // IE11 whitespace bug fix ( adds height, non responsive )
+        var calculateHeights = function() {
+          var imgs = document.querySelectorAll('.preview-img');
+          for( var i=0; i<imgs.length; i++) {
+            var img = imgs[i];
+            img.style.height= img.offsetHeight + "px";
+          }
+        }
+
+        // Animation controls
+        var startPlaying = function() {
+          this.parentNode.classList.add('playing')
+          this.setAttribute('src', SalesforceContext.pageResources + this.getAttribute('data-animated') )
+        }
+
+        var stopPlaying = function(elem, staticSrc) {
+          elem.setAttribute('src', staticSrc)
+          elem.parentNode.classList.remove('playing')
+        }
+
+        // Select all animated images
+        const images = document.querySelectorAll('.getting-started-page .preview-img.animated')
+
+        // Convert nodeList to Array, so we can use forEach in IE11
+        var imagesAsArray = [];
+        for(var i = 0, n; n = images[i]; ++i) {
+          imagesAsArray.push(n);
+        }
+
+        imagesAsArray.forEach(function(img, index, arr) {
+
+            // Attach hover events
+            var staticSrc = img.getAttribute('src')
+            img.addEventListener('mouseenter', startPlaying)
+            img.addEventListener('mouseleave', function(){ stopPlaying(this, staticSrc) })
+
+            // Preload images
+            var expressDiv = img.parentNode.parentNode.className.indexOf('express') >= 0
+            if( ( SalesforceContext.isIndexless && expressDiv ) || ( !expressDiv && !SalesforceContext.isIndexless ) ) {
+              var imgPreload = new Image()
+              imgPreload.src = SalesforceContext.currentPageURL.replace('/apex/GettingStarted', '')
+                + SalesforceContext.pageResources + img.getAttribute('data-animated')
+            }
+
+            // If last element and isIE, apply whitspace fix
+            if( index == images.length-1 && isIE() ) {
+              setTimeout(calculateHeights, 1500); // animation delay
+            }
+        })
+
+        // Is Express or Enterprise, No "forEach" support in IE11
+        var sfVersionToHide = SalesforceContext.isIndexless ? '.enterprise' : '.express'
+        var elementsToHide = document.querySelectorAll(sfVersionToHide)
+        for( var x=0; x<elementsToHide.length; x++) {
+          elementsToHide[x].className += ' hide'
+        }
+      })
+    </script>
+
+        <div id="body" class="coveo-styleguide bg-white">
+            <div class="bg-white">
+                <div id="header" class="bg-medium-blue bg-polygon">
+                    <div id="title-section">
+                        <span id="coveo" class="text-white">coveo</span>
+                        <span id="forsalesforce" class="text-medium-grey">FOR SALESFORCE</span>
+                        <span id="setup" class="text-orange">Getting Started</span>
+                    </div>
+                </div>
+
+                <div id="content" class="getting-started-page">
+
+                    <div class="bg-white center">
+                        <div class="icon">
+                            <!-- svg:checkmark -->
+                            <svg viewBox="0 0 10 8" class="fill-green" width="44px" height="44px">
+                <path d="M3.144 8L.167 4.891a.615.615 0 0 1 0-.843.556.556 0 0 1 .809 0l2.168 2.264L9.025.174a.557.557 0 0 1 .809 0 .617.617 0 0 1-.001.844L3.144 8"></path>
+              </svg>
+                        </div>
+                        <h1 class="text-medium-blue caps bold">configuration complete</h1>
+                        <h2 class="bold">You can now get started with Coveo for Salesforce <span class="express">Free</span><span class="enterprise">Enterprise</span> by performing one of the following actions.</h2>
+                    </div>
+
+                    <!-- Salesforce Express -->
+                    <div class="bg-white express flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">create a visualforce page</h2>
+                            <p class="">In the <span class="text-dark-blue bold">Coveo</span> App Menu, in the <span class="text-dark-blue bold">Coveo Search</span> tab, select <span class="text-dark-blue bold">Set Up a Search Page</span>.</p>
+                            <a href="https://developers.coveo.com/x/gg0vAg" class="btn hover-blue caps" target="_blank">Get Help</a>
+                            <a href="{!$Page.Search}" class="btn caps mod-primary" target="_blank">try it now</a>
+                        </div>
+                        <div class="image">
+                            <div class="overlay-icon">
+                                <!-- svg:play icon-->
+                                <svg id="play-icon" width="79px" height="57px" viewBox="0 0 79 57" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+                    <g id="Homepage-Menu---Header" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+                      <g id="Resources-Landing-Page" sketch:type="MSArtboardGroup" transform="translate(-1231.000000, -2672.000000)">
+                        <g id="Content" sketch:type="MSLayerGroup" transform="translate(0.000000, 510.000000)">
+                          <g id="Bande-06" transform="translate(0.000000, 2029.000000)" sketch:type="MSShapeGroup">
+                            <g id="insight-box-administration-video-thumbnail-600" transform="translate(1120.000000, 75.000000)">
+                              <g id="Play-Button-petit" transform="translate(111.000000, 58.000000)">
+                                <path d="M7.1429778,2.09478536 C9.15937472,1.89197558 23.4368092,0.339700662 39.6439355,0.339700662 C55.6789959,0.339700662 68.8662317,1.78986156 71.6286955,2.09478536 C74.3918314,2.39970917 76.4109169,4.66749135 76.7879831,7.10900918 C77.1643772,9.55123613 78.5933305,18.2961673 78.5933305,29.1741468 C78.5933305,39.4670981 77.4829679,47.3206589 76.7879831,49.4834906 C76.0929983,51.6463222 74.0624866,54.1601708 71.6286955,54.4984235 C69.1955766,54.8359671 55.6789959,56.2527991 39.6439355,56.2527991 C23.4368092,56.2527991 9.29783398,54.7686002 7.1429778,54.4984235 C4.9874495,54.2282468 2.47031401,51.9164989 1.98369022,49.4834906 C1.49706643,47.0504823 0.178342848,39.3039993 0.178342848,28.9231165 C0.178342848,18.1252681 1.4278368,9.67816953 1.98369022,7.10900918 C2.54021577,4.54055795 5.12658088,2.29759515 7.1429778,2.09478536" id="Path" fill-opacity="0.8" fill="#373737"></path>
+                                <path d="M39.6439355,0.339700662 C55.6789959,0.339700662 68.8662317,1.78986156 71.6286955,2.09478536 C74.3918314,2.39970917 76.4109169,4.66749135 76.7879831,7.10900918 C77.1643772,9.55123613 78.5933305,18.2961673 78.5933305,29.1741468 C78.5933305,39.4670981 77.4829679,47.3206589 76.7879831,49.4834906 C76.0929983,51.6463222 74.0624866,54.1601708 71.6286955,54.4984235 C69.1955766,54.8359671 55.6789959,56.2527991 39.6439355,56.2527991 C23.4368092,56.2527991 9.29783398,54.7686002 7.1429778,54.4984235 C4.9874495,54.2282468 2.47031401,51.9164989 1.98369022,49.4834906 C1.49706643,47.0504823 0.178342848,39.3039993 0.178342848,28.9231165 C0.178342848,18.1252681 1.4278368,9.67816953 1.98369022,7.10900918 C2.54021577,4.54055795 5.12658088,2.29759515 7.1429778,2.09478536 C9.15937472,1.89197558 23.4368092,0.339700662 39.6439355,0.339700662 Z M58,28.9372727 L32,14 L32,44 L58,28.9372727 Z" id="Imported-Layers"></path>
+                                <path d="M58,29 L32,14 L32,44 L58,29" id="Imported-Layers" fill-opacity="0.66" fill="#FFFFFF"></path>
+                              </g>
+                            </g>
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                            </div>
+                            <img class="preview-img animated border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/1-create-visualforce-page-express.png')}" data-animated="1-create-visualforce-page-express.gif" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="bg-white express flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Insert Coveo components to your Lightning community</h2>
+                            <p class="">In the <span class="text-dark-blue bold">Community Builder</span>, under <span class="text-dark-blue bold">Components</span>, select the <span class="text-dark-blue bold">Coveo Search</span> custom component, and drag-and-drop it
+                                on your page.</p>
+                            <a href="https://developers.coveo.com/x/UAkvAg" class="btn hover-blue caps" target="_blank">Get Help</a>
+                        </div>
+                        <div class="image">
+                            <div class="overlay-icon">
+                                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play-icon"></use></svg>
+                            </div>
+                            <img class="preview-img animated border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/2-drag-drop-search-smaller.png')}" data-animated="2-drag-drop-search-smaller.gif" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="bg-white express flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Customize your search pages using the Coveo JavaScript Search Interface Editor</h2>
+                            <p class="">At the bottom image of your component, expand the Interface Editor box and select <span class="text-dark-blue bold">Edit</span>, giving you access to the Interface Editor. There, you can drag-and-drop components to build your
+                                search page.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=230" class="btn hover-blue caps" target="_blank">Get Help</a>
+                        </div>
+                        <div class="image">
+                            <div class="overlay-icon">
+                                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play-icon"></use></svg>
+                            </div>
+                            <img class="preview-img animated border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/3-interfaceeditor-create-facet.png')}" data-animated="3-interfaceeditor-create-facet.gif" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <!-- Salesforce Enterprise -->
+                    <div class="bg-white enterprise flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Create your first Coveo Search page</h2>
+                            <p>In the <span class="text-dark-blue bold">Coveo</span> App Menu, in the <span class="text-dark-blue bold">Coveo Search</span> tab, select <span class="text-dark-blue bold">Set Up a Search Page</span>.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=134" class="btn hover-blue caps" target="_blank">Get Help</a>
+                            <a href="{!$Page.Search}" class="btn caps mod-primary" target="_blank">try it now</a>
+                        </div>
+                        <div class="image">
+                            <img class="preview-img border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/5-enterprise-example-visualforce-search-page.png')}" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="bg-white enterprise flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Create a Coveo Insight Panel</h2>
+                            <p>Create a side-panel so your agents can find the right information more quickly.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=135" class="btn hover-blue caps" target="_blank">Get Help</a>
+                        </div>
+                        <div class="image">
+                            <img class="preview-img border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/6-insight-panel.png')}" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="bg-white enterprise flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Insert Coveo components to your Lightning community</h2>
+                            <p>In the <span class="text-dark-blue bold">Community Builder</span>, under <span class="text-dark-blue bold">Components</span>, select the <span class="text-dark-blue bold">Search</span> custom component, and drag-and-drop it
+                                on your page.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=193" class="btn hover-blue caps" target="_blank">Get Help</a>
+                        </div>
+                        <div class="image">
+                            <div class="overlay-icon">
+                                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play-icon"></use></svg>
+                            </div>
+                            <img class="preview-img animated border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/7-drag-drop.jpg')}" data-animated="7-drag-drop.gif" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="bg-white enterprise flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Customize your search pages using the Coveo JavaScript Search Interface Editor</h2>
+                            <p class="">At the bottom right of your component, expand the Interface Editor box and select <span class="text-dark-blue bold">Edit</span>, giving you access to the Interface Editor. There, you can drag-and-drop components to build your
+                                search page.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=230" class="btn hover-blue caps" target="_blank">Get Help</a>
+                        </div>
+                        <div class="image">
+                            <div class="overlay-icon">
+                                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play-icon"></use></svg>
+                            </div>
+                            <img class="preview-img animated border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/8-interfaceeditor-create.jpg')}" data-animated="8-interfaceeditor-create.gif" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <!-- Usage Analytics -->
+                    <div class="bg-white flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Explore the Coveo Cloud Platform</h2>
+                            <p>Navigate your Coveo Cloud organization and learn how to make the most of your search with Usage Analytics, Coveo Machine Learning, and Search Optimization.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=1" class="btn hover-blue caps" target="_blank">Get Help</a>
+                            <a href="{!getPlatformUri}" class="btn caps mod-primary" target="_blank">go to cloud platform</a>
+                        </div>
+                        <div class="image">
+                            <img class="preview-img" src="{!URLFOR($Resource.assets, 'legacy/img/setup/explore-other-subjects.png')}" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="bg-white enterprise flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Add non-Salesforce sources to your Coveo index</h2>
+                            <p class="">Index documents from other sources so they can be found on your search page in Salesforce.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=256" class="btn hover-blue caps" target="_blank">Get Help</a>
+                            <a href="{!getPlatformUri}" class="btn caps mod-primary" target="_blank">try it now</a>
+                        </div>
+                        <div class="image">
+                            <div class="overlay-icon">
+                                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play-icon"></use></svg>
+                            </div>
+                            <img class="preview-img animated border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/4-add-source.jpg')}" data-animated="4-add-source.gif" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="bg-white enterprise flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Access the Coveo for Salesforce Configuration Page</h2>
+                            <p>Configure the Coveo for Salesforce package.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=379" class="btn hover-blue caps" target="_blank">Get Help</a>
+                            <a href="{!$Page.Configuration}" class="btn caps mod-primary" target="_blank">Configure Now</a>
+                        </div>
+                        <div class="image">
+                            <img class="preview-img border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/9-configure-coveo-enterprise.png')}" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="bg-white express flex">
+                        <div class="text-block">
+                            <h2 class="text-medium-blue bold caps">Access the Coveo for Salesforce Configuration Page</h2>
+                            <p>Configure the Coveo for Salesforce package.</p>
+                            <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=379" class="btn hover-blue caps" target="_blank">Get Help</a>
+                            <a href="{!$Page.Configuration}" class="btn caps mod-primary" target="_blank">Configure Now</a>
+                        </div>
+                        <div class="image">
+                            <img class="preview-img border" src="{!URLFOR($Resource.assets, 'legacy/img/setup/9-configure-coveo-express.png')}" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Sub Link -->
+            <div class="center mx-auto footer py2 override-margin" style="margin-top: 80px">
+                <h2 class="text-medium-blue caps bold">Additional Resources</h2>
+                <hr />
+                <div class="flex p2">
+                    <a href="https://www.coveo.com/go?dest=cloudhelp&lcid=9&context=2" target="_blank" class="flex-fixed-size">
+                        <div>
+                            <div class="circle-footer bg-light-grey">
+                                <img src="{!URLFOR($Resource.assets, 'legacy/img/setup/online-help.svg')}" />
+                            </div>
+                            <h3 class="text-dark-blue bold py1">Online Help</h3>
+                            <p class="text-dark-blue break-word">Read our official product documentation</p>
+                        </div>
+                    </a>
+                    <a href="https://developers.coveo.com/x/KICpAQ" target="_blank" class="flex-fixed-size">
+                        <div>
+                            <div class="circle-footer  bg-light-grey">
+                                <img src="{!URLFOR($Resource.assets, 'legacy/img/setup/developers.svg')}" />
+                            </div>
+                            <h3 class="text-dark-blue bold py1">Developers</h3>
+                            <p class="text-dark-blue break-word">Read the documentation from our developers</p>
+                        </div>
+                    </a>
+                    <a href="https://answers.coveo.com/" target="_blank" class="flex-fixed-size">
+                        <div>
+                            <div class="circle-footer  bg-light-grey">
+                                <img src="{!URLFOR($Resource.assets, 'legacy/img/setup/answers.svg')}" />
+                            </div>
+                            <h3 class="text-dark-blue bold py1">Answers</h3>
+                            <p class="text-dark-blue break-word">Find answers from our staff on our Q&amp;A forum</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </c:AdminCheck>
+</apex:page>

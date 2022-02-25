@@ -1,0 +1,24 @@
+<template>
+        <div class={tileBorder} style={inlineStyle}>
+            <div>
+                <div class="slds-p-left_small slds-p-right_small slds-p-bottom_small slds-p-top_small">
+                    <lightning-formatted-rich-text value={title} class="slds-text-heading_small">
+                    </lightning-formatted-rich-text>
+                </div>
+                <figure>
+                    <template if:true={isAudio}>
+                        <audio controls preload="auto" src={mediaFile} type="audio/mpeg">
+                            Your browser does not support the
+                            <code>audio</code> element.
+                        </audio>
+                    </template>
+                    <template if:false={isAudio}>
+                        <video controls preload="auto" src={mediaFile} type="video/mp4">
+                            Your browser does not support the
+                            <code>video</code> element.
+                        </video>
+                    </template>
+                </figure>
+            </div>
+        </div>
+</template>

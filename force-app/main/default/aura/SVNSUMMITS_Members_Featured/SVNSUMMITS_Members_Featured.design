@@ -1,0 +1,92 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<design:component label="7S Members Featured">
+	<design:attribute name="featuredTitle"
+	                  label="Heading Title"
+	                  description="Title for Featured Members."/>
+    <design:attribute name="featuredDescription"
+                      label="Heading Description"
+                      description="Description of Featured Members."/>
+    <design:attribute name="headerSize"
+                      label="Heading Size"
+                      description="Description of Featured Members."  datasource="large,medium,small"/>
+    <design:attribute name="headerAlignment"
+                      label="Heading Alignment"
+                      description="Alignment for the Header of Featured Members." datasource="left,center,right"/>
+
+    <design:attribute name="layout"
+                      label="Layout"
+                      description="Slider: a clickable carousel of members. List: a listing of members." datasource="slider,list"/>
+
+    <design:attribute name="itemsShown"
+                      label="Slider: Members Shown per Line"
+                      description="The number of members that will be seen at any given time on one line." datasource="1,2,3,4,5,6"/>
+
+    <design:attribute name="showButtonsInHeader"
+                      label="All Members: Show button in header?"
+                      description="This will appear either in the header or footer."/>
+
+    <design:attribute name="allMembersButtonText"
+                      label="All Members: Button Text"
+                      description="Text for link to list view page."/>
+    <design:attribute name="allMembersUrl"
+                      label="All Members: Link to Page"
+                      description="Url to redirect to the member list view page"/>
+
+    <design:attribute name="membersURL"
+                      label="Link to Member Detail"
+                      description=""/>
+
+	<design:attribute name="recordNickName1"
+	                  label="Member 1: Nickname"
+	                  description="Enter Record NickName of First Member"/>
+	<design:attribute name="recordNickName2"
+	                  label="Member 2: Nickname"
+	                  description="Enter Record NickName of Second Member"/>
+	<design:attribute name="recordNickName3"
+	                  label="Member 3: Nickname"
+	                  description="Enter Record NickName of Third Member"/>
+	<design:attribute name="recordNickName4"
+	                  label="Member 4: Nickname"
+	                  description="Enter Record NickName of Fourth Member"/>
+	<design:attribute name="recordNickName5"
+	                  label="Member 5: Nickname"
+	                  description="Enter Record NickName of Fifth Member"/>
+	<design:attribute name="recordNickName6"
+	                  label="Member 6: Nickname"
+	                  description="Enter Record NickName of Sixth Member"/>
+	<design:attribute name="recordNickName7"
+	                  label="Member 7: Nickname"
+	                  description="Enter Record NickName of Seventh Member"/>
+	<design:attribute name="recordNickName8"
+	                  label="Member 8: Nickname"
+	                  description="Enter Record NickName of Eighth Member"/>
+
+	<design:attribute name="displayTitle"
+	                  label="Display Member Title"
+	                  description="Check box for enable and disable display of user title "
+	                  default="true"/>
+	<design:attribute name="displayPhone"
+	                  label="Display Member Phone Number"
+	                  description="Check box for enable and disable display of user Phone Number "
+	                  default="true"/>
+	<design:attribute name="clickToCall"
+	                  label="Enable click-to-call"
+	                  description="If enabled, the user can click on the phone number to launch the Phone app on the device"/>
+	<design:attribute name="displayEmail"
+	                  label="Display Member Email Address"
+	                  description="Check box for enable and disable display of user Email Address "
+	                  default="true"/>
+	<design:attribute name="displayKnowledge"
+	                  label="Display Member Knowledge"
+	                  description="Check box for enable and disable display of Member Knowledge "
+	                  default="true"/>
+	<design:attribute name="displayFollowButton"
+	                  label="Display follow button"
+	                  description="Enable the follow/un-follow button on the user tile"
+	                  default="true"/>
+	<design:attribute name="displayChatterStats"
+	                  label="Display Member chatter stats"
+	                  description="Display chatter statistics for the user"/>
+</design:component>

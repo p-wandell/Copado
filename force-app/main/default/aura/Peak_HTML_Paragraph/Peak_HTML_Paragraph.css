@@ -1,0 +1,68 @@
+/**
+ * Hive_Lightning - Generates the assets used for 7S Hive Migration Lightning
+ * @version 1.0.0
+ * @author 7Summits
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+@keyframes fadeIn {
+  0% {
+    z-index: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 0;
+  }
+  100% {
+    z-index: 1;
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    z-index: 1;
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    z-index: -1;
+    opacity: 0;
+  }
+}
+.THIS {
+  margin-bottom: 24px;
+}
+.THIS p {
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 26px;
+  margin: 0;
+}
+.THIS p.lead-paragraph {
+  font-size: 22px;
+  line-height: 39px;
+  margin: 20px 0;
+}
+.THIS.description p {
+  font-weight: 300;
+  font-size: 11px !Important;
+  line-height: 18px!Important;
+  color: #888e95;
+  margin: 0;
+}
+.THIS.center p {
+  text-align: center;
+}
+.THIS.readingWidth p {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.THIS.noBottomMargin {
+  margin-bottom: -24px;
+}
+.THIS.smallBottomMargin {
+  margin-bottom: -12px;
+}

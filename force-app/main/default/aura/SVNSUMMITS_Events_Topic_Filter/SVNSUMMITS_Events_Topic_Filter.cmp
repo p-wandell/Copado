@@ -1,0 +1,39 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventListController"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+                access="global">
+
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler   name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.doInit}"/>
+
+	<aura:registerEvent name="topicEvent" type="c:SVNSUMMITS_Topic_Filter_Event"/>
+
+	<aura:attribute name="debugMode" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="values" type="Map" access="global"/>
+	<aura:attribute name="filterLabel" type="String" default="" access="global"/>
+
+	<lightning:layout verticalAlign="center"
+	                  multipleRows="true"
+	                  class="topicFilterContainer topicPicklist">
+
+		<aura:if isTrue="{! not(empty(v.filterLabel))}">
+			<lightning:layoutItem size="12"
+			                      class="slds-text-heading--small">
+				{!v.filterLabel}
+			</lightning:layoutItem>
+		</aura:if>
+
+		<lightning:layoutItem size="12" class="slds-p-bottom--xx-small topicFilterContainer topicPicklist">
+			<ui:inputSelect aura:id="filterByTopic"
+			                multiple="true"
+			                aura:disabled="false"
+			                class="slds-input-select-multi fluid dropdown topic topicPicklist"
+			                change="{!c.setTopic}">
+				<aura:iteration items="{!v.values}" indexVar="key" var="item">
+					<ui:inputSelectOption text="{!item.key}" label="{!item.value}"/>
+				</aura:iteration>
+			</ui:inputSelect>
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

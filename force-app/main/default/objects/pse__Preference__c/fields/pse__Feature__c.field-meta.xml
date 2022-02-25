@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Feature__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Defines the feature to apply preferences to.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Defines the feature to apply preferences to.</inlineHelpText>
+    <label>Feature</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Resource Planner</fullName>
+                <default>false</default>
+                <label>Resource Planner</label>
+            </value>
+            <value>
+                <fullName>Project Planner</fullName>
+                <default>false</default>
+                <label>Project Planner</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

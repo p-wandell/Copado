@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>프로젝트 위치</value>
+    </caseValues>
+    <fieldSets>
+        <label><!-- Create Project From Template Alt Copy Project Location Fields --></label>
+        <name>pse__CreateProjFromTempAltCopyProjLocFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Create Project from Template Project Locations Columns --></label>
+        <name>pse__CreateProjFromTemplateLocationColumns</name>
+    </fieldSets>
+    <nameFieldLabel>프로젝트 위치 이름</nameFieldLabel>
+    <sharingReasons>
+        <label><!-- PSE Member Share --></label>
+        <name>pse__PSE_Member_Share</name>
+    </sharingReasons>
+    <sharingReasons>
+        <label><!-- PSE PM Share --></label>
+        <name>pse__PSE_PM_Share</name>
+    </sharingReasons>
+    <validationRules>
+        <errorMessage><!-- End date cannot occur before start date. --></errorMessage>
+        <name>pse__Check_End_Date</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Project is required --></errorMessage>
+        <name>pse__Project_Required</name>
+    </validationRules>
+</CustomObjectTranslation>

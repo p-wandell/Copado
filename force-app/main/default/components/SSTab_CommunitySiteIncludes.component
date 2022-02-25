@@ -1,0 +1,6 @@
+<apex:component layout="none">
+      <!-- bootstrap -->
+      <apex:stylesheet value="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/lib/bootstrap/bootstrap-3.1.1-dist/css/bootstrap.css')}"/>
+       <!--main.css-->
+      <apex:stylesheet value="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/css/main.css')}"/>
+</apex:component>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>既存の子ターゲットをどのように扱うべきかを決定するために使用される戦略。</help>
+    <label><!-- Correlation Strategy --></label>
+    <name>fferpcore__CorrelationStrategy__c</name>
+    <picklistValues>
+        <masterLabel>Append</masterLabel>
+        <translation>追加</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Replace</masterLabel>
+        <translation>交換する</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Update</masterLabel>
+        <translation>更新</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UpdateTotal</masterLabel>
+        <translation>UpdateTotal</translation>
+    </picklistValues>
+</CustomFieldTranslation>

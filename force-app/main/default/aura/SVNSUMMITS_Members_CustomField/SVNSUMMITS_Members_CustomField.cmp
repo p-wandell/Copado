@@ -1,0 +1,22 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+
+<!--
+ - Created by francoiskorb on 1/4/18.
+ -->
+
+<aura:component description="SVNSUMMITS_Members_CustomField">
+
+	<aura:attribute name="customField" type="String" access="public"/>
+	<aura:attribute name="customLabel" type="String" access="public"/>
+
+	<lightning:layout multipleRows="false">
+		<lightning:layoutItem class="slds-text-color_default">
+			{!v.customLabel}&nbsp;
+		</lightning:layoutItem>
+		<lightning:layoutItem class="slds-text-color_weak slds-truncate">
+			{!v.customField}
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

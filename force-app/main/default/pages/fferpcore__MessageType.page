@@ -1,0 +1,21 @@
+<apex:page standardController="fferpcore__MessageType__c" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+    <apex:sectionHeader title="{!$Label.fferpcore__erpmessagetypesectiontitle}" subtitle="{!$Label.fferpcore__erpmessagetypesectionsubtitle}"/>
+    <apex:pageMessages />
+    <apex:form >
+        <apex:pageBlock title="{!$Label.fferpcore__erpmessagetypepageblocktitle}">
+            <apex:pageBlockButtons location="both" >
+                <apex:commandButton action="{!save}" value="{!$Label.fferpcore__erpvisualforcesavebutton}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.fferpcore__erpvisualforcecancelbutton}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.fferpcore__erpmessagetypepageblocksectionsimple}" columns="2" collapsible="false">
+                <apex:inputField value="{!fferpcore__MessageType__c.Name}"/>
+                <apex:inputField value="{!fferpcore__MessageType__c.fferpcore__Parent__c}"/>
+                <apex:inputField value="{!fferpcore__MessageType__c.fferpcore__Description__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.fferpcore__erpmessagetypepageblocksectionadvanced}" columns="2" collapsible="true">
+                <apex:inputField value="{!fferpcore__MessageType__c.fferpcore__DeveloperName__c}" required="false"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

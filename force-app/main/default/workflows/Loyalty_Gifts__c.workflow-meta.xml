@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldUpdates>
+        <fullName>Loyalty_Gift_Sent_Checked</fullName>
+        <field>Loyalty_Gift_Sent__c</field>
+        <literalValue>1</literalValue>
+        <name>Loyalty Gift Sent Checked</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>Opportunity__c</targetObject>
+    </fieldUpdates>
+    <rules>
+        <fullName>Loyalty Gift Sent</fullName>
+        <actions>
+            <name>Loyalty_Gift_Sent_Checked</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Loyalty_Gifts__c.Date_Gift_Sent__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+</Workflow>

@@ -1,0 +1,13 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- X 7 S Join Community User -->
+<template>
+    <template if:true={hasPhoto}>
+        <div style={photoStyle}></div>
+    </template>
+    <template if:false={hasPhoto}>
+        <h1 class="slds-text-align_center slds-text-heading_small">?</h1>
+    </template>
+</template>

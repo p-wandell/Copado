@@ -1,0 +1,358 @@
+<apex:page standardController="pse__Expense_Report__c" extensions="pse.CollateExpenseAttachmentsToERController" lightningStylesheets="true">
+
+	<script>
+		var totalAttachmentsSizeInMb = 0;
+
+		function selectAllRelevantAttachments(checkBoxObj, checkBoxIdPattern) {
+			var isChecked = checkBoxObj.checked,
+				idPrefix = checkBoxObj.name,
+				inputElem,
+				i;
+
+			idPrefix = idPrefix.substring(0, idPrefix.lastIndexOf(':'));
+			inputElem = document.getElementsByTagName("input");
+
+			for (i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(idPrefix) != -1 && inputElem[i].id.indexOf(checkBoxIdPattern)) {
+					inputElem[i].checked = isChecked;
+				}
+			}
+		}
+
+		function updateTotalSize() {
+			var allInputElem = document.getElementsByTagName('input'),
+				totalSizeInBytes = 0,
+				intPart,
+				decimalPart,
+				inputElement,
+				bodyLengthTD,
+				i;
+
+			for (i = 0; i < allInputElem.length; i++) {
+				inputElement = allInputElem[i];
+				if (inputElement.id.indexOf('attachmentSelect') !== -1 || inputElement.id.indexOf('fileSelect') !== -1) {
+					if (inputElement.checked) {
+						bodyLengthTD = inputElement.name;
+						bodyLengthTD = bodyLengthTD.substring(0, bodyLengthTD.lastIndexOf(':'));
+						bodyLengthTD += ':bodyLength';
+						totalSizeInBytes += parseInt(document.getElementById(bodyLengthTD).innerHTML);
+					}
+				}
+			}
+
+			if (totalSizeInBytes >= 0) {
+				totalAttachmentsSizeInMb = totalSizeInBytes / 1048576;
+			}
+
+			intPart = parseInt(totalAttachmentsSizeInMb);
+			decimalPart = (totalAttachmentsSizeInMb + '');
+			if (decimalPart.indexOf('.') != -1) {
+				decimalPart = decimalPart.substr(decimalPart.indexOf('.') + 1, 2);
+				document.getElementById('attachmentSizeDetail').innerHTML = '<B>' + totalSizeInBytes + ' bytes (~' + intPart + '.' + decimalPart + ' MB) </B>';
+			} else {
+				document.getElementById('attachmentSizeDetail').innerHTML = '<B>' + totalSizeInBytes + ' bytes (~' + intPart + ' MB) </B>';
+			}
+		}
+
+		function checkSelectedAttachmentsSize() {
+			if (totalAttachmentsSizeInMb > 25) {
+				alert('{!JSENCODE($Label.combine_attachments_message_total_file_size_greater_than_25mb)}');
+			} else {
+				wait(true);
+				jsCombineAttachments();
+			}
+		}
+	</script>
+	<c:selectAllCheckboxes functionName="selectAllAttachments" />
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<apex:form >
+		<style>
+			.infoIcon {
+				vertical-align: middle;
+				margin: 5px 10px 5px 10px !important;
+			}
+
+			.info-block {
+				border: 1px solid;
+				border-color: #dddbda;
+				border-radius: .25rem;
+			}
+
+			.info-margin-display {
+				margin: 8px 0px 0px 3px;
+				display: inline-block;
+			}
+
+			.div-margin {
+				margin: 0px 0px 8px 40px;
+			}
+		</style>
+		<apex:outputPanel layout="none" rendered="{!$User.UIThemeDisplayed=='Theme4d'}">
+			<style>
+				.headerRow th {
+					background-color: #fafaf9;
+				}
+
+				.headerRow th:not(:first-of-type),
+				.dataRow td:not(:first-of-type) {
+					border-left: 1px solid rgb(221, 219, 218) !important;
+				}
+
+				.infoIcon {
+					width: 23px !important;
+					color: #706e6b;
+					height: 23px !important;
+				}
+
+				.info-block {
+					background-color: #f4f6f9;
+					padding: 0.75rem 1rem;
+					border: none;
+				}
+
+				.div-margin {
+					margin: 0px 0px 8px 47px;
+				}
+			</style>
+		</apex:outputPanel>
+
+		<apex:pageMessages id="messageSection" />
+		<apex:outputPanel layout="block" styleClass="info-block slds-m-bottom_small">
+			<apex:image value="/s.gif" styleClass="infoIcon" />
+			<apex:outputPanel layout="block" styleClass="info-margin-display">
+				{!$Label.pse__combine_attachments_label_page_info}
+			</apex:outputPanel>
+			<apex:outputPanel rendered="{!moveNonImageAttachmentToER}" layout="block" styleClass="div-margin">
+				{!$Label.pse__combine_attachments_label_page_info_for_move_attachment}
+			</apex:outputPanel>
+			<apex:outputPanel rendered="{!retainAttachment}" layout="block" styleClass="div-margin">
+				{!$Label.pse__combine_attachments_label_page_info_for_retain_attachments_on_expense}
+			</apex:outputPanel>
+		</apex:outputPanel>
+
+		<script type="text/javascript">
+			function popUpConfirmation(message, show) {
+				if (show.toLowerCase() == 'true') {
+					if (confirm(message)) {
+						jsPageRedirect();
+					}
+				}
+			}
+		</script>
+		<apex:actionFunction name="jsPageRedirect" action="{!redirectToExpenseReport}" />
+
+		<apex:actionFunction name="jsCombineAttachments" rerender="messageSection, batchResultPB, expensesDetailBlock, showConfirmationPopupBlock"
+		 action="{!combineAttachments}" />
+		<apex:actionFunction name="jsCombineNSeparateAttachments" rerender="messageSection, separateBatchResultPB, afterSeparateBatchResultPB, expensesDetailBlock"
+		 action="{!combineAndSeparateAttachments}" />
+
+		<apex:actionFunction name="jsBatchSubmit" reRender="messageSection,batchResultPB" action="{!attachmentBatchProcess}" status="ajaxStatus" />
+		<apex:actionFunction name="jsResetBatchProcessor" reRender="messageSection, batchResultPB, expensesDetailBlock" action="{!resetBatchProcessor}"
+		 status="ajaxStatus" />
+
+		<apex:actionFunction name="jsSeparateBatchSubmit" reRender="messageSection, separateBatchResultPB" action="{!attachmentSeparateBatchProcess}"
+		 status="ajaxStatus" />
+		<apex:actionFunction name="jsResetSeparateBatchProcessor" reRender="messageSection, separateBatchResultPB, expensesDetailBlock, afterSeparateBatchResultPB"
+		 action="{!resetSeparateBatchProcessor}" status="ajaxStatus" />
+		<apex:actionFunction name="jsAfterCombineAndSeparateAttachments" rerender="messageSection, batchResultPB" action="{!afterCombineAndSeparateAttachments}"
+		 status="ajaxStatus" />
+
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)" />
+		<apex:outputPanel rendered="{!isValid}">
+			<apex:pageBlock id="expensesDetailBlock">
+				<apex:actionFunction name="doCancel" action="{!cancel}" />
+
+				<apex:outputPanel styleClass="detailList" rendered="{!IF(expensesWithAttachments.size > 0, true, false)}">
+					<table class="list" cellspacing="0" cellpadding="0" width="100%">
+						<tr class="headerRow">
+							<th style="width: 30px;">
+								<input type="checkbox" onclick="selectAllAttachments(this, 'expenseAttachments'); selectAllAttachments(this, 'attachmentSelect'); selectAllAttachments(this, 'fileSelect'); updateTotalSize();" />
+							</th>
+							<th> {!$ObjectType.Expense__c.Fields.Name.Label} </th>
+							<apex:repeat value="{!filteredExpenseColumns}" var="f">
+								<th> {!f.Label} </th>
+							</apex:repeat>
+						</tr>
+
+						<apex:repeat value="{!expensesWithAttachments}" var="expW">
+							<tr class="dataRow">
+								<td></td>
+								<td class="datacell">
+									<B>
+										<apex:outputField value="{!expW.expense.Name}" />
+									</B>
+								</td>
+								<apex:repeat value="{!filteredExpenseColumns}" var="f">
+									<td class="datacell">
+										<B>
+											<apex:outputField value="{!expW.expense[f.fieldPath]}" />
+										</B>
+									</td>
+								</apex:repeat>
+							</tr>
+
+							<tr>
+								<td></td>
+								<td name="attachmentTableTD" colspan="{!numberOfExpColumns + 1}">
+									<table class="list" cellspacing="0" cellpadding="0" width="100%">
+										<tr class="headerRow">
+											<th style="width: 3%;">
+												<apex:inputcheckbox value="{!expW.isAllAttachmentsSelected}" id="expenseAttachments" onclick="selectAllRelevantAttachments(this, 'attachmentSelect'); selectAllRelevantAttachments(this, 'fileSelect'); updateTotalSize();" />
+											</th>
+											<th style="width: 40%;">{!$Label.common_label_name}</th>
+											<th style="width: 15%;">{!$Label.expense_attachment_file_size_in_bytes}</th>
+											<th style="width: 15%;">{!$Label.expense_attachment_content_type}</th>
+											<th style="width: 27%;" id="attLastColHeader">{!$Label.common_label_description}</th>
+										</tr>
+
+										<apex:repeat value="{!expW.attachmentList}" var="attW">
+											<tr class="dataRow">
+												<td>
+													<apex:inputcheckbox value="{!attW.isSelected}" id="attachmentSelect" onclick="updateTotalSize();" rendered="{!attW.isContentTypeImage}" />
+												</td>
+												<td class="datacell">{!attW.attachment.Name}</td>
+												<td class="datacell">
+													<apex:outputText id="bodyLength" value="{!attW.attachment.BodyLength}" />
+												</td>
+												<td class="datacell">{!attW.attachment.ContentType}</td>
+												<td class="datacell" name="attLastColTD">
+													{!attW.attachment.Description}
+												</td>
+											</tr>
+										</apex:repeat>
+
+										<apex:repeat value="{!expW.fileList}" var="fw">
+											<tr class="dataRow">
+												<td>
+													<apex:inputcheckbox value="{!fw.isSelected}" id="fileSelect" onclick="updateTotalSize();" rendered="{!fw.isContentTypeImage}" />
+												</td>
+												<td class="datacell">{!fw.file.Title}</td>
+												<td class="datacell">
+													<apex:outputText id="bodyLength" value="{!fw.file.ContentSize}" />
+												</td>
+												<td class="datacell">{!fw.file.FileType}</td>
+												<td class="datacell" name="fLastColTD">
+													{!fw.file.Description}
+												</td>
+											</tr>
+										</apex:repeat>
+									</table>
+								</td>
+							</tr>
+
+							<tr>
+								<td name="grayTD" style="background-color: gray;" colspan="{!numberOfExpColumns + 2}"> </td>
+							</tr>
+						</apex:repeat>
+					</table>
+					<br/>
+					<br/>
+					{!$Label.combine_attachments_label_selected_attachments_total_size}:
+					<B>
+						<div style="display: inline;" id="attachmentSizeDetail">{!$Label.expense_attachments_zero_bytes}</div>
+					</B>
+				</apex:outputPanel>
+
+				<apex:outputPanel rendered="{!IF(expensesWithAttachments.size > 0, false, true)}">
+					{!$Label.pse__combine_attachments_no_relevant_expense_found}
+				</apex:outputPanel>
+			</apex:pageBlock>
+
+			<apex:outputPanel layout="block" id="batchResultPB">
+				<script type="text/javascript">
+					if ({!NOT(ISNULL(collateExpenseBatch))}) {
+						if ({!OR(collateExpenseBatch.isBatchProcessComplete, collateExpenseBatch.isBatchProcessFailed)}) {
+							jsResetBatchProcessor();
+						} else {
+							jsBatchSubmit();
+						}
+					} else {
+						wait(false);
+						if ({!moveNonImageAttachmentToER}) {
+							popUpConfirmation('{!message}' + ' ' + '{!JSINHTMLENCODE($Label.Combine_Attachments_Success_Redirect_Append_message)}', '{!show}');
+						}
+					}
+				</script>
+			</apex:outputPanel>
+
+			<apex:outputPanel layout="block" id="showConfirmationPopupBlock">
+				<script type="text/javascript">
+					if ({!(!moveNonImageAttachmentToER)}) {
+						popUpConfirmation('{!message}' + ' ' + '{!JSINHTMLENCODE($Label.Combine_Attachments_Success_Redirect_Append_message)}', '{!show}');
+					}
+				</script>
+			</apex:outputPanel>
+
+			<apex:outputPanel layout="block" id="separateBatchResultPB">
+				<script type="text/javascript">
+					if ({!NOT(ISNULL(collateAttachmentAndSeperateBatch))}) {
+						if ({!OR(collateAttachmentAndSeperateBatch.isBatchProcessComplete, collateAttachmentAndSeperateBatch.isBatchProcessFailed)}) {
+							jsResetSeparateBatchProcessor();
+						} else {
+							jsSeparateBatchSubmit();
+						}
+					} else {
+						wait(false);
+						if ({!(!moveNonImageAttachmentToER)}) {
+							popUpConfirmation('{!message}' + ' ' + '{!JSINHTMLENCODE($Label.Combine_Attachments_Success_Redirect_Append_message)}', '{!show}');
+						}
+					}
+				</script>
+			</apex:outputPanel>
+
+			<apex:outputPanel layout="block" id="afterSeparateBatchResultPB">
+				<script type="text/javascript">
+					if ({!callAfterCombineAndSeparateAttachments}) {
+						wait(true);
+						jsAfterCombineAndSeparateAttachments();
+					}
+				</script>
+			</apex:outputPanel>
+		</apex:outputPanel>
+		<script>
+			prepareVFConfig();
+			function prepareVFConfig() {
+				var config = {
+					objectName: '{!JSENCODE($Label.combine_attachments_header_label)}',
+					helpUrl: '{!$Page.CollateExpenseAttachmentsToERHelp}',
+					objectApiName: '{!$ObjectType["Expense_Report__c"].name}',
+					onRender: 'onHeaderLoadCallback'
+				};
+
+				if ('{!isValid}' === 'true') {
+					config.buttons = [{
+						id: 'cancel',
+						label: '{!JSENCODE($Label.common_label_cancel)}',
+						actionFn: 'doCancel'
+					}];
+
+					if ('{!expensesWithAttachments.size > 0}' === 'true') {
+						config.buttons.push({
+							id: 'combine',
+							label: '{!JSENCODE($Label.expense_attachments_btn_combine)}',
+							actionFn: 'checkSelectedAttachmentsSize'
+						},{
+							id: 'combineAndSeparate',
+							label: '{!JSENCODE($Label.expense_attachments_btn_combine_and_separate)}',
+							actionFn: 'doCombineAndSeparateAttachments'
+						});
+					}
+				}
+
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+
+			function doCombineAndSeparateAttachments() {
+				wait(true);
+				jsCombineNSeparateAttachments();
+			}
+		</script>
+	</apex:form>
+</apex:page>

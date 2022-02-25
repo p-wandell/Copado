@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__CompareAndDeployJob__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Compare And Deploy Job</label>
+    <referenceTo>ffct__CompareAndDeployJob__c</referenceTo>
+    <relationshipLabel>Compare And Deploy Process Logs</relationshipLabel>
+    <relationshipName>CompareAndDeployProcessLogs</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

@@ -1,0 +1,33 @@
+<apex:page standardController="fferpcore__CompanyTaxInformation__c" extensions="fferpcore.AssignTaxInfoToCompaniesController" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+	<apex:form >
+		<apex:sectionHeader title="{!$Label.fferpcore__assigntaxinformationtocompaniespagetitle}" help="{!helpUrl}"/>
+
+		<apex:pageBlock >
+			<apex:pageMessages />
+
+			<apex:pageBlockButtons location="both">
+				<apex:commandButton value="{!$Label.fferpcore__assigntaxinformationtocompaniespageconfirmbutton}" action="{!updateCompanies}" rendered="{!CanUpdateCompanies}" />
+				<apex:commandButton value="{!$Label.fferpcore__erpvisualforcecancelbutton}" action="{!cancel}" rendered="{!CanUpdateCompanies}"/>
+				<apex:commandButton value="{!$Label.fferpcore__erpvisualforcereturn}" action="{!cancel}" rendered="{!NOT(CanUpdateCompanies)}"/>
+			</apex:pageBlockButtons>
+
+			<apex:pageBlockTable value="{!SelectableCompanies}" var="row" rendered="{!HasCompanies}" columns="2" headerClass="hidden">
+
+				<apex:column width="10px">
+					<apex:inputCheckbox value="{!row.Selected}"/>
+				</apex:column>
+
+				<apex:column >
+					<apex:outputLink value="{!URLFOR($Action.fferpcore__Company__c.View, row.Company.Id)}">
+						{!row.Company.Name}
+					</apex:outputLink>
+				</apex:column>
+
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+
+		<!-- Hidden fields needed by controller -->
+		<apex:outputText value="{!fferpcore__CompanyTaxInformation__c.Name}" rendered="false"/>
+	</apex:form>
+</apex:page>

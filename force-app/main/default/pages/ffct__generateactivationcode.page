@@ -1,0 +1,43 @@
+<apex:page sidebar="true" standardStylesheets="true" controller="ffct.GenerateActivationCodeController" doctype="html-5.0">
+	<apex:sectionheader title="{!$Label.ffct__generateactivationcode}" help="helploader?topicid=1035"/>
+	<apex:form id="generatecodeform">
+	
+		<apex:actionStatus id="eventStatus"  >
+            <apex:facet name="start">
+                <apex:outputPanel >
+                   <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                      <div style="position:absolute;top:50%;left:50%">
+                        <apex:image value="/img/loading32.gif"></apex:image>
+                      </div>
+                  </div>
+                </apex:outputPanel>
+            </apex:facet>   
+        </apex:actionStatus>
+        
+		<apex:pagemessages id="pgMsg" escape="false"/>
+		<apex:pageBlock title="" tabStyle="Case" rendered="{!ValidRequest}">
+
+			<apex:pageBlockSection collapsible="false" rendered="{!ValidRequest}">
+				<apex:outputField Label="{!$Label.ffct__casenumber}" value="{!Casecomment.ParentId}" rendered="{!DisplayActivationCode}"/>
+				<apex:inputField label="{!$Label.ffct__casenumber}" value="{!Casecomment.ParentId}" rendered="{!!DisplayActivationCode}"/>
+				<apex:outputText Label="{!$Label.ffct__consultantemail}" value="{!Inputs.ConsultantEmail}" rendered="{!DisplayActivationCode}"/>
+				<apex:inputText Label="{!$Label.ffct__consultantemail}" value="{!Inputs.ConsultantEmail}" required="true" rendered="{!!DisplayActivationCode}"/>
+				<apex:outputText Label="{!$Label.ffct__consultantorganizationid}" value="{!Inputs.ConsultantOrgId}" rendered="{!DisplayActivationCode}"/>
+				<apex:inputText Label="{!$Label.ffct__consultantorganizationid}" value="{!Inputs.ConsultantOrgId}" required="true" rendered="{!!DisplayActivationCode}"/>
+				<apex:outputField Label="{!$Label.ffct__activationdate}" value="{!Inputs.ActivationDateObj.BirthDate}" rendered="{!DisplayActivationCode}"/>
+				<apex:inputField Label="{!$Label.ffct__activationdate}" value="{!Inputs.ActivationDateObj.BirthDate}" required="true" rendered="{!!DisplayActivationCode}"/>
+				<apex:outputText Label="{!$Label.ffct__reasonfortoken}" value="{!Inputs.ReasonText}" rendered="{!DisplayActivationCode}"/>
+				<apex:inputTextArea Label="{!$Label.ffct__reasonfortoken}" html-maxlength="2000" value="{!Inputs.ReasonText}" required="true" rendered="{!!DisplayActivationCode}"/>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection title="{!$Label.ffct__activationcode}" columns="1" collapsible="false" rendered="{!DisplayActivationCode && ValidRequest}">
+				<nobr><apex:outputText value="{!GeneratedActivationCode}" rendered="{!DisplayActivationCode}"/></nobr>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockButtons location="bottom" id="btns" rendered="{!ValidRequest}">
+            	<apex:commandButton action="{!generateActivationCode}" value="Generate Activation Code" rerender="generatecodeform" rendered="{!!DisplayActivationCode}" status="eventStatus" />
+            </apex:pageBlockButtons>			
+			
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

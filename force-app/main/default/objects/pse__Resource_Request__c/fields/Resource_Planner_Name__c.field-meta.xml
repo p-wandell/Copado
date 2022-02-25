@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resource_Planner_Name__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(NOT(ISBLANK(pse__Project__c)), pse__Project__r.Name, pse__Opportunity__r.Name + &apos;: &apos; + pse__Notes__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Resource Planner Name</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

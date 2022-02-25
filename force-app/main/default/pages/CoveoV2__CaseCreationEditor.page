@@ -1,0 +1,155 @@
+<apex:page controller="CoveoV2.EditingCaseCreationInterface" showHeader="false" showChat="false" sidebar="false" standardStylesheets="false" extensions="CoveoV2.DynamicResourceUtils" docType="html-5.0">
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'css/InterfaceEditor.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__assets, 'css/interfaceEditor.style.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__assets, 'css/interfaceEditor_CaseCreation.style.css')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__jquery, 'jquery.min.js')}" />
+    <apex:includeScript value="{!IF(customVersionAttr != '', customVersionAttr, URLFOR(dynamicResourcePaths['searchUi'], 'js/CoveoJsSearch.js'))}" />
+
+
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/InterfaceEditor.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/cultures/en.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__assets, 'js/interfaceEditor_CaseCreation.bundle.js')}" />
+
+    <script>
+        var ExternalInfo = ExternalInfo || {};
+        ExternalInfo.caseFields = JSON.parse('{!JSENCODE(caseFields)}');
+        ExternalInfo.picklistFields = JSON.parse('{!JSENCODE(casePicklistFields)}');
+        ExternalInfo.picklistValues = JSON.parse('{!JSENCODE(fieldsPicklistValues)}');
+    </script>
+
+    <apex:form >
+        <apex:inputHidden value="{!loader.content}" id="content" />
+        <apex:actionFunction action="{!save}" name="saveSearchInterface" rerender="saveCallBack" />
+        <apex:actionFunction name="delApex" action="{!del}" />
+    </apex:form>
+    <apex:outputPanel id="saveCallBack">
+        <script>
+        if(window['saveDeferred'] != null) {
+            var message = '{!JSENCODE(saveError)}'
+            if(message != '') {
+                saveDeferred.reject(message);
+            } else {
+                saveDeferred.resolve();
+            }
+        }
+        </script>
+    </apex:outputPanel>
+    <script>
+         var head =
+            '<script src="{!URLFOR($Resource.CoveoV2__jquery, 'jquery.min.js')}"><\/script>' +
+            '<script src="{!IF(customVersionAttr != '', customVersionAttr, URLFOR(dynamicResourcePaths['searchUi'], 'js/CoveoJsSearch.js'))}"><\/script>' +
+            '<script src="{!URLFOR(dynamicResourcePaths['searchUi'], 'js/cultures/en.js')}"><\/script>' +
+            '<script src="{!URLFOR(dynamicResourcePaths['searchUi'], IF(loader.isNewDesign, 'js/templates/templatesNew.js', 'js/templates/templates.js'))}"><\/script>' +
+            '<link href="{!URLFOR(dynamicResourcePaths['searchUi'], 'css/CoveoFullSearchNewDesign.css')}" rel="stylesheet" />' +
+            '<link href="{!URLFOR($Resource.assets, 'css/caseCreation.style.css')}" rel="stylesheet" />' +
+            '<script src="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/InterfaceEditor.js')}"><\/script>' +
+            '<script src="{!URLFOR($Resource.CoveoV2__assets, 'js/interfaceEditor_CaseCreation.bundle.js')}"><\/script>' +
+             '<script>'+
+                 'document.addEventListener("DOMContentLoaded", function(){' +
+                     'String["locale"] = "en";' +
+                     'if(Coveo && Coveo.setLanguageAfterPageLoaded) {' +
+                       'Coveo.setLanguageAfterPageLoaded()' +
+                     '}' +
+                     'if (Coveo) {' +
+                        'Coveo.Dom.useNativeJavaScriptEvents = true;' +
+                     '}' +
+                     'if (Coveo.SearchEndpoint.endpoints["default"] === undefined) {'+
+                         'Coveo.SearchEndpoint.endpoints["default"] = new Coveo.SearchEndpoint({'+
+                             'restUri: "{!JSENCODE(restSearchUri)}",'+
+                             'accessToken: "{!JSENCODE(searchToken.token)}"'+
+                         '});'+
+                     '}'+
+                     'Coveo.Analytics.options.endpoint.defaultValue = \'{!JSENCODE(analyticsUri)}\';'+
+                     '$(".CoveoCaseCreationInterface").coveo("initCaseCreation", { ' +
+                        'Analytics : { ' +
+                          'searchHub: "{!JSENCODE(searchHubAttr)}"||"{!JSENCODE(pageName)}",' +
+                          'endpoint: "{!JSENCODE(analyticsUri)}" '+
+                        '},' +
+                        'SearchInterface : { ' +
+                            'autoTriggerQuery: true' +
+                        '}' +
+                      '});'+
+                 '});' +
+                'Coveo.context = {!JSENCODE(searchContextJson)};' +
+                'var ExternalInfo = ExternalInfo || {};' +
+                'ExternalInfo.caseFields = JSON.parse(decodeURI(\"' + encodeURI(JSON.stringify(ExternalInfo.caseFields)) + '\"));' +
+                'ExternalInfo.picklistFields = JSON.parse(decodeURI(\"' + encodeURI(JSON.stringify(ExternalInfo.picklistFields)) + '\"));' +
+                'ExternalInfo.picklistValues  = JSON.parse(decodeURI(\"' + encodeURI(JSON.stringify(ExternalInfo.picklistValues)) + '\"));' +
+              '<\/script>';
+
+         var body = "{! JSENCODE(loader.content)}";
+         var lastModified = {! loader.lastModified };
+         $(function () {
+            var save = function (body) {
+                $('[id*=content]').val(body);
+                saveSearchInterface();
+
+                return saveDeferred =
+                    $.Deferred().fail(function(reason) {
+                        Coveo.ModalBox.open($('<p>').text(reason).get(0), {
+                            title : 'An error occured',
+                            overlayClose : true,
+                            buttons: Coveo.ModalBox.BUTTON.OK
+                        });
+                    });
+            };
+
+            var load = function () {
+                var d = jQuery.Deferred();
+                setTimeout(function(){
+                    d.resolve({root: '{!URLFOR($Resource.InterfaceEditor)}', body:body, head:head, lastPublished:lastModified });
+                });
+                return d;
+            };
+
+            var close = function () {
+                window.location.href = '{!JSENCODE(returnUrl)}';
+            };
+
+            var repositories = JSON.parse('{! JSENCODE(repositoriesJson) }');
+
+            Coveo.InterfaceEditor.InterfaceEditorUsage.additionalMetadata = JSON.parse('{! JSENCODE(currentUserTraitsJson) }');
+
+            var del = function (id) {
+                delApex();
+            };
+
+            // Sarissa is an object that is included by Salesforce when loading a page with IE.
+            // It's not working well, and no queries made to the coveo platform works.
+            // For that reason, we let the original XMLHttpRequest object that points to Sarissa and
+            // that Action Function needs, but redefine Coveo's usage with the
+            // original XMLHttpRequest contained in the Sarissa framework.
+            var xmlHttpRequest = XMLHttpRequest;
+            if(window['Sarissa'] && Sarissa.originalXMLHttpRequest) {
+                xmlHttpRequest = Sarissa.originalXMLHttpRequest;
+
+                // Temporary fix for IE11 that will allow the search-ui to always use the original XmlHttpRequest instead.
+                Coveo.EndpointCaller.prototype.getXmlHttpRequest = function() { return new xmlHttpRequest(); }
+            }
+
+            var editor = new Coveo.InterfaceEditor.Editor('#editor', {
+              requireConfig : {
+                url : '{!URLFOR($Resource.InterfaceEditor, 'js/vs/loader.js')}',
+                paths: {
+                    'vs' : '{!URLFOR($Resource.InterfaceEditor, 'js/vs')}'
+                }
+              },
+              basicMode:true,
+              innerHTML: true,
+              mobile:{!IF(mobileAttr,'true','false')},
+              load: load,
+              save: save,
+              close:close,
+              delete: del,
+              iconsUrl: '{!URLFOR(dynamicResourcePaths['searchUi'], 'image/icon-list.json')}',
+              namespace:"{! JSENCODE(loader.id)}",
+              resultCss: '{!URLFOR(dynamicResourcePaths['searchUi'],"css/CoveoFullSearchNewDesign.css")}',
+              repositories:repositories,
+              environment: '{!IEditorEnv}',
+              rootSelector: '.CoveoCaseCreationInterface'
+            });
+        });
+     </script>
+    <div id="editor"></div>
+</apex:page>

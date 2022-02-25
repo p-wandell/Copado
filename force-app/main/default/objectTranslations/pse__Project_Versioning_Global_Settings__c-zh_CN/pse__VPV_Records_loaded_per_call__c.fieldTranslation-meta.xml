@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>定义View Project Versions的详细视图中加载的记录数。增加该值可以改善加载时间，但可能会遇到平台限制。默认值为500.输入0作为此字段的值将导致不加载任何记录。</help>
+    <label><!-- View Project Version Records Loaded --></label>
+    <name>pse__VPV_Records_loaded_per_call__c</name>
+</CustomFieldTranslation>

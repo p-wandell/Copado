@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+	<masterLabel>7S Adventure Info</masterLabel>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+		<targetConfig targets="lightningCommunity__Default,lightning__AppPage, lightning__HomePage,lightning__RecordPage">
+            <property name="customClass" label="Custom Class Name" type="String" description="Custom CSS class name. Usually remains blank." />
+            <property name="displayVariant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="titleText" label="Title Text" type="String" default="Adventure Details" description="Adventure info title text"/>
+            <property name="titleAlign" label="Title Alignment" type="String" datasource="Left, Center, Right" description="Select the title alignment."/>
+            <property name="showProgressRing" label="Show Progress Ring" type="Boolean" description="Select to display task progress ring."/>
+            <property name="showCloneButton" label="Show Clone Button" type="Boolean" description="Select to display the Full Clone Button."/>
+            <property name="cloneButtonLabel" label="Clone Button Label" type="String" description="Label for the Clone button."/>
+            <property name="showOwner" label="Show Owner" type="Boolean" description="Select to display the owner of the adventure."/>
+            <property name="showTaskRemaining" label="Show Tasks Remaining" type="Boolean" description="Select to display number of task remaining."/>
+            <property name="listId" label="Component Group" type="String" description="Unique ID to link complimentary components together to share data."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

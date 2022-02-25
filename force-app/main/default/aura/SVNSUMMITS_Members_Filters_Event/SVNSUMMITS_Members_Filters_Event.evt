@@ -1,0 +1,11 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<aura:event type="APPLICATION"
+            description="Event template for Filters"
+            access="global">
+    <aura:attribute name="searchMyMembers" type="String"  default=""       access="global"/>
+    <aura:attribute name="searchString"    type="String"  default=""       access="global"/>
+    <aura:attribute name="topicString"     type="String"  default=""       access="global"/>
+    <aura:attribute name="clearAll"        type="Boolean" default="false"  access="global"/>
+</aura:event>

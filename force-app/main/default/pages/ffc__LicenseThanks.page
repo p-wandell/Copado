@@ -1,0 +1,12 @@
+<apex:page sidebar="false" showHeader="false">
+	<style>
+		body {
+			background:#f8f8f8;
+		}
+	</style>
+	<apex:pageBlock mode="maindetail">
+		<apex:outputPanel layout="block" title="Thankyou" style="padding:20px;">
+			Thank you for your license inquiry. We will be in touch with you soon.
+		</apex:outputPanel>
+	</apex:pageBlock>
+</apex:page>

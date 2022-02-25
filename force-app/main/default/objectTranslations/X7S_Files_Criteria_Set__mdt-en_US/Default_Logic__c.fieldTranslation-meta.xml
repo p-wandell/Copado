@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Default Logic:
+All of the conditions are met (AND)
+Any of the conditions are met (OR)
+Customize the logic --></help>
+    <label><!-- Default Logic --></label>
+    <name>Default_Logic__c</name>
+    <picklistValues>
+        <masterLabel>AND</masterLabel>
+        <translation><!-- AND --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Custom</masterLabel>
+        <translation><!-- Custom --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>OR</masterLabel>
+        <translation><!-- OR --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

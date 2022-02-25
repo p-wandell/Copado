@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0
+</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Events Create</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+		<target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default, lightning__RecordPage">
+            <property name="headerText"
+                                label="Heading Title"
+                                type="String"
+                                description="Header Text"/>
+            <property name="headerAlignment"
+                            label="Heading Alignment"
+                            type="String"
+                            description="Header Alignment"
+                            datasource="left,center"/>
+            <property name="variant" 
+                            label="Default Variant"
+                            type="String"  
+                            description="Select the default layout variant" 
+                            datasource="default,slds-card,featured"/>
+            <property name="defaultImageType" 
+                            label="Default Image Type" 
+                            type="String" 
+                            description="Specify default Image Type" 
+                            datasource="None,Attachment,Related File,External URL,Static Resource,CMS Content"/>
+            <property name="showEventType"
+                            label="Show Event Type"
+                            type="Boolean"
+                            description="Check to show the event type on the tile"/>
+            <property name="showTopics"
+                            label="Show Topics"
+                            type="Boolean"
+                            description="Select to show topic selection option (Note : If Require Topics is selected, Topics selection will always be available)"/>
+            <property name="useTopics"
+                            label="Require Topics"
+                            type="Boolean"
+                            description="Require the user to select at least one topic"/>
+                            
+            <!-- GROUPS -->
+            <property name="limitToSpecificGroups"
+                            label="Enable Group Selection"
+                            type="Boolean"
+                            description="Check to show the groups drop down. Enforcement is managed through Events Settings"/>
+                            
+            <!-- CUSTOM FIELDS --> 
+            <property name="customField1"
+                            label="Custom Field 1 API Name"
+                            type="String"
+                            description="Custom field 1 to display on the tile (ex: MyField__c)"/>
+            <property name="customLabel1"
+                            label="Custom Field 1 Label"
+                            type="String"
+                            description="Define a label for custom field 1"/>
+            <property name="customField2"
+                            label="Custom Field 2 API Name"
+                            type="String"
+                            description="Custom field 2 to display on the tile (ex: MyField__c)"/>
+            <property name="customLabel2"
+                            label="Custom Field 2 Label"
+                            type="String"
+                            description="Define a label for custom field 2"/>
+            <property name="customField3"
+                            label="Custom Field 3 API Name"
+                            type="String"
+                            description="Custom field 3 to display on the tile (ex: MyField__c)"/>
+            <property name="customLabel3"
+                            label="Custom Field 3 Label"
+                            type="String"
+                            description="Define a label for custom field 3"/>
+        
+            <property name="pathToDetail"
+                            label="Path To Detail"
+                            type="String"
+                            description="Enter Events Detail Page URL"/>
+            <property name="allEventsUrl"
+                            label="Events List View API Name"
+                            type="String"
+                            description="Enter Events List View API Name"/>
+            <property name="customClass" 
+                            label="Custom Class" 
+                            type="String" 
+                            description="Used for custom styling." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

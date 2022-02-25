@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Selecteer de waarde die beschrijft wanneer historische bezettingsberekeningen moeten stoppen. Dit is meestal de laatste dag van de week dat alle tijdkaarten zijn ingevoerd.</help>
+    <label><!-- Historical Utilization Cut-Off Date --></label>
+    <name>pse__Historical_Utilization_Cut_Off_Date__c</name>
+    <picklistValues>
+        <masterLabel>End of Last Week</masterLabel>
+        <translation>Einde van de laatste week</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>End of This Week</masterLabel>
+        <translation>Einde van deze week</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Today</masterLabel>
+        <translation>Vandaag</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,24 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<!--BODY-->
+	<lightning-layout class="slds-p-around--small" multiple-rows="true">
+
+		<!--Title-->
+		<template if:true={showTitle}>
+			<lightning-layout-item size="12">
+				<c-x7s-shr-component-wrapper title={title}></c-x7s-shr-component-wrapper>
+			</lightning-layout-item>
+		</template>
+
+		<!--Idea Publisher-->
+		<template if:true={showPublisher}>
+			<!-- <aura:if isTrue="{!not(empty(v.idea.extension))}">
+				<lightning-layout-item size="12">
+				<forceChatter:publisher context="RECORD" recordId="{!v.idea.extension}" />
+				</lightning-layout-item>
+			</aura:if> -->
+		</template>
+	</lightning-layout>
+</template>

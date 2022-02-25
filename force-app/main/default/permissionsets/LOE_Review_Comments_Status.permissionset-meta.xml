@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Gives the user edit access to LOE Review fields &apos;LOE Review Comments&apos; and &apos;Status&apos;</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LOE_SOW_Review__c.LOE_Review_Comments__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LOE_SOW_Review__c.Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>LOE Review Comments &amp; Status</label>
+</PermissionSet>

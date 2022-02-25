@@ -1,0 +1,426 @@
+<apex:page standardController="pse__Expense_Report__c" extensions="pse.ExpenseReportCloneController" tabStyle="pse__Expense__c"
+    title="{!$Label.pse__expense_label_clone_expense_report}" action="{!initAction}" id="expClonePage" lightningStylesheets="true">
+
+	<apex:stylesheet value="{!URLFOR($Resource.pse__jsComponentsResources, 'componentStyles.css')}" />
+	<style>
+		/*----------Override component CSS------------*/
+		.resourceNameDiv{margin-left: 0px;}
+		.projAssigNameDiv{display:inline; margin-left: 0px;}
+		.onRowSelected {background:#DBDBDB url("{!URLFOR($Resource.pse__jsComponentsResources, '/rowBottomImage.png')}") repeat-x scroll 0 61px;}
+		.notesTable td{padding: 0px; border:none !important; vertical-align: top !important; }
+		.bDescription-Encrypted {color: red;}
+		.bDescription { margin: 10px 0px; }
+		.assignment-table-overflow { overflow-x:auto; }
+		#resourceLoadWaitImageID img, #assignmentLoadWaitImageID img { background-size: 30px; background-repeat: no-repeat; vertical-align: middle; background-position: center 7px; margin-bottom: 0; }
+		.check-margin-top {margin-top: 0px !important;}
+		.scrollable-Encrypted{
+			max-height: {!IF($User.UIThemeDisplayed == 'Theme4d', '290px !important', '360px !important')};
+			width: {!IF($User.UIThemeDisplayed == 'Theme4d', '614px !important', '624px !important')};
+		}
+		.scrollable{
+			max-height: {!IF($User.UIThemeDisplayed == 'Theme4d', '340px !important', '400px !important')};
+			width: {!IF($User.UIThemeDisplayed == 'Theme4d', '614px !important', '624px !important')};
+		}
+		.overlayBody .bottomScrollable {
+			width: {!IF($User.UIThemeDisplayed == 'Theme4d', '613px !important', '625px !important')};
+		}
+		.overlayBody .topScrollable {
+			width: {!IF($User.UIThemeDisplayed == 'Theme4d', '613px !important', '625px !important')};
+		}
+		div#resourceOverlayContainer .yui3-overlay{top: 0px !important;}
+		div#resourceOverlayContainer .pbBody { overflow: inherit; }
+	</style>
+	<apex:variable var="isLightning" value="{!$User.UIThemeDisplayed!='Theme3'}" />
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+
+	<apex:form id="expForm">
+
+		<apex:pageMessages id="messages"/>
+
+		<apex:outputPanel rendered="{!$User.UIThemeDisplayed=='Theme4d'}">
+			<style>
+				.bDescription {padding: 0 !important;}
+				.overlayBody .bottomScrollable {max-height: 120px;}
+				.ajaxResultTableLabel h2 {margin: 0px; font-size: 1em;}
+				.check-margin-top {margin-top: 3px !important;}
+				.nickNameHolder textarea {margin-bottom: 3px; height: 35px !important;}
+				.editNickNameImageActive {background: url(/apexpages/slds/latest/assets/icons/utility/edit_60.png); background-size: 12px;}
+			</style>
+		</apex:outputPanel>
+
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+
+		<apex:pageblock title="{!$Label.pse__expense_label_expense_report_header}" id="reportDetailBlock" mode="edit" rendered="{!displayContent}">
+			<apex:actionFunction name="doSave" action="{!saveClone}" />
+			<apex:actionFunction name="doCancel" action="{!cancel}" />
+
+			<apex:pageBlockSection columns="2" title="{!$Label.pse__common_label_information}" id="reportSection">
+				<!-- don't use a standard input field b/c of the validation interaction with the rerender.
+						the problem is that if you change the resource before setting a name, the event won't fire -->
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__expensereport_label_expense_report_name}" for="nameInput"/>
+					<!-- Added new attribute value as a fix for agile task: 000009209  Dated: 2 Nov,2011  By: Aditi  -->
+					<c:RequiredInputText value="{!expenseReport.Name}" requiredBlockStyle="{! IF(expenseReportNameRequired,'','display:none')}" id="nameInput"/>
+				</apex:pageBlockSectionItem>
+				<!--
+				<apex:inputField required="true" value="{!expenseReport.Resource__c}" /> -->
+				<apex:pageBlockSectionItem id="resourcePBSI" >
+					<apex:outputLabel value="{!$Label.pse__common_label_resource}" for="resourceSelect"/>
+					<apex:outputPanel id="resourceOP" styleClass="lookupInput">
+							<input id="resourceSelect" type="text" onclick="_ResourceLookupHandler.show();" class="resourceNameDiv editableNameBox" value="{!resourceName}" readonly="readonly"/>
+							<apex:image title="{!$Label.pse__timecard_entry_label_resource_lookup}" id="resourceLookUp"
+									onmouseover="this.className = 'lookupIconOn';"
+									onmouseout="this.className = 'lookupIcon';"
+									style="cursor: pointer;"
+									styleClass="lookupIcon" alt="{!$Label.pse__timecard_entry_label_resource_lookup}" value="/s.gif" onclick="javascript:_ResourceLookupHandler.show(); return false;"/>
+
+							<apex:actionRegion >
+								<apex:inputhidden value="{!selectedResourceId}" id="selectedResourceId"/>
+								<apex:actionFunction name="jsChangeResource" reRender="messages,reportDetailBlock,assigOrProjectLookUpOverlay"
+																action="{!onResourceChange}" status="ajaxStatus" oncomplete="wait(false);" />
+							</apex:actionRegion>
+					</apex:outputpanel>
+				</apex:pageBlockSectionItem>
+				<apex:inputField value="{!expenseReport.pse__First_Expense_Date__c}"/>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__expense_label_clone_expenses}" for="cloneExpenses"/>
+					<apex:inputCheckbox value="{!cloneExpenses}" id="cloneExpenses" styleClass="check-margin-top"/>
+				</apex:pageBlockSectionItem>
+				<apex:inputField id="description" value="{!expenseReport.pse__Description__c}"/>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection title="{!$Label.pse__expensereport_label_project_information}" columns="2" id="projectSection">
+				<apex:pageBlockSectionItem id="assignPBSI">
+					<apex:outputLabel value="{!$Label.pse__expensereport_label_project_assignment}" for="projSelect"/>
+					<apex:outputPanel id="assignOP" styleClass="lookupInput" >
+						<input id="assignmentnamePanel" type="text" onclick="_AssignmentLookupHandler.show(this);" class="projAssigNameDiv editableNameBox" value="{!projectOrAssignmentName}" readonly="readonly"/>
+						<apex:image title="{!$Label.pse__timecard_entry_label_assignment_lookup}" id="poraLookup"
+								onmouseover="this.className = 'lookupIconOn';"
+								onmouseout="this.className = 'lookupIcon';"
+								style="cursor: pointer;"
+								styleClass="lookupIcon" alt="{!$Label.pse__timecard_entry_label_assignment_lookup}" value="/s.gif" onclick="javascript:_AssignmentLookupHandler.show(this); return false;"/>
+
+						<apex:actionRegion >
+							<apex:inputHidden id="projectOrAssignmentId" value="{!projectOrAssignmentId}" />
+							<apex:inputHidden id="projectOrAssignmentName" value="{!projectOrAssignmentName}" />
+
+							<apex:actionFunction name="jsProjAssignChange"  status="ajaxStatus" action="{!onProjectAssignmentChange}" reRender="projectSection" />
+						</apex:actionRegion>
+						</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+
+				<apex:inputField value="{!expenseReport.pse__Billable__c}" styleClass="check-margin-top"/>
+				<apex:pageBlockSectionItem rendered="{!displayMilestone}">
+					<apex:outputLabel value="{!$Label.pse__common_label_milestone}" for="msSelect"/>
+					<apex:selectList value="{!expenseReport.pse__Milestone__c}" multiselect="false" size="1" id="msSelect">
+						<apex:selectOptions value="{!projectMilestoneOptions}"/>
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem rendered="{!displayMethodology}">
+					<apex:outputLabel value="{!$Label.pse__common_label_methodology}" for="mdSelect"/>
+					<apex:selectList value="{!expenseReport.pse__Project_Methodology__c}" multiselect="false" size="1" id="mdSelect">
+						<apex:selectOptions value="{!projectMethodologyOptions}"/>
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem rendered="{!displayPhase}">
+					<apex:outputLabel value="{!$Label.pse__common_label_phase}" for="phSelect"/>
+					<apex:selectList value="{!expenseReport.pse__Project_Phase__c}" multiselect="false" size="1" id="phSelect">
+						<apex:selectOptions value="{!projectPhaseOptions}"/>
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+
+			</apex:pageBlockSection>
+		</apex:pageblock>
+
+
+		<!-- The resource lookup section -->
+		<div id="resourceOverlayContainer" class="overlayContainer" >
+			<div id="resourceOverlay">
+				<div class="yui-widget-hd overlarCaptionBar" onclick="javascript:_ResourceLookupHandler.hide();"></div>
+				<div class="yui-widget-bd overlayBody">
+					<apex:sectionHeader title="{!$Label.pse__timecard_entry_label_resource_lookup}"/>
+					<apex:panelGrid columns="4" >
+							<label for="delegatedResSearchString">{!$Label.common_label_search}</label>
+							<input type="text" id="delegatedResSearchString"/>
+							<input type="button" id="resourceOverlay_Go_Button" onclick="_ResourceLookupHandler.search(true); return false;" class="btn" value="{!$Label.expense_label_go}" />
+							<input type="button" id="resourceOverlay_All_Button" onclick="_ResourceLookupHandler.search(false); return false;" class="btn" value="{!$Label.common_label_all}" />
+							<div class="waitingHolder" style="display: inline-block; visibility: hidden;" id='resourceLoadWaitImageID'>
+								<img class="waitingImage" src="/img/loading.gif" style="display: inline-block;"/>
+							</div>
+					</apex:panelGrid>
+					<apex:outputPanel layout="block" styleclass="bDescription" >
+						{!$Label.pse__timecard_entry_message_search_description}
+					</apex:outputPanel>
+					<div/>
+					<apex:outputText id="resLookupDelegatedResEncryptionInfo" styleclass="bDescription bDescription-Encrypted" rendered="{!!areEncryptionSupportedFieldsFilterable}" value="{!$Label.pse__common_text_to_refine_search_results_when_pe_is_enabled}" style="display:none"/>
+					<div id="resLookupDelegatedResParent" class="scrollable">
+						<apex:pageBlock id="resLookupDelegatedRes">
+							<div id="yuiRequestResultPanel">
+								<table id="resourceResultsTable">
+									<tr>
+										<td>
+											{!$Label.pse__timecard_entry_message_enter_resource_name_to_search} !
+										</td>
+									</tr>
+								</table>
+							</div>
+						</apex:pageBlock>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- The project/assignment lookup section -->
+		<apex:outputPanel layout="none" id="assigOrProjectLookUpOverlay">
+			<div id="assigORProjOverlayContainer" class="overlayContainer">
+				<div id="assigORProjOverlay">
+					<div class="yui-widget-hd overlarCaptionBar" onclick="javascript:_AssignmentLookupHandler.hide();"></div>
+					<div class="yui-widget-bd overlayBody">
+						<apex:sectionHeader title="{!$Label.pse__timecard_entry_label_project_assignment_lookup}"/>
+						<apex:panelGrid columns="4">
+									<label for="assigORProjSearchString">{!$Label.common_label_search}</label>
+									<input type="text" id="assigORProjSearchString"/>
+									<input type="button" id="assigOverlay_Go_Button" onclick="_AssignmentLookupHandler.search(true); return false;" class="btn" value="{!$Label.expense_label_go}" />
+									<input type="button" id="assigOverlay_All_Button" onclick="_AssignmentLookupHandler.search(false); return false;" class="btn" value="{!$Label.common_label_all}" />
+									<div class="waitingHolder" style="display: inline-block; visibility: hidden;" id='assignmentLoadWaitImageID'>
+										<img class="waitingImage" src="/img/loading.gif" style="display: inline-block;"/>
+									</div>
+						</apex:panelGrid>
+						<apex:outputText styleclass="bDescription" value="{!$Label.pse__timecard_entry_message_search_description}"/>
+						<div/>
+						<apex:outputText id="assignmentDecriptionEncryptionInfo" styleclass="bDescription bDescription-Encrypted" rendered="{!!areEncryptionSupportedFieldsFilterable}" value="{!$Label.pse__common_text_to_refine_search_results_when_pe_is_enabled}" style="display:none"/>
+
+
+						<div class="ajaxResultTableLabel"><h2>{!$Label.pse__timecard_entry_label_recent_project_assignment}</h2></div>
+
+						<div class="topScrollable">
+							<apex:pageBlock id="assigORProjLookupPB">
+
+								<apex:outputPanel rendered="{!AND(ISNULL(recentAssignments),ISNULL(recentProjects))}">
+											{!$Label.pse__timecard_entry_message_no_recent_project_assignment_available}
+								</apex:outputPanel>
+								<!--  Block for rendering the recent assignments  -->
+								<apex:actionRegion >
+									<apex:outputPanel rendered="{!NOT(ISNULL(recentAssignments))}" layout="block" styleClass="assignment-table-overflow">
+										<table width="100%" id="recentAssignmentTable" cellspacing="0" class="list">
+											<thead>
+												<tr class="projAssigDemarcation" >
+													<th colspan="3"> {!$Label.timecard_entry_label_my_assignments} </th>
+												</tr>
+												<tr class="headerRow">
+													<th>{!$Label.common_label_account}</th>
+													<th>{!$Label.common_label_name}</th>
+													<th>{!$Label.timacard_entry_label_nick_name}</th>
+												</tr>
+											</thead>
+											<tbody>
+
+												<apex:repeat value="{!recentAssignments}" var="assignment">
+													<tr class="dataRow" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}">
+														<td class="assigAccountTD">{!assignment.accountName}</td>
+														<td class="assigNameTD">
+															<apex:inputHidden id="hiddenTempAssigName" value="{!assignment.name}" />
+															<apex:inputHidden id="hiddenTempNickName" value="{!assignment.nickName}" />
+															<a href="#" onclick="_AssignmentLookupHandler.refreshAssigDependentDetails('{!assignment.id}',escape(document.getElementById('{!$Component.hiddenTempAssigName}').value),escape(document.getElementById('{!$Component.hiddenTempNickName}').value),{!assignment.isAssignment},{!assignment.isBillable}, '{!assignment.projectId}');return false;">{!assignment.name}</a>
+														</td>
+														<td class="assigNickNameTD {!assignment.id}">
+															<div class="nickNameHolder" onmouseover="_AssignmentLookupHandler.onNickNameMouseOver(this)" onmouseout="_AssignmentLookupHandler.onNickNameMouseOut(this)">
+																<div style="text-decoration:{!IF(assignment.isNickNameAdded,'none','underline')};" onclick="_AssignmentLookupHandler.doEnterNickName('{!assignment.id}', this);return false;">
+																	{!IF(assignment.isNickNameAdded,assignment.nickName, $Label.common_label_add)}
+																	<img class="kickNameImageHolder" title="{!$Label.timacard_entry_label_edit_nickname}" alt="{!$Label.timacard_entry_label_edit_nickname}" src="/s.gif" ></img>
+																</div>
+															</div>
+														</td>
+													</tr>
+												</apex:repeat>
+
+											</tbody>
+										</table>
+									</apex:outputPanel>
+									<!--  Block for rendering the recent global projects  -->
+									<apex:outputPanel rendered="{!NOT(ISNULL(recentProjects))}" layout="block" styleClass="assignment-table-overflow">
+										<table width="100%" id="recentProjectTable" cellspacing="0" class="list">
+											<thead>
+												<tr class="projAssigDemarcation" >
+													<th colspan="2"> {!$Label.timacard_entry_label_global_projects} </th>
+												</tr>
+												<tr class="headerRow">
+													<th>{!$Label.common_label_account}</th>
+													<th>{!$Label.common_label_name}</th>
+												</tr>
+											</thead>
+											<tbody>
+												<apex:repeat value="{!recentProjects}" var="project">
+													<tr class="dataRow" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}">
+														<td class="assigAccountTD">{!project.accountName}</td>
+														<td>
+															<apex:inputHidden id="hiddenTempProjName" value="{!project.name}" />
+															<a href="#" onclick="_AssignmentLookupHandler.refreshAssigDependentDetails('{!project.id}',escape(document.getElementById('{!$Component.hiddenTempProjName}').value), null, {!project.isAssignment}, {!project.isBillable}, '{!project.projectId}');return false;">{!project.name}</a>
+														</td>
+													</tr>
+												</apex:repeat>
+											</tbody>
+										</table>
+									</apex:outputPanel>
+								</apex:actionRegion>
+							</apex:pageBlock>
+						</div>
+
+						<div class="ajaxResultTableLabel"><h2>{!$Label.pse__timecard_entry_label_search_results}</h2></div>
+							<div class="bottomScrollable" id="searchResultsTab">
+								<apex:pageBlock >
+									<div id="yuiAssigmentRequestResultPanel">
+										<table id="assigORProjResultTable">
+											<tr>
+												<td>
+													{!$Label.pse__timecard_entry_message_enter_project_assignment_name_to_search} !
+												</td>
+											</tr>
+										</table>
+									</div>
+								</apex:pageBlock>
+							</div>
+						</div>
+					</div>
+			</div>
+		</apex:outputPanel>
+
+		<apex:actionRegion id="nickNameUpdateSection">
+			<apex:inputhidden value="{!nickNameAssignmentId}" id="assignmentId"/>
+			<apex:inputhidden value="{!nickName}" id="nickName"/>
+
+			<apex:actionFunction name="jsUpdateAssignmentNickName" reRender="nickNameUpdateSection"
+				action="{!updateAssignmentNickName}" />
+		</apex:actionRegion>
+
+	</apex:form>
+
+	<script language="javascript">
+		var _yui;
+		var _ajaxBrokerURL = "{!$Page.ExpenseAjaxBroker}";
+
+		var _VFComponent = {
+			nickNameSection_assignmentId : '{!$Component.expClonePage.expForm.assignmentId}',
+			nickNameSection_nickName : '{!$Component.expClonePage.expForm.nickName}',
+			expForm_selectedResourceId : '{!$Component.expClonePage.expForm.reportDetailBlock.reportSection.resourcePBSI.selectedResourceId}',
+			expForm_resourceSelect : 'resourceSelect',
+
+			expForm_selectedProjAssignId : '{!$Component.expClonePage.expForm.reportDetailBlock.projectSection.assignPBSI.projectOrAssignmentId}',
+			expForm_selectedProjAssignName : '{!$Component.expClonePage.expForm.reportDetailBlock.projectSection.assignPBSI.projectOrAssignmentName}',
+			expForm_assignmentSelect : 'assignmentnamePanel'
+		}
+
+		var _Label = {
+			editDetails : "{!JSINHTMLENCODE($Label.common_label_edit_details)}",
+			viewDetails : "{!JSINHTMLENCODE($Label.common_label_view_details)}",
+			noResultsFound : "{!JSINHTMLENCODE($Label.timecard_entry_label_no_matching_results_found)}",
+			cancel : "{!JSINHTMLENCODE($Label.common_label_cancel)}",
+			save : "{!JSINHTMLENCODE($Label.common_label_save)}",
+			add : "{!JSINHTMLENCODE($Label.common_label_add)}",
+			myAssignments : "{!JSINHTMLENCODE($Label.timecard_entry_label_my_assignments)}",
+			globalProjects : "{!JSINHTMLENCODE($Label.timacard_entry_label_global_projects)}",
+
+			nickName : "{!JSINHTMLENCODE($Label.timacard_entry_label_nick_name)}",
+
+			name : "{!JSINHTMLENCODE($Label.common_label_name)}",
+			account : "{!JSINHTMLENCODE($Label.common_label_account)}",
+			region : "{!JSINHTMLENCODE($Label.common_label_region)}",
+			practice : "{!JSINHTMLENCODE($Label.common_label_practice)}",
+			group : "{!JSINHTMLENCODE($Label.common_label_group)}",
+			confirmUnsavedChanges : "{!JSINHTMLENCODE($Label.timecard_entry_message_unsaved_changes_discard_changes_and_continue)}",
+			unsavedNotesChanges : "{!JSINHTMLENCODE($Label.expense_entry_label_unsave_notes_save_now)}",
+			loadingDetails : "{!JSINHTMLENCODE($Label.common_label_loading_details)}"
+		}
+		var _Config = {
+
+		}
+	</script>
+
+	<script type="text/javascript" src="{!URLFOR($Resource.yui3_1, 'yui/yui-min.js')}"></script>
+	<script type='text/javascript' src="{!$Resource.jsComponents}"></script>
+	<script type="text/javascript" src="{!$Resource.moment_min_js}"></script>
+	<script type='text/javascript' src="{!$Resource.editExpenses2pagejs}"></script>
+
+	<script language="javascript">
+		var yuiControlledOnDomReady = function (){
+			//bindAll();
+			prepareExpenseCloneOverlays();
+			document.body.className += " yui-skin-sam ";
+			/*We don't need these*/
+			_AssignmentLookupHandler.config.toggleEditOverlay = false;
+			_ResourceLookupHandler.config.toggleEditOverlay = false;
+		}
+
+		function prepareExpenseCloneOverlays(){
+			_ResourceLookupHandler.prepare();
+			_AssignmentLookupHandler.prepare();
+		}
+
+
+		YUI().use("node", "NodeList", "io", "event-key", "overlay", "anim",function(Y) {
+			//Moved chanegs from bscode to this as a fix for agile task: 000010318  Orig: Dated: 12/08/2010
+			//Moved date 20-dec-10
+			Y.mix(Y.DOM.creators, {
+				tbody: function(html, doc) {
+					return Y.DOM.create('<table>' + html + '</table>', doc);
+				},
+				thead: function(html, doc) {
+					return Y.DOM.create('<table>' + html + '</table>', doc);
+				},
+				tr: function(html, doc) {
+					return Y.DOM.create('<tbody>' + html + '</tbody>', doc);
+				},
+				td: function(html, doc) {
+					return Y.DOM.create('<tr>' + html + '</tr>', doc);
+				},
+				th: function(html, doc) {
+					return Y.DOM.create('<tr>' + html + '</tr>', doc);
+				}
+		    });
+
+			_yui = Y;
+			_yui.on('domready',yuiControlledOnDomReady,_yui);
+		});
+	</script>
+
+	<script>
+		prepareVFConfig();
+		function prepareVFConfig() {
+			var buttons = [],
+				config = {
+					objectName: '{!JSENCODE($Label.expense_label_clone_expense_report)}',
+					helpUrl: '{!$Page.CloningExpenseReportHelp}',
+					objectApiName: '{!$ObjectType["Expense_Report__c"].name}',
+					onRender: 'onHeaderLoadCallback'
+				};
+
+			if({!displayContent} === true ) {
+				buttons.push({
+					id: 'cancel',
+					label: '{!JSENCODE($Label.common_label_cancel)}',
+					actionFn: 'doCancel'
+				}, {
+					id: 'save',
+					label: '{!JSENCODE($Label.common_label_save)}',
+					actionFn: 'doSave'
+				})
+			}
+
+			config.buttons = buttons;
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+
+	</script>
+
+</apex:page>

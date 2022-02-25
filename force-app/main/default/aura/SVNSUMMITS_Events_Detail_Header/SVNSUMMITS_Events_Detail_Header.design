@@ -1,0 +1,15 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Events Detail Banner">
+	<design:attribute name="debugMode"
+	                  label="Debug Mode"
+	                  description="Enable/disable debug mode"/>
+    <design:attribute name="exploreOtherEventsURL"
+                      label="Explore Other Events URL"
+                      description="URL for Explore Other Events" />
+    <design:attribute name="exploreOtherEvents"
+                      label="Explore Other Events Text"
+                      description="Explore Other Events Text" />
+    <design:attribute name="recordId" label="Record Id"
+                      default="{!recordId}"
+                      description="Set to {!recordId} to pass the page's record Id."/>
+</design:component>

@@ -1,0 +1,4 @@
+<apex:page standardController="pse__Expense__c" 
+    extensions="pse.EditExpensesController" 
+    title="{!$Label.pse__expense_title_edit}">
+</apex:page>

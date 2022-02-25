@@ -1,0 +1,65 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+  -->
+<template>
+	<div if:false={showEmptyLabel}>
+		<c-x7s-shr-component-wrapper custom-class={componentClass} auto-slds-card>
+			<lightning-layout multiple-rows="true" vertical-align="stretch" pull-to-boundary="small">
+				<template if:false={isCalendarView}>
+					<template if:true={eventsListWrapper}>
+						<template for:each={eventsListWrapper.objEventList} for:item="event">
+							<lightning-layout-item key={event.Id} class={viewSelectorStyle} padding="around-small">
+								<c-x7s-events-list-item
+										event={event}
+										layout={layout}
+										show-images={showImages}
+										show-topics={showTopics}
+										tile-variant={tileVariant}
+										text-align={cardTextAlign}
+										site-prefix={sitePrefix}
+										show-event-type={showEventType}
+										events-list-wrapper={eventsListWrapper}
+										filter-on={filterOn}
+										list-size={listSize}
+										total-events={totalEvents}
+										numberofresults={numberofresults}
+										limit-to-specific-groups={limitToSpecificGroups}
+										custom-label1={customLabel1}
+										custom-field1={customField1}
+										custom-label2={customLabel2}
+										custom-field2={customField2}
+										custom-label3={customLabel3}
+										custom-field3={customField3}
+										use-avatar={showAvatar}
+										list-view-mode={listViewMode}>
+								</c-x7s-events-list-item>
+							</lightning-layout-item>
+						</template>
+					</template>
+				</template>
+				<template if:true={isCalendarView}>
+					<lightning-layout-item class="slds-p-horizontal_small">
+						<c-x7s-events-calendar-view
+								numberofresults={numberofresults}
+								list-size={listSize}
+								topic-value={topicValue}
+								filter-by-topic={filterByTopic}
+								searchstr={searchstr}
+								location-filter={locationFilter}
+								event-type-filter={eventTypeFilter}
+								custom-filter={customFilter}
+								filter-on={filterOn}
+								list-view-mode={listViewMode}>
+						</c-x7s-events-calendar-view>
+					</lightning-layout-item>
+				</template>
+				<template if:true={loading}>
+					<lightning-spinner alternative-text="Loading"></lightning-spinner>
+				</template>
+			</lightning-layout>
+		</c-x7s-shr-component-wrapper>
+	</div>
+	<div if:true={showEmptyLabel} class="slds-notify slds-notify_alert slds-theme--info">
+		{labelEmptyList}
+	</div>
+</template>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Wählen Sie den Wert, der beschreibt, wann die Berechnungen der historischen Auslastung gestoppt werden sollen. Dies ist normalerweise der letzte Tag der Woche, an dem alle Zeitkarten eingegeben wurden.</help>
+    <label><!-- Historical Utilization Cut-Off Date --></label>
+    <name>pse__Historical_Utilization_Cut_Off_Date__c</name>
+    <picklistValues>
+        <masterLabel>End of Last Week</masterLabel>
+        <translation>Ende der letzten Woche</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>End of This Week</masterLabel>
+        <translation>Ende dieser Woche</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Today</masterLabel>
+        <translation>Heute</translation>
+    </picklistValues>
+</CustomFieldTranslation>

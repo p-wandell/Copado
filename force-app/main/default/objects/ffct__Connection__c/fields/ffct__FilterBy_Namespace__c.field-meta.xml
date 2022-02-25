@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__FilterBy_Namespace__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <inlineHelpText>Add namespace prefix for packages you need to filter for Compare and Deploy Tool. Add namespace prefix seperated by comma(,). For eg:- pse,c2g,ob1</inlineHelpText>
+    <label>Filter By Namespace</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,16 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<aura:component description="ss_product_base"
+                abstract="true"
+                extensible="true">
+
+	<aura:registerEvent name="componentReady" type="c:ss_product_event" />
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<div>
+		{!v.body}
+	</div>
+</aura:component>

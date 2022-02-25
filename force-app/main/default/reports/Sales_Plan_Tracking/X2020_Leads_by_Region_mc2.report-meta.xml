@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_21518614</developerName>
+        <masterLabel>Region</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>OWNER</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>James Sharp</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Chris Masonius</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dani Syed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Christine Pretzman</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Jessica Mercado</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Thad Tremaine</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Max Hart</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Adam Brown</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Brett McNay</sourceValue>
+            </sourceValues>
+            <value>East</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Chris Pelletier</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Jason Lesser</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Peter Hogan</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Kate Higgins</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rob Hogervorst</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Brett MacManus</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Craig Friedhoff</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Joe Fortino</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Nick Ulfers</sourceValue>
+            </sourceValues>
+            <value>West</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>OWNER</field>
+    </columns>
+    <columns>
+        <field>COMPANY</field>
+    </columns>
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>TITLE</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>CONVERTED</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>OWNER</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>Sharp,Masonius,Syed,Pelletier,Pretzman,Mercado,Tremaine,Lesser,Hogan,Higgins,Hart,Hogervorst,Brown,MacManus,Friedhoff,Fortino,Ulfers,McNay</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>CREATED_DATE</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>THIS_YEAR</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_21518614</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>2020 Leads by Region</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>LeadList</reportType>
+    <scope>org</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>OWNER</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,30 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                controller="SVNSUMMITS_EventListController">
+
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler   name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.setSortOption}"/>
+	<aura:handler   event="c:SVNSUMMITS_Events_DisplayMode_Event" action="{!c.setDisplayMode}"/>
+
+	<aura:registerEvent name="sortEvent" type="c:SVNSUMMITS_Events_SortBy_Filter_Event"/>
+
+    <aura:attribute name="sortBy"           type="String" default="Upcoming" access="global"/>
+    <aura:attribute name="listViewMode"     type="String" default="List" access="global"/>
+    <aura:attribute name="sortByUpcoming"   type="String" default="{!$Label.c.ss_evt_label_Upcoming}" access="global"/>
+    <aura:attribute name="sortByAttendance" type="String" default="{!$Label.c.ss_evt_label_TopAttendance}" access="global"/>
+
+	<lightning:layout >
+		<lightning:layoutItem size="12">
+			<lightning:select label="{!v.sortByLabel}"
+			                  name="SortSelect"
+			                  disabled="{!v.listViewMode == 'Calendar'}"
+			                  onchange="{!c.setSortOption}">
+				<option label="{!$Label.c.ss_evt_label_Upcoming}"
+				        value="Upcoming">{!$Label.c.ss_evt_label_Upcoming}</option>
+				<option label="{!$Label.c.ss_evt_label_TopAttendance}"
+				        value="TopAttendees">{!$Label.c.ss_evt_label_TopAttendance}</option>
+			</lightning:select>
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>
