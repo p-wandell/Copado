@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Email_When_a_Question_is_Asked</fullName>
+        <description>Email When a Question is Asked</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>gunel.humbatova@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Question_Asked</template>
+    </alerts>
+</Workflow>

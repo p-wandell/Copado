@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Demo_Needed__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Used to capture if a demo is needed for a pursuit lead</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Please check this box if a demo is needed for this pursuit lead request.  If this is checked, other demo information will be required.</inlineHelpText>
+    <label>Demo Needed?</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

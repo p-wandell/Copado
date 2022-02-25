@@ -1,0 +1,26 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+:host {
+  font-size: 0.75rem;
+  color: var(--lwc-colorTextWeak);
+  display: inline;
+}
+:host a {
+  color: var(--lwc-colorTextWeak);
+}
+:host a:hover,
+:host a:focus {
+  color: var(--lwc-colorTextDefault);
+}
+:host:not(:first-child)::before {
+  content: "•";
+  display: inline;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+.topic-list-item {
+  display: inline;
+}

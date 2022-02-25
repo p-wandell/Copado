@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>价目表集交界处</value>
+    </caseValues>
+    <nameFieldLabel>价目表集连接名称</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- You cannot associate the rate card with the rate card set. They must both use the same currency. --></errorMessage>
+        <name>pse__Rate_Card_Set_Currency_Mismatch</name>
+    </validationRules>
+</CustomObjectTranslation>

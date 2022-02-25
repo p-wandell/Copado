@@ -1,0 +1,35 @@
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingDefinitionImportController" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.ffr__front, 'base/style.css')}"/>
+
+	<apex:form > 
+		<apex:sectionHeader title="{!$Label.ffr__reportingdefinitionimporttitle}" help="{!helpLink}"/>
+		<apex:PageMessages id="messagesId"/>
+
+		<apex:pageBlock >
+			<apex:pageBlockSection title="{!$Label.ffr__reportingdefinitionimportheadernamecolumn}" collapsible="false" />
+			<apex:pageBlockTable value="{!FileViews}" var="file" columns="2">
+				<apex:column >
+					<apex:facet name="header">{!$ObjectType.ContentVersion.Fields.Title.Label}</apex:facet>
+					<input type="radio" name="radioFile" value="{!file.File.Id}" onchange="setSelectedRadioValueToElementId(this, '{!$Component.fileIdToImport}');" >{!file.File.Title}</input>
+				</apex:column>
+
+				<apex:column >
+				<apex:facet name="header">{!$ObjectType.ContentVersion.Fields.LastModifiedDate.Label}</apex:facet>
+					<apex:outputText value="{!file.LastModifiedDateFormatted}" />
+				</apex:column>
+			</apex:pageBlockTable>
+
+			<apex:inputHidden value="{!SelectedFileIdToImport}" id="fileIdToImport" />
+
+			<apex:pageBlockButtons id="buttons">
+				<apex:commandButton action="{!import}" styleClass="hidden importBtn" reRender="{!$Component.messagesId}" oncomplete="enableButtonsByClass('import', '{!JSENCODE($Label.ffr__reportingdefinitionimportsave)}'); enableButtonsByClass('cancel', '{!JSENCODE($Label.ffr__reportingdefinitionimportcancel)}');"/>
+				<input id="import" class="btn disable import" value="{!$Label.ReportingDefinitionImportSave}" type="button" onclick="disableButtonsByClass('disable', '{!JSENCODE($Label.ReportingDefinitionProcessing)}', 'importBtn');"/>
+
+				<apex:commandButton id="cancel" action="{!cancel}" styleClass="disable cancel" value="{!$Label.ffr__reportingdefinitionimportcancel}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+
+	<script src="{!URLFOR($Resource.front,'utils/radio.js')}"></script>
+	<script src="{!URLFOR($Resource.front,'utils/buttons.js')}"></script>
+</apex:page>

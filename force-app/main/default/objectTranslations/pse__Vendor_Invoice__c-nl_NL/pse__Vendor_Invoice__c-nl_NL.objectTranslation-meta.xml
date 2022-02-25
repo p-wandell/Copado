@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Leverancierfactuur</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Leveranciersfacturen</value>
+    </caseValues>
+    <gender>Feminine</gender>
+    <nameFieldLabel>Naam</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- Account is required. --></errorMessage>
+        <name>pse__Account_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Account is required and cannot be changed once set --></errorMessage>
+        <name>pse__Account_required_and_constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Currency cannot be changed once set --></errorMessage>
+        <name>pse__Currency_is_constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Vendor Invoice Exchange Rate Override must be supplied when checking the Override check box. --></errorMessage>
+        <name>pse__Rate_Required_when_Overriding</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Add_Invoice_Items --></label>
+        <name>pse__Add_Invoice_Items</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Recalc_Vendor_Invoice --></label>
+        <name>pse__Recalc_Vendor_Invoice</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Recalc_Vendor_Invoices --></label>
+        <name>pse__Recalc_Vendor_Invoices</name>
+    </webLinks>
+</CustomObjectTranslation>

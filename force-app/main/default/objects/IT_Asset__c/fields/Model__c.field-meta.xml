@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Model__c</fullName>
+    <externalId>false</externalId>
+    <label>Model</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Brand__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>MacBook Air</fullName>
+                <default>false</default>
+                <label>MacBook Air</label>
+            </value>
+            <value>
+                <fullName>MacBook Pro 13&quot;</fullName>
+                <default>false</default>
+                <label>MacBook Pro 13&quot;</label>
+            </value>
+            <value>
+                <fullName>MacBook Pro 15&quot;</fullName>
+                <default>false</default>
+                <label>MacBook Pro 15&quot;</label>
+            </value>
+            <value>
+                <fullName>MacBook Pro 16&quot;</fullName>
+                <default>false</default>
+                <label>MacBook Pro 16&quot;</label>
+            </value>
+            <value>
+                <fullName>ThinkPad L590</fullName>
+                <default>false</default>
+                <label>ThinkPad L590</label>
+            </value>
+            <value>
+                <fullName>ThinkPad E590</fullName>
+                <default>false</default>
+                <label>ThinkPad E590</label>
+            </value>
+            <value>
+                <fullName>ThinkPad E580</fullName>
+                <default>false</default>
+                <label>ThinkPad E580</label>
+            </value>
+            <value>
+                <fullName>ThinkPad T570</fullName>
+                <default>false</default>
+                <label>ThinkPad T570</label>
+            </value>
+            <value>
+                <fullName>ThinkPad P52s</fullName>
+                <default>false</default>
+                <label>ThinkPad P52s</label>
+            </value>
+            <value>
+                <fullName>840 G6</fullName>
+                <default>false</default>
+                <label>840 G6</label>
+            </value>
+            <value>
+                <fullName>850 G6</fullName>
+                <default>false</default>
+                <label>850 G6</label>
+            </value>
+            <value>
+                <fullName>MX84</fullName>
+                <default>false</default>
+                <label>MX84</label>
+            </value>
+            <value>
+                <fullName>MR16</fullName>
+                <default>false</default>
+                <label>MR16</label>
+            </value>
+            <value>
+                <fullName>MR45</fullName>
+                <default>false</default>
+                <label>MR45</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>iPad</fullName>
+                <default>false</default>
+                <label>iPad</label>
+            </value>
+            <value>
+                <fullName>iPad Pro</fullName>
+                <default>false</default>
+                <label>iPad Pro</label>
+            </value>
+            <value>
+                <fullName>Tab 4 (TB-8504F)</fullName>
+                <default>false</default>
+                <label>Tab 4 (TB-8504F)</label>
+            </value>
+            <value>
+                <fullName>Fire HD 8</fullName>
+                <default>false</default>
+                <label>Fire HD 8</label>
+            </value>
+            <value>
+                <fullName>840 G7</fullName>
+                <default>false</default>
+                <label>840 G7</label>
+            </value>
+            <value>
+                <fullName>850 G7</fullName>
+                <default>false</default>
+                <label>850 G7</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Lenovo</controllingFieldValue>
+            <valueName>ThinkPad L590</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lenovo</controllingFieldValue>
+            <valueName>ThinkPad E590</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lenovo</controllingFieldValue>
+            <valueName>ThinkPad E580</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lenovo</controllingFieldValue>
+            <valueName>ThinkPad T570</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lenovo</controllingFieldValue>
+            <valueName>ThinkPad P52s</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lenovo</controllingFieldValue>
+            <valueName>Tab 4 (TB-8504F)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Acer</controllingFieldValue>
+            <controllingFieldValue>Asus</controllingFieldValue>
+            <controllingFieldValue>Dell</controllingFieldValue>
+            <controllingFieldValue>Intel</controllingFieldValue>
+            <controllingFieldValue>LG</controllingFieldValue>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <valueName>Other</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Amazon</controllingFieldValue>
+            <valueName>Fire HD 8</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apple</controllingFieldValue>
+            <valueName>MacBook Air</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apple</controllingFieldValue>
+            <valueName>MacBook Pro 13&quot;</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apple</controllingFieldValue>
+            <valueName>MacBook Pro 15&quot;</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apple</controllingFieldValue>
+            <valueName>MacBook Pro 16&quot;</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apple</controllingFieldValue>
+            <valueName>iPad</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apple</controllingFieldValue>
+            <valueName>iPad Pro</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>HP</controllingFieldValue>
+            <valueName>840 G6</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>HP</controllingFieldValue>
+            <valueName>850 G6</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>HP</controllingFieldValue>
+            <valueName>840 G7</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>HP</controllingFieldValue>
+            <valueName>850 G7</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Meraki</controllingFieldValue>
+            <valueName>MX84</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Meraki</controllingFieldValue>
+            <valueName>MR16</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Meraki</controllingFieldValue>
+            <valueName>MR45</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

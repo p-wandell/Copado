@@ -1,0 +1,70 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Events Detail">
+    <design:attribute name="debugMode"
+                      label="Debug Mode"
+                      description="Enable/disable debug mode"/>
+
+	<design:attribute name="showEventType"
+	                  label="Show event type"
+	                  description="Check to show the event type on the tile"/>
+	<design:attribute name="showVolunteerButton"
+	                  label="Show volunteer button"
+	                  description="Enable to show volunteer button and edit event volunteers"/>
+	<design:attribute name="useTopics"
+	                  label="Require topics"
+	                  description="Require the user to select at least one topic"/>
+	<design:attribute name="hideAddToCalendar"
+	                  label="Hide Add To Calendar"
+	                  description="Enable/disable Add to Calendar" />
+	<design:attribute name="addToCalendarButtonText"
+	                  label="Add to Calendar button text"
+	                  description="Button Text" />
+	<design:attribute name="iCalendar"
+	                  label="Show add to iCalendar"
+	                  description="Add iCalendar to the Add to Calendar list"/>
+	<design:attribute name="googleCalendar"
+	                  label="Show add to Google calendar"
+	                  description="Add Google to the Add to Calendar list"/>
+	<design:attribute name="outlook"
+	                  label="Show add to Outlook calendar"
+	                  description="Add Outlook to the Add to Calendar list"/>
+	<design:attribute name="outlookOnline"
+	                  label="Show add to Outlook Online calendar"
+	                  description="Add Outlook online to the Add to Calendar list"/>
+	<design:attribute name="yahooCalendar"
+	                  label="Show add to Yahoo! calendar"
+	                  description="Add Yahoo! to the Add to Calendar list"/>
+	<design:attribute name="atcPlainText"
+	                  label="Use plain text (ATC)"
+	                  description="Use plain text for the event detail with Add to Calendar"/>
+
+	<!-- CUSTOM FIELDS -->
+	<design:attribute name="customLabel1"
+	                  label="Custom label 1"
+	                  description="Define a label for custom field 1"/>
+	<design:attribute name="customField1"
+	                  label="Custom field 1"
+	                  description="Custom field 1 to display on the tile (ex: MyField__c)"/>
+	<design:attribute name="customLabel2"
+	                  label="Custom label 2"
+	                  description="Define a label for custom field 2"/>
+	<design:attribute name="customField2"
+	                  label="Custom field 2"
+	                  description="Custom field 2 to display on the tile"/>
+	<design:attribute name="customLabel3"
+	                  label="Custom label 3"
+	                  description="Define a label for custom field 3"/>
+	<design:attribute name="customField3"
+	                  label="Custom field 3"
+	                  description="Custom field 3 to display on the tile"/>
+
+	<!-- GROUPS -->
+	<design:attribute name="limitToSpecificGroups"
+	                  label="Enable Group Selection?"
+	                  description="Check to show the groups drop down. Enforcement is managed through Events Settings"/>
+
+    <design:attribute name="recordId"
+                      label="Record Id"
+                      default="{!recordId}"
+                      description="Set to {!recordId} to pass the page's record Id."/>
+</design:component>

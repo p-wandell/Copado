@@ -1,0 +1,92 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 8/9/17.
+ -->
+
+<aura:component description="ss_cart"
+                implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                controller="sc_listController"
+                extends="c:ss_product_base"
+                access="global">
+
+	<aura:attribute name="setting"      type="String"  default=""      access="global"/>
+	<aura:attribute name="usePoints"    type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="showTitle"    type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showImage"    type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showFamily"   type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showCode"     type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showPrice"    type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showQuantity" type="Boolean" default="true"  access="global"/>
+
+	<aura:attribute name="titleDeleted" type="String"  default="{!$Label.c.ss_pc_cart_toast_titleDeleted}"/>
+	<aura:attribute name="labelDeleted" type="String"  default="{!$Label.c.ss_pc_cart_toast_messageDeleted}"/>
+	<aura:attribute name="titleClear"   type="String"  default="{!$Label.c.ss_pc_cart_toast_messageClear}"/>
+	<aura:attribute name="titleCleared" type="String"  default="{!$Label.c.ss_pc_cart_toast_messageCleared}"/>
+
+	<aura:attribute name="subLabelClass" type="String" default="slds-text-title slds-text-color_weak"/>
+
+	<aura:attribute name="model"            type="Map"      access="public"/>
+	<aura:attribute name="cartItems"        type="Map"      access="public"/>
+	<aura:attribute name="optionsQuantity"  type="String[]" access="public"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+	<aura:handler event="c:ss_cart_event"     action="{!c.handleCartUpdate}"/>
+
+	<div class="c-container">
+	<lightning:layout multipleRows="true">
+		<!-- banner -->
+		<aura:if isTrue="{!v.showTitle}">
+			<lightning:layoutItem size="12"
+								  largeDeviceSize="12"
+								  mediumDeviceSize="12"
+								  smallDeviceSize="12"
+			                      class="slds-text-heading--medium">
+					{!$Label.c.ss_pc_cart_header_title}
+			</lightning:layoutItem>
+		</aura:if>
+		<!-- body -->
+		<lightning:layoutItem size="12"
+		                      largeDeviceSize="12"
+		                      mediumDeviceSize="12"
+		                      smallDeviceSize="12"
+		                      padding="around-small">
+
+			<lightning:layout horizontalAlign="spread"
+			                  multipleRows="true">
+
+				<!-- EMPTY CART -->
+				<aura:if isTrue="{!v.cartItems.length == 0}">
+					<lightning:layoutItem size="12"
+					                      largeDeviceSize="12"
+					                      mediumDeviceSize="12"
+					                      smallDeviceSize="12">
+						<c:ss_cart_empty />
+					</lightning:layoutItem>
+
+					<!-- cart list -->
+					<aura:set attribute="else">
+						<lightning:layoutItem size="12"
+						                      largeDeviceSize="12"
+						                      mediumDeviceSize="12"
+						                      smallDeviceSize="12">
+							<c:ss_cart_list model="{!v.model}"
+							                cartItems="{!v.cartItems}"
+							                usePoints="{!v.usePoints}"
+							                showImage="{!v.showImage}"
+											showFamily="{!v.showFamily}"
+							                showCode="{!v.showCode}"
+							                showPrice="{!v.showPrice}"
+							                showQuantity="{!v.showQuantity}"
+							                optionsQuantity="{!v.optionsQuantity}"/>
+						</lightning:layoutItem>
+					</aura:set>
+				</aura:if>
+			</lightning:layout>
+		</lightning:layoutItem>
+	</lightning:layout>
+	</div>
+</aura:component>

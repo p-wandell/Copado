@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>如果报告数据范围类型为摘要，则必须选择聚合查询方法：组或总和。如果数据范围类型为“详细信息”，则必须选择列表查询方法：详细信息。您不能混合使用这些查询方法。</help>
+    <label><!-- Type --></label>
+    <name>ffr__Type__c</name>
+    <picklistValues>
+        <masterLabel>Count</masterLabel>
+        <translation>计数</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Detail</masterLabel>
+        <translation>详情</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Group</masterLabel>
+        <translation>组</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sum</masterLabel>
+        <translation>和</translation>
+    </picklistValues>
+</CustomFieldTranslation>

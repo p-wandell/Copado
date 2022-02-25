@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+.x7s-adventure-progress-ring {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 4rem;
+}
+.x7s-adventure-progress-ring--small {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 3rem;
+}
+.x7s-adventure-progress-ring__content {
+  font-size: 1.5em;
+  font-weight: bold;
+  border-radius: 6.5rem;
+}
+.x7s-adventure-progress-ring__contentSmall {
+  font-size: 12px;
+  font-weight: bold; 
+}
+.x7s-adventure-progress-ring__path {
+  fill:rgb(75, 202, 129);
+}
+.slds-icon {
+  width: 1.75rem;
+}
+  .ringHover:hover{
+  background-color: yellow;
+}

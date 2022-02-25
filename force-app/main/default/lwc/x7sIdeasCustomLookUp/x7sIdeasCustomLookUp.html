@@ -1,0 +1,75 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<!-- Custom lookup Field -->
+	<div onmouseleave={blurEvent} data-id="searchRes" class="slds-form-element slds-lookup slds-is-close"
+	     data-select="single">
+
+		<!-- This part is for display search bar for lookup -->
+		<div class="slds-form-element__control">
+
+			<div class="slds-input-has-icon slds-input-has-icon--right">
+				<template if:true={showCross}>
+					<lightning-icon data-id="searchIcon"
+					                class="slds-input__icon slds-p-top_small"
+					                icon-name="utility:search"
+					                size="xx-small"
+					                alternative-text="search">
+					</lightning-icon>
+				</template>
+				<template if:true={selectedUser}>
+					<div class="requestby">
+						{searchLabel}
+					</div>
+				</template>
+				<!-- This markup is for when an record is selected -->
+				<template if:true={objType}>
+					<div data-id="lookup-pill" class="slds-pill-container slds-hide">
+						<template if:true={newOrEditIdea}>
+							<lightning-pill class="pillSize"
+							                label={pillLabel}
+							                name={pillLabel}
+							                onremove={clear}>
+							</lightning-pill>
+						</template>
+						<template if:false={newOrEditIdea}>
+							<lightning-pill class={pillClass}
+							                label={pillLabel}
+							                name={pillLabel>
+							</lightning-pill>
+						</template>
+					</div>
+				</template>
+
+				<div data-id="lookupField" class="slds-show">
+					<lightning-input type="text"
+					                 label={searchLabel}
+					                 placeholder={ss_idea_label_Search}
+					                 value={searchKeyWord}
+					                 disabled={disableSearch}
+					                 onfocus={focusEvent}
+					                 onchange={focusEvent}>
+					</lightning-input>
+
+				</div>
+			</div>
+		</div>
+
+
+		<!--This part is for Display type head lookup result List-->
+		<ul style="min-height:40px;margin-top:0px !important" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid
+                      slds-lookup__menu slds" role="listbox">
+			<lightning-spinner class="slds-hide" variant="brand" size="small" data-id="mySpinner">
+			</lightning-spinner>
+			<template if:true={listOfSearchRecords}>
+				<template for:each={listOfSearchRecords} for:item='singleRec'>
+					<c-x7s-ideas-custom-look-up-dropdown key={singleRec.Id} o-record={singleRec}
+					                                     object-type={objectType} onselectrecord={handleSelectRecord}>
+					</c-x7s-ideas-custom-look-up-dropdown>
+				</template>
+			</template>
+		</ul>
+
+	</div>
+</template>

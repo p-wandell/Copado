@@ -1,0 +1,141 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 9/29/17.
+ -->
+
+<aura:component description="ss_cart_button"
+                controller="sc_listController"
+                extends="c:ss_product_base"
+                implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                access="global">
+
+	<aura:attribute name="setting"              type="String"  default=""           access="global"/>
+	<aura:attribute name="iconCart"             type="String"  default="custom:custom93"/>
+	<aura:attribute name="iconReturn"           type="String"  default="utility:list"/>
+
+	<aura:attribute name="cartAlign"            type="String"  default="end"         access="global"/>
+	<aura:attribute name="cartUrl"              type="String"  default="/7s-cart/"   access="global"/>
+	<aura:attribute name="catalogUrl"           type="String"  default="/7s-catalog" access="global"/>
+	<aura:attribute name="externalCheckoutUrl"  type="String"  default=""            access="global"/>
+
+	<aura:attribute name="singleButton"         type="Boolean" default="true"     access="global"/>
+	<aura:attribute name="showBorder"           type="Boolean" default="true"     access="global"/>
+	<aura:attribute name="showCount"            type="Boolean" default="true"     access="global"/>
+	<aura:attribute name="showTotal"            type="Boolean" default="true"     access="global"/>
+
+	<aura:attribute name="model"                type="Map"     access="public"/>
+
+	<aura:attribute name="usePoints"            type="Boolean" default="true"  access="public"/>
+	<aura:attribute name="itemCount"            type="Integer" default="0"     access="public"/>
+	<aura:attribute name="itemTotal"            type="Decimal" default="0.0"   access="public"/>
+	<aura:attribute name="buttonMode"           type="String"  default="cart"  access="public"/>
+
+	<aura:attribute name="singleButtonText"     type="String"  default="{!$Label.c.ss_pc_button_cart}"/>
+	<aura:attribute name="singleButtonLabel"    type="String"  default="{!$Label.c.ss_pc_button_cart}"/>
+	<aura:attribute name="toastTitle"           type="String"  default="{!$Label.c.ss_pc_cart_toast_title}" />
+	<aura:attribute name="toastMessage"         type="String"  default="{!$Label.c.ss_pc_cart_toast_messageAdded}" />
+
+	<aura:attribute name="buttonPadding"        type="String"  default="horizontal-small"/>
+
+	<aura:registerEvent name="updateCartButton" type="c:ss_cart_button_event"/>
+
+	<aura:handler event="c:ss_cart_button_event" action="{!c.handleCartMode}"/>
+	<aura:handler event="c:ss_cart_event"        action="{!c.handleAddItemToCart}"/>
+	<aura:handler name="init" value="{!this}"    action="{!c.init}"/>
+
+	<lightning:layout aura:id="cartControl"
+	                  horizontalAlign="{!v.cartAlign}"
+	                  verticalAlign="center"
+	                  pullToBoundary="small"
+	                  multipleRows="false"
+	                  class="{! if(v.showBorder, 'slds-p-around--x-small slds-card', '')}">
+
+		<lightning:layoutItem size="12"
+		                      largeDeviceSize="4"
+		                      mediumDeviceSize="6"
+		                      smallDeviceSize="12">
+
+			<lightning:layout multipleRows="false"
+			                  horizontalAlign="{!v.cartAlign}"
+			                  verticalAlign="center">
+
+				<aura:if isTrue="{!v.buttonMode == 'cart'}">
+
+					<!-- Single button only -->
+					<aura:if isTrue="{!v.singleButton}">
+						<lightning:layoutItem padding="{!v.buttonPadding}">
+							<lightning:button onclick="{!c.gotoCart}"
+							                  label="{!$Label.c.ss_pc_button_cart}"
+							                  title="{!$Label.c.ss_pc_tooltip_showCart}"
+							                  iconName="{!v.iconCart}"
+							                  variant="brand">
+							{!$Label.c.ss_pc_button_cart}
+
+								<aura:if isTrue="{!v.showCount}">
+									&nbsp;(<lightning:formattedNumber value="{!v.itemCount}"/>)
+								</aura:if>
+
+								<aura:if isTrue="{!v.showTotal}">
+									<aura:if isTrue="{!v.usePoints}">
+										<lightning:formattedNumber value="{!v.itemTotal}"/>
+										&nbsp;
+											{!$Label.c.ss_pc_label_points}
+										<aura:set attribute="else">
+											<lightning:formattedNumber value="{!v.itemTotal}"
+											                           style="currency"
+											                           currencyDisplayAs="symbol"/>
+										</aura:set>
+									</aura:if>
+								</aura:if>
+							</lightning:button>
+						</lightning:layoutItem>
+
+						<!-- Button and text -->
+						<aura:set attribute="else">
+							<lightning:layoutItem padding="{!v.buttonPadding}">
+								<lightning:button onclick="{!c.gotoCart}"
+								                  label="{!$Label.c.ss_pc_button_cart}"
+								                  title="{!$Label.c.ss_pc_tooltip_showCart}"
+								                  iconName="{!v.iconCart}"
+								                  variant="brand"/>
+							</lightning:layoutItem>
+
+							<aura:if isTrue="{!v.showCount}">
+								<lightning:layoutItem>
+									(<lightning:formattedNumber value="{!v.itemCount}"/>)
+								</lightning:layoutItem>
+							</aura:if>
+
+							<aura:if isTrue="{!v.showTotal}">
+								<lightning:layoutItem padding="{!v.buttonPadding}">
+									<aura:if isTrue="{!v.usePoints}">
+										<lightning:formattedNumber value="{!v.itemTotal}"/>
+										&nbsp;
+											{!$Label.c.ss_pc_label_points}
+										<aura:set attribute="else">
+											<lightning:formattedNumber value="{!v.itemTotal}"
+											                           style="currency"
+											                           currencyDisplayAs="symbol"/>
+										</aura:set>
+									</aura:if>
+								</lightning:layoutItem>
+							</aura:if>
+						</aura:set>
+					</aura:if>
+					<aura:set attribute="else">
+						<lightning:layoutItem padding="{!v.buttonPadding}">
+							<lightning:button onclick="{!c.gotoCatalog}"
+							                  label="{!$Label.c.ss_pc_cart_button_return}"
+							                  title="{!$Label.c.ss_pc_cart_tooltip_return}"
+							                  variant="brand"/>
+						</lightning:layoutItem>
+					</aura:set>
+				</aura:if>
+				</lightning:layout>
+
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

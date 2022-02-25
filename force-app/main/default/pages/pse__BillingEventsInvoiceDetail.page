@@ -1,0 +1,28 @@
+<apex:page standardController="pse__Billing_Event__c" 
+           extensions="pse.BillingEventsInvoiceController" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:sectionHeader title="{!$Label.pse__billing_events_label_invoice_billing_event}" help="{!$Page.pse__BillingEventHelp}" />
+	<apex:form >
+		<apex:pageBlock >
+			<apex:pageMessages />
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!invoiceEvent}" value="{!$Label.pse__billing_events_label_invoice}" />
+				<apex:commandButton action="{!cancel}" value="{!$Label.pse__common_label_cancel}" />
+			</apex:pageBlockButtons>
+			
+			<apex:pageBlockSection title="{!$Label.pse__billing_events_label_billing_event_to_invoice}" columns="1">
+				<apex:pageBlockTable value="{!eventsToInvoice}" var="e">
+					<apex:column headerValue="{!$Label.pse__common_label_name}"><a href="/{!e.Id}">{!e.Name}</a></apex:column>
+					<apex:column value="{!e.pse__Date__c}" />
+					<apex:column value="{!e.pse__Project__c}" />
+					<apex:column value="{!e.pse__Summary_Amount__c}" />
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection title="{!$Label.pse__billing_events_label_invoice_information}" columns="2">
+				<apex:inputField value="{!inv.pse__Invoice_Date__c}" />
+				<apex:inputField value="{!inv.pse__Invoice_Number__c}" />
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

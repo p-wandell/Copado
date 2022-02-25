@@ -1,0 +1,2 @@
+<!-- This page is forwarding to LinkPTAwithRRAndAssignment from project  --> 
+<apex:page standardController="pse__Project_Task__c"  id="LinkPTAwithRRAndAssignmentForwarder" action="{!URLFOR($Page.LinkPTAwithRRAndAssignment,'',[id=$CurrentPage.parameters.id])}" />

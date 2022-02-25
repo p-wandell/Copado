@@ -1,0 +1,10 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global">
+
+	<aura:attribute name="searchText" type="String"/>
+	<aura:attribute name="placeholderText" type="String" default="SEARCH" access="global"/>
+	<aura:registerEvent name="textFilter" type="c:SVNSUMMITS_Events_Text_Filter_Event"/>
+
+	<ui:inputText value="{!v.searchText}" placeholder="{!v.placeholderText}" keyup="{!c.performSearch}"/>
+
+</aura:component>

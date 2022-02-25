@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>true</doesSendEmailToMembers>
+    <email>francois.korb@7summitsinc.com</email>
+    <name>Deployment Owners</name>
+    <queueMembers>
+        <users>
+            <user>francois.korb@7summitsagency.com</user>
+            <user>kent.heberling@7summitsinc.com</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>Product_Request__c</sobjectType>
+    </queueSobject>
+</Queue>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Work_Calendar_Hours_del__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(pse__Work_Calendar__r.Name  = &quot;Zero Hour Work Calendar&quot;,0,pse__Work_Calendar__r.pse__Week_Total_Hours__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Work Calendar Hours</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

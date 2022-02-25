@@ -1,0 +1,49 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component description="SVNSUMMITS_News_Date_Filter"
+                access="global">
+
+	<aura:registerEvent name="appEvent" type="c:SVNSUMMITS_News_Date_Filter_Event"/>
+	<aura:attribute name="debugMode" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="startDate" type="Date" access="global"/>
+	<aura:attribute name="endDate"   type="Date" access="global"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="start">
+		<lightning:layoutItem size="6"
+							  class="slds-p-right--x-small"
+		                      flexibility="grow">
+			<ui:inputDate label="{!$Label.c.ss_nws_label_startDate}"
+			              value="{!v.startDate}"
+			              displayDatePicker="true"
+			              change="{!c.dateChange}"/>
+			<!-- the new lightning date control does not work in Safari -->
+			<!--<lightning:input type="date"-->
+			                 <!--name="startDate"-->
+			                 <!--value="{!v.startDate}"-->
+			                 <!--onchange="{!c.dateChange}"-->
+			                 <!--label="{!$Label.c.ss_nws_label_startDate}"/>-->
+		</lightning:layoutItem>
+		<lightning:layoutItem size="6"
+		                      flexibility="grow">
+			<ui:inputDate label="{!$Label.c.ss_nws_label_endDate}"
+			              value="{!v.endDate}"
+			              displayDatePicker="true"
+			              change="{!c.dateChange}"/>
+
+			<!--<lightning:input type="date"-->
+			                 <!--name="endDate"-->
+			                 <!--value="{!v.endDate}"-->
+			                 <!--onchange="{!c.dateChange}"-->
+			                 <!--label="{!$Label.c.ss_nws_label_endDate}"/>-->
+		</lightning:layoutItem>
+
+		<lightning:layoutItem size="6"
+		                      class="slds-p-top--xx-small">
+			<lightning:button label="{!$Label.c.ss_nws_buttonClear}"
+			                  onclick="{!c.clearDates}"
+			                  variant="neutral"/>
+		</lightning:layoutItem>
+
+	</lightning:layout>
+</aura:component>

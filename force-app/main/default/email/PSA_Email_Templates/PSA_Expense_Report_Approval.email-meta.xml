@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>PSA Expense Report Approval</name>
+    <style>none</style>
+    <subject>Expense Report Awaiting Your Approval - {!pse__Expense_Report__c.pse__Project__c} Week Ending: {!pse__Expense_Report__c.pse__Last_Expense_Date__c}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

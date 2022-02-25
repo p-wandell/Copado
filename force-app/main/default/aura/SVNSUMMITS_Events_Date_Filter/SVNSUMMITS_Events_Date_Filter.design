@@ -1,0 +1,12 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Events Date Filter">
+    <design:attribute name="debugMode"
+                      label="Debug Mode"
+                      description="Enabling debug mode will write messages to the browser console for debugging errors" />
+	<design:attribute name="filterLabel"
+                      label="Filter Label" />
+    <design:attribute name="fromDtLabel"
+                      label="From Date Label" />
+    <design:attribute name="toDtLabel"
+                      label="To Date Label" />
+</design:component>

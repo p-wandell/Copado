@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Rapporterande sidobordräkning</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Rapporterande sidobordrader</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+    </caseValues>
+    <gender>Feminine</gender>
+    <nameFieldLabel>Rapporterande sid tabell tabell namn</nameFieldLabel>
+    <recordTypes>
+        <description><!-- Use this record type to add a data range total to your reporting table. --></description>
+        <label><!-- Data Range Total --></label>
+        <name>ffr__DataRangeTotal</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add a row calculation to your reporting table. --></description>
+        <label><!-- Row Calculation --></label>
+        <name>ffr__RowCalculation</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add a row filter to your reporting table. The default row filter is NONE. --></description>
+        <label><!-- Row Filter --></label>
+        <name>ffr__RowFilter</name>
+    </recordTypes>
+</CustomObjectTranslation>

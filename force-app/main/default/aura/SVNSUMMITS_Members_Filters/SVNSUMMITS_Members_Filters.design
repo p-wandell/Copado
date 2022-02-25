@@ -1,0 +1,141 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<design:component label="7S Members Filters - Basic">
+	<design:attribute name="compactView"
+	                  label="Compact view"
+	                  description="Select this option to place the filter in a sidebar layout"/>
+	<design:attribute name="showClearAll"
+	                  label="Show Clear all button"
+	                  description="Check to show the Clear All button that will clear all filters"/>
+	<design:attribute name="labelMembersFollow"
+	                  label="Members I Follow Label"
+	                  description="Label for members I follow check box"/>
+	<design:attribute name="labelSearchMembers"
+	                  label="Search Label"
+	                  description="Label for search control placeholder"/>
+	<design:attribute name="searchPlaceHolder"
+	                  label="Search placeholder"
+	                  description="Search control placeholder"/>
+	<design:attribute name="enableLastNameSearch"
+	                  label="Enable last name search option"
+	                  description="Check to enable search by last name, first option"/>
+	<design:attribute name="searchThreshold"
+	                  label="Search threshold"
+	                  description="Number of characters needed to initiate the search"/>
+	<design:attribute name="searchFields"
+	                  label="Additional search fields"
+	                  description="Specify additional member fields to include in the search"/>
+
+	<design:attribute name="useContact"
+	                  label="Use Contact instead of User Object"
+	                  description="Country, State and City filters will reference the selected object"/>
+
+	<design:attribute name="showPicklists"
+	                  label="Show pick lists for All Filters"
+	                  description="Enable pick lists for filter - this may impact performance and will not work for large communities"/>
+
+	<!-- Contact record fields -->
+	<design:attribute name="showTitleFilter"
+	                  label="Show Title filter"
+	                  description="Check to enable search by member title"/>
+	<design:attribute name="showCountryFilter"
+	                  label="Show country filter"
+	                  description="Check to enable filter by contact mailing country"/>
+	<design:attribute name="showStateFilter"
+	                  label="Show state filter"
+	                  description="Check to enable filter by contact mailing state"/>
+	<design:attribute name="showCityFilter"
+	                  label="Show city filter"
+	                  description="Check to enable filter by contact mailing city"/>
+	<design:attribute name="showAccountFilter"
+	                  label="Show account filter"
+	                  description="Check to enable filter by contact account"/>
+	<design:attribute name="showTopicFilter"
+	                  label="Filter Knowledgeable members by topic"
+	                  description="Check to enable filter by knowledgeable members for the selected topic"/>
+
+	<!-- Custom Field1-->
+	<design:attribute name="customField1"
+	                  label="Custom Field 1 API name"
+	                  description="Enter the exact API name for the custom field1 related to the NetworkMember sObject."/>
+	<design:attribute name="labelCustomField1"
+	                  label="Field 1 label"
+	                  description="Enter a label for custom field 1"/>
+	<design:attribute name="placeHolderCustomField1"
+	                  label="Field 1 placeholder"
+	                  description="Enter a placeholder for custom field 1"/>
+	<design:attribute name="pickListLabelField1"
+	                  label="Pick list label for custom field 1"
+	                  description="Enter a label for the custom field 1 pick list"/>
+
+	<!-- Custom Field2 -->
+	<design:attribute name="customField2"
+	                  label="Custom Field 2 API name"
+	                  description="Enter the exact API name for the custom field 2 related to the NetworkMember sObject."/>
+	<design:attribute name="labelCustomField2"
+	                  label="Field 2 label"
+	                  description="Enter a label for custom field 2"/>
+	<design:attribute name="placeHolderCustomField2"
+	                  label="Field 2 placeholder"
+	                  description="Enter a placeholder for custom field 2"/>
+	<design:attribute name="pickListLabelField2"
+	                  label="Pick list label for custom field 2"
+	                  description="Enter a label for the custom field 2 pick list"/>
+
+	<!-- Custom Field3 -->
+	<design:attribute name="customField3"
+	                  label="Custom Field 3 API name"
+	                  description="Enter the exact API name for the custom field 3 related to the NetworkMember sObject."/>
+	<design:attribute name="labelCustomField3"
+	                  label="Field 3 label"
+	                  description="Enter a label for custom field 3"/>
+	<design:attribute name="placeHolderCustomField3"
+	                  label="Field 3 placeholder"
+	                  description="Enter a placeholder for custom field 3"/>
+	<design:attribute name="pickListLabelField3"
+	                  label="Pick list label for custom field 3"
+	                  description="Enter a label for the custom field 3 pick list"/>
+
+	<!-- Custom Field4 -->
+	<design:attribute name="customField4"
+	                  label="Custom Field 4 API name"
+	                  description="Enter the exact API name for the custom field 4 related to the NetworkMember sObject."/>
+	<design:attribute name="labelCustomField4"
+	                  label="Field 4 label"
+	                  description="Enter a label for custom field 4"/>
+	<design:attribute name="placeHolderCustomField4"
+	                  label="Field 4 placeholder"
+	                  description="Enter a placeholder for custom field 4"/>
+	<design:attribute name="pickListLabelField4"
+	                  label="Pick list label for custom field 4"
+	                  description="Enter a label for the custom field 4 pick list"/>
+
+	<!-- Custom Field5 -->
+	<design:attribute name="customField5"
+	                  label="Custom Field 5 API name"
+	                  description="Enter the exact API name for the custom field 5 related to the NetworkMember sObject."/>
+	<design:attribute name="labelCustomField5"
+	                  label="Field 5 label"
+	                  description="Enter a label for custom field 5"/>
+	<design:attribute name="placeHolderCustomField5"
+	                  label="Field 5 placeholder"
+	                  description="Enter a placeholder for custom field 5"/>
+	<design:attribute name="pickListLabelField5"
+	                  label="Pick list label for custom field 5"
+	                  description="Enter a label for the custom field 5 pick list"/>
+
+	<!-- Custom Field6 -->
+	<design:attribute name="customField6"
+	                  label="Custom Field 6 API name"
+	                  description="Enter the exact API name for the custom field 6 related to the NetworkMember sObject."/>
+	<design:attribute name="labelCustomField6"
+	                  label="Field 6 label"
+	                  description="Enter a label for custom field 6"/>
+	<design:attribute name="placeHolderCustomField6"
+	                  label="Field 6 placeholder"
+	                  description="Enter a placeholder for custom field 6"/>
+	<design:attribute name="pickListLabelField6"
+	                  label="Pick list label for custom field 6"
+	                  description="Enter a label for the custom field 6 pick list"/>
+</design:component>

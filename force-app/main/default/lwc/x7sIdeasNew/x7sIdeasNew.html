@@ -1,0 +1,244 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper
+			auto-slds-card
+			variant={displayVariant}
+			custom-class={customClass}
+			title={headingTitle}
+			title-align={headerAlignment}
+			aria-label={labelAria}
+	>
+		<div class="slds-text-align_left">
+			<lightning-layout multiple-rows="true">
+				<template if:true={chkZoneId}>
+					<template if:true={showSpinner}>
+						<lightning-spinner size="medium"
+						                   variant="brand"
+						                   alternative-text={spinnerText}>
+						</lightning-spinner>
+					</template>
+
+					<!-- TITLE -->
+					<lightning-layout-item size="12"
+					                       padding="around-small">
+						<lightning-input type="text"
+						                 data-id="validateInput"
+						                 label={ss_idea_label_Title}
+						                 required
+						                 min-length={minTitleLength}
+						                 max-length={maxTitleLength}
+						                 message-when-too-short={errorShortTitle}
+						                 message-when-too-long={ss_idea_error_titleTooLong}
+						                 message-when-value-missing={ss_idea_error_titleEntry}
+						                 onblur={checkSimilarIdeas}
+						                 onchange={handleTextInput}
+						                 value={currIdea.Title}>
+						</lightning-input>
+					</lightning-layout-item>
+
+					<!-- SIMILAR IDEAS-->
+					<template if:true={showDuplicates}>
+						<lightning-layout-item size="12"
+						                       padding="around-small">
+							<template if:true={ideasList.checkZero}>
+								<lightning-formatted-text
+										value={ss_idea_label_AlreadySubmitted}
+										class="slds-text-heading--label slds-p-top-small">
+								</lightning-formatted-text>
+							</template>
+							<template for:each={ideasList} for:item='idea'>
+								<p key={idea.Id} class="slds-tile__title">
+									<a onclick={ideaRecord}
+									   data-id={idea.Id}
+									   class="slds-truncate">{idea.Title}</a>
+									&nbsp;-&nbsp;{idea.VoteTotal}&nbsp;{ss_idea_label_points}</p>
+							</template>
+						</lightning-layout-item>
+					</template>
+
+					<!-- DESCRIPTION -->
+					<lightning-layout-item size="12"
+					                       padding="around-small">
+						<lightning-input-rich-text label={ss_idea_label_Describe}
+						                           valid={validDescription}
+						                           placeholder={ss_idea_label_Describe}
+						                           message-when-bad-input={ss_idea_error_descriptionEntry}
+						                           value={currIdea.Body}
+						                           onblur={handleRichText}
+						                           class={errorClassDesc}>
+						</lightning-input-rich-text>
+					</lightning-layout-item>
+
+					<!-- CUSTOM FIELDS -->
+					<template if:true={showCustomFields}>
+						<template for:each={customFields} for:item='customField'>
+							<lightning-layout-item size="12"
+							                       padding="horizontal-medium"
+							                       key={customField.fieldLabel}>
+								<c-x7s-ideas-custom-field-edit custom-field={customField}
+								                               custom-fields={customFields}
+								                               oncustomvalues={handleChangeCustomValue}
+								>
+								</c-x7s-ideas-custom-field-edit>
+							</lightning-layout-item>
+						</template>
+					</template>
+
+					<!-- ATTACHMENT -->
+					<template if:true={allowImages}>
+						<lightning-layout-item size="12"
+						                       padding="around-small">
+							<lightning-input type="file"
+							                 title={ss_idea_tooltip_UploadImage}
+							                 label={ss_idea_label_UploadImage}
+							                 accept={attachmentAccept}
+							                 name="featuredImage"
+							                 onchange={handleAttachmentUpload}>
+							</lightning-input>
+
+							<template if:true={attachmentNameSize}>
+								<lightning-formatted-text value={attachmentName}
+								                          title={ss_idea_label_ChooseFile}>
+								</lightning-formatted-text>
+							</template>
+						</lightning-layout-item>
+					</template>
+
+					<!-- THEME -->
+					<template if:true={allowThemes}>
+						<lightning-layout-item size="12"
+						                       padding="around-small">
+							<lightning-combobox
+									label={ss_idea_label_ChooseTheme}
+									value={currIdea.IdeaThemeId}
+									options={themeSet}
+									onchange={handleThemeChange}>
+							</lightning-combobox>
+						</lightning-layout-item>
+					</template>
+
+					<!-- RELATED TOPIC -->
+					<template if:true={useTopics}>
+						<lightning-layout-item size="12"
+						                       padding="around-small">
+							<lightning-combobox
+									label={ss_idea_label_PickTopic}
+									value={currIdea.Related_Topic_Name__c}
+									options={topicNamesList}
+									onchange={handleTopicChange}
+									required={topicRequired}>
+							</lightning-combobox>
+						</lightning-layout-item>
+					</template>
+
+					<!-- CATEGORY -->
+					<template if:true={allowCategories}>
+						<lightning-layout-item size="12"
+						                       padding="around-small">
+							<lightning-combobox
+									label={ss_idea_label_SelectCategory}
+									value={currIdea.Categories}
+									options={categoriesSet}
+									onchange={handleCategoryChange}>
+							</lightning-combobox>
+						</lightning-layout-item>
+					</template>
+
+					<!-- Requested By -->
+					<template if:true={showRequestedBy}>
+						<lightning-layout-item size="12"
+						                       padding="around-small">
+							<c-x7s-ideas-custom-look-up object-type="User"
+							                            search-label={ss_idea_label_RequestedBy}
+							                            selected-user-id={currIdea.Requested_By__c}
+							                            is-new-idea={isNewIdea}
+							                            selected-user={selectedUser}
+							                            is-editing={isEditing}
+							                            show-cross={showCross}>
+							</c-x7s-ideas-custom-look-up>
+						</lightning-layout-item>
+					</template>
+
+					<!-- STATUS -->
+					<template if:true={chkStatus}>
+						<!-- Status Change -->
+						<lightning-layout-item size="12"
+						                       padding="around-small">
+							<lightning-combobox
+									label={ss_idea_label_Status}
+									value={currIdea.Status}
+									options={statusSet}
+									onchange={handleStatusChange}>
+							</lightning-combobox>
+						</lightning-layout-item>
+
+						<!-- Status Comment -->
+						<lightning-layout-item size="12">
+							<lightning-input-rich-text label={ss_idea_label_StatusComment}
+							                           placeholder={ss_idea_label_StatusComment}
+							                           message-when-bad-input={ss_idea_error_statusComment}
+							                           valid={validComment}
+							                           value={currIdea.Status_Comment__c}
+							                           onblur={handleComment}
+							                           class={errorClass}>
+							</lightning-input-rich-text>
+						</lightning-layout-item>
+					</template>
+
+					<!-- Related Files -->
+					<template if:true={showRelatedFiles}>
+						<lightning-layout-item size="12"
+						                       padding="around-small">
+							<lightning-input type="file"
+							                 title={ss_idea_tooltip_UploadRelated}
+							                 label={ss_idea_label_UploadRelated}
+							                 accept={relatedFilesAccept}
+							                 name="relatedFiles"
+							                 onchange={handleRelatedUpload}>
+							</lightning-input>
+							<template if:true={relatedNames}>
+								<lightning-formatted-text value={relatedNames}
+								                          title={ss_idea_label_ChooseFile}>
+								</lightning-formatted-text>
+							</template>
+						</lightning-layout-item>
+					</template>
+
+					<!-- SUBMIT -->
+
+					<template if:true={showSpinner}>
+						<lightning-spinner alternative-text={spinnerText}
+						                   variant="brand">
+						</lightning-spinner>
+					</template>
+
+					<lightning-layout-item size="12"
+					                       padding="around-small">
+						<lightning-layout multiple-rows="false">
+							<lightning-layout-item>
+								<lightning-button name="Submit"
+								                  label={ss_idea_label_Submit}
+								                  title={ss_idea_tooltip_Submit}
+								                  onclick={handleSubmitIdea}
+								                  disabled={showSpinner}
+								                  variant="brand">
+								</lightning-button>
+							</lightning-layout-item>
+
+							<lightning-layout-item class="slds-p-left--xx-small">
+								<lightning-button name="Cancel"
+								                  label={ss_idea_label_Cancel}
+								                  title={ss_idea_tooltip_Cancel}
+								                  onclick={goBack}
+								                  variant="neutral">
+								</lightning-button>
+							</lightning-layout-item>
+						</lightning-layout>
+					</lightning-layout-item>
+				</template>
+			</lightning-layout>
+		</div>
+	</c-x7s-shr-component-wrapper>
+</template>

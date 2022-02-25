@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product__c</fullName>
+    <externalId>false</externalId>
+    <label>Product</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>News Lightning Component</fullName>
+                <default>false</default>
+                <label>News Lightning Component</label>
+            </value>
+            <value>
+                <fullName>Events Lightning Component</fullName>
+                <default>false</default>
+                <label>Events Lightning Component</label>
+            </value>
+            <value>
+                <fullName>Ideas Lightning Component</fullName>
+                <default>false</default>
+                <label>Ideas Lightning Component</label>
+            </value>
+            <value>
+                <fullName>Members Lightning Component</fullName>
+                <default>false</default>
+                <label>Members Lightning Component</label>
+            </value>
+            <value>
+                <fullName>Groups Lightning Component</fullName>
+                <default>false</default>
+                <label>Groups Lightning Component</label>
+            </value>
+            <value>
+                <fullName>CoreConnect</fullName>
+                <default>false</default>
+                <label>CoreConnect</label>
+            </value>
+            <value>
+                <fullName>Jive Tile</fullName>
+                <default>false</default>
+                <label>Jive Tile</label>
+            </value>
+            <value>
+                <fullName>Custom Salesforce Project</fullName>
+                <default>false</default>
+                <label>Custom Salesforce Project</label>
+            </value>
+            <value>
+                <fullName>Custom Jive Project</fullName>
+                <default>false</default>
+                <label>Custom Jive Project</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

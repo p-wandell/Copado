@@ -1,0 +1,2 @@
+<apex:page standardController="pse__Practice__c" action="{!URLFOR($Page.TimeVariance, null, [practiceId=$CurrentPage.parameters.id])}" lightningStyleSheets="true">
+</apex:page>

@@ -1,0 +1,1562 @@
+<!-- User Note: TFRA121EENMNNDA Reporting Template for Ratio Analysis -->
+<!-- User Note: The Template Is Specific For Ratio Calculations. Template Uses Two Data Ranges And 10 Reporting Values -->
+<!-- User Note: The Template Expects Current Year Data For DR01 And Last Year Data For DR02 -->
+<!-- User Note: The Template Expects Labels 01-29 For Profitability Ratios, 30-49 For Liquidity Ratios, 50-74 For Activity Ratios, 75-84 For Gearing Ratios And 85-99 For Elements Required. -->
+<!-- User Note: Special Features: Ratio Analysis Report With Specific Calculations, Split In 4 Categories And With Definitions. -->
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}">
+<!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+<!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+<!-- User Note: You Can Create Your Own Stylesheet In The Static Resources And Apply It To Your Reports -->
+<!-- User Note: The Style Has Been Designed To Allow Variations Within Different Types Of Reports -->
+<!-- User Note: Change The Last Character From D To S On The Style Classes Applied To Each Line Will Produce A Summary Report -->
+<!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:stylesheet value="{!StyleSheetName}"/>
+<!-- Variable to represent boolean true/false when needing to set other variables to these states -->
+<apex:variable var="true" value="{!1=1}"/>
+<apex:variable var="false" value="{!1=0}"/>
+<!-- User Note: I Want To Format Values On A Report In Different Ways -->
+<!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+<!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brakets/Minus 3Charcterinternationalcurrencycode/None-->
+<!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+<!-- User Note: You Can Add Your Own Formats To The List Below Try To Keep A Good Coding Structure-->
+<apex:variable var="V2NCB" value="#,###,###,##0.00;(#,###,###,##0.00);0.00"/>
+<apex:variable var="P2NCB" value="#,###,###,##0.00%;(#,###,###,##0.00%);0.00%"/>
+<apex:variable var="V0NCB" value="#,###,###,##0;(#,###,###,##0);0"/>
+<apex:variable var="P0NCB" value="#,###,###,##0%;(#,###,###,##0%);0%"/>
+<apex:variable var="V2RCB" value="(#,###,###,##0.00);#,###,###,##0.00;0.00"/>
+<apex:variable var="P2RCB" value="(#,###,###,##0.00%);#,###,###,##0.00%;0.00%"/>
+<apex:variable var="V0RCB" value="(#,###,###,##0);#,###,###,##0;0"/>
+<apex:variable var="P0RCB" value="(#,###,###,##0%);#,###,###,##0%;0%"/>
+<apex:variable var="V2NCBUSD" value="$#,###,###,##0.00;$(#,###,###,##0.00);$0.00"/>
+<apex:variable var="V2RCBUSD" value="$(#,###,###,##0.00);$#,###,###,##0.00;$0.00"/>
+<!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+<!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+<!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+<!-- User Note: It Is Possible To Use Individual Variables Against A Line This Method Allows You To Make A Single Change To All Related Formats -->
+<apex:variable var="VN" value="{!V2NCB}"/>
+<apex:variable var="PN" value="{!P2NCB}"/>
+<apex:variable var="VR" value="{!V2RCB}"/>
+<apex:variable var="PR" value="{!P2RCB}"/>
+
+<!-- REGION 01: GENERAL CONFIGURATION END -->
+<!-- REGION 02: REPORT HEADER START -->
+<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+<!-- User Note: Show The Error Messages From The Reporting Engine -->
+<apex:form >
+<apex:PageMessages />
+<div class="chatterPosition"></div>
+<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+<!-- User Note: When Creating New Templates This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+<table class="ffrgridd">
+<tr>
+<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+</tr>
+<tr>
+<td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+<td align="right">{!NOW()}</td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">{!ffr__ReportingDefinition__c.ffr__Description__c}</td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+</tr>
+</table>
+<!-- User Note: Create a new table to display the prompt information -->
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">
+<table class="ffrgrid">
+<apex:repeat value="{!promptList}" var="prompt" >
+<tr>
+<td align="left">{!prompt.label}</td>
+<td align="left" class="ffrgridspacer"></td>
+<td align="left"><strong>{!prompt.value}</strong></td>
+</tr>
+</apex:repeat>
+</table>
+</td>
+</tr>
+</table>
+<!-- User Note: Insert a space after the header -->
+<table class="ffrgrid">
+<tr><td class="ffrgridspacer"></td></tr>
+</table>
+<!-- REGION 02: REPORT HEADER END -->
+<!-- REGION 03: REPORT DATA START -->
+<apex:outputpanel rendered="{!!hasMessages}">
+<!-- This template uses two data ranges -->
+<apex:variable var="dataRange1" value="{!reportingData['DR01']}"/>
+<apex:variable var="dataRange2" value="{!reportingData['DR02']}"/>
+<!-- Configuration of columns and groups (elastic template responds dynamically to existence of groups and columns -->
+<!-- Column setup -->
+<!-- Set the default column rendering state variables to "false" -->
+<apex:variable var="RenderColumnA" value="{!false}"/>
+<apex:variable var="RenderColumnB" value="{!false}"/>
+<apex:variable var="RenderColumnC" value="{!false}"/>
+<apex:variable var="RenderColumnD" value="{!false}"/>
+<apex:variable var="RenderColumnE" value="{!false}"/>
+<!-- Now set the column rendering state variables according to which columns have been used (via column filter mappings) -->
+<!-- Data Range 1 -->
+<apex:repeat var="columnKey" value="{!dataRange1.columnKeyList}">
+    <apex:variable var="RenderColumnA" value="{!true}" rendered="{!columnKey=='A'}" />
+    <apex:variable var="RenderColumnB" value="{!true}" rendered="{!columnKey=='B'}" />
+    <apex:variable var="RenderColumnC" value="{!true}" rendered="{!columnKey=='C'}" />
+    <apex:variable var="RenderColumnD" value="{!true}" rendered="{!columnKey=='D'}" />
+    <apex:variable var="RenderColumnE" value="{!true}" rendered="{!columnKey=='E'}" />
+</apex:repeat>
+<!-- Data Range 2 -->
+<apex:repeat var="columnKey" value="{!dataRange2.columnKeyList}">
+    <apex:variable var="RenderColumnA" value="{!true}" rendered="{!columnKey=='A'}" />
+    <apex:variable var="RenderColumnB" value="{!true}" rendered="{!columnKey=='B'}" />
+    <apex:variable var="RenderColumnC" value="{!true}" rendered="{!columnKey=='C'}" />
+    <apex:variable var="RenderColumnD" value="{!true}" rendered="{!columnKey=='D'}" />
+    <apex:variable var="RenderColumnE" value="{!true}" rendered="{!columnKey=='E'}" />
+</apex:repeat>
+<!-- Group setup-->
+<!-- Set the default group value rendering state variables to "false" -->
+<apex:variable var="RenderGroup01" value="{!false}"/>
+<apex:variable var="RenderGroup02" value="{!false}"/>
+<apex:variable var="RenderGroup03" value="{!false}"/>
+<apex:variable var="RenderGroup04" value="{!false}"/>
+<apex:variable var="RenderGroup05" value="{!false}"/>
+<apex:variable var="RenderGroup06" value="{!false}"/>
+<apex:variable var="RenderGroup07" value="{!false}"/>
+<apex:variable var="RenderGroup08" value="{!false}"/>
+<apex:variable var="RenderGroup09" value="{!false}"/>
+<apex:variable var="RenderGroup10" value="{!false}"/>
+<!-- In some places we want to span the groups with a single label, so to do this we need to know how many groups we will render -->
+<apex:variable var="countRenderedGroups" value="{!0}"/>
+<!-- Set the group rendering state variables according to which group values have been used, and count them -->
+<!-- Line-groups Data Range 1 -->
+<apex:repeat var="groupKey" value="{!dataRange1.groupKeyList}">
+<apex:outputPanel layout="none" rendered="{!groupKey=='01'}">
+<apex:variable var="RenderGroup01" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='02'}">
+<apex:variable var="RenderGroup02" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='03'}">
+<apex:variable var="RenderGroup03" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='04'}">
+<apex:variable var="RenderGroup04" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='05'}">
+<apex:variable var="RenderGroup05" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='06'}">
+<apex:variable var="RenderGroup06" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='07'}">
+<apex:variable var="RenderGroup07" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='08'}">
+<apex:variable var="RenderGroup08" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='09'}">
+<apex:variable var="RenderGroup09" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='10'}">
+<apex:variable var="RenderGroup10" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+</apex:repeat>
+<!-- Line-groups Data Range 2 -->
+<apex:repeat var="groupKey" value="{!dataRange2.groupKeyList}">
+<apex:outputPanel layout="none" rendered="{!groupKey=='01'}">
+<apex:variable var="RenderGroup01" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='02'}">
+<apex:variable var="RenderGroup02" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='03'}">
+<apex:variable var="RenderGroup03" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='04'}">
+<apex:variable var="RenderGroup04" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='05'}">
+<apex:variable var="RenderGroup05" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='06'}">
+<apex:variable var="RenderGroup06" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='07'}">
+<apex:variable var="RenderGroup07" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='08'}">
+<apex:variable var="RenderGroup08" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='09'}">
+<apex:variable var="RenderGroup09" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='10'}">
+<apex:variable var="RenderGroup10" value="{!true}"/>
+<apex:variable var="countRenderedGroups" value="{!countRenderedGroups+1}"/>
+</apex:outputPanel>
+</apex:repeat>
+
+<table class="ffrgridnotfullpage">
+<tr><td class = "ffrhidden">
+<!-- We need to track Gross Profit  for each Data Range-->
+<!-- Gross Profit Data Range DR01 -->
+<apex:variable value="{!0}" var="grossProfitTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="grossProfitTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="grossProfitTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="grossProfitTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="grossProfitTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Gross Profit Data Range DR02 -->
+<apex:variable value="{!0}" var="grossProfitTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="grossProfitTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="grossProfitTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="grossProfitTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="grossProfitTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Earnings Before Interest and Tax for each Data Range -->
+<!-- Earnings Before Interest and Tax Data Range DR01 -->
+<apex:variable value="{!0}" var="ebitTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="ebitTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="ebitTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="ebitTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="ebitTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Earnings Before Interest and Tax Data Range DR02 -->
+<apex:variable value="{!0}" var="ebitTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="ebitTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="ebitTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="ebitTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="ebitTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Profit After Tax for each Data Range -->
+<!-- Profit After Tax Data Range DR01 -->
+<apex:variable value="{!0}" var="patTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="patTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="patTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="patTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="patTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Profit After Tax Data Range DR02 -->
+<apex:variable value="{!0}" var="patTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="patTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="patTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="patTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="patTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Sales Revenue for each Data Range -->
+<!-- Sales Revenue Data Range DR01 -->
+<apex:variable value="{!0}" var="salesRevenueTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Sales Revenue Data Range DR02 -->
+<apex:variable value="{!0}" var="salesRevenueTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Cost of Sales for each Data Range -->
+<!-- Cost of Sales Data Range DR01 -->
+<apex:variable value="{!0}" var="costOfSalesTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Cost of Sales Data Range DR02 -->
+<apex:variable value="{!0}" var="costOfSalesTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Interest Expense for each Data Range -->
+<!-- Interest Expense Data Range DR01 -->
+<apex:variable value="{!0}" var="interestExpenseTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Interest Expense Data Range DR02 -->
+<apex:variable value="{!0}" var="interestExpenseTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Current Assets for each Data Range -->
+<!-- Current Assets Data Range DR01 -->
+<apex:variable value="{!0}" var="currentAssetsTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Current Assets Data Range DR02 -->
+<apex:variable value="{!0}" var="currentAssetsTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Receivables for each Data Range -->
+<!-- Receivables Data Range DR01 -->
+<apex:variable value="{!0}" var="receivablesTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="receivablesTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="receivablesTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="receivablesTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="receivablesTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Receivables Data Range DR02 -->
+<apex:variable value="{!0}" var="receivablesTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="receivablesTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="receivablesTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="receivablesTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="receivablesTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Inventory for each Data Range -->
+<!-- Inventory Data Range DR01 -->
+<apex:variable value="{!0}" var="inventoryTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="inventoryTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="inventoryTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="inventoryTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="inventoryTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Inventory Data Range DR02 -->
+<apex:variable value="{!0}" var="inventoryTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="inventoryTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="inventoryTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="inventoryTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="inventoryTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Total Assets for each Data Range -->
+<!-- Total Assets Data Range DR01 -->
+<apex:variable value="{!0}" var="totalAssetsTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Total Assets Data Range DR02 -->
+<apex:variable value="{!0}" var="totalAssetsTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Current Liabilities for each Data Range -->
+<!-- Current Liabilities Data Range DR01 -->
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Current Liabilities Data Range DR02 -->
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Total Liabilities for each Data Range -->
+<!-- Total Liabilities Data Range DR01 -->
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Total Liabilities Data Range DR02 -->
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Shareholders Equity for each Data Range -->
+<!-- Shareholders Equity Data Range DR01 -->
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Shareholders Equity Data Range DR02 -->
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Historical Profit for each Data Range -->
+<!-- Historical Profit Data Range DR01 -->
+<apex:variable value="{!0}" var="historicalProfitTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Historical Profit Data Range DR02 -->
+<apex:variable value="{!0}" var="historicalProfitTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+<!-- We need to track Preference Dividends for each Data Range -->
+<!-- Preference Dividends Data Range DR01 -->
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+<!-- Preference Dividends Data Range DR02 -->
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</td></tr>
+<!-- Iterate over the Rows for each Data Range -->
+<!-- Data Range DR01 -->
+<apex:repeat value="{!dataRange1.rowList}" var="row" >
+<!-- Setup for start of row -->
+<apex:variable var="rowKeyNum" value="{!0}"/>
+<tr><td class = "ffrhidden"><c:ToNumber value="{!row.key}" convertedVarName="rowKeyNum"/>
+<!-- Row-sensitive number format -->
+<apex:variable var="RowNumberPattern" value="{!if(rowKeyNum>20 && rowKeyNum<51,VN,VR)}"/>
+</td></tr>
+<!-- For each row, reset all column row-totals to zero (if the column is in use - determined by column render state variables) -->
+<tr><td class = "ffrhidden">
+<apex:variable value="{!0}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+</td></tr>
+<!-- Iterate over the Lines -->
+<apex:repeat value="{!row.lineList}" var="line" >
+<!-- Line setup -->
+<!-- Each column is configured independently within an outputPanel the outputpanel rendered property determines whether the column is configured -->
+<!-- This uses the column render state variable (e.g. "renderColumnA" determines whether the panel for column A is configured and rendered) -->
+<apex:variable value="{!0}" var="lineTotal"/>
+<!-- For each column, add the column value to the line total - column-row totals are updated separately -->
+<tr><td class="ffrhidden">
+<apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['A'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['B'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['C'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['D'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['E'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+</td></tr>
+<!-- Setup for next line -->
+<!-- Add the values to the row-column totals -->
+<apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+<apex:variable value="{!rowTotalColumnA+VALUE(TEXT(line.columns['A'].values['A']))}" var="rowTotalColumnA"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+<apex:variable value="{!rowTotalColumnB+VALUE(TEXT(line.columns['B'].values['A']))}" var="rowTotalColumnB"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+<apex:variable value="{!rowTotalColumnC+VALUE(TEXT(line.columns['C'].values['A']))}" var="rowTotalColumnC"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+<apex:variable value="{!rowTotalColumnD+VALUE(TEXT(line.columns['D'].values['A']))}" var="rowTotalColumnD"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+<apex:variable value="{!rowTotalColumnE+VALUE(TEXT(line.columns['E'].values['A']))}" var="rowTotalColumnE"/>
+</apex:outputPanel>
+</apex:repeat>
+<!-- Go to next line -->
+<!-- Setup for end of row -->
+<!-- Add up the values for the row total columns -->
+<!-- Note that the row-totals are reset for each successive row -->
+<!-- Accumulate Gross Profit if the row is in the range 01-05 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum<06}">
+<apex:variable value="{!grossProfitTotalDR01ColumnA+rowTotalColumnA}" var="grossProfitTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!grossProfitTotalDR01ColumnB+rowTotalColumnB}" var="grossProfitTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!grossProfitTotalDR01ColumnC+rowTotalColumnC}" var="grossProfitTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!grossProfitTotalDR01ColumnD+rowTotalColumnD}" var="grossProfitTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!grossProfitTotalDR01ColumnE+rowTotalColumnE}" var="grossProfitTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Earnings Before Interest and Tax if the row is in the range 06-10 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>05 && rowKeyNum<11}">
+<apex:variable value="{!ebitTotalDR01ColumnA+rowTotalColumnA}" var="ebitTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!ebitTotalDR01ColumnB+rowTotalColumnB}" var="ebitTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!ebitTotalDR01ColumnC+rowTotalColumnC}" var="ebitTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!ebitTotalDR01ColumnD+rowTotalColumnD}" var="ebitTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!ebitTotalDR01ColumnE+rowTotalColumnE}" var="ebitTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Profit After Tax if the row is in the range 11-15 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>10 && rowKeyNum<16}">
+<apex:variable value="{!patTotalDR01ColumnA+rowTotalColumnA}" var="patTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!patTotalDR01ColumnB+rowTotalColumnB}" var="patTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!patTotalDR01ColumnC+rowTotalColumnC}" var="patTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!patTotalDR01ColumnD+rowTotalColumnD}" var="patTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!patTotalDR01ColumnE+rowTotalColumnE}" var="patTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Sales Revenue if the row is in the range 16-20 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>15 && rowKeyNum<21}">
+<apex:variable value="{!salesRevenueTotalDR01ColumnA+rowTotalColumnA}" var="salesRevenueTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!salesRevenueTotalDR01ColumnB+rowTotalColumnB}" var="salesRevenueTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!salesRevenueTotalDR01ColumnC+rowTotalColumnC}" var="salesRevenueTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!salesRevenueTotalDR01ColumnD+rowTotalColumnD}" var="salesRevenueTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!salesRevenueTotalDR01ColumnE+rowTotalColumnE}" var="salesRevenueTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Cost of Sales if the row is in the range 21-25 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>20 && rowKeyNum<26}">
+<apex:variable value="{!costOfSalesTotalDR01ColumnA+rowTotalColumnA}" var="costOfSalesTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!costOfSalesTotalDR01ColumnB+rowTotalColumnB}" var="costOfSalesTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!costOfSalesTotalDR01ColumnC+rowTotalColumnC}" var="costOfSalesTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!costOfSalesTotalDR01ColumnD+rowTotalColumnD}" var="costOfSalesTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!costOfSalesTotalDR01ColumnE+rowTotalColumnE}" var="costOfSalesTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Interest Expense if the row is in the range 26-30 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>25 && rowKeyNum<31}">
+<apex:variable value="{!interestExpenseTotalDR01ColumnA+rowTotalColumnA}" var="interestExpenseTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!interestExpenseTotalDR01ColumnB+rowTotalColumnB}" var="interestExpenseTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!interestExpenseTotalDR01ColumnC+rowTotalColumnC}" var="interestExpenseTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!interestExpenseTotalDR01ColumnD+rowTotalColumnD}" var="interestExpenseTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!interestExpenseTotalDR01ColumnE+rowTotalColumnE}" var="interestExpenseTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Current Assets if the row is in the range 31-35 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>30 && rowKeyNum<36}">
+<apex:variable value="{!currentAssetsTotalDR01ColumnA+rowTotalColumnA}" var="currentAssetsTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!currentAssetsTotalDR01ColumnB+rowTotalColumnB}" var="currentAssetsTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!currentAssetsTotalDR01ColumnC+rowTotalColumnC}" var="currentAssetsTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!currentAssetsTotalDR01ColumnD+rowTotalColumnD}" var="currentAssetsTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!currentAssetsTotalDR01ColumnE+rowTotalColumnE}" var="currentAssetsTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Receivables if the row is in the range 36-40 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>35 && rowKeyNum<41}">
+<apex:variable value="{!receivablesTotalDR01ColumnA+rowTotalColumnA}" var="receivablesTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!receivablesTotalDR01ColumnB+rowTotalColumnB}" var="receivablesTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!receivablesTotalDR01ColumnC+rowTotalColumnC}" var="receivablesTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!receivablesTotalDR01ColumnD+rowTotalColumnD}" var="receivablesTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!receivablesTotalDR01ColumnE+rowTotalColumnE}" var="receivablesTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Inventory if the row is in the range 41-45 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>40 && rowKeyNum<46}">
+<apex:variable value="{!inventoryTotalDR01ColumnA+rowTotalColumnA}" var="inventoryTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!inventoryTotalDR01ColumnB+rowTotalColumnB}" var="inventoryTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!inventoryTotalDR01ColumnC+rowTotalColumnC}" var="inventoryTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!inventoryTotalDR01ColumnD+rowTotalColumnD}" var="inventoryTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!inventoryTotalDR01ColumnE+rowTotalColumnE}" var="inventoryTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Total Assets if the row is in the range 46-50 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>45 && rowKeyNum<51}">
+<apex:variable value="{!totalAssetsTotalDR01ColumnA+rowTotalColumnA}" var="totalAssetsTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!totalAssetsTotalDR01ColumnB+rowTotalColumnB}" var="totalAssetsTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!totalAssetsTotalDR01ColumnC+rowTotalColumnC}" var="totalAssetsTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!totalAssetsTotalDR01ColumnD+rowTotalColumnD}" var="totalAssetsTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!totalAssetsTotalDR01ColumnE+rowTotalColumnE}" var="totalAssetsTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Current Liabilities if the row is in the range 51-55 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>50 && rowKeyNum<56}">
+<apex:variable value="{!currentLiabilitiesTotalDR01ColumnA+rowTotalColumnA}" var="currentLiabilitiesTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!currentLiabilitiesTotalDR01ColumnB+rowTotalColumnB}" var="currentLiabilitiesTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!currentLiabilitiesTotalDR01ColumnC+rowTotalColumnC}" var="currentLiabilitiesTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!currentLiabilitiesTotalDR01ColumnD+rowTotalColumnD}" var="currentLiabilitiesTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!currentLiabilitiesTotalDR01ColumnE+rowTotalColumnE}" var="currentLiabilitiesTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Total Liabilities if the row is in the range 56-60 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>55 && rowKeyNum<61}">
+<apex:variable value="{!totalLiabilitiesTotalDR01ColumnA+rowTotalColumnA}" var="totalLiabilitiesTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!totalLiabilitiesTotalDR01ColumnB+rowTotalColumnB}" var="totalLiabilitiesTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!totalLiabilitiesTotalDR01ColumnC+rowTotalColumnC}" var="totalLiabilitiesTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!totalLiabilitiesTotalDR01ColumnD+rowTotalColumnD}" var="totalLiabilitiesTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!totalLiabilitiesTotalDR01ColumnE+rowTotalColumnE}" var="totalLiabilitiesTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Shareholders Equity if the row is in the range 61-65 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>60 && rowKeyNum<66}">
+<apex:variable value="{!shareholdersEquityTotalDR01ColumnA+rowTotalColumnA}" var="shareholdersEquityTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!shareholdersEquityTotalDR01ColumnB+rowTotalColumnB}" var="shareholdersEquityTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!shareholdersEquityTotalDR01ColumnC+rowTotalColumnC}" var="shareholdersEquityTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!shareholdersEquityTotalDR01ColumnD+rowTotalColumnD}" var="shareholdersEquityTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!shareholdersEquityTotalDR01ColumnE+rowTotalColumnE}" var="shareholdersEquityTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Historical Profit if the row is in the range 66-70 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>65 && rowKeyNum<71}">
+<apex:variable value="{!historicalProfitTotalDR01ColumnA+rowTotalColumnA}" var="historicalProfitTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!historicalProfitTotalDR01ColumnB+rowTotalColumnB}" var="historicalProfitTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!historicalProfitTotalDR01ColumnC+rowTotalColumnC}" var="historicalProfitTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!historicalProfitTotalDR01ColumnD+rowTotalColumnD}" var="historicalProfitTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!historicalProfitTotalDR01ColumnE+rowTotalColumnE}" var="historicalProfitTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Preference Dividends if the row is in the range 71-75 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>70 && rowKeyNum<76}">
+<apex:variable value="{!preferenceDividendsTotalDR01ColumnA+rowTotalColumnA}" var="preferenceDividendsTotalDR01ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!preferenceDividendsTotalDR01ColumnB+rowTotalColumnB}" var="preferenceDividendsTotalDR01ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!preferenceDividendsTotalDR01ColumnC+rowTotalColumnC}" var="preferenceDividendsTotalDR01ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!preferenceDividendsTotalDR01ColumnD+rowTotalColumnD}" var="preferenceDividendsTotalDR01ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!preferenceDividendsTotalDR01ColumnE+rowTotalColumnE}" var="preferenceDividendsTotalDR01ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+</apex:repeat> <!-- Go to the next row -->
+<!-- Iterate over the Rows for Data Range DR02 -->
+<apex:repeat value="{!dataRange2.rowList}" var="row" >
+<!-- Setup for start of row -->
+<apex:variable var="rowKeyNum" value="{!0}"/>
+<tr><td class = "ffrhidden"><c:ToNumber value="{!row.key}" convertedVarName="rowKeyNum"/>
+<!-- Row-sensitive number format -->
+<apex:variable var="RowNumberPattern" value="{!if(rowKeyNum>20 && rowKeyNum<51,VN,VR)}"/>
+</td></tr>
+<!-- For each row, reset all column row-totals to zero (if the column is in use - determined by column render state variables) -->
+<tr><td class = "ffrhidden">
+<apex:variable value="{!0}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+</td></tr>
+<!-- Iterate over the Lines -->
+<apex:repeat value="{!row.lineList}" var="line" >
+<!-- Line setup -->
+<!-- Each column is configured independently within an outputPanel the outputpanel rendered property determines whether the column is configured -->
+<!-- This uses the column render state variable (e.g. "renderColumnA" determines whether the panel for column A is configured and rendered) -->
+<apex:variable value="{!0}" var="lineTotal"/>
+<!-- For each column, add the column value to the line total - column-row totals are updated separately -->
+<tr><td class="ffrhidden">
+<apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['A'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['B'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['C'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['D'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['E'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+</td></tr>
+<!-- Setup for next line -->
+<!-- Add the values to the row-column totals -->
+<apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+<apex:variable value="{!rowTotalColumnA+VALUE(TEXT(line.columns['A'].values['A']))}" var="rowTotalColumnA"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+<apex:variable value="{!rowTotalColumnB+VALUE(TEXT(line.columns['B'].values['A']))}" var="rowTotalColumnB"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+<apex:variable value="{!rowTotalColumnC+VALUE(TEXT(line.columns['C'].values['A']))}" var="rowTotalColumnC"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+<apex:variable value="{!rowTotalColumnD+VALUE(TEXT(line.columns['D'].values['A']))}" var="rowTotalColumnD"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+<apex:variable value="{!rowTotalColumnE+VALUE(TEXT(line.columns['E'].values['A']))}" var="rowTotalColumnE"/>
+</apex:outputPanel>
+</apex:repeat>
+<!-- Go to next line -->
+<!-- Setup for end of row -->
+<!-- Add up the values for the row total columns -->
+<!-- Note that the row-totals are reset for each successive row -->
+<!-- Accumulate Gross Profit if the row is in the range 01-05 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum<06}">
+<apex:variable value="{!grossProfitTotalDR02ColumnA+rowTotalColumnA}" var="grossProfitTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!grossProfitTotalDR02ColumnB+rowTotalColumnB}" var="grossProfitTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!grossProfitTotalDR02ColumnC+rowTotalColumnC}" var="grossProfitTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!grossProfitTotalDR02ColumnD+rowTotalColumnD}" var="grossProfitTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!grossProfitTotalDR02ColumnE+rowTotalColumnE}" var="grossProfitTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Earnings Before Interest and Tax if the row is in the range 06-10 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>05 && rowKeyNum<11}">
+<apex:variable value="{!ebitTotalDR02ColumnA+rowTotalColumnA}" var="ebitTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!ebitTotalDR02ColumnB+rowTotalColumnB}" var="ebitTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!ebitTotalDR02ColumnC+rowTotalColumnC}" var="ebitTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!ebitTotalDR02ColumnD+rowTotalColumnD}" var="ebitTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!ebitTotalDR02ColumnE+rowTotalColumnE}" var="ebitTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Profit After Tax if the row is in the range 11-15 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>10 && rowKeyNum<16}">
+<apex:variable value="{!patTotalDR02ColumnA+rowTotalColumnA}" var="patTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!patTotalDR02ColumnB+rowTotalColumnB}" var="patTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!patTotalDR02ColumnC+rowTotalColumnC}" var="patTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!patTotalDR02ColumnD+rowTotalColumnD}" var="patTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!patTotalDR02ColumnE+rowTotalColumnE}" var="patTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Sales Revenue if the row is in the range 16-20 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>15 && rowKeyNum<21}">
+<apex:variable value="{!salesRevenueTotalDR02ColumnA+rowTotalColumnA}" var="salesRevenueTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!salesRevenueTotalDR02ColumnB+rowTotalColumnB}" var="salesRevenueTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!salesRevenueTotalDR02ColumnC+rowTotalColumnC}" var="salesRevenueTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!salesRevenueTotalDR02ColumnD+rowTotalColumnD}" var="salesRevenueTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!salesRevenueTotalDR02ColumnE+rowTotalColumnE}" var="salesRevenueTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Cost of Sales if the row is in the range 21-25 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>20 && rowKeyNum<26}">
+<apex:variable value="{!costOfSalesTotalDR02ColumnA+rowTotalColumnA}" var="costOfSalesTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!costOfSalesTotalDR02ColumnB+rowTotalColumnB}" var="costOfSalesTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!costOfSalesTotalDR02ColumnC+rowTotalColumnC}" var="costOfSalesTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!costOfSalesTotalDR02ColumnD+rowTotalColumnD}" var="costOfSalesTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!costOfSalesTotalDR02ColumnE+rowTotalColumnE}" var="costOfSalesTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Interest Expense if the row is in the range 26-30 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>25 && rowKeyNum<31}">
+<apex:variable value="{!interestExpenseTotalDR02ColumnA+rowTotalColumnA}" var="interestExpenseTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!interestExpenseTotalDR02ColumnB+rowTotalColumnB}" var="interestExpenseTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!interestExpenseTotalDR02ColumnC+rowTotalColumnC}" var="interestExpenseTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!interestExpenseTotalDR02ColumnD+rowTotalColumnD}" var="interestExpenseTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!interestExpenseTotalDR02ColumnE+rowTotalColumnE}" var="interestExpenseTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Current Assets if the row is in the range 31-35 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>30 && rowKeyNum<36}">
+<apex:variable value="{!currentAssetsTotalDR02ColumnA+rowTotalColumnA}" var="currentAssetsTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!currentAssetsTotalDR02ColumnB+rowTotalColumnB}" var="currentAssetsTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!currentAssetsTotalDR02ColumnC+rowTotalColumnC}" var="currentAssetsTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!currentAssetsTotalDR02ColumnD+rowTotalColumnD}" var="currentAssetsTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!currentAssetsTotalDR02ColumnE+rowTotalColumnE}" var="currentAssetsTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Receivables if the row is in the range 36-40 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>35 && rowKeyNum<41}">
+<apex:variable value="{!receivablesTotalDR02ColumnA+rowTotalColumnA}" var="receivablesTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!receivablesTotalDR02ColumnB+rowTotalColumnB}" var="receivablesTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!receivablesTotalDR02ColumnC+rowTotalColumnC}" var="receivablesTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!receivablesTotalDR02ColumnD+rowTotalColumnD}" var="receivablesTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!receivablesTotalDR02ColumnE+rowTotalColumnE}" var="receivablesTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Inventory if the row is in the range 41-45 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>40 && rowKeyNum<46}">
+<apex:variable value="{!inventoryTotalDR02ColumnA+rowTotalColumnA}" var="inventoryTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!inventoryTotalDR02ColumnB+rowTotalColumnB}" var="inventoryTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!inventoryTotalDR02ColumnC+rowTotalColumnC}" var="inventoryTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!inventoryTotalDR02ColumnD+rowTotalColumnD}" var="inventoryTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!inventoryTotalDR02ColumnE+rowTotalColumnE}" var="inventoryTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Total Assets if the row is in the range 46-50 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>45 && rowKeyNum<51}">
+<apex:variable value="{!totalAssetsTotalDR02ColumnA+rowTotalColumnA}" var="totalAssetsTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!totalAssetsTotalDR02ColumnB+rowTotalColumnB}" var="totalAssetsTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!totalAssetsTotalDR02ColumnC+rowTotalColumnC}" var="totalAssetsTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!totalAssetsTotalDR02ColumnD+rowTotalColumnD}" var="totalAssetsTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!totalAssetsTotalDR02ColumnE+rowTotalColumnE}" var="totalAssetsTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Current Liabilities if the row is in the range 51-55 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>50 && rowKeyNum<56}">
+<apex:variable value="{!currentLiabilitiesTotalDR02ColumnA+rowTotalColumnA}" var="currentLiabilitiesTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!currentLiabilitiesTotalDR02ColumnB+rowTotalColumnB}" var="currentLiabilitiesTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!currentLiabilitiesTotalDR02ColumnC+rowTotalColumnC}" var="currentLiabilitiesTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!currentLiabilitiesTotalDR02ColumnD+rowTotalColumnD}" var="currentLiabilitiesTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!currentLiabilitiesTotalDR02ColumnE+rowTotalColumnE}" var="currentLiabilitiesTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Total Liabilities if the row is in the range 56-60 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>55 && rowKeyNum<61}">
+<apex:variable value="{!totalLiabilitiesTotalDR02ColumnA+rowTotalColumnA}" var="totalLiabilitiesTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!totalLiabilitiesTotalDR02ColumnB+rowTotalColumnB}" var="totalLiabilitiesTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!totalLiabilitiesTotalDR02ColumnC+rowTotalColumnC}" var="totalLiabilitiesTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!totalLiabilitiesTotalDR02ColumnD+rowTotalColumnD}" var="totalLiabilitiesTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!totalLiabilitiesTotalDR02ColumnE+rowTotalColumnE}" var="totalLiabilitiesTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Shareholders Equity if the row is in the range 61-65 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>60 && rowKeyNum<66}">
+<apex:variable value="{!shareholdersEquityTotalDR02ColumnA+rowTotalColumnA}" var="shareholdersEquityTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!shareholdersEquityTotalDR02ColumnB+rowTotalColumnB}" var="shareholdersEquityTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!shareholdersEquityTotalDR02ColumnC+rowTotalColumnC}" var="shareholdersEquityTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!shareholdersEquityTotalDR02ColumnD+rowTotalColumnD}" var="shareholdersEquityTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!shareholdersEquityTotalDR02ColumnE+rowTotalColumnE}" var="shareholdersEquityTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Historical Profit if the row is in the range 66-70 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>65 && rowKeyNum<71}">
+<apex:variable value="{!historicalProfitTotalDR02ColumnA+rowTotalColumnA}" var="historicalProfitTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!historicalProfitTotalDR02ColumnB+rowTotalColumnB}" var="historicalProfitTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!historicalProfitTotalDR02ColumnC+rowTotalColumnC}" var="historicalProfitTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!historicalProfitTotalDR02ColumnD+rowTotalColumnD}" var="historicalProfitTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!historicalProfitTotalDR02ColumnE+rowTotalColumnE}" var="historicalProfitTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+<!-- Accumulate Preference Dividends if the row is in the range 71-75 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>70 && rowKeyNum<76}">
+<apex:variable value="{!preferenceDividendsTotalDR02ColumnA+rowTotalColumnA}" var="preferenceDividendsTotalDR02ColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!preferenceDividendsTotalDR02ColumnB+rowTotalColumnB}" var="preferenceDividendsTotalDR02ColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!preferenceDividendsTotalDR02ColumnC+rowTotalColumnC}" var="preferenceDividendsTotalDR02ColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!preferenceDividendsTotalDR02ColumnD+rowTotalColumnD}" var="preferenceDividendsTotalDR02ColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!preferenceDividendsTotalDR02ColumnE+rowTotalColumnE}" var="preferenceDividendsTotalDR02ColumnE" rendered="{!RenderColumnE}"/>
+</apex:outputPanel>
+</apex:repeat> <!-- Go to the next row -->
+</table>
+<!-- REGION 03: REPORT DATA END -->
+<!-- REGION 04: RATIOS START -->
+<!-- Set calculated values as variables (for ease of use) -->
+<apex:variable value="{!(shareholdersEquityTotalDR01ColumnA+historicalProfitTotalDR01ColumnA)}" var="shareholdersFundsdataRange1"/>
+<apex:variable value="{!(shareholdersEquityTotalDR02ColumnA+historicalProfitTotalDR02ColumnA)}" var="shareholdersFundsdataRange2"/>
+<apex:variable value="{!(patTotalDR01ColumnA+preferenceDividendsTotalDR01ColumnA)}" var="PATPDdataRange1"/>
+<apex:variable value="{!(patTotalDR02ColumnA+preferenceDividendsTotalDR02ColumnA)}" var="PATPDdataRange2"/>
+<apex:variable value="{!if((totalAssetsTotalDR01ColumnA+currentLiabilitiesTotalDR01ColumnA)=0,0,(ebitTotalDR01ColumnA/(totalAssetsTotalDR01ColumnA+currentLiabilitiesTotalDR01ColumnA)))}" var="ROCEdataRange1"/>
+<apex:variable value="{!if((totalAssetsTotalDR02ColumnA+currentLiabilitiesTotalDR02ColumnA)=0,0,(ebitTotalDR02ColumnA/(totalAssetsTotalDR02ColumnA+currentLiabilitiesTotalDR02ColumnA)))}" var="ROCEdataRange2"/>
+<apex:variable value="{!if(totalAssetsTotalDR01ColumnA=0,0,(patTotalDR01ColumnA/totalAssetsTotalDR01ColumnA))}" var="ROAdataRange1"/>
+<apex:variable value="{!if(totalAssetsTotalDR02ColumnA=0,0,(patTotalDR02ColumnA/totalAssetsTotalDR02ColumnA))}" var="ROAdataRange2"/>
+<apex:variable value="{!if(salesRevenueTotalDR01ColumnA=0,0,(grossProfitTotalDR01ColumnA/salesRevenueTotalDR01ColumnA))}" var="GMdataRange1"/>
+<apex:variable value="{!if(salesRevenueTotalDR02ColumnA=0,0,(grossProfitTotalDR02ColumnA/salesRevenueTotalDR02ColumnA))}" var="GMdataRange2"/>
+<apex:variable value="{!if(salesRevenueTotalDR01ColumnA=0,0,(patTotalDR01ColumnA/salesRevenueTotalDR01ColumnA))}" var="NPMdataRange1"/>
+<apex:variable value="{!if(salesRevenueTotalDR02ColumnA=0,0,(patTotalDR02ColumnA/salesRevenueTotalDR02ColumnA))}" var="NPMdataRange2"/>
+<apex:variable value="{!if(shareholdersFundsdataRange1=0,0,(PATPDdataRange1/shareholdersFundsdataRange1))}" var="ROEdataRange1"/>
+<apex:variable value="{!if(shareholdersFundsdataRange2=0,0,(PATPDdataRange2/shareholdersFundsdataRange2))}" var="ROEdataRange2"/>
+<apex:variable value="{!if(currentLiabilitiesTotalDR01ColumnA=0,0,(currentAssetsTotalDR01ColumnA/currentLiabilitiesTotalDR01ColumnA))}" var="CRdataRange1"/>
+<apex:variable value="{!if(currentLiabilitiesTotalDR02ColumnA=0,0,(currentAssetsTotalDR02ColumnA/currentLiabilitiesTotalDR02ColumnA))}" var="CRdataRange2"/>
+<apex:variable value="{!if(currentLiabilitiesTotalDR01ColumnA=0,0,((currentAssetsTotalDR01ColumnA-inventoryTotalDR01ColumnA)/currentLiabilitiesTotalDR01ColumnA))}" var="QRdataRange1"/>
+<apex:variable value="{!if(currentLiabilitiesTotalDR02ColumnA=0,0,((currentAssetsTotalDR02ColumnA-inventoryTotalDR02ColumnA)/currentLiabilitiesTotalDR02ColumnA))}" var="QRdataRange2"/>
+<apex:variable value="{!(currentAssetsTotalDR01ColumnA+currentLiabilitiesTotalDR01ColumnA)}" var="WCdataRange1"/>
+<apex:variable value="{!(currentAssetsTotalDR02ColumnA+currentLiabilitiesTotalDR02ColumnA)}" var="WCdataRange2"/>
+<apex:variable value="{!if(receivablesTotalDR01ColumnA=0,0,(salesRevenueTotalDR01ColumnA/receivablesTotalDR01ColumnA))}" var="RTdataRange1"/>
+<apex:variable value="{!if(receivablesTotalDR02ColumnA=0,0,(salesRevenueTotalDR02ColumnA/receivablesTotalDR02ColumnA))}" var="RTdataRange2"/>
+<apex:variable value="{!if(inventoryTotalDR01ColumnA=0,0,(costOfSalesTotalDR01ColumnA/inventoryTotalDR01ColumnA))}" var="IT1dataRange1"/>
+<apex:variable value="{!if(inventoryTotalDR02ColumnA=0,0,(costOfSalesTotalDR02ColumnA/inventoryTotalDR02ColumnA))}" var="IT1dataRange2"/>
+<apex:variable value="{!if(inventoryTotalDR01ColumnA=0,0,(salesRevenueTotalDR01ColumnA/inventoryTotalDR01ColumnA))}" var="IT2dataRange1"/>
+<apex:variable value="{!if(inventoryTotalDR02ColumnA=0,0,(salesRevenueTotalDR02ColumnA/inventoryTotalDR02ColumnA))}" var="IT2dataRange2"/>
+<apex:variable value="{!if(totalAssetsTotalDR01ColumnA=0,0,(salesRevenueTotalDR01ColumnA/totalAssetsTotalDR01ColumnA))}" var="TATdataRange1"/>
+<apex:variable value="{!if(totalAssetsTotalDR02ColumnA=0,0,(salesRevenueTotalDR02ColumnA/totalAssetsTotalDR02ColumnA))}" var="TATdataRange2"/>
+<apex:variable value="{!if(shareholdersFundsdataRange1=0,0,(totalLiabilitiesTotalDR01ColumnA/shareholdersFundsdataRange1))}" var="DERdataRange1"/>
+<apex:variable value="{!if(shareholdersFundsdataRange2=0,0,(totalLiabilitiesTotalDR02ColumnA/shareholdersFundsdataRange2))}" var="DERdataRange2"/>
+<apex:variable value="{!if(interestExpenseTotalDR01ColumnA=0,0,(ebitTotalDR01ColumnA/interestExpenseTotalDR01ColumnA))}" var="ICdataRange1"/>
+<apex:variable value="{!if(interestExpenseTotalDR02ColumnA=0,0,(ebitTotalDR02ColumnA/interestExpenseTotalDR02ColumnA))}" var="ICdataRange2"/>
+
+<!-- Set up a table to contain the ratios, divided in 4 sections: first 2 sections side by side in row 1 and the last 2 sections side by side in row 2 -->
+<table class="ffrgrid">
+<!-- First section of the top half of the table (Start)-->
+<tr><td style="vertical-align:top">
+
+<table class="ffrgrid">
+
+<!-- Ratio Group Category Header -->
+<tr><th colspan="3"><h1 class="ffrname">{!label['L01']}</h1></th></tr>
+<tr><td class="ffrcalcsumlabeld" colspan="7">{!label['L02']}</td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L03']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PR}" value="{!ROCEdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PR}" value="{!ROCEdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PR}" value="{!(ROCEdataRange1-ROCEdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L04']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L05']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L86']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!ebitTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!ebitTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(ebitTotalDR01ColumnA-ebitTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L94']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(totalAssetsTotalDR01ColumnA-totalAssetsTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L95']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(currentLiabilitiesTotalDR01ColumnA-currentLiabilitiesTotalDR02ColumnA)}"/></td>
+</tr>
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L10']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PR}" value="{!ROAdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PR}" value="{!ROAdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PR}" value="{!(ROAdataRange1-ROAdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L11']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L12']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L87']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(patTotalDR01ColumnA-patTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L94']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(totalAssetsTotalDR01ColumnA-totalAssetsTotalDR02ColumnA)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L15']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!GMdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!GMdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!(GMdataRange1-GMdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L16']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L17']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(salesRevenueTotalDR01ColumnA-salesRevenueTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L89']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!costOfSalesTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!costOfSalesTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(costOfSalesTotalDR01ColumnA-costOfSalesTotalDR02ColumnA)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L20']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!NPMdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!NPMdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!(NPMdataRange1-NPMdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L21']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L22']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L87']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(patTotalDR01ColumnA-patTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(salesRevenueTotalDR01ColumnA-salesRevenueTotalDR02ColumnA)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L25']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!ROEdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!ROEdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!(ROEdataRange1-ROEdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L26']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L27']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L87']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(patTotalDR01ColumnA-patTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L98']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!preferenceDividendsTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!preferenceDividendsTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(preferenceDividendsTotalDR01ColumnA-preferenceDividendsTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L97']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!shareholdersFundsdataRange1}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!shareholdersFundsdataRange2}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(shareholdersFundsdataRange1-shareholdersFundsdataRange2)}"/></td>
+</tr>
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- First section of the top half of the table (End)-->
+</table>
+</td>
+
+<!-- Second section of the top half of the table (Start)-->
+
+<td style="vertical-align:top">
+
+<table class="ffrgrid">
+
+<!-- Ratio Group Category Header -->
+<tr><th colspan="7"><h1 class="ffrname">{!label['L30']}</h1></th></tr>
+<tr><td class="ffrcalcsumlabeld" colspan="7">{!label['L31']}</td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L32']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!CRdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!CRdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!(CRdataRange1-CRdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L33']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L34']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L91']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(currentAssetsTotalDR01ColumnA-currentAssetsTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L95']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(currentLiabilitiesTotalDR01ColumnA-currentLiabilitiesTotalDR02ColumnA)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L40']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!QRdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!QRdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!(QRdataRange1-QRdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L41']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L42']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L91']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(currentAssetsTotalDR01ColumnA-currentAssetsTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L93']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!inventoryTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!inventoryTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(inventoryTotalDR01ColumnA-inventoryTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L95']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(currentLiabilitiesTotalDR01ColumnA-currentLiabilitiesTotalDR02ColumnA)}"/></td>
+</tr>
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L45']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VN}" value="{!WCdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VN}" value="{!WCdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VN}" value="{!(WCdataRange1-WCdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L46']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L47']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L91']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(currentAssetsTotalDR01ColumnA-currentAssetsTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L95']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(currentLiabilitiesTotalDR01ColumnA-currentLiabilitiesTotalDR02ColumnA)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+<!-- Second section of the top half of the table (End)-->
+</table>
+</td>
+</tr>
+
+<!-- First section of the bottom half of the table (Start)-->
+<tr><td style="vertical-align:top">
+
+<table class="ffrgrid">
+
+<!-- Ratio Group Category Header -->
+<tr><th colspan="7"><h1 class="ffrname">{!label['L50']}</h1></th></tr>
+<tr><td class="ffrcalcsumlabeld" colspan="7">{!label['L51']}</td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L52']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!RTdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!RTdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!(RTdataRange1-RTdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L53']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L54']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(salesRevenueTotalDR01ColumnA-salesRevenueTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L92']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!receivablesTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!receivablesTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(receivablesTotalDR01ColumnA-receivablesTotalDR02ColumnA)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L60']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VN}" value="{!IT1dataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VN}" value="{!IT1dataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VN}" value="{!(IT1dataRange1-IT1dataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr>
+<td class="ffrgridsumlabeld">{!label['L61']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!IT2dataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!IT2dataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!(IT2dataRange1-IT2dataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L62']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L63']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L89']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!costOfSalesTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!costOfSalesTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(costOfSalesTotalDR01ColumnA-costOfSalesTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(salesRevenueTotalDR01ColumnA-salesRevenueTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L93']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!inventoryTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!inventoryTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(inventoryTotalDR01ColumnA-inventoryTotalDR02ColumnA)}"/></td>
+</tr>
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L70']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!TATdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!TATdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!(TATdataRange1-TATdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L71']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L72']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(salesRevenueTotalDR01ColumnA-salesRevenueTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L94']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(totalAssetsTotalDR01ColumnA-totalAssetsTotalDR02ColumnA)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+<!-- First section of the bottom half of the table (End)-->
+</table>
+</td>
+
+<!-- Second section of the bottom half of the table (Start)-->
+<td style="vertical-align:top">
+
+<table class="ffrgrid">
+
+<!-- Ratio Group Category Header -->
+<tr><th colspan="7"><h1 class="ffrname">{!label['L75']}</h1></th></tr>
+<tr><td class="ffrcalcsumlabeld" colspan="7">{!label['L76']}</td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L77']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!DERdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!DERdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!(DERdataRange1-DERdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L78']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L79']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L96']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!totalLiabilitiesTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!totalLiabilitiesTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(totalLiabilitiesTotalDR01ColumnA-totalLiabilitiesTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L97']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!shareholdersFundsdataRange1}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!shareholdersFundsdataRange2}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(shareholdersFundsdataRange1-shareholdersFundsdataRange2)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Column Headers) -->
+<tr>
+<th class="ffrgridtitlerightd" colspan="3">{!reportingDataRanges['DR01'].Name}</th>
+<th class="ffrgridtitlerightd">{!reportingDataRanges['DR02'].Name}</th>
+<th class="ffrgridtitlerightd">{!label['L85']}</th>
+</tr>
+
+<!-- Ratio Summary -->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L80']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!ICdataRange1}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!ICdataRange2}"/></td>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!(ICdataRange1-ICdataRange2)}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="7">{!label['L81']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="7">{!label['L82']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="7"></td></tr>
+
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L86']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!ebitTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!ebitTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!(ebitTotalDR01ColumnA-ebitTotalDR02ColumnA)}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L90']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!interestExpenseTotalDR01ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!interestExpenseTotalDR02ColumnA}"/></td>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!(interestExpenseTotalDR01ColumnA-interestExpenseTotalDR02ColumnA)}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="7"></td></tr>
+<!-- Ratio End-->
+
+<!-- Second section of the bottom half of the table (End)-->
+</table>
+</td>
+</tr>
+
+<!-- Now the table that contains all 4 sections can be closed -->
+</table>
+</apex:outputpanel>
+</apex:form>
+<!-- REGION 06: REPORT CHATTER START -->
+<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

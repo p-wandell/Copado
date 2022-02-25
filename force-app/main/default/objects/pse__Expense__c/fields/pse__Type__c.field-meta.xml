@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Type__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Airfare</fullName>
+                <default>false</default>
+                <label>Airfare</label>
+            </value>
+            <value>
+                <fullName>Airline Baggage Fee</fullName>
+                <default>false</default>
+                <label>Airline Baggage Fee</label>
+            </value>
+            <value>
+                <fullName>Airline Change Fee</fullName>
+                <default>false</default>
+                <label>Airline Change Fee</label>
+            </value>
+            <value>
+                <fullName>Breakfast, employee only</fullName>
+                <default>false</default>
+                <label>Breakfast, employee only</label>
+            </value>
+            <value>
+                <fullName>Business Meals , employees</fullName>
+                <default>false</default>
+                <label>Business Meals , employees</label>
+            </value>
+            <value>
+                <fullName>Business Meals, non-employees</fullName>
+                <default>false</default>
+                <label>Business Meals, non-employees</label>
+            </value>
+            <value>
+                <fullName>Car Rental</fullName>
+                <default>false</default>
+                <label>Car Rental</label>
+            </value>
+            <value>
+                <fullName>Courier/Shipping/Freight</fullName>
+                <default>false</default>
+                <label>Courier/Shipping/Freight</label>
+            </value>
+            <value>
+                <fullName>Dinner, employee only</fullName>
+                <default>false</default>
+                <label>Dinner, employee only</label>
+            </value>
+            <value>
+                <fullName>Dreamforce Meals &amp; Ent Expense</fullName>
+                <default>false</default>
+                <label>Dreamforce Meals &amp; Ent Expense</label>
+            </value>
+            <value>
+                <fullName>Dreamforce Non-Meals/Ent Expense</fullName>
+                <default>false</default>
+                <label>Dreamforce Non-Meals/Ent Expense</label>
+            </value>
+            <value>
+                <fullName>Entertainment, Client</fullName>
+                <default>false</default>
+                <label>Entertainment, Client</label>
+            </value>
+            <value>
+                <fullName>Entertainment, Staff</fullName>
+                <default>false</default>
+                <label>Entertainment, Staff</label>
+            </value>
+            <value>
+                <fullName>Fuel, for rental cars only</fullName>
+                <default>false</default>
+                <label>Fuel, for rental cars only</label>
+            </value>
+            <value>
+                <fullName>Gifts to Client</fullName>
+                <default>false</default>
+                <label>Gifts to Client</label>
+            </value>
+            <value>
+                <fullName>Gifts to Staff</fullName>
+                <default>false</default>
+                <label>Gifts to Staff</label>
+            </value>
+            <value>
+                <fullName>Hotel</fullName>
+                <default>false</default>
+                <label>Hotel</label>
+            </value>
+            <value>
+                <fullName>Internet/Online Fees</fullName>
+                <default>false</default>
+                <label>Internet/Online Fees</label>
+            </value>
+            <value>
+                <fullName>Lunch, employee only</fullName>
+                <default>false</default>
+                <label>Lunch, employee only</label>
+            </value>
+            <value>
+                <fullName>Marketing/Promotional Costs</fullName>
+                <default>false</default>
+                <label>Marketing/Promotional Costs</label>
+            </value>
+            <value>
+                <fullName>Miscellaneous Expense, please explain in comment section</fullName>
+                <default>false</default>
+                <label>Miscellaneous Expense, please explain in comment section</label>
+            </value>
+            <value>
+                <fullName>Mobile Phone, prior approval required</fullName>
+                <default>false</default>
+                <label>Mobile Phone, prior approval required</label>
+            </value>
+            <value>
+                <fullName>Office Supplies/Software</fullName>
+                <default>false</default>
+                <label>Office Supplies/Software</label>
+            </value>
+            <value>
+                <fullName>Parking</fullName>
+                <default>false</default>
+                <label>Parking</label>
+            </value>
+            <value>
+                <fullName>Personal Car Mileage, deduct 30 mi/day</fullName>
+                <default>false</default>
+                <label>Personal Car Mileage, deduct 30 mi/day</label>
+            </value>
+            <value>
+                <fullName>Printing/Copying/Stationary</fullName>
+                <default>false</default>
+                <label>Printing/Copying/Stationary</label>
+            </value>
+            <value>
+                <fullName>Recruiting Meals/Ent</fullName>
+                <default>false</default>
+                <label>Recruiting Meals/Ent</label>
+            </value>
+            <value>
+                <fullName>Recruiting Travel</fullName>
+                <default>false</default>
+                <label>Recruiting Travel</label>
+            </value>
+            <value>
+                <fullName>Seminar/Course Fees</fullName>
+                <default>false</default>
+                <label>Seminar/Course Fees</label>
+            </value>
+            <value>
+                <fullName>Taxi</fullName>
+                <default>false</default>
+                <label>Taxi</label>
+            </value>
+            <value>
+                <fullName>Toll Charges</fullName>
+                <default>false</default>
+                <label>Toll Charges</label>
+            </value>
+            <value>
+                <fullName>Train</fullName>
+                <default>false</default>
+                <label>Train</label>
+            </value>
+            <value>
+                <fullName>Travel Booking Fee</fullName>
+                <default>false</default>
+                <label>Travel Booking Fee</label>
+            </value>
+            <value>
+                <fullName>Channel Advocacy Hospitality</fullName>
+                <default>false</default>
+                <label>Channel Advocacy Hospitality</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

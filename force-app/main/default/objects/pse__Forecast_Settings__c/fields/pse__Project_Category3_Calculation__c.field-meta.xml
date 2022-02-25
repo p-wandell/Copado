@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Project_Category3_Calculation__c</fullName>
+    <defaultValue>&quot;1.00,0.00,0.50,0.25,0.00,0.50,0.50&quot;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Multipliers used to calculate the Category3 default for Project Forecasts. Determines contribution of the following metrics (in order): Billings, Pass Through Billings, Scheduled Time, Held Resource Requests, Unheld Resource Requests, Scheduled Milestones, Unscheduled Backlog.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The multipliers used to calculate Category 3 for Project Forecasts. This multiplies, in order, the metrics for:Billings, Pass Through Billings, Scheduled Time, Held Resource Requests, Unheld Resource Requests, Scheduled Milestones and Unscheduled Backlog.</inlineHelpText>
+    <label>Project Category3 Calculation</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,30 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc. All rights reserved.
+  -->
+
+<template>
+	<div aria-label={newsName} role={ariaLandmarkRoleForComponent}>
+		<c-x7s-shr-component-wrapper custom-class={customClass}
+		                             variant={tileVariant}>
+			<c-x7s-shr-card description={description}
+			                hide-image={hideImage}
+			                image-src={imageUrl}
+			                layout={layout}>
+				<slot>
+					<lightning-formatted-rich-text value={translatedNews}>
+					</lightning-formatted-rich-text>
+					<div if:true={limitToSpecificGroups}>
+						<template if:true={groupName}>
+							<lightning-formatted-text value={groupLabel}>
+							</lightning-formatted-text>&nbsp;
+							<a onclick={navigateToGroup}>
+								{groupName}
+							</a>
+						</template>
+					</div>
+				</slot>
+			</c-x7s-shr-card>
+		</c-x7s-shr-component-wrapper>
+	</div>
+
+</template>

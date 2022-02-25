@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>MQL</fullName>
+        <default>false</default>
+        <label>MQL</label>
+    </customValue>
+    <customValue>
+        <fullName>TQL</fullName>
+        <default>false</default>
+        <label>TQL</label>
+    </customValue>
+    <customValue>
+        <fullName>Sales Not Now</fullName>
+        <default>false</default>
+        <label>Sales Not Now</label>
+    </customValue>
+    <customValue>
+        <fullName>SAL</fullName>
+        <default>false</default>
+        <label>SAL</label>
+    </customValue>
+    <customValue>
+        <fullName>Pass Through</fullName>
+        <default>false</default>
+        <label>Pass Through</label>
+    </customValue>
+    <customValue>
+        <fullName>Pardot Nurture</fullName>
+        <default>false</default>
+        <label>Pardot Nurture</label>
+    </customValue>
+    <customValue>
+        <fullName>No Conversion</fullName>
+        <default>false</default>
+        <label>No Conversion</label>
+    </customValue>
+    <masterLabel>Lead Qualification Status</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

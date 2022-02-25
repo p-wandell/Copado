@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hive_View_2</fullName>
+    <columns>PRODUCT2.NAME</columns>
+    <columns>Price__c</columns>
+    <columns>Child_Product_Count__c</columns>
+    <columns>AppX_Formula__c</columns>
+    <columns>Slides_Formula__c</columns>
+    <columns>Video_Formula__c</columns>
+    <columns>Guide_Formula__c</columns>
+    <columns>Training__c</columns>
+    <columns>Battle_Card_Formula__c</columns>
+    <columns>Launch_Formula__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>PRODUCT2.FAMILY</field>
+        <operation>equals</operation>
+        <value>Product</value>
+    </filters>
+    <filters>
+        <field>PRODUCT2.ACTIVE</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>PRODUCT2.NAME</field>
+        <operation>notContain</operation>
+        <value>Extraction,Fund</value>
+    </filters>
+    <label>Active IP: Official/Master (DO NOT EDIT)</label>
+</ListView>

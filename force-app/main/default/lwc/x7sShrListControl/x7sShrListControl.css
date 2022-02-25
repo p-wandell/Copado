@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ */
+.x7s-list-control {
+  position: relative;
+}
+.x7s-list-control__label-inline {
+  flex-shrink: 0;
+}
+@media screen and (max-width: 47.99em) {
+  .x7s-list-control__item {
+    width: 100%;
+  }
+  .x7s-list-control__item + .x7s-list-control__item {
+    /* We don't need double padding when stacking the filters */
+    margin-top: var(--lwc-spacingSmall);
+  }
+}

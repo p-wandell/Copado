@@ -1,0 +1,8 @@
+<apex:page controller="ffct.BundleClickLinkConfigController" action="{!init}">
+	<apex:form id="form">
+	    <apex:sectionHeader title="Manage ClickLink Bundler" subtitle="Manages the Create Bundle buttons on the ClickLink Rule object" help="helploader?topicid=1015"/>
+		<apex:pageMessages escape="false" />
+		<apex:commandButton value="{!ManageAction}" action="{!manage}" rendered="{!ISNULL(AsyncResults)}"/>
+		<apex:actionPoller action="{!checkAsyncRequest}" interval="5" rerender="form" rendered="{!NOT(ISNULL(AsyncResults))}"/>
+	</apex:form>	
+</apex:page>

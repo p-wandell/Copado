@@ -1,0 +1,5 @@
+<apex:page standardController="Account" sidebar="false" showHeader="false">
+  <iframe id="gridFrame" scrolling="auto" height="600" width="100%" frameborder="0"
+    src="/apex/gblite__Grid?gname=Solution Offerings&id={!Account.Id}&sh=0&ssb=0&sbb=0">
+  </iframe>
+</apex:page>

@@ -1,0 +1,101 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+:host {
+  --x7s-iconCard__defaultBg: transparent;
+}
+.x7s-icon-card {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 0.25rem;
+  color: var(--lwc-colorTextDefault);
+  border-radius: 0.5rem;
+  margin: 0 auto;
+}
+.x7s-icon-card:hover,
+.x7s-icon-card:focus {
+  text-decoration: none;
+}
+.x7s-icon-card:hover .x7s-icon-card__overlay,
+.x7s-icon-card:focus .x7s-icon-card__overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.x7s-icon-card.x7s-icon-card__horizontal {
+  display: flex;
+  align-items: center;
+}
+.x7s-icon-card__title {
+  font-weight: bold;
+  display: block;
+  transition: color 0.25s ease-in-out;
+}
+.x7s-icon-card__description {
+  font-size: 0.875rem;
+  display: block;
+  transition: color 0.25s ease-in-out;
+  color: var(--lwc-colorTextWeak);
+}
+.x7s-icon-card__title + .x7s-icon-card__description {
+  margin-top: 3px;
+}
+.x7s-icon-card__info {
+  display: block;
+}
+.x7s-icon-card__info,
+.slds-rich-text-editor__output {
+  line-height: 1.1;
+}
+.x7s-icon-card__image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--x7s-iconCard__defaultBg);
+  background-repeat: no-repeat;
+  background-position: 50% 25%;
+  background-size: cover;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+.x7s-icon-card__image-wrapper {
+  overflow: hidden;
+  display: block;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+.x7s-icon-card__horizontal .x7s-icon-card__image-wrapper {
+  margin-right: 0.5rem;
+  margin-bottom: 0;
+}
+.x7s-icon-card__overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transition: background-color 0.25s ease-in-out;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.slds-text-align_center .x7s-icon-card__image-wrapper {
+  margin-left: auto;
+  margin-right: auto;
+}
+.slds-text-align_right .x7s-icon-card__image-wrapper {
+  margin-left: auto;
+}
+.x7s-icon-card_animated .x7s-icon-card__image {
+  transition: transform 0.25s ease-in-out;
+  transform: scale(1);
+  transform-origin: 50% 50%;
+}
+.x7s-icon-card_animated:hover .x7s-icon-card__image,
+.x7s-icon-card_animated:focus .x7s-icon-card__image {
+  transform: scale(1.1);
+}

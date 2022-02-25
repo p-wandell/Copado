@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<isExposed>true</isExposed>
+	<masterLabel>7S News Banner</masterLabel>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default">
+			<property name="iconName" label="Icon Name" type="String" default="standard:news"
+			          description="Enter the name of icon"/>
+			<property name="displaySearch" label="Show Search" type="Boolean" default="true"
+			          description="Show Search in header"/>
+			<property name="searchPlaceHolder" label="Place Holder Text" type="String" default="Search"
+			          description="Shows Place holder text"/>
+			<property name="newsTitle" label="News Directory Title" type="String" default="News"
+			          description="Text to display as title"/>
+			<property name="showNumberOfNews" label="Display Number of News" type="Boolean" default="true"
+			          description="Show/hide number of News with directory title. Number will not display if the title is hidden."/>
+			<property name="actionButtonText" label="Action Button Text" type="String" default="Create News"
+			          description="Enter Action Button Title Text"/>
+			<property name="createNewsURL" label="Create News Page API Name" type="String" default="X7S_News_Create__c"
+			          description="Enter the unique News Create page API name"/>
+			<property name="showBottomBorder" label="Show bottom border" type="Boolean" default="true"
+			          description="Display a border line below the header"/>
+			<property name="customClass" label="Custom Class" type="String" default=""
+			          description="Used for custom styling."/>
+			<property name="listId" label="List Id" type="String" default="ID_1" description="Id of specific List"/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

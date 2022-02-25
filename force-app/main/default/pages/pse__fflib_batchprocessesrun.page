@@ -1,0 +1,17 @@
+<!-- fflib_batchprocessesrun -->
+<apex:page standardController="pse__fflib_BatchProcess__c" extensions="pse.fflib_BatchProcessController" recordSetVar="records" lightningStylesheets="true">
+	<apex:form >
+		<apex:sectionHeader title="{!$Label.pse__fflib_batchprocessesrunpagetitle}"/>
+		<apex:pageBlock title="{!$Label.pse__fflib_batchprocessesrunpagesectiontitle}">
+			<apex:pageBlockButtons >
+				<apex:commandButton value="{!$Label.pse__fflib_batchprocessesrunjobsbutton}" action="{!runJobs}" disabled="{!isEmpty}"/>
+				<apex:commandButton value="{!$Label.pse__fflib_batchprocessescancelbutton}" action="{!cancel}"/>
+			</apex:pageBlockButtons>
+			
+			<apex:pageMessages />
+			<apex:outputpanel rendered="{!!isEmpty}">
+				<apex:pageMessage summary="{!$Label.pse__fflib_batchprocessesconfirmationmessage}" severity="info" strength="2" />
+			</apex:outputpanel>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

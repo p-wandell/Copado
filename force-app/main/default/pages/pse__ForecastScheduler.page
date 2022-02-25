@@ -1,0 +1,108 @@
+<apex:page controller="pse.ForecastSchedulerController" lightningStylesheets="true" tabStyle="Forecast_Scheduler__tab">
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<c:WaitComponent />
+
+	<style>
+		.ffdc-scheduler-config-tabs {
+			width: auto!important;
+			min-width: auto!important;
+		}
+
+		div.ffdc-scheduler-config-panel table.ffdc-scheduler-config-form select {
+			margin-right: 5px;
+		}
+
+		table.ffdc-scheduler-config-form tr:nth-child(2) select {
+			margin-right: 5px;
+		}
+	</style>
+
+	<apex:outputPanel rendered="{!$User.UIThemeDisplayed=='Theme3'}">
+		<style>
+			table.ffdc-scheduler-config-form select {
+				margin-right: 5px;
+			}
+		</style>
+	</apex:outputPanel>
+
+	<apex:pageMessages />
+	<apex:form >
+		<apex:pageBlock mode="edit">
+			<apex:actionFunction name="handleBackToSetup" action="{!backToSetup}" immediate="true" />
+			<apex:actionFunction name="onSchedule" action="{!schedule}" />
+
+			<apex:pageBlockSection title="{!$Label.pse__common_label_information}" columns="2" id="information">
+				<apex:inputField value="{!runInfo.pse__Forecast_Calculation_Name__c}" required="true" />
+				<apex:inputField value="{!runInfo.pse__Time_Period__c}" required="true" />
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection id="rpg" showHeader="false" columns="2">
+				<apex:pageblockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__forecasting_scheduler_rpg_selector_level}" />
+					<apex:outputpanel >
+						<apex:actionRegion >
+							<apex:selectList value="{!rpgOption}" size="1" required="true" id="rpgSelector">
+								<apex:selectOptions value="{!rpgSelectOptions}" />
+								<apex:actionSupport event="onchange" reRender="rpg" />
+							</apex:selectList>
+						</apex:actionRegion>
+					</apex:outputpanel>
+				</apex:pageblockSectionItem>
+				<apex:pageblockSectionItem rendered="{!isRegion}">
+					<apex:outputLabel value="{!$Label.pse__common_label_region}" />
+					<apex:inputField value="{!runInfo.pse__Region__c}" id="regionField" />
+				</apex:pageblockSectionItem>
+				<apex:pageblockSectionItem rendered="{!isPractice}">
+					<apex:outputLabel value="{!$Label.pse__common_label_practice}" />
+					<apex:inputField value="{!runInfo.pse__Practice__c}" id="practiceField" />
+				</apex:pageblockSectionItem>
+				<apex:pageblockSectionItem rendered="{!isGroup}">
+					<apex:outputLabel value="{!$Label.pse__common_label_group}" />
+					<apex:inputField value="{!runInfo.pse__Group__c}" id="groupField" />
+				</apex:pageblockSectionItem>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection title="{!$Label.pse__utilization_label_schedule}" columns="1">
+				<c:fflib_SchedulerConfiguration schedulerConfiguration="{!pageSchedulerConfig}" />
+			</apex:pageBlockSection>
+
+			<!--
+					Hidden button included to give a primary action for use when the enter key is pressed.
+					If not included the left most button will be the primary action.
+			-->
+			<apex:commandButton action="{!schedule}" style="display: none;" />
+		</apex:pageBlock>
+	</apex:form>
+	<script>
+		prepareVFHeader();
+
+		function prepareVFHeader() {
+			var config = {
+				objectName: '{!JSENCODE($Label.forecasting_scheduler_title)}',
+				onRender: 'onHeaderLoadCallback',
+				documentIcon: {
+					name: 'psa_forecasting',
+					namespace: $FFOUTAPP.getNamespace()
+				},
+				helpUrl: '{!$Page.ForecastSchedulerHelp}',
+				buttons: [{
+					id: 'backToSetup',
+					label: '{!JSENCODE($Label.forecasting_setup_back_to_setup)}',
+					actionFn: 'handleBackToSetup'
+				}, {
+					id: 'schedule',
+					label: '{!JSENCODE($Label.common_label_schedule)}',
+					actionFn: 'onSchedule'
+				}]
+			};
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+	</script>
+</apex:page>

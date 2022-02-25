@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>X7S_Ideas_Community_Letter_Head</letterhead>
+    <name>Idea New Comment Notification</name>
+    <style>freeForm</style>
+    <subject>Community: An idea you follow has a new comment</subject>
+    <textOnly>Hello, {#userName}!
+
+{#recordContext} left a comment on {#recordName}, an idea you follow in the Community.
+
+{#recordLink}
+
+- The Community Team</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -1,0 +1,49 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francoiskorb on 11/22/17.
+ -->
+
+<aura:component description="ss_product_family_tile"
+                extends="c:ss_product_base"
+                access="global">
+
+	<aura:attribute name="familyItem"     type="Map"/>
+	<aura:attribute name="productListUrl" type="String" default="/7s-product-list" access="public"/>
+	<aura:attribute name="labelBrowse"    type="String" default="{!$Label.c.ss_pc_label_familyList}"/>
+	<aura:attribute name="browse"         type="String" />
+
+	<aura:handler   name="init"           value="{!this}"     action="{!c.init}"/>
+
+	<aura:registerEvent name="filterEvent" type="c:ss_product_filter_event"/>
+
+	<lightning:layout multipleRows="true">
+
+		<lightning:layoutItem size="12"
+		                      class="slds-box_border"
+		                      padding="around-small">
+
+			<div class="bg">
+				<a href="javascript:void(0);"
+				   onclick="{!c.gotoFamily}"
+			   class="productImage slds-align--absolute-center"
+				   style="{! 'background-image:url(' + v.familyItem.imageUrl + ')'}">
+					<div class="overlay">
+						{!v.browse}
+					</div>
+				</a>
+			</div>
+		</lightning:layoutItem>
+
+		<lightning:layoutItem size="12"
+		                      padding="around-small"
+		                      class="slds-align--absolute-center slds-text-heading--label-normal">
+			<a href="javascript:void(0);"
+			   onclick="{!c.gotoFamily}">
+					{!v.familyItem.name}
+			</a>
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

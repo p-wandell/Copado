@@ -1,0 +1,27 @@
+<!--
+  ~ Copyright (c) 2021. 7summits Inc. All rights reserved.
+-->
+
+<template>
+    <c-x7s-shr-component-wrapper
+		custom-class={customClass}
+		title={titletext}
+		description={subtitletext}
+		title-align={titleAlignment}
+		variant={displayVariant}
+		aria-label={label.labelAria}
+		auto-slds-card={autoSlds}>
+
+		<div if:true={showTable} style={adjustHeight}>
+			<c-x7s-adventure-leaderboard-extend-table
+					key-field="id"
+					data={tableData}
+					columns={columns}
+					sorted-by={sortBy}
+					sorted-direction={sortDirection}
+					onsort={doSorting}
+					hide-checkbox-column>
+			</c-x7s-adventure-leaderboard-extend-table>
+		</div>
+  </c-x7s-shr-component-wrapper>
+</template>

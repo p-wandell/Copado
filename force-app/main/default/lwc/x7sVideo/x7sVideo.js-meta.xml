@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>Component to display a gallery individual videos.</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Video</masterLabel>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage, lightning__RecordPage">
+            <property name="title" type="String" label="Title"/>
+            <property name="subTitle" type="String" label="Subtitle"/>
+            <property name="align" type="String" label="Title Alignment" datasource="left,center,right"/>
+            <property name="videoURL1" type="String" label="Video 1: URL" description="Enter a link to a video from YouTube, Vimeo, Vidyard, or Wistia."/>
+            <property name="videoTitle1" type="String" label="Video 1: Title"/>
+            <property name="videoDescription1" type="String" label="Video 1: Description"/>
+            <property name="videoURL2" type="String" label="Video 2: URL" description="Enter a link to a video from YouTube, Vimeo, Vidyard, or Wistia."/>
+            <property name="videoTitle2" type="String" label="Video 2: Title"/>
+            <property name="videoDescription2" type="String" label="Video 2: Description"/>
+            <property name="videoURL3" type="String" label="Video 3: URL" description="Enter a link to a video from YouTube, Vimeo, Vidyard, or Wistia."/>
+            <property name="videoTitle3" type="String" label="Video 3: Title"/>
+            <property name="videoDescription3" type="String" label="Video 3: Description"/>
+            <property name="hideDescriptions" type="Boolean" label="Hide All Descriptions" description="Check this setting to hide all descriptions, even if the description fields are populated."/>
+            <property name="descriptionLineLength" type="String" label="Maximum Description Lines" description="The maximum number of lines of the description text to be displayed."/>
+            <property name="hasBorder" type="Boolean" label="Add Border"/>
+            <property name="useFromRecord" type="Boolean" label="Use Content from Record Detail"/>
+            <property name="variant" type="String" label="Variant" datasource="default, slds-card, featured" description="Sets the style of the component wrapper."/>
+        </targetConfig>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" type="String" label="Title"/>
+            <property name="subTitle" type="String" label="Subtitle"/>
+            <property name="align" type="String" label="Title Alignment" datasource="left,center,right"/>
+            <property name="videoURL1" type="String" label="Video 1: URL" description="Enter a link to a video from YouTube, Vimeo, Vidyard, or Wistia."/>
+            <property name="videoTitle1" type="String" label="Video 1: Title"/>
+            <property name="videoDescription1" type="String" label="Video 1: Description"/>
+            <property name="videoURL2" type="String" label="Video 2: URL" description="Enter a link to a video from YouTube, Vimeo, Vidyard, or Wistia."/>
+            <property name="videoTitle2" type="String" label="Video 2: Title"/>
+            <property name="videoDescription2" type="String" label="Video 2: Description"/>
+            <property name="videoURL3" type="String" label="Video 3: URL" description="Enter a link to a video from YouTube, Vimeo, Vidyard, or Wistia."/>
+            <property name="videoTitle3" type="String" label="Video 3: Title"/>
+            <property name="videoDescription3" type="String" label="Video 3: Description"/>
+            <property name="hideDescriptions" type="Boolean" label="Hide All Descriptions" description="Check this setting to hide all descriptions, even if the description fields are populated."/>
+            <property name="descriptionLineLength" type="String" label="Maximum Description Lines" description="The maximum number of lines of the description text to be displayed."/>
+            <property name="hasBorder" type="Boolean" label="Add Border"/>
+            <property name="useFromRecord" type="Boolean" label="Use Content from Record Detail"/>
+            <property name="recordId" type="String" label="Record ID" default="{!recordId}"/>
+            <property name="variant" type="String" label="Variant" datasource="default, slds-card, featured" description="Sets the style of the component wrapper."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

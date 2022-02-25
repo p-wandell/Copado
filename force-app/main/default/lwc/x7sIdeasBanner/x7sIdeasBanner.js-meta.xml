@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Ideas Banner</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default">
+            <property name="zoneName" label="Zone Name" type="String" description="Enter the zone name"/>
+            <property name="displayVariant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="iconName" label="Icon Name" type="String" description="Enter the name of icon"/>
+            <property name="showTitle" label="Show Title" type="Boolean" description="Show/Hide Ideas Title"/>
+            <property name="ideasTitle" label="Title Text Singular" type="String" description="Title Text Single will display when there is only 1 record"/>
+            <property name="pluralTitle" label="Title Text Plural" type="String" description="Title Text Plural will display when there are 0 or more than 1 records"/>
+            <property name="displaySearch" label="Show Search" type="Boolean" description="Show Search in header"/>
+            <property name="searchPlaceHolder" label="Place Holder Text" type="String" description="Shows Place holder text"/>
+            <property name="showNumberOfIdeas" label="Display Number of Ideas" type="Boolean" description="Show/hide number of Ideas with directory title. Number will not display if the title is hidden."/>
+            <property name="actionButtonText" label="Action Button Text" type="String" description="Enter Action Button Title Text"/>
+            <property name="createIdeasURL" label="Ideas Create Edit Page API Name" type="String" description="Enter the API name for the Idea Create Edit page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="showBottomBorder" label="Show Bottom Border" type="Boolean" description="Display a border line below the header"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

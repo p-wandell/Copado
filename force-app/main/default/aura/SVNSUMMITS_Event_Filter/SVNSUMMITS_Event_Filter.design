@@ -1,0 +1,67 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Events Filter">
+	<design:attribute name="showDateFilter"
+	                  label="Show date filter"
+	                  description="Check to enable the date filter"/>
+	<design:attribute name="showTopicFilter"
+	                  label="Show topic filter"
+	                  description="Check to enable the topic filter"/>
+	<design:attribute name="showTypeFilter"
+	                  label="Show Event Type filter"
+	                  description="Check to enable the event type filter"/>
+	<design:attribute name="showLocationFilter"
+	                  label="Show location name filter"
+	                  description="Check to enable the event location name filter"/>
+
+	<design:attribute name="searchThreshold"
+	                  label="Search threshold"
+	                  description="Number of characters needed to initiate the search"/>
+	<design:attribute name="showPickLists"
+	                  label="Show pick lists for All Filters"
+	                  description="Enable pick lists for filter - this may impact performance and will not work for large communities"/>
+
+	<!-- CUSTOM FILTERS -->
+
+	<!-- Custom Field1-->
+	<design:attribute name="customField1"
+	                  label="Custom Field 1 API name"
+	                  description="Enter the exact API name for the custom field1 related to the Event__c sObject."/>
+	<design:attribute name="labelCustomField1"
+	                  label="Field 1 label"
+	                  description="Enter a label for custom field 1"/>
+	<design:attribute name="placeHolderCustomField1"
+	                  label="Field 1 placeholder"
+	                  description="Enter a placeholder for custom field 1"/>
+	<design:attribute name="pickListLabelField1"
+	                  label="Field 1 pick list label"
+	                  description="Enter a label for the custom field 1 pick list"/>
+	
+	<!-- Custom Field2-->
+	<design:attribute name="customField2"
+	                  label="Custom Field 2 API name"
+	                  description="Enter the exact API name for the custom field2 related to the Event__c sObject."/>
+	<design:attribute name="labelCustomField2"
+	                  label="Field 2 label"
+	                  description="Enter a label for custom field 2"/>
+	<design:attribute name="placeHolderCustomField2"
+	                  label="Field 2 placeholder"
+	                  description="Enter a placeholder for custom field 2"/>
+	<design:attribute name="pickListLabelField2"
+	                  label="Field 2 pick list label"
+	                  description="Enter a label for the custom field 2 pick list"/>
+
+	<!-- Custom Field3-->
+	<design:attribute name="customField3"
+	                  label="Custom Field 3 API name"
+	                  description="Enter the exact API name for the custom field3 related to the Event__c sObject."/>
+	<design:attribute name="labelCustomField3"
+	                  label="Field 3 label"
+	                  description="Enter a label for custom field 3"/>
+	<design:attribute name="placeHolderCustomField3"
+	                  label="Field 3 placeholder"
+	                  description="Enter a placeholder for custom field 3"/>
+	<design:attribute name="pickListLabelField3"
+	                  label="Field 3 pick list label"
+	                  description="Enter a label for the custom field 3 pick list"/>
+
+</design:component>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loss_Detail__c</fullName>
+    <externalId>false</externalId>
+    <label>Loss Detail</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <controllingField>Loss_Reason__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Cost</fullName>
+                <default>false</default>
+                <label>Cost</label>
+            </value>
+            <value>
+                <fullName>Change in Stakeholder</fullName>
+                <default>false</default>
+                <label>Change in Stakeholder</label>
+            </value>
+            <value>
+                <fullName>Timing/Staffing</fullName>
+                <default>false</default>
+                <label>Timing/Staffing</label>
+            </value>
+            <value>
+                <fullName>Expertise Mismatch</fullName>
+                <default>false</default>
+                <label>Expertise Mismatch</label>
+            </value>
+            <value>
+                <fullName>Incumbent Selected</fullName>
+                <default>false</default>
+                <label>Incumbent Selected</label>
+            </value>
+            <value>
+                <fullName>Legacy</fullName>
+                <default>false</default>
+                <label>Legacy</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Salesforce Platform Loss</controllingFieldValue>
+            <controllingFieldValue>Project Deprioritized</controllingFieldValue>
+            <controllingFieldValue>Lost to Competitor</controllingFieldValue>
+            <controllingFieldValue>Chose Internal Resources</controllingFieldValue>
+            <controllingFieldValue>Walk Away</controllingFieldValue>
+            <controllingFieldValue>No Decision</controllingFieldValue>
+            <valueName>Cost</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Salesforce Platform Loss</controllingFieldValue>
+            <controllingFieldValue>Project Deprioritized</controllingFieldValue>
+            <controllingFieldValue>Lost to Competitor</controllingFieldValue>
+            <controllingFieldValue>Chose Internal Resources</controllingFieldValue>
+            <controllingFieldValue>Walk Away</controllingFieldValue>
+            <controllingFieldValue>No Decision</controllingFieldValue>
+            <valueName>Change in Stakeholder</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Salesforce Platform Loss</controllingFieldValue>
+            <controllingFieldValue>Project Deprioritized</controllingFieldValue>
+            <controllingFieldValue>Lost to Competitor</controllingFieldValue>
+            <controllingFieldValue>Chose Internal Resources</controllingFieldValue>
+            <controllingFieldValue>Walk Away</controllingFieldValue>
+            <controllingFieldValue>No Decision</controllingFieldValue>
+            <valueName>Timing/Staffing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Salesforce Platform Loss</controllingFieldValue>
+            <controllingFieldValue>Project Deprioritized</controllingFieldValue>
+            <controllingFieldValue>Lost to Competitor</controllingFieldValue>
+            <controllingFieldValue>Chose Internal Resources</controllingFieldValue>
+            <controllingFieldValue>Walk Away</controllingFieldValue>
+            <controllingFieldValue>No Decision</controllingFieldValue>
+            <valueName>Expertise Mismatch</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Salesforce Platform Loss</controllingFieldValue>
+            <controllingFieldValue>Project Deprioritized</controllingFieldValue>
+            <controllingFieldValue>Lost to Competitor</controllingFieldValue>
+            <controllingFieldValue>Chose Internal Resources</controllingFieldValue>
+            <controllingFieldValue>Walk Away</controllingFieldValue>
+            <controllingFieldValue>No Decision</controllingFieldValue>
+            <valueName>Incumbent Selected</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Salesforce Platform Loss</controllingFieldValue>
+            <controllingFieldValue>Project Deprioritized</controllingFieldValue>
+            <controllingFieldValue>Lost to Competitor</controllingFieldValue>
+            <controllingFieldValue>Chose Internal Resources</controllingFieldValue>
+            <controllingFieldValue>Walk Away</controllingFieldValue>
+            <controllingFieldValue>No Decision</controllingFieldValue>
+            <controllingFieldValue>Included in separate SOW</controllingFieldValue>
+            <valueName>Legacy</valueName>
+        </valueSettings>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

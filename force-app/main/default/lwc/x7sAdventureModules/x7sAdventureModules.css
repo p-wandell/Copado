@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+.progressBarCss {
+    font-size: 16px;
+    font-weight: bold;    
+    /*margin-right: 4px; */
+}
+
+.truncat {   
+    white-space: nowrap; 
+    width: 150px; 
+    overflow: hidden;   
+    display: inline-block;;
+    vertical-align:middle;
+    text-overflow: ellipsis; 
+    /*border: 1px solid #000000; */
+}
+
+.module-progress {
+    color: var(--lwc-colorTextLabel, #696969);
+}

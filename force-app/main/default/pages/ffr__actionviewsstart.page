@@ -1,0 +1,54 @@
+<apex:page controller="ffr.ActionViewsStartController" tabStyle="ActionViews__tab" lightningStylesheets="true" docType="html-5.0">
+	<c:fflib_LoadIndicator id="loadIndicator" startLoadFn="startLoad" stopLoadFn="stopLoad" blocking="true"/>
+	<style>
+		.slds-vf-scope .headerButtons {
+			display: block;
+			margin: 10px 10px 10px 0;
+		}
+	</style>
+
+	<apex:sectionHeader title="{!$Label.ffr__actionviews}" help="{!helpLink}"/>
+	<apex:form id="formId">
+		<apex:actionFunction name="delInquiryTemplateAction" action="{!deleteinquiryTemplate}" oncomplete="stopLoad('{!JSINHTMLENCODE($Label.ffr__actionviewtemplatedeleting)}', '{!JSINHTMLENCODE($Label.ffr__actionviewtemplatedeletingfinished)}')" reRender="sectionItems" />
+		<apex:inputHidden value="{!InquiryTemplateIdToDelete}" id="recToDelID"></apex:inputHidden>
+		<apex:actionFunction name="onChangeSearchBox" action="{!actOnSearch}" reRender="theTable"/>
+		<apex:pageBlock id="sectionItems">
+			<apex:pageMessages />
+			<table>
+				<tr>
+					<td style="font-weight:bold; font-size:16px;">{!$Label.ffr__actionviewssearch}<br/>
+						<apex:inputText style="width:350px; height:20px;" id="searchText" value="{!SearchText}" onkeyup="onChangeSearchBox()"/>
+					</td>
+				</tr>
+			</table>
+			<apex:panelGrid >
+				<apex:panelGroup styleClass="headerButtons">
+					<apex:commandButton action="{!getInquiryTemplatePage}" value="{!$Label.ffr__actionviewsnewinquirytemplatebutton}" rendered="{!$Permission.ffr__InquiryTemplatesCreate || $Setup.ffr__ReportingSettings__c.ffr__DisableCustomPermissions__c}"/>
+					<apex:commandButton action="{!getActionViewImportPage}" value="{!$Label.ffr__actionviewsstartimportbutton}"/>
+					<apex:commandButton action="{!getActionViewExportPage}" value="{!$Label.ffr__actionviewsstartexportbutton}"/>
+					<apex:commandButton action="{!refresh}" value="{!$Label.ffr__actionviewslistviewrefresh}"/>
+				</apex:panelGroup>
+			</apex:panelGrid>
+			<apex:pageBlockTable value="{!TemplatesSummaries}" var="summary" id="theTable">
+				<apex:column >
+					<apex:facet name="header">{!$Label.ffr__actionviewsactionlabel}</apex:facet>
+					<apex:outputLink value="{!$Page.ffr__inquirytemplate}?id={!summary.Id}">{!$Label.ffr__actionviewseditlabel}</apex:outputLink>
+					<apex:outputText value="  |  "/>
+					<apex:commandLink onclick="return confirmProcess('{!JSENCODE($Label.ffr__actionviewtemplatedeleteconfirmation)}', '{!JSINHTMLENCODE($Label.ffr__actionviewtemplatedeleting)}', '{!$Component.formId.recToDelID}', '{!summary.Id}', delInquiryTemplateAction)" rerender="sectionItems">{!$Label.ffr__actionviewtemplatedeletelabel}
+						<apex:param name="delId" value="{!summary.Id}"/>
+					</apex:commandLink>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">{!$Label.ffr__actionviewsnamelabel}</apex:facet>
+					<apex:outputLink value="{!$Page.ffr__actionviews}?id={!summary.Id}"> {!summary.name}</apex:outputLink>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">{!$Label.ffr__actionviewsdataviewlabel}</apex:facet>
+					<apex:outputText value="{!summary.dataview}"/>
+				</apex:column>
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+	</apex:form>
+
+	<script src="{!URLFOR($Resource.ffr__front, 'utils/pages.js')}"/>
+</apex:page>

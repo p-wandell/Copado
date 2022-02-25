@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Ideas Filter</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Ideas Filter</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage, lightningCommunity__Default">
+            <property name="zoneName" label="Zone Name" type="String" description="Enter the zone name"/>
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="showTopicFilter" label="Show Topic Filter" type="Boolean" description="Show Topic Filter"/>
+            <property name="showCategoryFilter" label="Show Category Filter" type="Boolean" description="Show Category Filter"/>
+            <property name="showStatusFilter" label="Show Status Filter" type="Boolean" description="Show Status Filter"/>
+            <property name="showThemesFilter" label="Show Theme Filter" type="Boolean" description="Show Theme Filter"/>
+            <property name="TopicValue" label="Topic Values" type="String" description="Enter a CSV list of topics to limit the topic selection"/>
+            <property name="StatusValue" label="Status Values" type="String" description="To limit the displayed status values, enter a comma separated list of status values from the zone. Leave blank to show all statuses in the zone"/>
+            <property name="CatValue" label="Category Values" type="String" description="To limit the displayed category values, enter a comma separated list of category values from the zone. Leave blank to show all categories in the zone"/>
+            <property name="showMyIdeas" label="Show My Ideas Filter" type="Boolean" description="Show My Ideas Filter"/>
+            <property name="showVoteByMeFilter" label="Show Ideas Voted By Me Filter" type="Boolean" description="Show Ideas Voted By Me Filter"/>
+            <property name="showIdeasCommentedByMeFilter" label="Show Ideas Commented By Me Filter" type="Boolean" description="Show Ideas Commented By Me Filter"/>
+            <property name="showIdeasSubscribedByMeFilter" label="Show Ideas Subscribed By Me Filter" type="Boolean" description="Show Ideas Subscribed By Me Filter"/>
+            <property name="myCompaniesIdeas" label="Show My company’s Ideas Filter" type="Boolean" description="Show My company’s Ideas Filter"/>
+            <property name="myCompaniesVotedIdeas" label="Show Ideas my company has voted on Filter" type="Boolean" description="Show Ideas my company has voted on Filter"/>
+            <property name="myCompaniesCommentedIdeas" label="Show Ideas my company has commented on Filter" type="Boolean" description="Show Ideas my company has commented on Filter"/>
+            <property name="myCompaniesSubscribedIdeas" label="Show Ideas my company has subscribed to Filter" type="Boolean" description="Show Ideas my company has subscribed to Filter"/>
+            <property name="requireSelectionIdeasFilter" label="Require Selection in My Ideas Picklist" type="Boolean" description="Require Selection in My Ideas Picklist"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

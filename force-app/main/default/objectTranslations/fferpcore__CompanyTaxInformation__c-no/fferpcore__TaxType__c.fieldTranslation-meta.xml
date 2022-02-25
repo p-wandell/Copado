@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Den typen skatt som skal brukes til produkter som selges av dette firmaet. For eksempel, GST, SUT eller MVA.</help>
+    <label><!-- Tax Type --></label>
+    <name>fferpcore__TaxType__c</name>
+    <picklistValues>
+        <masterLabel>GST</masterLabel>
+        <translation>GST</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SUT</masterLabel>
+        <translation>SUT</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>VAT</masterLabel>
+        <translation>MVA</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,50 @@
+<apex:page showHeader="false" sidebar="false" applyBodyTag="false" applyHtmlTag="false" >
+
+    <div id="twitter-grid"></div>
+
+    <script>
+        window.twttr = (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+          if (d.getElementById(id)) return t;
+          js = d.createElement(s);
+          js.id = id;
+          js.src = "{!URLFOR($Resource.TwitterWidget)}";
+          fjs.parentNode.insertBefore(js, fjs);
+
+          t._e = [];
+          t.ready = function(f) {
+            t._e.push(f);
+          };
+
+          return t;
+        }(document, "script", "twitter-wjs"));
+
+    	var search = location.search.substring(1);
+		var params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+
+    	params.chrome = 'noheader nofooter transparent';
+    	if(params.borderColor.length < 3){
+            params.chrome = params.chrome+' noborders';
+        }
+    	twttr.ready(function (twttr) {
+                twttr.widgets.createTimeline(
+                    {
+                        sourceType: "profile",
+                        screenName: params.handle
+                    },
+                    document.getElementById("twitter-grid"),
+                    {
+                        chrome: params.chrome,
+                        showReplies: params.showReplies,
+                        theme: params.theme,
+                        height: params.height,
+                        tweetLimit: params.tweetLimit,
+                        linkColor: '#'+params.linkColor,
+                        borderColor: '#'+params.borderColor
+                    }
+                );
+        });
+
+    </script>
+</apex:page>

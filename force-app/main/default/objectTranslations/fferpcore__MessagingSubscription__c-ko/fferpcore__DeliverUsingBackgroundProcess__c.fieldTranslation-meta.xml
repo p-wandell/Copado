@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>보낸 사람이 지금 배달되도록 지정할 때 백그라운드 프로세스를 사용하여 메시지를 배달할지 여부를 결정합니다.</help>
+    <label><!-- Deliver Using Background Process --></label>
+    <name>fferpcore__DeliverUsingBackgroundProcess__c</name>
+    <picklistValues>
+        <masterLabel>Always</masterLabel>
+        <translation>항상</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Capacity</masterLabel>
+        <translation>생산 능력</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Never</masterLabel>
+        <translation>못</translation>
+    </picklistValues>
+</CustomFieldTranslation>

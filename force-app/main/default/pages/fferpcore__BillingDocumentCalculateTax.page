@@ -1,0 +1,23 @@
+<apex:page showHeader="true" sidebar="true" standardController="fferpcore__BillingDocument__c" extensions="fferpcore.BillingDocumentCalculateTaxController" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+	<apex:form >
+		<apex:sectionHeader title="{!$Label.fferpcore__billingdocumentcalculatetaxpagetitle}" 
+							subtitle="{!fferpcore__BillingDocument__c.Name}"
+							help="{!helpUrl}" />
+		<apex:pageBlock >
+			<apex:pageMessages />
+
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.fferpcore__billingdocumentcalculatetaxbuttonconfirm}" action="{!calculate}" rendered="{!CanCalculateTax}"/>
+				<apex:commandButton value="{!$Label.fferpcore__erpvisualforcecancelbutton}" action="{!cancel}"/>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+
+		<!-- Hidden fields to retrieve data needed by the controller -->
+		<apex:outputText value="{!fferpcore__BillingDocument__c.fferpcore__Account__c}" rendered="false"/>
+		<apex:outputText value="{!fferpcore__BillingDocument__c.fferpcore__Company__c}" rendered="false"/>
+		<apex:outputText value="{!fferpcore__BillingDocument__c.Company__r.fferpcore__TaxInformation__c}" rendered="false"/>
+		<apex:outputText value="{!fferpcore__BillingDocument__c.fferpcore__DocumentStatus__c}" rendered="false"/>
+		<apex:outputText value="{!fferpcore__BillingDocument__c.fferpcore__DocumentDate__c}" rendered="false"/>
+	</apex:form>
+</apex:page>

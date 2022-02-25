@@ -1,0 +1,137 @@
+<aura:component
+        implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+        access="global">
+
+    <aura:attribute name="container" type="String" default="x-large" access="global"/>
+    <aura:attribute name="_container" type="String" default="" access="private"/>
+
+    <aura:attribute name="columns" type="String" default="1" access="global"/>
+    <aura:attribute name="backgroundImage" type="String" default="" access="global"/>
+    <aura:attribute name="backgroundColor" type="String" default="#333333" access="global"/>
+    <aura:attribute name="fixed" type="boolean" default="false" access="global"/>
+
+    <aura:attribute name="horizontalPadding" type="String" default="large" access="global"/>
+    <aura:attribute name="verticalPadding" type="String" default="large" access="global"/>
+    <aura:attribute name="_horizontalPadding" type="String" access="private"/>
+    <aura:attribute name="_verticalPadding" type="String" access="private"/>
+
+    <aura:attribute name="overlayColor" type="String" default="#333333" access="global"/>
+    <aura:attribute name="overlayOpacity" type="String" default=".7" access="global"/>
+
+    <aura:attribute name="darkText" type="Boolean" default="false" access="global"/>
+    <aura:attribute name="centered" type="Boolean" default="false" access="global"/>
+    <aura:attribute name="verticalAlignment" type="String" default="Top" access="global"/>
+    <aura:attribute name="_verticalAlignment" type="String" default="" access="private"/>
+
+    <aura:attribute name="Headline" type="String" default="" access="global"/>
+    <aura:attribute name="SubHeadline" type="String" default="" access="global"/>
+    <aura:attribute name="Paragraph" type="String" default="" access="global"/>
+    <aura:attribute name="ButtonText" type="String" default="" access="global"/>
+    <aura:attribute name="ButtonURL" type="String" default="" access="global"/>
+    <aura:attribute name="Button2Text" type="String" default="" access="global"/>
+    <aura:attribute name="Button2URL" type="String" default="" access="global"/>
+
+    <aura:attribute name="Headline2" type="String" default="" access="global"/>
+    <aura:attribute name="SubHeadline2" type="String" default="" access="global"/>
+    <aura:attribute name="Paragraph2" type="String" default="" access="global"/>
+    <aura:attribute name="ButtonText2" type="String" default="" access="global"/>
+    <aura:attribute name="ButtonURL2" type="String" default="" access="global"/>
+    <aura:attribute name="Button2Text2" type="String" default="" access="global"/>
+    <aura:attribute name="Button2URL2" type="String" default="" access="global"/>
+
+    <aura:attribute name="Headline3" type="String" default="" access="global"/>
+    <aura:attribute name="SubHeadline3" type="String" default="" access="global"/>
+    <aura:attribute name="Paragraph3" type="String" default="" access="global"/>
+    <aura:attribute name="ButtonText3" type="String" default="" access="global"/>
+    <aura:attribute name="ButtonURL3" type="String" default="" access="global"/>
+    <aura:attribute name="Button2Text3" type="String" default="" access="global"/>
+    <aura:attribute name="Button2URL3" type="String" default="" access="global"/>
+
+    <aura:attribute name="rightComponent" type="String" default="None" required="false" access="global"/>
+
+    <aura:attribute name="CustomClassName" type="String" default="" access="global"/>
+
+    <aura:handler name="init" action="{!c.initPeakBanner}" value="{!this}"/>
+
+    <section class="{!v.CustomClassName + if(!v.darkText, ' slds-text-color_inverse')}">
+
+        <!-- Why so many inline styles? So that they can be set in .design when adding to page. Background size and fixed must be added here because the particular orde of these properties matter! -->
+        <div class="{!v._horizontalPadding + ' ' + v._verticalPadding}" style="{!'background-color:' + v.backgroundColor + ';background-image:url(' + v.backgroundImage + ');background-size: cover;' + if(v.fixed, ' background-attachment: fixed;')}">
+            <div class="peak-banner-overlay" style="{!'background: '+ v.overlayColor +'; opacity: '+ v.overlayOpacity}"></div>
+
+            <div class="{!'slds-container_center ' + (v._container ? v._container + ' slds-col_padded' : '')}">
+                <lightning:layout multipleRows="true" pullToBoundary="small" verticalAlign="{!v._verticalAlignment}">
+
+                    <!-- 1 column -->
+                    <aura:if isTrue="{!v.columns == '1'}">
+                        <lightning:layoutItem padding="horizontal-small" size="12">
+                            <c:Peak_ContentTile Headline="{!v.Headline}" SubHeadline="{!v.SubHeadline}"
+                                                Paragraph="{!v.Paragraph}" ButtonText="{!v.ButtonText}"
+                                                ButtonURL="{!v.ButtonURL}" Button2Text="{!v.Button2Text}"
+                                                Button2URL="{!v.Button2URL}" darkText="{!v.darkText}"
+                                                centered="{!v.centered}"
+                            />
+                        </lightning:layoutItem>
+                    </aura:if>
+
+                    <!-- 2 column -->
+                    <aura:if isTrue="{!v.columns == '2'}">
+                        <lightning:layoutItem padding="horizontal-small" size="12" mediumDeviceSize="8">
+                            <c:Peak_ContentTile Headline="{!v.Headline}" SubHeadline="{!v.SubHeadline}"
+                                                Paragraph="{!v.Paragraph}" ButtonText="{!v.ButtonText}"
+                                                ButtonURL="{!v.ButtonURL}" Button2Text="{!v.Button2Text}"
+                                                Button2URL="{!v.Button2URL}" darkText="{!v.darkText}"
+                                                centered="{!v.centered}"
+                            />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="12" mediumDeviceSize="4">
+                            <aura:if isTrue="{!v.rightComponent != 'None'}">
+                                <c:Peak_BannerComponentInclude component="{!v.rightComponent}"/>
+                                <aura:set attribute="else">
+                                    <c:Peak_ContentTile Headline="{!v.Headline2}" SubHeadline="{!v.SubHeadline2}"
+                                                        Paragraph="{!v.Paragraph2}" ButtonText="{!v.ButtonText2}"
+                                                        ButtonURL="{!v.ButtonURL2}" Button2Text="{!v.Button2Text2}"
+                                                        Button2URL="{!v.Button2URL2}" darkText="{!v.darkText}"
+                                                        centered="{!v.centered}"/>
+                                </aura:set>
+                            </aura:if>
+                        </lightning:layoutItem>
+                    </aura:if>
+
+                    <!-- 3 column -->
+                    <aura:if isTrue="{!v.columns == '3'}">
+                        <lightning:layoutItem padding="horizontal-small" size="12" mediumDeviceSize="4">
+                            <c:Peak_ContentTile Headline="{!v.Headline}" SubHeadline="{!v.SubHeadline}"
+                                                Paragraph="{!v.Paragraph}" ButtonText="{!v.ButtonText}"
+                                                ButtonURL="{!v.ButtonURL}" Button2Text="{!v.Button2Text}"
+                                                Button2URL="{!v.Button2URL}" darkText="{!v.darkText}"
+                                                centered="{!v.centered}"
+                            />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="12" mediumDeviceSize="4">
+                            <c:Peak_ContentTile Headline="{!v.Headline2}" SubHeadline="{!v.SubHeadline2}"
+                                                Paragraph="{!v.Paragraph2}" ButtonText="{!v.ButtonText2}"
+                                                ButtonURL="{!v.ButtonURL2}" Button2Text="{!v.Button2Text2}"
+                                                Button2URL="{!v.Button2URL2}" darkText="{!v.darkText}"
+                                                centered="{!v.centered}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="horizontal-small" size="12" mediumDeviceSize="4">
+                            <aura:if isTrue="{!v.rightComponent != 'None'}">
+                                <c:Peak_BannerComponentInclude component="{!v.rightComponent}"/>
+                                <aura:set attribute="else">
+                                    <c:Peak_ContentTile Headline="{!v.Headline3}" SubHeadline="{!v.SubHeadline3}"
+                                                        Paragraph="{!v.Paragraph3}" ButtonText="{!v.ButtonText3}"
+                                                        ButtonURL="{!v.ButtonURL3}" Button2Text="{!v.Button2Text3}"
+                                                        Button2URL="{!v.Button2URL3}" darkText="{!v.darkText}"
+                                                        centered="{!v.centered}"/>
+                                </aura:set>
+                            </aura:if>
+                        </lightning:layoutItem>
+                    </aura:if>
+
+                </lightning:layout>
+            </div>
+
+        </div>
+    </section>
+</aura:component>

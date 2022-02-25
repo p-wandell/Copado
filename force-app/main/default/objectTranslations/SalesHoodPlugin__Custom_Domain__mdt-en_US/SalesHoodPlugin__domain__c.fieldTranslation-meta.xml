@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- This field tells which domain the plugin will talk to. If no item is chosen, the default SalesHood domain will be used. --></help>
+    <label><!-- domain --></label>
+    <name>SalesHoodPlugin__domain__c</name>
+    <picklistValues>
+        <masterLabel>https://app.inspire.xactlycorp.com</masterLabel>
+        <translation><!-- https://app.inspire.xactlycorp.com --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>https://app.saleshood.com</masterLabel>
+        <translation><!-- https://app.saleshood.com --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

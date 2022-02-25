@@ -1,0 +1,16 @@
+<apex:page standardController="ffct__BundleComponent__c" extensions="ffct.BundleComponentControllerExtension" action="{!isToolMustBeActivated}">
+	<apex:form id="form">
+		<apex:sectionHeader subtitle="{!BundleComponent.Name}" title="{!$Label.ffct__deepclonebundlecomponent}" help="helploader?topicid=1045"/>
+        <apex:pageMessages escape="false" id="messagesDiv"/>
+        <apex:pageBlock >
+        	<apex:pageBlockSection >
+        		<apex:inputField value="{!CloneBundleComponent.Name}" />
+        	</apex:pageBlockSection>
+        
+        	<apex:pageBlockbuttons location="bottom">
+  				<apex:commandbutton value="{!$Label.ffct__deepclone}" action="{!deepClone}" />
+  				<apex:commandbutton value="{!$Label.ffct__cancel}" action="{!cancel}" />
+        	</apex:pageBlockbuttons>
+        </apex:pageBlock>
+	</apex:form>
+</apex:page>

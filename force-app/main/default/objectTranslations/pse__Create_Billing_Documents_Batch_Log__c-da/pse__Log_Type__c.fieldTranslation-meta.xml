@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Angiver type log (Fejl, Information, Afbryd, Ekstern).</help>
+    <label><!-- Log Type --></label>
+    <name>pse__Log_Type__c</name>
+    <picklistValues>
+        <masterLabel>Abort</masterLabel>
+        <translation>Abort</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Error</masterLabel>
+        <translation>Fejl</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>External</masterLabel>
+        <translation>Udvendig</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Information</masterLabel>
+        <translation>Information</translation>
+    </picklistValues>
+</CustomFieldTranslation>

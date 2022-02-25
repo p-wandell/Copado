@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Typ av kartläggning. Fält för enskilda värden. Leta efter att peka på en annan post. Lista för att peka på flera associerade poster.</help>
+    <label><!-- Type --></label>
+    <name>fferpcore__Type__c</name>
+    <picklistValues>
+        <masterLabel>Field</masterLabel>
+        <translation>Fält</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>List</masterLabel>
+        <translation>Lista</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lookup</masterLabel>
+        <translation>Slå upp</translation>
+    </picklistValues>
+</CustomFieldTranslation>

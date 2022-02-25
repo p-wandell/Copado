@@ -1,0 +1,230 @@
+<apex:page standardController="ffirule__IntegrationRuleJob__c" extensions="ffirule.EditIntegrationRuleScheduleController" lightningStylesheets="true">
+	<link href="{!URLFOR($Resource.front_ir2,'front_sop/components/CronJob/CronJob.css')}" type="text/css" rel="stylesheet"/>
+    <apex:slds />
+    <apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}" layout="none">
+		<style>
+			.pageTitleIcon {
+				border-radius: .25rem;
+			    background-color: #f87d76;
+			    background-image: url("{!URLFOR($Asset.SLDS, 'assets/icons/custom/custom67.svg')}");
+			    background-repeat: no-repeat;
+			    background-position: center;
+			    background-size: 2rem;
+				display: block !important;
+			}
+		</style>
+	</apex:outputPanel>
+	<apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme3'}" layout="none">
+        <style>
+            .slds-scope, .slds-scope td {
+                font-family: Arial,Helvetica,sans-serif; 
+            }
+        </style>
+    </apex:outputPanel>
+    <style type="text/css">
+		.message {
+			margin:4px 20px;
+		}
+		h2{
+		font-weight:700;
+		}
+        .frequencyTabPanel label {margin: 0 3px;}
+        select[disabled] {color: #aaa;}
+	</style>
+	<apex:form >
+		
+		<apex:inputHidden value="{!selectedFrequencyType}" id="selectedFrequency"/>
+		<apex:inputHidden value="{!selectedMonthItem}" id="selectedMonthItem"/>
+		<apex:inputHidden value="{!ffirule__IntegrationRuleJob__c.ffirule__ScheduledApexJobCronExpression__c}"/>
+    
+    
+    <apex:sectionHeader title="Edit Schedule" subtitle="{!ffirule__IntegrationRuleJob__c.Name}"/>
+    
+    
+    <apex:pageBlock mode="edit" title="Schedule Edit">
+    	<apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!SaveAndReturn}" value="Save" />
+                <apex:commandButton action="{!cancel}" value="Cancel" />
+		</apex:pageBlockButtons>
+		<apex:pageMessages />
+    	<apex:pageBlockSection columns="1">
+    		<apex:outputPanel layout="block">
+    		
+			    <table cellspacing="0" cellpadding="4" width="100%" border="0">
+			        <tr>  
+			            <td class="labelCol" valign="top" width="150px" style="padding-top: 10px;">
+			            	<apex:outputLabel value="{!$Label.ffirule__frequency}" />
+			            </td>  
+			            <td>  
+                            <div class="slds-scope slds-tabs_default">
+			                	<div class="cronTabs slds-tabs_default__nav">
+			                		<apex:repeat var="frequencyType" value="{!frequencyTypeList}">
+			                			<div class="cronTab slds-tabs_default__item slds-tabs_default__link" id="tab{!frequencyType.Value}" onclick="javascript:togglePanel('{!frequencyType.value}')">
+			                				<input id="radio{!frequencyType.Value}" type="radio" name="frequencyType" value="{!frequencyType.value}" />
+			                				<label for="radio{!frequencyType.Value}">{!frequencyType.Name}</label>
+			                				<div class="borderBottom"></div>
+			                			</div>
+			                		</apex:repeat>
+			                		<div class="clearBoth"></div>
+			                	</div>
+			                	<div id="pnlDaily" class="frequencyTabPanel slds-tabs_default__content" >
+			                		<table width="100%" cellspacing="0" cellpadding="8">
+				                        <tr><td><apex:outputText styleClass="recurs" value="Recurs every day" /></td></tr>
+				                    </table>
+			                	</div>
+			                	
+			                	<div id="pnlWeekly" style="display:none;" class="frequencyTabPanel slds-tabs_default__content">
+				                    <table width="100%" cellspacing="0" cellpadding="8">
+                                        <tr><td><apex:outputText styleClass="recurs" value="{!$Label.ffirule__recurseveryweekon}" /></td></tr>
+				                        <tr>
+				                            <td> 
+				                               <apex:selectCheckboxes value="{!selectedWeekDays}">
+				                                   <apex:selectOptions value="{!weekDayList}"/>
+				                               </apex:selectCheckboxes>
+				                            </td>
+				                        </tr>                    
+				                    </table>
+				                </div>
+			
+								<div id="pnlMonthly" style="display:none;" class="frequencyTabPanel slds-tabs_default__content">
+				                    <table width="100%" cellspacing="0" cellpadding="8">
+				                        <tr>
+				                            <td style="vertical-align:middle" class="data2Col"> 
+                                                <input id="radioDayNo" type="radio" name="monthPanel" value="1" onclick="javascript:toggleMonthItems('1')" />
+                                                <apex:outputLabel value="{!$Label.ffirule__onday}" />
+                                                <apex:selectList id="lstMonthDay" value="{!selectedMonthDay}" multiselect="false" size="1">
+				                                    <apex:selectOptions value="{!monthDayList}" />       
+				                                </apex:selectList>
+                                                <apex:outputLabel value="{!$Label.ffirule__ofeverymonth}" />
+				                            </td>
+				                        </tr>
+				                        <tr>
+				                            <td style="vertical-align: middle" class="data2Col"> 
+				                                <input id="radioDayOccurance" type="radio" name="monthPanel" value="1" onclick="javascript:toggleMonthItems('2')" />
+				                                <apex:outputLabel value="{!$Label.ffirule__on}" />
+				                                <apex:selectList id="lstDayOccurance" value="{!selectedDayOccurance}" multiselect="false" size="1">
+				                                    <apex:selectOptions value="{!dayOccuranceList}" />       
+				                                </apex:selectList> 
+				                                <apex:selectList id="lstWeekDay" value="{!selectedWeekDay}" multiselect="false" size="1" style="margin-left: .5rem;">
+				                                    <apex:selectOptions value="{!weekDayList}" />       
+				                                </apex:selectList>
+				                                <apex:outputLabel value="{!$Label.ffirule__ofeverymonth}" />
+				                            </td>
+				                        </tr>                                           
+				                    </table>
+				                </div>
+			                </div>
+			            </td>
+			        </tr>
+			        <tr>
+			            <td class="labelCol"><apex:outputLabel value="{!$Label.ffirule__preferredstarttime}" for="startTime"/></td>
+			            <td class="data2Col">
+			                <apex:selectList id="startTime" value="{!selectedTime}" multiselect="false" size="1" required="true">
+			                    <apex:selectOptions value="{!timeList}" />       
+			                </apex:selectList>
+			            </td>
+			        </tr>
+			    </table>
+				
+				<script type="text/javascript">
+			        document.addEventListener("DOMContentLoaded", function() {
+                        let bodyClassList = document.body.classList,
+                            bodyCell = document.getElementById('bodyCell');
+                        if (bodyClassList.contains("slds-scope")) {
+                            bodyClassList.remove("slds-scope");
+                            bodyClassList.add('slds-vf-scope');
+                            bodyClassList.add('sfdcBody');
+                        }
+                        if (bodyCell && bodyCell.classList.contains("slds-scope")) {
+                        	let bodyCellClasses = bodyCell.classList;
+                            bodyCellClasses.remove("slds-scope");
+                            bodyCellClasses.add('slds-vf-scope');
+                            bodyCellClasses.add('sfdcBody');
+                        }
+                    });
+
+			        function togglePanel(panelType)
+			        {
+			            if(panelType == 'Daily')
+			            {
+			                document.getElementById('tabDaily').classList.add('slds-is-active');
+			                document.getElementById('tabWeekly').classList.remove('slds-is-active');
+			                document.getElementById('tabMonthly').classList.remove('slds-is-active');
+			                              
+			                document.getElementById('pnlDaily').style.display = 'block';
+			                document.getElementById('pnlWeekly').style.display = 'none';
+			                document.getElementById('pnlMonthly').style.display = 'none'; 
+			            }
+			            else if(panelType == 'Weekly')
+			            {
+			                document.getElementById('tabDaily').classList.remove('slds-is-active');
+			                document.getElementById('tabWeekly').classList.add('slds-is-active');
+			                document.getElementById('tabMonthly').classList.remove('slds-is-active');
+			                              
+			                document.getElementById('pnlDaily').style.display = 'none';
+			                document.getElementById('pnlWeekly').style.display = 'block';
+			                document.getElementById('pnlMonthly').style.display = 'none'; 
+			            }
+			            else if(panelType == 'Monthly')
+			            {                                               
+			                document.getElementById('tabDaily').classList.remove('slds-is-active');
+			                document.getElementById('tabWeekly').classList.remove('slds-is-active');
+			                document.getElementById('tabMonthly').classList.add('slds-is-active');
+			                              
+			                document.getElementById('pnlDaily').style.display = 'none';
+			                document.getElementById('pnlWeekly').style.display = 'none';
+			                document.getElementById('pnlMonthly').style.display = 'block'; 
+			                
+			                document.getElementById('radioDayNo').checked = true;
+			                toggleMonthItems(1);
+			            }                    
+			            document.getElementById("{!$Component.selectedFrequency}").value = panelType;
+			            document.getElementById('radio'+ panelType).checked = true;                    
+			        }
+			        
+			        function toggleMonthItems(itemType)
+			        {
+			            if(itemType == 1)
+			            {
+			                document.getElementById("{!$Component.lstMonthDay}").disabled = false;
+			                document.getElementById("{!$Component.lstDayOccurance}").disabled= true;
+			                document.getElementById("{!$Component.lstWeekDay}").disabled= true;
+			            }
+			            else if(itemType == 2)
+			            {
+			                document.getElementById("{!$Component.lstMonthDay}").disabled= true;
+			                document.getElementById("{!$Component.lstDayOccurance}").disabled= false;
+			                document.getElementById("{!$Component.lstWeekDay}").disabled= false;
+			            }
+			            document.getElementById("{!$Component.selectedMonthItem}").value = itemType;
+			        }        
+			        
+			        function GetValue()
+			        {
+			            getExpression(document.getElementById("{!$Component.resultExp}").value);
+			        }
+			        
+			        //SETUP
+			        if(document.getElementById('{!$Component.selectedFrequency}').value=='' || document.getElementById('{!$Component.selectedFrequency}').value=='Daily'){
+			   			document.getElementById('radioDaily').checked = true;
+			   			document.getElementById('tabDaily').classList.add('slds-is-active');
+			   			document.getElementById("{!$Component.selectedFrequency}").value = 'Daily';
+			   		}
+			   		else if(document.getElementById('{!$Component.selectedFrequency}').value=='Weekly'){
+			   			document.getElementById('radioWeekly').checked = true;
+			   			document.getElementById('tabWeekly').classList.add('slds-is-active');
+			   		}
+			   		else if(document.getElementById('{!$Component.selectedFrequency}').value=='Monthly'){
+			   			document.getElementById('radioMonthly').checked = true;
+			   			document.getElementById('tabMonthly').classList.add('slds-is-active');
+			   		}
+			   		togglePanel(document.getElementById("{!$Component.selectedFrequency}").value);     
+			        
+			    </script>
+    		
+    		</apex:outputPanel>
+    	</apex:pageBlockSection>
+    </apex:pageBlock>
+   		
+	</apex:form>
+</apex:page>

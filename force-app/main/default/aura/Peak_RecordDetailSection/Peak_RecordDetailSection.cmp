@@ -1,0 +1,59 @@
+<!--
+ - Created by kentheberling on 8/25/18.
+ -->
+
+<aura:component description="Peak_RecordDetailSection">
+
+    <aura:attribute name="sectionTitle" type="String"/>
+    <aura:attribute name="returnedFieldList" type="List" default="List"/>
+
+    <aura:attribute name="sectionPadding" type="String" default="small" />
+    <aura:attribute name="horizontalAlign" type="String" default="center" /><!-- spread,center,space, end -->
+    <aura:attribute name="verticalAlign" type="String" default="center" /><!-- end,center,start, stretch -->
+    <aura:attribute name="pullToBoundary" type="String" default="" /><!-- small,medium,large -->
+
+    <aura:attribute name="smallColumns" type="String" default="2" />
+    <aura:attribute name="mediumColumns" type="String" default="3" />
+    <aura:attribute name="largeColumns" type="String" default="4" />
+
+    <aura:attribute name="itemPadding" type="String" default="" /><!-- horizontal-small, horizontal-medium, horizontal-large, around-small, around-medium, around-large -->
+    <aura:attribute name="itemClass" type="String" default="" />
+
+    <aura:attribute name="showLabels" type="Boolean" default="true"/>
+    <aura:attribute name="showEmptyFields" type="Boolean" default="true"/>
+
+
+    <!--
+                     Well, that's a bummer! Can't hide lightning:outputField if field value is blank!
+                    <aura:iteration items="{!v.fieldsList}" var="thisField">
+                        <lightning:layoutItem class="{!v.itemClass}" size="{!12/v.smallColumns}" smallDeviceSize="{!12/v.smallColumns}" mediumDeviceSize="{!12/v.mediumColumns}" largeDeviceSize="{!12/v.largeColumns}" padding="{!v.itemPadding}" >
+                            <lightning:outputField fieldName="{!thisField}" variant="{!if(v.showLabels,'standard','label-hidden')}" />
+                        </lightning:layoutItem>
+                    </aura:iteration>
+                    -->
+
+    <!--
+        Instead, we DO go to our Apex
+        Then we check the Peak_ContentObject.description, which represents the field's actual value (Apex does this)
+        Finally, we actually just display this dang thing using default outputField (using Peak_ContentObject.title, which is the field name from Apex)
+    -->
+
+    <!-- Only show if we have items for this section! -->
+    <aura:if isTrue="{!v.returnedFieldList.length GT 0}">
+        <article class="{!'slds-card slds-p-around_'+v.sectionPadding}">
+            <aura:if isTrue="{!v.sectionTitle != ''}">
+                <h4 class="slds-text-heading_medium"><c:Peak_Base labelText="{!v.sectionTitle}" /></h4>
+            </aura:if>
+
+            <lightning:layout horizontalAlign="{!v.horizontalAlign}" verticalAlign="{!v.verticalAlign}" multipleRows="true" pullToBoundary="{!v.pullToBoundary}">
+                <aura:iteration items="{!v.returnedFieldList}" var="thisField">
+                    <aura:if isTrue="{!thisField.description != null || v.showEmptyFields}">
+                        <lightning:layoutItem class="{!v.itemClass}" size="{!12/v.smallColumns}" smallDeviceSize="{!12/v.smallColumns}" mediumDeviceSize="{!12/v.mediumColumns}" largeDeviceSize="{!12/v.largeColumns}" padding="{!v.itemPadding}" >
+                            <lightning:outputField fieldName="{!thisField.title}" variant="{!if(v.showLabels,'standard','label-hidden')}" />
+                        </lightning:layoutItem>
+                    </aura:if>
+                </aura:iteration>
+            </lightning:layout>
+        </article>
+    </aura:if>
+</aura:component>

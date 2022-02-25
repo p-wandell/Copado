@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Type --></label>
+    <name>pse__Type__c</name>
+    <picklistValues>
+        <masterLabel>Budget</masterLabel>
+        <translation>예산</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Expense</masterLabel>
+        <translation>비용</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Invoice (Inbound)</masterLabel>
+        <translation>인보이스 (인바운드)</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Invoice (Outbound)</masterLabel>
+        <translation>송장 (아웃 바운드)</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Milestone</masterLabel>
+        <translation>획기적 사건</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Miscellaneous Adjustment</masterLabel>
+        <translation>기타 조정</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Purchase Order</masterLabel>
+        <translation>구매 주문서</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sales Order</masterLabel>
+        <translation>판매 주문</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Timecard</masterLabel>
+        <translation>시간 카드</translation>
+    </picklistValues>
+</CustomFieldTranslation>

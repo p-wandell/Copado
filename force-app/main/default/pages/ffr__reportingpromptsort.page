@@ -1,0 +1,28 @@
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingDefinitionController" lightningStylesheets="true">
+
+<!-- Demand fields to be loaded -->
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ExcelTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+
+<apex:form >
+    <apex:pageBlock title="{!ffr__ReportingDefinition__c.Name}" mode="edit">
+        <apex:PageMessages />
+        <apex:pageBlockSection title="{!$Label.ffr__reportingpromptsortsectiontitle}" collapsible="false" >
+			<apex:pageBlockTable id="dtPromptSortOrder" value="{!reportingPromptList}" var="prompt" columnsWidth="300" width="625">
+                <apex:column headerValue="{!$Label.ffr__reportingpromptsortpromptname}">
+                    <apex:outputText value="{!prompt.dto.Name}" id="promptName" />
+                </apex:column>
+                <apex:column headerValue="{!$Label.ffr__reportingpromptsortsortorder}">
+                    <apex:inputField value="{!prompt.dto.ffr__SortOrder__c}" id="promptSortOrder"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlockSection>
+    <apex:pageBlockButtons >
+        <apex:commandButton action="{!saveSortOrder}" value="{!$Label.ffr__reportingpromptsortbuttonsave}"/>
+        <apex:commandButton action="{!cancel}" value="{!$Label.ffr__reportingpromptsortbuttoncancel}"/>
+    </apex:pageBlockButtons>
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

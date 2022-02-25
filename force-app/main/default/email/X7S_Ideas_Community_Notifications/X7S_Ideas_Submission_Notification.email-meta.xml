@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>X7S_Ideas_Community_Letter_Head</letterhead>
+    <name>7S Idea Submission Notification</name>
+    <style>freeForm</style>
+    <subject>Community: Thank you for your idea submission</subject>
+    <textOnly>Hello!
+
+Thank you for the following idea: {!Idea.Title}
+
+The idea has a current status of {!Idea.Status}. We will review your Idea shortly.
+
+Please note: You have been automatically subscribed to the Idea to receive updates upon status changes. To unsubscribe, please navigate to the Idea (link above) and click the &quot;Unsubscribe&quot; button at the top right.
+
+- The Community Team</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

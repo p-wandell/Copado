@@ -1,0 +1,10 @@
+<apex:page standardController="pse__Proj__c" extensions="pse.RF_ActionRunController" tabStyle="pse__Proj__c" action="{!runForecastForProject}" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+    <apex:form id="form">
+        <apex:sectionHeader title="{!$Label.pse__revenue_forecasting_label_forecast}" help="{!$Page.pse__RF_ActionRunHelp}"/>
+        <apex:pageMessages />
+        <div align="center" draggable="false" >
+            <apex:commandButton value="{!JSINHTMLENCODE($Label.pse__common_label_back)}" action="{!back}" immediate="true"/>
+        </div>
+    </apex:form>
+</apex:page>

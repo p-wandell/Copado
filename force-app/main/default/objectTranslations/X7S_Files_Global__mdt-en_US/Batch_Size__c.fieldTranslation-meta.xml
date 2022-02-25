@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Controls the number of folders that will be processed at one time. The default batch size of 20 will handle most scenarios. If you run into SOQL limit errors on the Sharing batch job, this number will need to be lowered.
+            For more details, including a formula that can be used to calculate recommended batch size; please consult the Setup Guide. --></help>
+    <label><!-- Batch Size --></label>
+    <name>Batch_Size__c</name>
+</CustomFieldTranslation>

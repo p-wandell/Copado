@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Der Status der Informationen, die auf den Salesforce-Benutzer angewendet werden.</help>
+    <label><!-- Status --></label>
+    <name>fferpcore__Status__c</name>
+    <picklistValues>
+        <masterLabel>Assigned</masterLabel>
+        <translation>Zugewiesen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Assigning</masterLabel>
+        <translation>Zuweisen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Assign</masterLabel>
+        <translation>Zuordnung fehlgeschlagen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Remove</masterLabel>
+        <translation>Fehler beim Entfernen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Assignment</masterLabel>
+        <translation>Ausstehende Zuordnung</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Removal</masterLabel>
+        <translation>Ausstehende Entfernung</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Removed</masterLabel>
+        <translation>Entfernt</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Removing</masterLabel>
+        <translation>Entfernen</translation>
+    </picklistValues>
+</CustomFieldTranslation>

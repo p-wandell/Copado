@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Selecteer de huidige financiële status in de keuzelijst. U kunt ook de regels Process Builder of workflow gebruiken om uw eigen logica te gebruiken om het gedrag van het overeenkomstige veld voor de kleurindicator te regelen.</help>
+    <label><!-- Financial Status --></label>
+    <name>pse__Financial_Status__c</name>
+    <picklistValues>
+        <masterLabel>Green</masterLabel>
+        <translation>Groen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Red</masterLabel>
+        <translation>Rood</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Yellow</masterLabel>
+        <translation>Geel</translation>
+    </picklistValues>
+</CustomFieldTranslation>

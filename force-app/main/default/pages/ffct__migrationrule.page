@@ -1,0 +1,130 @@
+<apex:page sidebar="false" standardController="ffct__MigrationRule__c" extensions="ffct.MigrationRuleControllerExtension"  action="{!isToolMustBeActivated}">
+	<script type="text/javascript">
+       function toggleSelectAll(masterCheckbox, overwriteClass)
+       {	
+            var list1 = document.getElementsByClassName(overwriteClass);
+			for (var i = 0; i < list1.length; i++) 
+			{
+ 				document.getElementsByClassName(overwriteClass)[i].checked = masterCheckbox.checked;
+ 			}
+ 			disableOverwrite();
+        }
+        
+        /*
+        * set "all checkbox" based on state of row level checkboxes
+        */
+        function toggleItem(childCheckbox, masterClass, childClass)
+        {
+        	var masterCheckbox = document.getElementsByClassName(masterClass)[0];
+        	if(masterCheckbox.checked)
+        	{
+        		if(!childCheckbox.checked)
+        			masterCheckbox.checked = false;
+        	}
+        	else
+        	{
+        		if(childCheckbox.checked)
+        		{
+        			var selectAll = true;
+        			var childList = document.getElementsByClassName(childClass);
+        			for (var i = 0; i < childList.length; i++) 
+					{
+ 						if(!document.getElementsByClassName(childClass)[i].checked)
+ 						{
+ 							selectAll = false;
+ 							break;
+ 						}
+ 					}
+ 					masterCheckbox.checked = selectAll;
+        		}
+        	}
+        }
+    </script>
+    
+	<apex:form id="form">
+	
+	<apex:actionStatus id="eventStatus"  >
+        <apex:facet name="start">
+        	<apex:outputPanel >
+	            <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+	                <div style="position:absolute;top:10%;left:50%">
+	                    <apex:image value="/img/loading32.gif"></apex:image>
+	                </div>
+	            </div>
+          </apex:outputPanel>
+       </apex:facet>   
+	    </apex:actionStatus>
+        
+    <apex:sectionHeader title="{!$Label.ffct__configuremigrationrule}" help="helploader?topicid=1047"/>
+    <apex:pagemessages id="pgMsg" escape="false"/>
+    
+     <apex:pageBlock Id="migrationRuleBlock">
+    
+	    <apex:pageBlockSection collapsible="false" id="migrationruleDetailsSection" title="{!$ObjectType.ffct__MigrationRule__c.label}" rendered="{!DspInfo.CurrentScreenName='migrationrule'}">
+		    <apex:inputField value="{!DspInfo.MigrationRuleRequest.MigrationRule.Name}" required="true" />
+		    <apex:inputField value="{!DspInfo.MigrationRuleRequest.MigrationRule.ffct__Description__c}" />
+		    <apex:selectList title="{!$ObjectType.ffct__MigrationRule__c.fields.ffct__FilterOperation__c.label}" label="{!$ObjectType.ffct__MigrationRule__c.fields.ffct__FilterOperation__c.label}"  value="{!DspInfo.MigrationRuleRequest.MigrationRule.ffct__FilterOperation__c}"  multiselect="false" size="1" >
+                    <apex:selectOptions value="{!FilterOperationTypes}" />
+                    <apex:actionSupport event="onchange" reRender="form,migrationValues" status="eventStatus"/>
+            </apex:selectList> 
+            <apex:outputField value="{!DspInfo.MigrationRuleRequest.MigrationRule.ffct__ApplicableForPackages__c}" rendered="{!!ISBLANK(DspInfo.MigrationSet)}"/>    
+	    </apex:pageBlockSection>
+	    
+	    <apex:actionRegion rendered="{!ISBLANK(DspInfo.MigrationSet)}">
+		    <apex:pageBlockSection collapsible="false" id="packageFilterSection" title="{!$ObjectType.ffct__MigrationRule__c.fields.ffct__ApplicableForPackages__c.label}" rendered="{!DspInfo.CurrentScreenName='migrationrule'}">
+		    	<c:userMultiselectPickList DataToselect="{!DspInfo.NamespacePrefixToChooseList}" DataSelected="{!DspInfo.NamespacePrefixChosenList}" aLeftLabel="{!$Label.ffct__availablepackages}" aRightLabel="{!$Label.ffct__enabledpackages}" RequiredSelectOption="true"/>
+		    </apex:pageBlockSection>
+		</apex:actionRegion>
+	    
+	    <apex:pageBlockSection collapsible="false" id="migrationruleInfo" title="{!$ObjectType.ffct__MigrationRule__c.label}" rendered="{!DspInfo.CurrentScreenName='migrationrulevalue'}">
+		    <apex:outputField value="{!DspInfo.MigrationRuleRequest.MigrationRule.Name}" />
+		    <apex:outputField value="{!DspInfo.MigrationRuleRequest.MigrationRule.ffct__Description__c}" />
+		    <apex:outputField value="{!DspInfo.MigrationRuleRequest.MigrationRule.ffct__FilterOperation__c}" />
+		    <apex:outputField value="{!DspInfo.MigrationRuleRequest.MigrationRule.ffct__ApplicableForPackages__c}" />
+	    </apex:pageBlockSection>
+	    
+	    <apex:pageBlockSection collapsible="true" id="migrationValues" title="Select the Objects to {!DspInfo.MigrationRuleRequest.MigrationRule.ffct__FilterOperation__c} for Records" rendered="{!DspInfo.CurrentScreenName='migrationrulevalue'}" >
+		    <apex:outputPanel >
+            	<apex:pageBlockTable value="{!DspInfo.MigrationValues}" var="key">
+                    <apex:column >
+                        <apex:facet name="header">
+                            <apex:inputCheckbox styleClass="masterCheckBox"  onchange="toggleSelectAll(this, 'chckBox')" />
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!DspInfo.MigrationValues[key].checked}" styleClass="chckBox"  onchange="toggleItem(this, 'masterCheckBox', 'chckBox')"/>
+                    </apex:column> 
+                    <apex:column headerValue="{!$Label.ffct__objectlabel}">
+                        <apex:outputLabel value="{!DspInfo.MigrationValues[key].ObjDesc.ObjectLabel}"/>
+                    </apex:column> 
+                     <apex:column headerValue="{!$Label.ffct__objectname}">
+                        <apex:outputLabel value="{!DspInfo.MigrationValues[key].ObjDesc.ObjectName}"/>
+                    </apex:column> 
+                </apex:pageBlockTable>
+                <apex:outputPanel rendered="{!displayObjectsSize==0}" layout="block">{!$Label.ffct__norecordstodisplay}</apex:outputPanel>
+            </apex:outputPanel>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection collapsible="true" id="migrationMetadataValues" title="Select the Metadata Types to {!DspInfo.MigrationRuleRequest.MigrationRule.ffct__FilterOperation__c}" rendered="{!DspInfo.CurrentScreenName='migrationrulevalue'}">
+		    <apex:pageBlockTable value="{!DspInfo.MetadataMigrationValues}" var="metadata">
+	            <apex:column >
+	            	<apex:facet name="header">
+						<apex:inputCheckbox styleClass="masterCheckBox2"  onchange="toggleSelectAll(this, 'chckBox2')" />
+					</apex:facet>
+	            	<apex:inputCheckbox value="{!metadata.checked}" styleClass="chckBox2"  onchange="toggleItem(this, 'masterCheckBox2', 'chckBox2')"/>
+	        	</apex:column> 
+	        	 <apex:column headerValue="{!$Label.ffct__metadatatype}">
+	            	<apex:outputLabel value="{!metadata.MetadataValue}"/>
+	            </apex:column> 
+	            
+	        </apex:pageBlockTable> 
+        </apex:pageBlockSection>
+        
+        <apex:pageblockbuttons location="bottom">
+	        <apex:commandButton value="{!$Label.ffct__next}" action="{!next}" rendered="{!DspInfo.CurrentScreenName='migrationrule'}" status="eventStatus" />
+	        <apex:commandButton value="{!$Label.ffct__save}" action="{!configureRule}" status="eventStatus"  rendered="{!DspInfo.CurrentScreenName='migrationrulevalue'}" />
+	        <apex:commandButton value="{!$Label.ffct__previous}" action="{!previous}" rendered="{!DspInfo.CurrentScreenName='migrationrulevalue'}" status="eventStatus" />
+         	<apex:commandButton value="{!$Label.ffct__cancel}" action="{!Cancel}" status="eventStatus" />
+		</apex:pageblockbuttons>
+		
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

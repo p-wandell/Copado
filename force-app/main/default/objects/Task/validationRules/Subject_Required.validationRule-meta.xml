@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Subject_Required</fullName>
+    <active>true</active>
+    <description>Subject is a required field, unless the Passed to Sales field is checked, or Task Type = Disqualified Passed to Sales Lead.</description>
+    <errorConditionFormula>AND(
+OR(
+ISPICKVAL(Type, &quot;Phone Call&quot;),
+ISPICKVAL(Type, &quot;Email&quot;),
+ISPICKVAL(Type, &quot;Meeting with Salesforce&quot;),
+ISPICKVAL(Type, &quot;Customer Intro / Qualification Meeting&quot;),
+ISPICKVAL(Type, &quot;Client Discovery/Scoping Meeting&quot;),
+ISPICKVAL(Type, &quot;Delivered Close Plan&quot;),
+ISPICKVAL(Type, &quot;Other Meeting&quot;),
+ISPICKVAL(Type, &quot;Demo with Salesforce&quot;),
+ISPICKVAL(Type, &quot;Demo with Client or Prospect&quot;),
+ISPICKVAL(Type, &quot;Meeting with Client or Prospect&quot;)),
+OR(
+Passed_to_Sales__c=False),
+ISBLANK(Subject))</errorConditionFormula>
+    <errorDisplayField>Subject</errorDisplayField>
+    <errorMessage>Subject is a required field.</errorMessage>
+</ValidationRule>

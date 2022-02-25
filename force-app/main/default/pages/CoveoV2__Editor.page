@@ -1,0 +1,241 @@
+<apex:page controller="CoveoV2.EditingLightningInterface" showHeader="false" showChat="false" sidebar="false" standardStylesheets="false" docType="html-5.0" extensions="CoveoV2.DynamicResourceUtils">
+  <c:ConfigurationCheck needsIndex="false">
+    <apex:includeScript value="{!IF(customVersionAttr != '', customVersionAttr, URLFOR(dynamicResourcePaths['searchUi'], 'js/CoveoJsSearch.min.js'))}"  />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__jquery, 'jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/cultures/en.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__assets, 'js/lightning_search.bundle.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__assets, 'js/lightning_interfaceEditor.bundle.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/InterfaceEditor.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__assets, 'js/interfaceEditor_Search.bundle.js')}" />
+    <script>
+      window['coveoCustomScripts'] = {};
+    </script>
+
+      <apex:repeat value="{!editorScripts}" var="script">
+          <apex:includeScript value="{!URLFOR($Resource.CoveoV2__assets, script)}" />
+      </apex:repeat>
+
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'css/InterfaceEditor.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__assets, 'css/interfaceEditor.style.css')}" />
+
+    <apex:form >
+      <apex:inputHidden value="{!loader.content}" id="content" />
+      <apex:actionFunction name="saveSearchInterface" action="{!save}" rerender="saveCallBack" />
+      <apex:actionFunction name="delApex" action="{!del}" rerender="delCallBack" />
+      <apex:actionFunction name="coveoDoRenewAccessToken" action="{!renewSearchToken}" oncomplete="coveoDoneRenewingAccessToken()" rerender="coveoAccessToken" />
+
+      <apex:outputPanel id="coveoAccessTokenPanel" styleClass="coveoAccessTokenClass">
+        <apex:inputHidden id="coveoAccessToken" value="{!searchToken.token}" />
+      </apex:outputPanel>
+    </apex:form>
+
+    <apex:outputPanel id="saveCallBack">
+      <script>
+        if (window['saveDeferred'] != null) {
+          var message = '{!JSENCODE(saveError)}'
+          if (message != '') {
+            saveDeferred.reject(message);
+          } else {
+            saveDeferred.resolve();
+          }
+        }
+      </script>
+    </apex:outputPanel>
+
+    <!-- The action function without a rerender doesn't work in the Salesforce Lightning Community Builder.
+    Add this fake output panel to make it work correctly. -->
+    <apex:outputPanel id="delCallBack">
+    </apex:outputPanel>
+
+    <script type="text/javascript">
+      /**
+       * Create a deferred object.
+       * @return {
+       *   resolve: () => void,
+       *   reject: () => void,
+       *   promise: Promise<Any>
+       * }
+       */
+      function defer() {
+        let resolve;
+        let reject;
+        let promise = new Promise((p_resolve, p_reject) => {
+          resolve = p_resolve;
+          reject = p_reject;
+        });
+        return {
+          resolve,
+          reject,
+          promise
+        };
+      }
+
+      /***********************************************************************
+       * ACCESS TOKEN RENEWAL
+       ***********************************************************************/
+
+
+      // Store the coveo RenewAccess deferred.
+      var coveoRenewAccessTokenDeferred;
+
+      /**
+       * Initialize the RenewAccess token promise
+       */
+      function coveoRenewAccessToken() {
+        coveoDoRenewAccessToken();
+        coveoRenewAccessTokenDeferred = defer();
+        return coveoRenewAccessTokenDeferred.promise;
+      }
+
+      /**
+       * Callback given to the `coveoDoRenewAccessToken` visualforce action function.
+       * Will resolve the RenewAccess token promise.
+       */
+      function coveoDoneRenewingAccessToken() {
+        if (coveoRenewAccessTokenDeferred) {
+          coveoRenewAccessTokenDeferred.resolve(coveoGetCurrentAccessToken());
+          coveoRenewAccessTokenDeferred = undefined;
+        }
+      }
+
+      function coveoGetCurrentAccessToken() {
+        return $("[id$='coveoAccessToken']").attr('value');
+      }
+
+      /***********************************************************************
+       * IFRAME SCRIPTS AND STYLESHEETS
+       ***********************************************************************/
+      var PAGE_SCRIPTS = [
+        "{!URLFOR($Resource.CoveoV2__jquery, 'jquery.min.js')}",
+        "{!URLFOR($Resource.underscore, 'underscore-min.js')}",
+        "{!IF(customVersionAttr != '', customVersionAttr, URLFOR(dynamicResourcePaths['searchUi'], 'js/CoveoJsSearch.js'))}",
+        "{!URLFOR(dynamicResourcePaths['searchUi'], 'js/templates/templatesNew.js')}",
+        "{!URLFOR($Resource.CoveoV2__assets, 'js/lightning_search.bundle.min.js')}",
+        "{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/InterfaceEditor.js')}",
+        "{!URLFOR($Resource.CoveoV2__assets, 'js/lightning_interfaceEditor.bundle.min.js')}",
+        "{!URLFOR($Resource.CoveoV2__assets, 'js/interfaceEditor_Search.bundle.js')}",
+        "{!URLFOR(dynamicResourcePaths['searchUi'], 'js/cultures/en.js')}",
+        "{!URLFOR($Resource.analytics, 'coveoua.js')}"
+      ]
+      PAGE_SCRIPTS.push(...("{!JSENCODE(pageScripts)}".split(',')));
+
+      var PAGE_STYLES = [
+        '{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'css/InterfaceEditor.css')}',
+        '{!URLFOR(dynamicResourcePaths['searchUi'], 'css/CoveoFullSearch.css')}',
+        // Remove this css file when IE-561 is fixed.
+        '{!URLFOR($Resource.InterfaceEditor, 'css/InterfaceEditorIFrame.css')}',
+        '{!URLFOR($Resource.assets, 'css/search.style.css')}',
+        '{!URLFOR($Resource.CoveoV2__assets, 'css/interfaceEditor.style.css')}'
+      ]
+      PAGE_STYLES.push(...("{!JSENCODE(pageStyles)}".split(',')));
+
+      /***********************************************************************
+       * IFRAME CUSTOM CODE
+       ***********************************************************************/
+      var initializationScriptBuilder = new Coveo.InitializationScriptBuilder(
+        {
+          restUri: "{!JSENCODE(platformUri)}",
+          organizationId: "{!JSENCODE(organizationId)}",
+          name: "{!JSENCODE(pageName)}",
+          token: "{!JSENCODE(searchToken.token)}",
+          searchURI: "{!JSENCODE(restSearchUri)}",
+          searchHub: "{!JSENCODE($CurrentPage.parameters.searchHub)}" || "{!JSENCODE(pageName)}",
+          analyticsURI: "{!JSENCODE(analyticsUri)}",
+          initializationOptions: "{!JSENCODE(NULLVALUE(additionalInitOptions, ""))}",
+          searchContext: "{!JSENCODE(searchContextJson)}",
+          height: "{!searchInterfaceHeight}",
+          width: "{!searchInterfaceWidth}"
+        }
+      );
+
+      initializationScriptBuilder.quickviewUrl = "{!JSENCODE(quickviewUrl)}";
+
+      var customCode = initializationScriptBuilder.build();
+
+
+      var head = '<script>window[\'coveoCustomScripts\']={};<\/script>' +
+        PAGE_SCRIPTS.reduce((acc, script) => {
+          return acc + (script.length > 0 ? '<script src="' + script + '"><\/script>' : '');
+        }, '') +
+        customCode;
+
+      var body = "{! JSENCODE(loader.content)}";
+      $(function () {
+        var save = function (body) {
+          $('[id*=content]').val(body);
+          saveSearchInterface();
+
+          return saveDeferred =
+            $.Deferred().fail(function (reason) {
+              Coveo.ModalBox.open($('<p>').text(reason).get(0), {
+                title: 'An error occured',
+                overlayClose: true,
+                buttons: Coveo.ModalBox.BUTTON.OK
+              });
+            });
+        };
+
+        var load = function () {
+          return Promise.resolve({
+            body: body,
+            head: head
+          });
+        };
+
+        var close = function () {
+          if (window.parent) {
+            // Parent origin can be anything. Special care must be taken when sending stuff by this method.
+            window.parent.postMessage({ action: 'close' }, '*');
+          } else {
+            console.error('No parent window');
+          }
+        };
+
+        var del = function (id) {
+          delApex();
+        };
+
+        var repositories = JSON.parse('{! JSENCODE(repositoriesJson) }');
+
+        // Sarissa is an object that is included by Salesforce when loading a page with IE.
+        // It's not working well, and no queries made to the coveo platform works.
+        // For that reason, we let the original XMLHttpRequest object that points to Sarissa and
+        // that Action Function needs, but redefine Coveo's usage with the
+        // original XMLHttpRequest contained in the Sarissa framework.
+        var xmlHttpRequest = XMLHttpRequest;
+        if (window['Sarissa'] && Sarissa.originalXMLHttpRequest) {
+          xmlHttpRequest = Sarissa.originalXMLHttpRequest;
+
+          // Temporary fix for IE11 that will allow the search-ui to always use the original XmlHttpRequest instead.
+          Coveo.EndpointCaller.prototype.getXmlHttpRequest = function () { return new xmlHttpRequest(); }
+        }
+
+        Coveo.InterfaceEditor.InterfaceEditorUsage.additionalMetadata = JSON.parse('{! JSENCODE(currentUserTraitsJson) }');
+
+        var editor = new Coveo.InterfaceEditor.Editor('#editor', {
+          requireConfig: {
+            url: '{!URLFOR($Resource.InterfaceEditor, 'js/vs/loader.js')}',
+            paths: {
+              'vs': '{!URLFOR($Resource.InterfaceEditor, 'js/vs')}'
+            }
+          },
+          basicMode: true,
+          innerHTML: true,
+          load: load,
+          save: save,
+          close: close,
+          iframeCss: PAGE_STYLES,
+          delete: del,
+          iconsUrl: '{!URLFOR(dynamicResourcePaths['searchUi'], 'image/icon-list.json')}',
+          namespace: "{!JSENCODE(loader.id)}",
+          repositories: repositories,
+          environment: '{!IEditorEnv}',
+          features: {
+            hideNoResultsPageToggle: true
+          }
+        });
+      });
+    </script>
+    <div id="editor"></div>
+  </c:ConfigurationCheck>
+</apex:page>

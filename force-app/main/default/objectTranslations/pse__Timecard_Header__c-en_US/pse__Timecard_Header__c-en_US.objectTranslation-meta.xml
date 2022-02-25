@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldSets>
+        <label><!-- Timecard Left Header Row Editable --></label>
+        <name>Timecard_Left_Header_Row_Editable</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Fri Easy Entry Fields --></label>
+        <name>pse__Fri_Easy_Entry_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Mon Easy Entry Fields --></label>
+        <name>pse__Mon_Easy_Entry_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Sat Easy Entry Fields --></label>
+        <name>pse__Sat_Easy_Entry_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Sun Easy Entry Fields --></label>
+        <name>pse__Sun_Easy_Entry_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- TCFriHourTooltip --></label>
+        <name>pse__TCFriHourTooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- TCMonHourTooltip --></label>
+        <name>pse__TCMonHourTooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- TCSatHourTooltip --></label>
+        <name>pse__TCSatHourTooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- TCSunHourTooltip --></label>
+        <name>pse__TCSunHourTooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- TCThuHourTooltip --></label>
+        <name>pse__TCThuHourTooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- TCTueHourTooltip --></label>
+        <name>pse__TCTueHourTooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- TCWedHourTooltip --></label>
+        <name>pse__TCWedHourTooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Thu Easy Entry Fields --></label>
+        <name>pse__Thu_Easy_Entry_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Timecard Approval Columns --></label>
+        <name>pse__TimeCardApprovalColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Timecard Header Row Editable --></label>
+        <name>pse__TimeCard_Header_Row_Editable</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Timecard Header Row Readonly --></label>
+        <name>pse__TimeCard_Header_Row_Readonly</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Timecard Notes Field Editable --></label>
+        <name>pse__TimeCard_Notes_Field_Editable</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Timecard Notes Field Readonly --></label>
+        <name>pse__TimeCard_Notes_Field_Readonly</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Tue Easy Entry Fields --></label>
+        <name>pse__Tue_Easy_Entry_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Wed Easy Entry Fields --></label>
+        <name>pse__Wed_Easy_Entry_Fields</name>
+    </fieldSets>
+    <sharingReasons>
+        <label><!-- PSE Approver Share --></label>
+        <name>pse__PSE_Approver_Share</name>
+    </sharingReasons>
+    <sharingReasons>
+        <label><!-- PSE Member Share --></label>
+        <name>pse__PSE_Member_Share</name>
+    </sharingReasons>
+    <sharingReasons>
+        <label><!-- PSE PM Share --></label>
+        <name>pse__PSE_PM_Share</name>
+    </sharingReasons>
+    <validationRules>
+        <errorMessage><!-- You must enter time against a Milestone for all Customer Projects. --></errorMessage>
+        <name>Milestone_Required_on_Timecard</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Time must be entered by the quarter hour. --></errorMessage>
+        <name>Quarter_Hour_Time_Restriction</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- No individual day for a single line can be less than zero hours --></errorMessage>
+        <name>pse__A_Day_Can_Not_Be_Less_Then_Zero_Hrs</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- No individual day for a single line can be more than 24 hours --></errorMessage>
+        <name>pse__A_Day_Can_Not_Be_More_Then_24_Hrs</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You entered more time than scheduled --></errorMessage>
+        <name>pse__Assignment_Hours</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecards may only be marked as &quot;Time Credited&quot; if they are Non-Billable. --></errorMessage>
+        <name>pse__Billable_Timecards_may_not_be_Credited</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecards may only be marked as &quot;Time Excluded&quot; if they are Non-Billable. --></errorMessage>
+        <name>pse__Billable_Timecards_may_not_be_Excluded</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- For a Timecard to be marked as Billed, it must also be marked as Included in Financials and Approved. --></errorMessage>
+        <name>pse__Billing_Requires_Inclusion</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecards may not be marked as &quot;Time Excluded&quot; if they are also marked as &quot;Time Credited&quot;. --></errorMessage>
+        <name>pse__Credited_Timecards_may_not_be_Excluded</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- For a Timecard to be marked as Approved, it must also be marked as Submitted. --></errorMessage>
+        <name>pse__Timecard_Approval_Requires_Submit</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecard Project must match Assignment Project. --></errorMessage>
+        <name>pse__Timecard_Assignment_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecard Resource must match Assignment Resource. --></errorMessage>
+        <name>pse__Timecard_Assignment_Resource_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A Timecard Header&apos;s Project field value may not be blank and may not be updated once set (unless Admin Global Edit is checked, Audit Notes are provided, and Actuals Calculation Mode is Scheduled). --></errorMessage>
+        <name>pse__Timecard_Header_Project_is_Constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A Timecard Header&apos;s Resource field value may not be blank and may not be updated once set (unless Admin Global Edit is checked, Audit Notes are provided, and Actuals Calculation Mode is Scheduled). --></errorMessage>
+        <name>pse__Timecard_Header_Resource_is_Constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecard Header must span 1 week (7 days inclusive). --></errorMessage>
+        <name>pse__Timecard_Header_must_be_1_week_long</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A Timecard may only be marked as Billable if its Project is Billable and its Assignment, if any, is Billable. --></errorMessage>
+        <name>pse__Timecard_May_Not_Be_Billable</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot associate the methodology with this timecard. The methodology must belong to the same project as the timecard. Select a methodology that belongs to the same project as the timecard. --></errorMessage>
+        <name>pse__Timecard_Methodology_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecard Project must match Milestone Project. --></errorMessage>
+        <name>pse__Timecard_Milestone_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot associate the phase with this timecard. The phase must belong to the same project as the timecard. Select a phase that belongs to the same project as the timecard. --></errorMessage>
+        <name>pse__Timecard_Phase_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Timecards for this Project and/or Resource require an Assignment. --></errorMessage>
+        <name>pse__Timecard_Requires_Assignment</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Approve --></label>
+        <name>Approve</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Delete --></label>
+        <name>Delete</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Admin_Edit --></label>
+        <name>pse__Admin_Edit</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Clear_Billing_Data --></label>
+        <name>pse__Clear_Billing_Data</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Log_A_Timecard --></label>
+        <name>pse__Log_A_Timecard</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Log_a_Timecard_New_UI --></label>
+        <name>pse__Log_a_Timecard_New_UI</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Log_a_Timecard_with_Task_Time --></label>
+        <name>pse__Log_a_Timecard_with_Task_Time</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Time_Entry --></label>
+        <name>pse__Time_Entry</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- edit_in_time_entry --></label>
+        <name>pse__edit_in_time_entry</name>
+    </webLinks>
+</CustomObjectTranslation>

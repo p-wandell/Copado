@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Indikerer loggen (Feil, Informasjon, Avbryt, Ekstern).</help>
+    <label><!-- Log Type --></label>
+    <name>pse__LogType__c</name>
+    <picklistValues>
+        <masterLabel>Abort</masterLabel>
+        <translation>Avbryte</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Error</masterLabel>
+        <translation>Feil</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>External</masterLabel>
+        <translation>Utvendig</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Information</masterLabel>
+        <translation>Informasjon</translation>
+    </picklistValues>
+</CustomFieldTranslation>

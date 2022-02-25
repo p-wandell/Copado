@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Pursuit_Lead_Request__c$Opportunity__c</field>
+    </columns>
+    <columns>
+        <field>Pursuit_Lead_Request__c$Opportunity__c.CloseDate</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Pursuit_Lead_Request__c$Opportunity__c.Amount</field>
+    </columns>
+    <columns>
+        <field>Pursuit_Lead_Request__c$Assigned_Pursuit_Lead__c</field>
+    </columns>
+    <columns>
+        <field>Pursuit_Lead_Request__c$Secondary_Pursuit_Lead__c</field>
+    </columns>
+    <columns>
+        <field>Pursuit_Lead_Request__c$Name</field>
+    </columns>
+    <currency>USD</currency>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Pursuit_Lead_Request__c$Opportunity_Stage__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Completed PLR (Q1)</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>PLR_Requests__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>Pursuit_Lead_Request__c$Opportunity__c.CloseDate</dateColumn>
+        <interval>INTERVAL_PREV1</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,17 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+  -->
+  
+<template>
+  <lightning-datatable
+    key-field="id"
+    data={data}
+    columns={columns}
+    hide-checkbox-column="true"
+    onrowaction={handleRowAction} 
+    if:true={hasItems}
+    resize-column-disabled
+    column-widths-mode="auto"
+    max-column-width="300"
+  ></lightning-datatable>
+</template>

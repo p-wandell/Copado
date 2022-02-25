@@ -1,0 +1,10 @@
+<apex:page controller="fferpcore.ExportController" lightningStylesheets="true">
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageMessage rendered="true" summary="{!$Label.fferpcore__erpexportnorecordsselected}" severity="error" strength="2" />
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!cancelEmpty}" value="{!$Label.fferpcore__erpvisualforcecancelbutton}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

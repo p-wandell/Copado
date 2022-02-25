@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+
+/**
+ * required styles
+ */
+ul {
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #efefef;
+}
+.slds-theme_inverse {
+    background-color: transparent;
+}
+
+/**
+ * branding styles
+ * overwrite these in the custom theme
+ */
+ul {
+    /* gray background on mobile dopdown menu */
+    background: #efefef;
+}

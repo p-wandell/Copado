@@ -1,0 +1,32 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- X7S Join Community -->
+<template>
+    <section>
+        <div class="x7s-join-community__container">
+            <div class={componentClass}>
+                <c-x7s-exp-html-headings text={title} align={titleAlignment} tag="h1" size="none"></c-x7s-exp-html-headings>
+
+                <div class="facepile slds-p-vertical_medium">
+                    <template for:each={users.data} for:item="user">
+                        <div class="face" key={user.id}>
+                            <c-x7s-exp-join-community-user class="inner" user={user}></c-x7s-exp-join-community-user>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-grid slds-wrap slds-grid_pull-padded slds-p-vertical_medium">
+                    <div class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_4-of-5 slds-align-middle">
+                        <p><b if:true={boldText}>{boldText}</b> {plainText}</p>
+                    </div>
+                    <div class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-5 slds-align-middle slds-text-align_right">
+                        <p>
+                            <a if:true={ctaText} href={ctaLink}>{ctaText}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>

@@ -1,0 +1,2 @@
+<apex:page standardController="pse__Assignment__c" recordSetVar="recs" action="{!URLFOR($Page.AssignmentReSchedule,'',[pid=$CurrentPage.parameters.id,mode='ASN'])}">
+</apex:page>

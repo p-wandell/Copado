@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Segnalazione intersezione</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Segnalazione di intersezioni</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Nome intersezione</nameFieldLabel>
+    <recordTypes>
+        <description><!-- Use this record type to add an intersection with a data range total calculation. --></description>
+        <label><!-- Calculated Column with Data Range Total --></label>
+        <name>ffr__CalculatedColumnWithDataRangeTotal</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add an intersection with a row calculation. --></description>
+        <label><!-- Calculated Column with Row Calculation --></label>
+        <name>ffr__CalculatedColumnWithRowCalculation</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add an intersection with a subtotal calculation. --></description>
+        <label><!-- Calculated Column with Subtotal --></label>
+        <name>ffr__CalculatedColumnWithSubtotal</name>
+    </recordTypes>
+    <startsWith>Vowel</startsWith>
+</CustomObjectTranslation>

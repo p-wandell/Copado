@@ -1,0 +1,31 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 8/9/17.
+ -->
+
+<design:component label="7S Product Cart">
+	<design:attribute name="setting"
+	                  label="Catalog Setting Name"
+	                  description="Enter the name of product catalog custom metadata type record. Leave blank to use Default"/>
+	<design:attribute name="showTitle"
+	                  label="Show Header"
+	                  description="Enable to show the cart header"/>
+	<design:attribute name="showImage"
+	                  label="Show product image"
+	                  description="Enable to show the product image"/>
+	<design:attribute name="showFamily"
+	                  label="Show product family"
+	                  description="Enable to show product family in the cart"/>
+	<design:attribute name="showCode"
+	                  label="Show product code"
+	                  description="Enable to show product code in the cart"/>
+	<design:attribute name="showPrice"
+	                  label="Show product unit price/points"
+	                  description="Enable to show product price/points in the cart"/>
+	<design:attribute name="showQuantity"
+	                  label="Show order quantity"
+	                  description="Enable to show order quantity in the cart"/>
+</design:component>

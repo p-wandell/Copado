@@ -1,0 +1,35 @@
+<apex:page standardController="Contact" showHeader="false" applyHtmlTag="true" applyBodyTag="false"  extensions="x7S_PTODashboardController">
+    <head>
+        <!-- <apex:slds /> -->
+        
+        <style type="text/css">
+
+            td.item_label { font-weight: bold; width: 40%; }
+            td.item_value { text-align: right; font-weight: bold; }
+            tr.spacer { height: 5px; }
+            th.heading { text-align: right; width: 10%; }
+
+        </style>
+    </head>
+    <body class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <table width="100%">
+            <tr>
+                <th></th>
+                <th class="heading">Allocated</th>
+                <th class="heading">Used</th>
+                <th class="heading">Scheduled</th>
+                <th class="heading">Remaining</th>
+            </tr>
+
+            <apex:repeat value="{!timeoffItemDetails}" var="t">
+                <tr>
+                    <td class="item_label">{!t.itemName}</td>
+                    <td class="item_value"><apex:outputText value="{0, number, ###,##0.0}"><apex:param value="{!t.hoursAllocated}" /></apex:outputText></td>
+                    <td class="item_value"><apex:outputText value="{0, number, ###,##0.0}"><apex:param value="{!t.hoursUsed}" /></apex:outputText></td>
+                    <td class="item_value"><apex:outputText value="{0, number, ###,##0.0}"><apex:param value="{!t.hoursScheduled}" /></apex:outputText></td>
+                    <td class="item_value"><apex:outputText value="{0, number, ###,##0.0}"><apex:param value="{!t.hoursRemaining}" /></apex:outputText></td>
+                </tr>
+            </apex:repeat>
+        </table>
+    </body>
+</apex:page>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Salesforceユーザに適用される情報のステータス。</help>
+    <label><!-- Status --></label>
+    <name>fferpcore__Status__c</name>
+    <picklistValues>
+        <masterLabel>Activating</masterLabel>
+        <translation>起動中</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Active</masterLabel>
+        <translation>アクティブ</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Deactivated</masterLabel>
+        <translation>無効化</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Deactivating</masterLabel>
+        <translation>無効にする</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Activate</masterLabel>
+        <translation>有効化できませんでした</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Create</masterLabel>
+        <translation>作成できませんでした</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Deactivate</masterLabel>
+        <translation>無効にできませんでした</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Update</masterLabel>
+        <translation>更新に失敗しました</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Activation</masterLabel>
+        <translation>保留中のアクティベーション</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Create</masterLabel>
+        <translation>保留中の作成</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Deactivation</masterLabel>
+        <translation>無効化を保留中</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Update</masterLabel>
+        <translation>更新待ち</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Updating</masterLabel>
+        <translation>更新中</translation>
+    </picklistValues>
+</CustomFieldTranslation>

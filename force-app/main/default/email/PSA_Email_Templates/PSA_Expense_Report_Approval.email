@@ -1,0 +1,11 @@
+An expense report is awaiting your approval. 
+
+To approve or reject this item, reply to this email with APPROVE, APPROVED, YES, REJECT, REJECTED, or NO in the first line of the email message, or click this link to view the Expense Report. 
+
+Link: {!pse__Expense_Report__c.Link}
+
+Details 
+- Project: {!pse__Expense_Report__c.pse__Project__c} 
+- Resource: {!pse__Expense_Report__c.pse__Resource__c} 
+- For Expenses: {!pse__Expense_Report__c.pse__First_Expense_Date__c} to {!pse__Expense_Report__c.pse__Last_Expense_Date__c} 
+- Expense Amount: {!pse__Expense_Report__c.pse__Total_Reimbursement_Amount__c}

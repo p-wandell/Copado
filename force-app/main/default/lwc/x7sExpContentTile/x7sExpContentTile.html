@@ -1,0 +1,22 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Content Tile -->
+<template>
+    <section class={customClass}>
+
+        <div class="x7s-banner__text">
+            <c-x7s-exp-html-headings if:true={headline} text={headline} align={align} tag={headlineTag} size={headlineSize}></c-x7s-exp-html-headings>
+            <c-x7s-exp-html-headings if:true={subHeadline} text={subHeadline} align={align} tag={subHeadlineTag} size={subHeadlineSize}></c-x7s-exp-html-headings>
+            <p if:true={paragraph} class={paragraphClass}>{paragraph}</p>
+        </div>
+
+        <div class={buttonWrapperClass} if:true={displayButtons}>
+            <lightning-button if:true={displayButton1} variant={buttonVariant} value={buttonUrl} label={buttonText}
+                              class={buttonClass} onclick={handleClick}></lightning-button>
+            <lightning-button if:true={displayButton2} variant={buttonVariant} value={buttonUrl2} label={buttonText2}
+                              class={buttonClass2} onclick={handleClick}></lightning-button>
+        </div>
+    </section>
+</template>

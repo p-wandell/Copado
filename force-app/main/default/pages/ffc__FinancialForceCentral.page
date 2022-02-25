@@ -1,0 +1,11 @@
+<apex:page sidebar="true" controller="ffc.DisplayPageController" action="{!redirect}">
+    <apex:form >
+	    <apex:sectionHeader title="{!$Label.ffc__welcome}" />
+	    <apex:pageBlock mode="maindetail" id="topPageBlock">
+	        <apex:commandLink action="{!redirect}" type="image/png">
+	        	<apex:image value="{!URLFOR($Resource.ffc__ffCentral, 'images/central-banner-link.png')}"/>
+			</apex:commandLink>
+	    </apex:pageBlock>
+	</apex:form>
+
+</apex:page>

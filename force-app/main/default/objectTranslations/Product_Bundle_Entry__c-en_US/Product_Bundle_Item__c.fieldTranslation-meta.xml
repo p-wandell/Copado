@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Product Bundle Item (Child) --></label>
+    <lookupFilter>
+        <errorMessage><!-- A bundled product cannot be an entry in another bundle --></errorMessage>
+        <informationalMessage><!-- Please select a child product to add to the bundle --></informationalMessage>
+    </lookupFilter>
+    <name>Product_Bundle_Item__c</name>
+    <relationshipLabel><!-- Product Bundles (Parent Items) --></relationshipLabel>
+</CustomFieldTranslation>

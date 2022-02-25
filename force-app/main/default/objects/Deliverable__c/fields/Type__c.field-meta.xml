@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Project_Phase__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>Case Study</fullName>
+                <default>false</default>
+                <label>Case Study</label>
+            </value>
+            <value>
+                <fullName>Change Management</fullName>
+                <default>false</default>
+                <label>Change Management</label>
+            </value>
+            <value>
+                <fullName>Delivery to Sales handoff</fullName>
+                <default>false</default>
+                <label>Delivery to Sales handoff</label>
+            </value>
+            <value>
+                <fullName>Deployment Workbook</fullName>
+                <default>false</default>
+                <label>Deployment Workbook</label>
+            </value>
+            <value>
+                <fullName>Design Comps</fullName>
+                <default>false</default>
+                <label>Design Comps</label>
+            </value>
+            <value>
+                <fullName>JIRA Board</fullName>
+                <default>false</default>
+                <label>JIRA Board</label>
+            </value>
+            <value>
+                <fullName>Knowledge Transfer</fullName>
+                <default>false</default>
+                <label>Knowledge Transfer</label>
+            </value>
+            <value>
+                <fullName>Lessons Learned</fullName>
+                <default>false</default>
+                <label>Lessons Learned</label>
+            </value>
+            <value>
+                <fullName>Migration Plan</fullName>
+                <default>false</default>
+                <label>Migration Plan</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Pre-flight Assessment</fullName>
+                <default>false</default>
+                <label>Pre-flight Assessment</label>
+            </value>
+            <value>
+                <fullName>Process Flow</fullName>
+                <default>false</default>
+                <label>Process Flow</label>
+            </value>
+            <value>
+                <fullName>Project Kickoff</fullName>
+                <default>false</default>
+                <label>Project Kickoff</label>
+            </value>
+            <value>
+                <fullName>Project Plan</fullName>
+                <default>false</default>
+                <label>Project Plan</label>
+            </value>
+            <value>
+                <fullName>Project Workbook</fullName>
+                <default>false</default>
+                <label>Project Workbook</label>
+            </value>
+            <value>
+                <fullName>RACI</fullName>
+                <default>false</default>
+                <label>RACI</label>
+            </value>
+            <value>
+                <fullName>Requirements Workbook</fullName>
+                <default>false</default>
+                <label>Requirements Workbook</label>
+            </value>
+            <value>
+                <fullName>Roadmap / Release Plan</fullName>
+                <default>false</default>
+                <label>Roadmap / Release Plan</label>
+            </value>
+            <value>
+                <fullName>Sales to Delivery Handoff</fullName>
+                <default>false</default>
+                <label>Sales to Delivery Handoff</label>
+            </value>
+            <value>
+                <fullName>Sitemap</fullName>
+                <default>false</default>
+                <label>Sitemap</label>
+            </value>
+            <value>
+                <fullName>Sprint Demo</fullName>
+                <default>false</default>
+                <label>Sprint Demo</label>
+            </value>
+            <value>
+                <fullName>Sprint Plan</fullName>
+                <default>false</default>
+                <label>Sprint Plan</label>
+            </value>
+            <value>
+                <fullName>Technical Design Document</fullName>
+                <default>false</default>
+                <label>Technical Design Document</label>
+            </value>
+            <value>
+                <fullName>Test Plan</fullName>
+                <default>false</default>
+                <label>Test Plan</label>
+            </value>
+            <value>
+                <fullName>Tollgate</fullName>
+                <default>false</default>
+                <label>Tollgate</label>
+            </value>
+            <value>
+                <fullName>Toll Gate</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Toll Gate</label>
+            </value>
+            <value>
+                <fullName>Training</fullName>
+                <default>false</default>
+                <label>Training</label>
+            </value>
+            <value>
+                <fullName>UAT Test Scripts</fullName>
+                <default>false</default>
+                <label>UAT Test Scripts</label>
+            </value>
+            <value>
+                <fullName>User Stories</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>User Stories</label>
+            </value>
+            <value>
+                <fullName>Wireframes</fullName>
+                <default>false</default>
+                <label>Wireframes</label>
+            </value>
+            <value>
+                <fullName>Workshops</fullName>
+                <default>false</default>
+                <label>Workshops</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Prepare</controllingFieldValue>
+            <valueName>Project Kickoff</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Prepare</controllingFieldValue>
+            <valueName>Project Plan</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Prepare</controllingFieldValue>
+            <valueName>Project Workbook</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Prepare</controllingFieldValue>
+            <valueName>RACI</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Prepare</controllingFieldValue>
+            <valueName>Sales to Delivery Handoff</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Design Comps</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Migration Plan</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Process Flow</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Requirements Workbook</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Roadmap / Release Plan</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Sitemap</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Sprint Plan</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Technical Design Document</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Tollgate</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Wireframes</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Define &amp; Design</controllingFieldValue>
+            <valueName>Workshops</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Build</controllingFieldValue>
+            <valueName>Deployment Workbook</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Build</controllingFieldValue>
+            <valueName>JIRA Board</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Build</controllingFieldValue>
+            <valueName>Sprint Demo</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Verify</controllingFieldValue>
+            <valueName>Test Plan</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Verify</controllingFieldValue>
+            <valueName>UAT Test Scripts</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Launch</controllingFieldValue>
+            <valueName>Change Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Launch</controllingFieldValue>
+            <valueName>Knowledge Transfer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Launch</controllingFieldValue>
+            <valueName>Lessons Learned</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Launch</controllingFieldValue>
+            <valueName>Training</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Close Out</controllingFieldValue>
+            <valueName>Case Study</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Close Out</controllingFieldValue>
+            <valueName>Delivery to Sales handoff</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Phase Independent</controllingFieldValue>
+            <valueName>Other</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

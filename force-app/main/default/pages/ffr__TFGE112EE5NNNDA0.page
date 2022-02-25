@@ -1,0 +1,863 @@
+<!-- User Note: TFGE112EE5NNNDA0 Reporting Template for Summary Reporting only -->
+<!-- User Note:  This Template Has Value Groups 01-05 Which Automatically Subtotal, Value Groups 10-20 Used For Display Purposes -->
+<!-- User Note: The Template Is Generic And Only Uses A Single Data Range (DR01)  -->
+<!-- User Note: Special Features: Row Totals automatically calculated (No Grand Total). Value Groups 01-05 Automatic Subtotal, Groups 10-20 For Display Purposes.  -->
+<!-- User Note: Special Features: This templates can use 2 SUM type Reporting Values, applying SUMA to columns A to M and SUMB to columns N to Z-->
+<!-- User Note: This template uses Normal Signs (so debits are positive and credits are negative) and Values have been formatted to 0 Decimal Places -->
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}" contenttype="{!SaveReportAS}">
+<!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+<!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+<!-- User Note: You Can Create Your Own Stylesheet In The Static Resources And Apply It To Your Reports -->
+<!-- User Note: The Style Has Been Designed To Allow Variations Within Different Types Of Reports -->
+<!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+    <apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+    <apex:stylesheet value="{!StyleSheetName}"/>
+<!-- Variable to represent boolean true/false when needing to set other variables to these states -->
+    <apex:variable var="true" value="{!1=1}"/>
+    <apex:variable var="false" value="{!1=0}"/>
+<!-- User Note: I Want To Format Values On A Report In Different Ways -->
+<!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+<!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brackets/Minus 3CharacterInternationalCurrencyCode/None-->
+<!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+<!-- User Note: You Can Add Your Own Formats To The List Below. Try To Keep A Good Coding Structure-->
+    <apex:variable var="dateFormat" value="{0, date, MM/dd/yyyy}"/>
+    <apex:variable var="V2NCB" value="{0, number, #,###,###,##0.00;(#,###,###,##0.00)}"/>
+    <apex:variable var="P2NCB" value="{0, number, #,###,###,##0.00%;(#,###,###,##0.00%)}"/>
+    <apex:variable var="V0NCB" value="{0, number, #,###,###,##0;(#,###,###,##0)}"/>
+    <apex:variable var="P0NCB" value="{0, number, #,###,###,##0%;(#,###,###,##0%)}"/>
+    <apex:variable var="V2RCB" value="{0, number, (#,###,###,##0.00);#,###,###,##0.00}"/>
+    <apex:variable var="P2RCB" value="{0, number, (#,###,###,##0.00%);#,###,###,##0.00%}"/>
+    <apex:variable var="V0RCB" value="{0, number, (#,###,###,##0);#,###,###,##0}"/>
+    <apex:variable var="P0RCB" value="{0, number, (#,###,###,##0%);#,###,###,##0%}"/>
+    <apex:variable var="V2NCBUSD" value="{0, number, $#,###,###,##0.00;$(#,###,###,##0.00)}"/>
+    <apex:variable var="V2RCBUSD" value="{0, number, $(#,###,###,##0.00);$#,###,###,##0.00}"/>
+    <apex:variable var="V2ZCB" value="0.00"/>
+    <apex:variable var="P2ZCB" value="0.00%"/>
+    <apex:variable var="V2ZCBUSD" value="$0.00"/>
+    <apex:variable var="V0ZCB" value="0"/>
+    <apex:variable var="P0ZCB" value="0%"/>
+    <apex:variable var="V0ZCBUSD" value="$0"/>
+<!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+<!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+<!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+<!-- User Note: It Is Possible To Use Individual Variables Against A Line. This Method Allows You To Make A Single Change To All Related Formats  -->
+<!-- User Note: Create variables to control the format of numbers for Reporting Values of type Group  -->
+    <apex:variable var="VG" value="{!V0NCB}"/>
+    <apex:variable var="VGZ" value="{!V0ZCB}"/>
+<!-- User Note: Create a variable to control the format of numbers for Reporting Values of type SUM  -->
+    <apex:variable var="VN" value="{!V0NCB}"/>
+    <apex:variable var="PN" value="{!P0NCB}"/>
+    <apex:variable var="VR" value="{!V0RCB}"/>
+    <apex:variable var="PR" value="{!P0RCB}"/>
+<!-- User Note: Create a variable to control the format of zeros for all Reporting Values (type Group and SUM)  -->
+    <apex:variable var="VZ" value="{!V0ZCB}"/>
+    <apex:variable var="PZ" value="{!P0ZCB}"/>
+
+<!-- REGION 01: GENERAL CONFIGURATION END -->
+<!-- REGION 02: REPORT HEADER START -->
+<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+    <apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+<!-- User Note: Show The Error Messages From The Reporting Engine -->
+<apex:PageMessages />
+    <div class="chatterPosition"></div>
+<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+<!-- User Note: When Creating New Templates, This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+    <table class="ffrgridd">
+        <tr>
+            <td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+        </tr>
+        <tr>
+            <td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+            <td align="right">{!NOW()}</td>
+        </tr>
+        <tr><td class="ffrgridspacer2"></td></tr>
+        <tr>
+            <td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+            <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+        </tr>
+        <tr><td class="ffrgridspacer2"></td></tr>
+        <tr>
+            <td align="left"><apex:outputField value="{!ffr__ReportingDefinition__c.ffr__Description__c}"/></td>
+            <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+        </tr>
+    </table>
+<!-- User Note: Create a new table to display the prompt information -->
+    <table class="ffrgridnotfullpage">
+        <tr><td class="ffrgridspacer2"></td></tr>
+        <tr>
+            <td align="left">
+                <table class="ffrgrid">
+                    <apex:repeat value="{!promptList}" var="prompt" >
+                        <tr>
+                            <td align="left">{!prompt.label}</td>
+                            <td align="left" class="ffrgridspacer"></td>
+                            <td align="left"><strong>{!prompt.value}</strong></td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </td>
+        </tr>
+    </table>
+<!-- Add a space after the header -->
+    <table class="ffrgrid">
+        <tr><td class="ffrgridspacer"></td></tr>
+    </table>
+<!-- REGION 02: REPORT HEADER END -->
+<!-- REGION 03: REPORT BODY-->
+    <apex:outputpanel rendered="{!!hasMessages}">
+    <!-- This template uses only one data range -->
+        <apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+    <!-- Configuration of columns and groups (elastic template responds dynamically to existence of groups and columns -->
+    <!-- Column setup -->
+    <!-- Set the default column rendering state variables to "false" -->
+        <apex:variable var="RenderColumnA" value="{!false}"/>
+        <apex:variable var="RenderColumnB" value="{!false}"/>
+        <apex:variable var="RenderColumnC" value="{!false}"/>
+        <apex:variable var="RenderColumnD" value="{!false}"/>
+        <apex:variable var="RenderColumnE" value="{!false}"/>
+        <apex:variable var="RenderColumnF" value="{!false}"/>
+        <apex:variable var="RenderColumnG" value="{!false}"/>
+        <apex:variable var="RenderColumnH" value="{!false}"/>
+        <apex:variable var="RenderColumnI" value="{!false}"/>
+        <apex:variable var="RenderColumnJ" value="{!false}"/>
+        <apex:variable var="RenderColumnK" value="{!false}"/>
+        <apex:variable var="RenderColumnL" value="{!false}"/>
+        <apex:variable var="RenderColumnM" value="{!false}"/>
+        <apex:variable var="RenderColumnN" value="{!false}"/>
+        <apex:variable var="RenderColumnO" value="{!false}"/>
+        <apex:variable var="RenderColumnP" value="{!false}"/>
+        <apex:variable var="RenderColumnQ" value="{!false}"/>
+        <apex:variable var="RenderColumnR" value="{!false}"/>
+        <apex:variable var="RenderColumnS" value="{!false}"/>
+        <apex:variable var="RenderColumnT" value="{!false}"/>
+        <apex:variable var="RenderColumnU" value="{!false}"/>
+        <apex:variable var="RenderColumnV" value="{!false}"/>
+        <apex:variable var="RenderColumnW" value="{!false}"/>
+        <apex:variable var="RenderColumnX" value="{!false}"/>
+        <apex:variable var="RenderColumnY" value="{!false}"/>
+        <apex:variable var="RenderColumnZ" value="{!false}"/>
+    <!-- Set the default column rendering state for calculated columns -->
+    <!-- Now set the column rendering state variables according to which columns have been used (via column filter mappings) -->
+        <apex:repeat var="columnKey" value="{!dataRange.columnKeyList}">
+            <apex:variable var="RenderColumnA" value="{!true}" rendered="{!columnKey=='A'}" />
+            <apex:variable var="RenderColumnB" value="{!true}" rendered="{!columnKey=='B'}" />
+            <apex:variable var="RenderColumnC" value="{!true}" rendered="{!columnKey=='C'}" />
+            <apex:variable var="RenderColumnD" value="{!true}" rendered="{!columnKey=='D'}" />
+            <apex:variable var="RenderColumnE" value="{!true}" rendered="{!columnKey=='E'}" />
+            <apex:variable var="RenderColumnF" value="{!true}" rendered="{!columnKey=='F'}" />
+            <apex:variable var="RenderColumnG" value="{!true}" rendered="{!columnKey=='G'}" />
+            <apex:variable var="RenderColumnH" value="{!true}" rendered="{!columnKey=='H'}" />
+            <apex:variable var="RenderColumnI" value="{!true}" rendered="{!columnKey=='I'}" />
+            <apex:variable var="RenderColumnJ" value="{!true}" rendered="{!columnKey=='J'}" />
+            <apex:variable var="RenderColumnK" value="{!true}" rendered="{!columnKey=='K'}" />
+            <apex:variable var="RenderColumnL" value="{!true}" rendered="{!columnKey=='L'}" />
+            <apex:variable var="RenderColumnM" value="{!true}" rendered="{!columnKey=='M'}" />
+            <apex:variable var="RenderColumnN" value="{!true}" rendered="{!columnKey=='N'}" />
+            <apex:variable var="RenderColumnO" value="{!true}" rendered="{!columnKey=='O'}" />
+            <apex:variable var="RenderColumnP" value="{!true}" rendered="{!columnKey=='P'}" />
+            <apex:variable var="RenderColumnQ" value="{!true}" rendered="{!columnKey=='Q'}" />
+            <apex:variable var="RenderColumnR" value="{!true}" rendered="{!columnKey=='R'}" />
+            <apex:variable var="RenderColumnS" value="{!true}" rendered="{!columnKey=='S'}" />
+            <apex:variable var="RenderColumnT" value="{!true}" rendered="{!columnKey=='T'}" />
+            <apex:variable var="RenderColumnU" value="{!true}" rendered="{!columnKey=='U'}" />
+            <apex:variable var="RenderColumnV" value="{!true}" rendered="{!columnKey=='V'}" />
+            <apex:variable var="RenderColumnW" value="{!true}" rendered="{!columnKey=='W'}" />
+            <apex:variable var="RenderColumnX" value="{!true}" rendered="{!columnKey=='X'}" />
+            <apex:variable var="RenderColumnY" value="{!true}" rendered="{!columnKey=='Y'}" />
+            <apex:variable var="RenderColumnZ" value="{!true}" rendered="{!columnKey=='Z'}" />
+        </apex:repeat>
+    <!-- Group setup-->
+    <!-- Set the default group value rendering state variables to "false" -->
+        <apex:variable var="RenderGroup01" value="{!false}"/>
+        <apex:variable var="RenderGroup02" value="{!false}"/>
+        <apex:variable var="RenderGroup03" value="{!false}"/>
+        <apex:variable var="RenderGroup04" value="{!false}"/>
+        <apex:variable var="RenderGroup05" value="{!false}"/>
+        <apex:variable var="RenderGroup10" value="{!false}"/>
+        <apex:variable var="RenderGroup11" value="{!false}"/>
+        <apex:variable var="RenderGroup12" value="{!false}"/>
+        <apex:variable var="RenderGroup13" value="{!false}"/>
+        <apex:variable var="RenderGroup14" value="{!false}"/>
+        <apex:variable var="RenderGroup15" value="{!false}"/>
+        <apex:variable var="RenderGroup16" value="{!false}"/>
+        <apex:variable var="RenderGroup17" value="{!false}"/>
+        <apex:variable var="RenderGroup18" value="{!false}"/>
+        <apex:variable var="RenderGroup19" value="{!false}"/>
+        <apex:variable var="RenderGroup20" value="{!false}"/>
+    <!-- We need to know whether to keep group subtotals. Default condition is false -->
+        <apex:variable var="RenderGroupSubtotals" value="{!false}"/>
+    <!-- Now set the group rendering state variables according to which group values have been used -->
+    <!-- Additionally, if we have any of groups 01-09 we need to maintain group subtotals -->
+        <apex:repeat var="groupKey" value="{!dataRange.groupKeyList}">
+    <!-- Group-groups -->
+            <apex:outputPanel layout="none" rendered="{!groupKey=='01'}">
+                <apex:variable var="RenderGroup01" value="{!true}"/>
+                <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='02'}">
+                <apex:variable var="RenderGroup02" value="{!true}"/>
+                <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='03'}">
+                <apex:variable var="RenderGroup03" value="{!true}"/>
+                <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='04'}">
+                <apex:variable var="RenderGroup04" value="{!true}"/>
+                <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='05'}">
+                <apex:variable var="RenderGroup05" value="{!true}"/>
+                <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+            </apex:outputPanel>
+    <!-- Line-groups -->
+            <apex:outputPanel layout="none" rendered="{!groupKey=='10'}">
+                <apex:variable var="RenderGroup10" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='11'}">
+                <apex:variable var="RenderGroup11" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='12'}">
+                <apex:variable var="RenderGroup12" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='13'}">
+                <apex:variable var="RenderGroup13" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='14'}">
+                <apex:variable var="RenderGroup14" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='15'}">
+                <apex:variable var="RenderGroup15" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='16'}">
+                <apex:variable var="RenderGroup16" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='17'}">
+                <apex:variable var="RenderGroup17" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='18'}">
+                <apex:variable var="RenderGroup18" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='19'}">
+                <apex:variable var="RenderGroup19" value="{!true}"/>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!groupKey=='20'}">
+                <apex:variable var="RenderGroup20" value="{!true}"/>
+            </apex:outputPanel>
+        </apex:repeat>
+
+        <table class="ffrgrid">
+            <tr>
+    <!-- Column headings -->
+    <!-- Note that these are contained within outputPanels which are rendered (displayed) depending on the appropriate column render state variable -->
+    <!-- Groups 1-9 are groups with sub-totals (groups), 10- are groups without sub-totals (lines) -->
+                <th class="{!if(RenderGroup01,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup01}">{!dataRange.groupLabels['01']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup02,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup02}">{!dataRange.groupLabels['02']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup03,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup03}">{!dataRange.groupLabels['03']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup04,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup04}">{!dataRange.groupLabels['04']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup05,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup05}">{!dataRange.groupLabels['05']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup10,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup10}">{!dataRange.groupLabels['10']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup11,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup11}">{!dataRange.groupLabels['11']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup12,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup12}">{!dataRange.groupLabels['12']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup13,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup13}">{!dataRange.groupLabels['13']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup14,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup14}">{!dataRange.groupLabels['14']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup15,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup15}">{!dataRange.groupLabels['15']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup16,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup16}">{!dataRange.groupLabels['16']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup17,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup17}">{!dataRange.groupLabels['17']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup18,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup18}">{!dataRange.groupLabels['18']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup19,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup19}">{!dataRange.groupLabels['19']}</apex:outputPanel></th>
+                <th class="{!if(RenderGroup20,'ffrgridtitleleftd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup20}">{!dataRange.groupLabels['20']}</apex:outputPanel></th>
+                <td class="ffrgridspacer"/>
+                <th class="{!if(RenderColumnA,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnA}">{!dataRange.columnLabels['A']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnB,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnB}">{!dataRange.columnLabels['B']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnC,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnC}">{!dataRange.columnLabels['C']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnD,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnD}">{!dataRange.columnLabels['D']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnE,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnE}">{!dataRange.columnLabels['E']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnF,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnF}">{!dataRange.columnLabels['F']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnG,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnG}">{!dataRange.columnLabels['G']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnH,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnH}">{!dataRange.columnLabels['H']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnI,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnI}">{!dataRange.columnLabels['I']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnJ,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnJ}">{!dataRange.columnLabels['J']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnK,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnK}">{!dataRange.columnLabels['K']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnL,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnL}">{!dataRange.columnLabels['L']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnM,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnM}">{!dataRange.columnLabels['M']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnN,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnN}">{!dataRange.columnLabels['N']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnO,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnO}">{!dataRange.columnLabels['O']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnP,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnP}">{!dataRange.columnLabels['P']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnQ,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnQ}">{!dataRange.columnLabels['Q']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnR,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnR}">{!dataRange.columnLabels['R']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnS,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnS}">{!dataRange.columnLabels['S']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnT,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnT}">{!dataRange.columnLabels['T']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnU,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnU}">{!dataRange.columnLabels['U']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnV,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnV}">{!dataRange.columnLabels['V']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnW,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnW}">{!dataRange.columnLabels['W']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnX,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnX}">{!dataRange.columnLabels['X']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnY,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnY}">{!dataRange.columnLabels['Y']}</apex:outputPanel></th>
+                <th class="{!if(RenderColumnZ,'ffrgridtitlerightd','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderColumnZ}">{!dataRange.columnLabels['Z']}</apex:outputPanel></th>
+            </tr>
+    <!-- Iterate over the Rows -->
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+    <!-- Setup for start of row -->
+                <apex:variable var="rowKeyNum" value="{!VALUE(row.key)}"/>
+    <!-- For each row, reset all column row-totals and subtotals to zero (if the column is in use - determined by column render state variables) -->
+                <tr>
+                    <td class = "ffrhidden">
+                        <apex:variable value="{!0}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnF" rendered="{!RenderColumnF}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnG" rendered="{!RenderColumnG}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnH" rendered="{!RenderColumnH}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnI" rendered="{!RenderColumnI}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnJ" rendered="{!RenderColumnJ}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnK" rendered="{!RenderColumnK}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnL" rendered="{!RenderColumnL}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnM" rendered="{!RenderColumnM}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnN" rendered="{!RenderColumnN}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnO" rendered="{!RenderColumnO}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnP" rendered="{!RenderColumnP}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnQ" rendered="{!RenderColumnQ}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnR" rendered="{!RenderColumnR}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnS" rendered="{!RenderColumnS}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnT" rendered="{!RenderColumnT}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnU" rendered="{!RenderColumnU}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnV" rendered="{!RenderColumnV}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnW" rendered="{!RenderColumnW}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnX" rendered="{!RenderColumnX}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnY" rendered="{!RenderColumnY}"/>
+                        <apex:variable value="{!0}" var="rowTotalColumnZ" rendered="{!RenderColumnZ}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnA" rendered="{!RenderColumnA}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnB" rendered="{!RenderColumnB}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnC" rendered="{!RenderColumnC}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnD" rendered="{!RenderColumnD}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnE" rendered="{!RenderColumnE}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnF" rendered="{!RenderColumnF}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnG" rendered="{!RenderColumnG}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnH" rendered="{!RenderColumnH}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnI" rendered="{!RenderColumnI}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnJ" rendered="{!RenderColumnJ}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnK" rendered="{!RenderColumnK}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnL" rendered="{!RenderColumnL}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnM" rendered="{!RenderColumnM}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnN" rendered="{!RenderColumnN}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnO" rendered="{!RenderColumnO}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnP" rendered="{!RenderColumnP}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnQ" rendered="{!RenderColumnQ}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnR" rendered="{!RenderColumnR}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnS" rendered="{!RenderColumnS}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnT" rendered="{!RenderColumnT}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnU" rendered="{!RenderColumnU}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnV" rendered="{!RenderColumnV}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnW" rendered="{!RenderColumnW}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnX" rendered="{!RenderColumnX}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnY" rendered="{!RenderColumnY}"/>
+                        <apex:variable value="{!0}" var="rowSubtotalColumnZ" rendered="{!RenderColumnZ}"/>
+                    </td>
+                </tr>
+    <!-- These variables are used to determine when to print a subtotal -->
+                <apex:variable var="previousLineGroup01" value=""/>
+                <apex:variable var="previousLineGroup02" value=""/>
+                <apex:variable var="previousLineGroup03" value=""/>
+                <apex:variable var="previousLineGroup04" value=""/>
+                <apex:variable var="previousLineGroup05" value=""/>
+                <apex:variable var="currentLineGroup01" value=""/>
+                <apex:variable var="currentLineGroup02" value=""/>
+                <apex:variable var="currentLineGroup03" value=""/>
+                <apex:variable var="currentLineGroup04" value=""/>
+                <apex:variable var="currentLineGroup05" value=""/>
+    <!-- This variable is used to determine whether the line is the first line in the row - to prevent a subtotal being printed before the first line -->
+                <apex:variable var="firstLine" value="{!true}"/>
+    <!-- Iterate over the Lines -->
+                <apex:variable var="existLines" value="{!false}"/>
+                <apex:repeat value="{!row.lineList}" var="line" >
+                    <apex:variable var="existLines" value="{!true}"/>
+    <!-- Set the variables representing the groups for the current line for comparison with the previous line -->
+                    <tr>
+                        <td class = "ffrhidden">
+                            <apex:variable value="{!line.genericGroups['01'].value}" var="currentLineGroup01" rendered="{!RenderGroup01}"/>
+                            <apex:variable value="{!line.genericGroups['02'].value}" var="currentLineGroup02" rendered="{!RenderGroup02}"/>
+                            <apex:variable value="{!line.genericGroups['03'].value}" var="currentLineGroup03" rendered="{!RenderGroup03}"/>
+                            <apex:variable value="{!line.genericGroups['04'].value}" var="currentLineGroup04" rendered="{!RenderGroup04}"/>
+                            <apex:variable value="{!line.genericGroups['05'].value}" var="currentLineGroup05" rendered="{!RenderGroup05}"/>
+                        </td>
+                    </tr>
+    <!-- Mid-row subtotal line -->
+    <!-- Do we want to process a (mid-row) subtotal line? -->
+                    <apex:variable var="doSubtotal" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02 || currentLineGroup03!=previousLineGroup03|| currentLineGroup04!=previousLineGroup04|| currentLineGroup05!=previousLineGroup05)}"/>
+                    <tr>
+    <!-- Display the group-group values but not the group-line values -->
+                        <td class="{!if(doSubtotal && RenderGroup01,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup01}" type="{!line.genericGroups['01'].type}" rendered="{!doSubtotal && RenderGroup01}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderGroup02,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup02}" type="{!line.genericGroups['02'].type}" rendered="{!doSubtotal && RenderGroup02}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderGroup03,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup03}" type="{!line.genericGroups['03'].type}" rendered="{!doSubtotal && RenderGroup03}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderGroup04,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup04}" type="{!line.genericGroups['04'].type}" rendered="{!doSubtotal && RenderGroup04}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderGroup05,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup05}" type="{!line.genericGroups['05'].type}" rendered="{!doSubtotal && RenderGroup05}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderGroup10,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup11,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup12,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup13,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup14,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup15,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup16,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup17,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup18,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup19,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal && RenderGroup20,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(doSubtotal,'ffrgridspacerd','ffrhidden')}"/>
+                        <td class="{!if(doSubtotal && RenderColumnA,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnA}" type="{!IF(rowSubtotalColumnA == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnA}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnB,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnB}" type="{!IF(rowSubtotalColumnB == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnB}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnC,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnC}" type="{!IF(rowSubtotalColumnC == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnC}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnD,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnD}" type="{!IF(rowSubtotalColumnD == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnD}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnE,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnE}" type="{!IF(rowSubtotalColumnE == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnE}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnF,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnF}" type="{!IF(rowSubtotalColumnF == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnF}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnG,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnG}" type="{!IF(rowSubtotalColumnG == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnG}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnH,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnH}" type="{!IF(rowSubtotalColumnH == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnH}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnI,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnI}" type="{!IF(rowSubtotalColumnI == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnI}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnJ,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnJ}" type="{!IF(rowSubtotalColumnJ == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnJ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnK,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnK}" type="{!IF(rowSubtotalColumnK == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnK}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnL,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnL}" type="{!IF(rowSubtotalColumnL == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnL}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnM,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnM}" type="{!IF(rowSubtotalColumnM == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnM}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnN,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnN}" type="{!IF(rowSubtotalColumnN == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnN}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnO,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnO}" type="{!IF(rowSubtotalColumnO == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnO}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnP,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnP}" type="{!IF(rowSubtotalColumnP == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnP}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnQ,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnQ}" type="{!IF(rowSubtotalColumnQ == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnQ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnR,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnR}" type="{!IF(rowSubtotalColumnR == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnR}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnS,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnS}" type="{!IF(rowSubtotalColumnS == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnS}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnT,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnT}" type="{!IF(rowSubtotalColumnT == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnT}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnU,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnU}" type="{!IF(rowSubtotalColumnU == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnU}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnV,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnV}" type="{!IF(rowSubtotalColumnV == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnV}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnW,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnW}" type="{!IF(rowSubtotalColumnW == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnW}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnX,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnX}" type="{!IF(rowSubtotalColumnX == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnX}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnY,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnY}" type="{!IF(rowSubtotalColumnY == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnY}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(doSubtotal && RenderColumnZ,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnZ}" type="{!IF(rowSubtotalColumnZ == 0, TypeZero, TypeDouble)}" rendered="{!doSubtotal && RenderColumnZ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    </tr>
+    <!-- Reset the subtotals -->
+                    <tr>
+                        <td class="ffrhidden">
+                            <apex:variable value="{!0}" var="rowSubtotalColumnA" rendered="{!doSubtotal && RenderColumnA}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnB" rendered="{!doSubtotal && RenderColumnB}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnC" rendered="{!doSubtotal && RenderColumnC}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnD" rendered="{!doSubtotal && RenderColumnD}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnE" rendered="{!doSubtotal && RenderColumnE}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnF" rendered="{!doSubtotal && RenderColumnF}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnG" rendered="{!doSubtotal && RenderColumnG}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnH" rendered="{!doSubtotal && RenderColumnH}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnI" rendered="{!doSubtotal && RenderColumnI}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnJ" rendered="{!doSubtotal && RenderColumnJ}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnK" rendered="{!doSubtotal && RenderColumnK}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnL" rendered="{!doSubtotal && RenderColumnL}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnM" rendered="{!doSubtotal && RenderColumnM}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnN" rendered="{!doSubtotal && RenderColumnN}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnO" rendered="{!doSubtotal && RenderColumnO}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnP" rendered="{!doSubtotal && RenderColumnP}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnQ" rendered="{!doSubtotal && RenderColumnQ}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnR" rendered="{!doSubtotal && RenderColumnR}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnS" rendered="{!doSubtotal && RenderColumnS}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnT" rendered="{!doSubtotal && RenderColumnT}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnU" rendered="{!doSubtotal && RenderColumnU}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnV" rendered="{!doSubtotal && RenderColumnV}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnW" rendered="{!doSubtotal && RenderColumnW}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnX" rendered="{!doSubtotal && RenderColumnX}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnY" rendered="{!doSubtotal && RenderColumnY}"/>
+                            <apex:variable value="{!0}" var="rowSubtotalColumnZ" rendered="{!doSubtotal && RenderColumnZ}"/>
+                        </td>
+                    </tr>
+    <!-- Line setup -->
+    <!-- Each column is configured independently within an outputPanel the outputpanel rendered property determines whether the column is configured -->
+    <!-- This uses the column render state variable (e.g. "renderColumnA" determines whether the panel for column A is configured and rendered) -->
+                    <apex:variable value="{!0}" var="lineTotal"/>
+    <!-- For each column, add the column value to the line total and sub-total - column-row totals are updated separately -->
+    <!-- Columns A to M are for use with Reporting Value SUMA, whereas columns N to Z are for use with Reporting Values SUMB -->
+    <!-- Reporting Values SUMA -->
+                    <tr>
+                        <td class="ffrhidden">
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+                                <apex:variable value="{!lineTotal+line.columns['A'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnA+line.columns['A'].values['A']}" var="rowSubtotalColumnA"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+                                <apex:variable value="{!lineTotal+line.columns['B'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnB+line.columns['B'].values['A']}" var="rowSubtotalColumnB"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+                                <apex:variable value="{!lineTotal+line.columns['C'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnC+line.columns['C'].values['A']}" var="rowSubtotalColumnC"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+                                <apex:variable value="{!lineTotal+line.columns['D'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnD+line.columns['D'].values['A']}" var="rowSubtotalColumnD"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+                                <apex:variable value="{!lineTotal+line.columns['E'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnE+line.columns['E'].values['A']}" var="rowSubtotalColumnE"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnF}">
+                                <apex:variable value="{!lineTotal+line.columns['F'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnF+line.columns['F'].values['A']}" var="rowSubtotalColumnF"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnG}">
+                                <apex:variable value="{!lineTotal+line.columns['G'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnG+line.columns['G'].values['A']}" var="rowSubtotalColumnG"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnH}">
+                                <apex:variable value="{!lineTotal+line.columns['H'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnH+line.columns['H'].values['A']}" var="rowSubtotalColumnH"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnI}">
+                                <apex:variable value="{!lineTotal+line.columns['I'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnI+line.columns['I'].values['A']}" var="rowSubtotalColumnI"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnJ}">
+                                <apex:variable value="{!lineTotal+line.columns['J'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnJ+line.columns['J'].values['A']}" var="rowSubtotalColumnJ"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnK}">
+                                <apex:variable value="{!lineTotal+line.columns['K'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnK+line.columns['K'].values['A']}" var="rowSubtotalColumnK"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnL}">
+                                <apex:variable value="{!lineTotal+line.columns['L'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnL+line.columns['L'].values['A']}" var="rowSubtotalColumnL"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnM}">
+                                <apex:variable value="{!lineTotal+line.columns['M'].values['A']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnM+line.columns['M'].values['A']}" var="rowSubtotalColumnM"/>
+                            </apex:outputPanel>
+    <!-- Reporting Values SUMB -->
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnN}">
+                                <apex:variable value="{!lineTotal+line.columns['N'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnN+line.columns['N'].values['B']}" var="rowSubtotalColumnN"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnO}">
+                                <apex:variable value="{!lineTotal+line.columns['O'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnO+line.columns['O'].values['B']}" var="rowSubtotalColumnO"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnP}">
+                                <apex:variable value="{!lineTotal+line.columns['P'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnP+line.columns['P'].values['B']}" var="rowSubtotalColumnP"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnQ}">
+                                <apex:variable value="{!lineTotal+line.columns['Q'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnQ+line.columns['Q'].values['B']}" var="rowSubtotalColumnQ"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnR}">
+                                <apex:variable value="{!lineTotal+line.columns['R'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnR+line.columns['R'].values['B']}" var="rowSubtotalColumnR"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnS}">
+                                <apex:variable value="{!lineTotal+line.columns['S'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnS+line.columns['S'].values['B']}" var="rowSubtotalColumnS"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnT}">
+                                <apex:variable value="{!lineTotal+line.columns['T'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnT+line.columns['T'].values['B']}" var="rowSubtotalColumnT"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnU}">
+                                <apex:variable value="{!lineTotal+line.columns['U'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnU+line.columns['U'].values['B']}" var="rowSubtotalColumnU"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnV}">
+                                <apex:variable value="{!lineTotal+line.columns['V'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnV+line.columns['V'].values['B']}" var="rowSubtotalColumnV"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnW}">
+                                <apex:variable value="{!lineTotal+line.columns['W'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnW+line.columns['W'].values['B']}" var="rowSubtotalColumnW"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnX}">
+                                <apex:variable value="{!lineTotal+line.columns['X'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnX+line.columns['X'].values['B']}" var="rowSubtotalColumnX"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnY}">
+                                <apex:variable value="{!lineTotal+line.columns['Y'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnY+line.columns['Y'].values['B']}" var="rowSubtotalColumnY"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!RenderColumnZ}">
+                                <apex:variable value="{!lineTotal+line.columns['Z'].values['B']}" var="lineTotal"/>
+                                <apex:variable value="{!rowSubtotalColumnZ+line.columns['Z'].values['B']}" var="rowSubtotalColumnZ"/>
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+    <!-- Display the line -->
+                    <tr>
+    <!-- Display the grouping values based on render settings -->
+                        <td class="{!if(RenderGroup01,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!currentLineGroup01}" type="{!line.genericGroups['01'].type}" rendered="{!RenderGroup01}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup02,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!currentLineGroup02}" type="{!line.genericGroups['02'].type}" rendered="{!RenderGroup02}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup03,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!currentLineGroup03}" type="{!line.genericGroups['03'].type}" rendered="{!RenderGroup03}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup04,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!currentLineGroup04}" type="{!line.genericGroups['04'].type}" rendered="{!RenderGroup04}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup05,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!currentLineGroup05}" type="{!line.genericGroups['05'].type}" rendered="{!RenderGroup05}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup10,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['10'].value}" type="{!line.genericGroups['10'].type}" rendered="{!RenderGroup10}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup11,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['11'].value}" type="{!line.genericGroups['11'].type}" rendered="{!RenderGroup11}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup12,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['12'].value}" type="{!line.genericGroups['12'].type}" rendered="{!RenderGroup12}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup13,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['13'].value}" type="{!line.genericGroups['13'].type}" rendered="{!RenderGroup13}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup14,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['14'].value}" type="{!line.genericGroups['14'].type}" rendered="{!RenderGroup14}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup15,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['15'].value}" type="{!line.genericGroups['15'].type}" rendered="{!RenderGroup15}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup16,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['16'].value}" type="{!line.genericGroups['16'].type}" rendered="{!RenderGroup16}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup17,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['17'].value}" type="{!line.genericGroups['17'].type}" rendered="{!RenderGroup17}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup18,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['18'].value}" type="{!line.genericGroups['18'].type}" rendered="{!RenderGroup18}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup19,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['19'].value}" type="{!line.genericGroups['19'].type}" rendered="{!RenderGroup19}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup20,'ffrgridrowlabeld','ffrhidden')}"><c:Formatter value="{!line.genericGroups['20'].value}" type="{!line.genericGroups['20'].type}" rendered="{!RenderGroup20}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="ffrgridspacerd"/>
+    <!-- Display the line value, formatted using a NumberFormatter component with the pattern defined above -->
+    <!-- Reporting Values SUMA -->
+                        <td class="{!if(RenderColumnA,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['A'].values['A']}" type="{!IF(line.columns['A'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnA}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnB,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['B'].values['A']}" type="{!IF(line.columns['B'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnB}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnC,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['C'].values['A']}" type="{!IF(line.columns['C'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnC}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnD,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['D'].values['A']}" type="{!IF(line.columns['D'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnD}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnE,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['E'].values['A']}" type="{!IF(line.columns['E'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnE}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnF,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['F'].values['A']}" type="{!IF(line.columns['F'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnF}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnG,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['G'].values['A']}" type="{!IF(line.columns['G'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnG}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnH,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['H'].values['A']}" type="{!IF(line.columns['H'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnH}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnI,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['I'].values['A']}" type="{!IF(line.columns['I'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnI}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnJ,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['J'].values['A']}" type="{!IF(line.columns['J'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnJ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnK,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['K'].values['A']}" type="{!IF(line.columns['K'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnK}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnL,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['L'].values['A']}" type="{!IF(line.columns['L'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnL}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnM,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['M'].values['A']}" type="{!IF(line.columns['M'].values['A'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnM}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+    <!-- Reporting Values SUMB -->
+                        <td class="{!if(RenderColumnN,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['N'].values['B']}" type="{!IF(line.columns['N'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnN}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnO,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['O'].values['B']}" type="{!IF(line.columns['O'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnO}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnP,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['P'].values['B']}" type="{!IF(line.columns['P'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnP}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnQ,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['Q'].values['B']}" type="{!IF(line.columns['Q'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnQ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnR,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['R'].values['B']}" type="{!IF(line.columns['R'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnR}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnS,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['S'].values['B']}" type="{!IF(line.columns['S'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnS}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnT,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['T'].values['B']}" type="{!IF(line.columns['T'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnT}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnU,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['U'].values['B']}" type="{!IF(line.columns['U'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnU}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnV,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['V'].values['B']}" type="{!IF(line.columns['V'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnV}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnW,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['W'].values['B']}" type="{!IF(line.columns['W'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnW}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnX,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['X'].values['B']}" type="{!IF(line.columns['X'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnX}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnY,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['Y'].values['B']}" type="{!IF(line.columns['Y'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnY}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnZ,'ffrgridrowd','ffrhidden')}"><c:Formatter value="{!line.columns['Z'].values['B']}" type="{!IF(line.columns['Z'].values['B'] == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnZ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    </tr>
+    <!-- Setup for next line -->
+    <!-- Record the group values as "previous" for comparison on the next line -->
+                    <tr>
+                        <td class="ffrhidden">
+                            <apex:variable var="previousLineGroup01" value="{!currentLineGroup01}"/>
+                            <apex:variable var="previousLineGroup02" value="{!currentLineGroup02}"/>
+                            <apex:variable var="previousLineGroup03" value="{!currentLineGroup03}"/>
+                            <apex:variable var="previousLineGroup04" value="{!currentLineGroup04}"/>
+                            <apex:variable var="previousLineGroup05" value="{!currentLineGroup05}"/>
+                        </td>
+                    </tr>
+    <!-- If this was the first line, it was completed, so set first line to false -->
+                    <apex:variable var="firstLine" value="{!false}" rendered="{!firstLine}" />
+    <!-- Add the values to the row-column totals -->
+    <!-- Reporting Value SUMA -->
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+                        <apex:variable value="{!rowTotalColumnA+line.columns['A'].values['A']}" var="rowTotalColumnA"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+                        <apex:variable value="{!rowTotalColumnB+line.columns['B'].values['A']}" var="rowTotalColumnB"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+                        <apex:variable value="{!rowTotalColumnC+line.columns['C'].values['A']}" var="rowTotalColumnC"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+                        <apex:variable value="{!rowTotalColumnD+line.columns['D'].values['A']}" var="rowTotalColumnD"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+                        <apex:variable value="{!rowTotalColumnE+line.columns['E'].values['A']}" var="rowTotalColumnE"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnF}">
+                        <apex:variable value="{!rowTotalColumnF+line.columns['F'].values['A']}" var="rowTotalColumnF"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnG}">
+                        <apex:variable value="{!rowTotalColumnG+line.columns['G'].values['A']}" var="rowTotalColumnG"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnH}">
+                        <apex:variable value="{!rowTotalColumnH+line.columns['H'].values['A']}" var="rowTotalColumnH"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnI}">
+                        <apex:variable value="{!rowTotalColumnI+line.columns['I'].values['A']}" var="rowTotalColumnI"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnJ}">
+                        <apex:variable value="{!rowTotalColumnJ+line.columns['J'].values['A']}" var="rowTotalColumnJ"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnK}">
+                        <apex:variable value="{!rowTotalColumnK+line.columns['K'].values['A']}" var="rowTotalColumnK"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnL}">
+                        <apex:variable value="{!rowTotalColumnL+line.columns['L'].values['A']}" var="rowTotalColumnL"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnM}">
+                        <apex:variable value="{!rowTotalColumnM+line.columns['M'].values['A']}" var="rowTotalColumnM"/>
+                    </apex:outputPanel>
+    <!-- Reporting Value SUMB -->
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnN}">
+                        <apex:variable value="{!rowTotalColumnN+line.columns['N'].values['B']}" var="rowTotalColumnN"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnO}">
+                        <apex:variable value="{!rowTotalColumnO+line.columns['O'].values['B']}" var="rowTotalColumnO"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnP}">
+                        <apex:variable value="{!rowTotalColumnP+line.columns['P'].values['B']}" var="rowTotalColumnP"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnQ}">
+                        <apex:variable value="{!rowTotalColumnQ+line.columns['Q'].values['B']}" var="rowTotalColumnQ"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnR}">
+                        <apex:variable value="{!rowTotalColumnR+line.columns['R'].values['B']}" var="rowTotalColumnR"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnS}">
+                        <apex:variable value="{!rowTotalColumnS+line.columns['S'].values['B']}" var="rowTotalColumnS"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnT}">
+                        <apex:variable value="{!rowTotalColumnT+line.columns['T'].values['B']}" var="rowTotalColumnT"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnU}">
+                        <apex:variable value="{!rowTotalColumnU+line.columns['U'].values['B']}" var="rowTotalColumnU"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnV}">
+                        <apex:variable value="{!rowTotalColumnV+line.columns['V'].values['B']}" var="rowTotalColumnV"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnW}">
+                        <apex:variable value="{!rowTotalColumnW+line.columns['W'].values['B']}" var="rowTotalColumnW"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnX}">
+                        <apex:variable value="{!rowTotalColumnX+line.columns['X'].values['B']}" var="rowTotalColumnX"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnY}">
+                        <apex:variable value="{!rowTotalColumnY+line.columns['Y'].values['B']}" var="rowTotalColumnY"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnZ}">
+                        <apex:variable value="{!rowTotalColumnZ+line.columns['Z'].values['B']}" var="rowTotalColumnZ"/>
+                    </apex:outputPanel>
+                </apex:repeat>
+    <!-- Go to next line -->
+    <!-- Do we want to process an end-of-row subtotal line? -->
+                <apex:outputPanel layout="none" rendered="{!RenderGroupSubtotals}">
+                    <tr>
+    <!-- Display the group-group values but not the group-line values -->
+                        <td class="{!if(RenderGroup01,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup01}" type="{!row.lines['0'].genericGroups['01'].type}" rendered="{!RenderGroup01 && existLines}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup02,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup02}" type="{!row.lines['0'].genericGroups['02'].type}" rendered="{!RenderGroup02 && existLines}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup03,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup03}" type="{!row.lines['0'].genericGroups['03'].type}" rendered="{!RenderGroup03 && existLines}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup04,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup04}" type="{!row.lines['0'].genericGroups['04'].type}" rendered="{!RenderGroup04 && existLines}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup05,'ffrsubtotallabeld','ffrhidden')}"><c:Formatter value="{!previousLineGroup05}" type="{!row.lines['0'].genericGroups['05'].type}" rendered="{!RenderGroup05 && existLines}" numberPattern="{!VG}" zeroPattern="{!VGZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderGroup10,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup11,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup12,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup13,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup14,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup15,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup16,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup17,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup18,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup19,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="{!if(RenderGroup20,'ffrsubtotallabeld','ffrhidden')}"></td>
+                        <td class="ffrgridspacerd"/>
+                        <td class="{!if(RenderColumnA,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnA}" type="{!IF(rowSubtotalColumnA == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnA}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnB,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnB}" type="{!IF(rowSubtotalColumnB == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnB}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnC,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnC}" type="{!IF(rowSubtotalColumnC == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnC}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnD,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnD}" type="{!IF(rowSubtotalColumnD == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnD}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnE,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnE}" type="{!IF(rowSubtotalColumnE == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnE}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnF,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnF}" type="{!IF(rowSubtotalColumnF == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnF}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnG,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnG}" type="{!IF(rowSubtotalColumnG == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnG}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnH,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnH}" type="{!IF(rowSubtotalColumnH == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnH}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnI,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnI}" type="{!IF(rowSubtotalColumnI == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnI}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnJ,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnJ}" type="{!IF(rowSubtotalColumnJ == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnJ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnK,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnK}" type="{!IF(rowSubtotalColumnK == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnK}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnL,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnL}" type="{!IF(rowSubtotalColumnL == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnL}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnM,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnM}" type="{!IF(rowSubtotalColumnM == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnM}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnN,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnN}" type="{!IF(rowSubtotalColumnN == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnN}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnO,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnO}" type="{!IF(rowSubtotalColumnO == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnO}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnP,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnP}" type="{!IF(rowSubtotalColumnP == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnP}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnQ,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnQ}" type="{!IF(rowSubtotalColumnQ == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnQ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnR,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnR}" type="{!IF(rowSubtotalColumnR == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnR}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnS,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnS}" type="{!IF(rowSubtotalColumnS == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnS}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnT,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnT}" type="{!IF(rowSubtotalColumnT == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnT}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnU,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnU}" type="{!IF(rowSubtotalColumnU == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnU}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnV,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnV}" type="{!IF(rowSubtotalColumnV == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnV}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnW,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnW}" type="{!IF(rowSubtotalColumnW == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnW}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnX,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnX}" type="{!IF(rowSubtotalColumnX == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnX}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnY,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnY}" type="{!IF(rowSubtotalColumnY == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnY}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                        <td class="{!if(RenderColumnZ,'ffrsubtotald','ffrhidden')}"><c:Formatter value="{!rowSubtotalColumnZ}" type="{!IF(rowSubtotalColumnZ == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnZ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    </tr>
+                </apex:outputPanel>
+    <!-- Setup for end of row -->
+    <!-- Add up the values for the row total columns -->
+    <!-- Note that the row-totals are reset for each successive row -->
+                <tr>
+                    <td class = "ffrhidden">
+                        <apex:variable value="{!0}" var="rowTotal" />
+                        <apex:variable value="{!rowTotal+rowTotalColumnA}" var="rowTotal" rendered="{!RenderColumnA}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnB}" var="rowTotal" rendered="{!RenderColumnB}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnC}" var="rowTotal" rendered="{!RenderColumnC}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnD}" var="rowTotal" rendered="{!RenderColumnD}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnE}" var="rowTotal" rendered="{!RenderColumnE}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnF}" var="rowTotal" rendered="{!RenderColumnF}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnG}" var="rowTotal" rendered="{!RenderColumnG}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnH}" var="rowTotal" rendered="{!RenderColumnH}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnI}" var="rowTotal" rendered="{!RenderColumnI}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnJ}" var="rowTotal" rendered="{!RenderColumnJ}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnK}" var="rowTotal" rendered="{!RenderColumnK}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnL}" var="rowTotal" rendered="{!RenderColumnL}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnM}" var="rowTotal" rendered="{!RenderColumnM}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnN}" var="rowTotal" rendered="{!RenderColumnN}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnO}" var="rowTotal" rendered="{!RenderColumnO}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnP}" var="rowTotal" rendered="{!RenderColumnP}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnQ}" var="rowTotal" rendered="{!RenderColumnQ}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnR}" var="rowTotal" rendered="{!RenderColumnR}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnS}" var="rowTotal" rendered="{!RenderColumnS}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnT}" var="rowTotal" rendered="{!RenderColumnT}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnU}" var="rowTotal" rendered="{!RenderColumnU}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnV}" var="rowTotal" rendered="{!RenderColumnV}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnW}" var="rowTotal" rendered="{!RenderColumnW}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnX}" var="rowTotal" rendered="{!RenderColumnX}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnY}" var="rowTotal" rendered="{!RenderColumnY}"/>
+                        <apex:variable value="{!rowTotal+rowTotalColumnZ}" var="rowTotal" rendered="{!RenderColumnZ}"/>
+                    </td>
+                </tr>
+    <!-- Display the row totals -->
+                <tr>
+    <!--Display the title for the row-total - which is the row label -->
+    <!-- The td tag needs to span the number of groups being rendered -->
+                    <td class="ffrgridsumlabeld" colspan="16">{!row.label}</td>
+                    <td class="ffrgridspacerd"/>
+                    <td class="{!if(RenderColumnA,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnA}" type="{!IF(rowTotalColumnA == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnA}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnB,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnB}" type="{!IF(rowTotalColumnB == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnB}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnC,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnC}" type="{!IF(rowTotalColumnC == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnC}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnD,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnD}" type="{!IF(rowTotalColumnD == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnD}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnE,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnE}" type="{!IF(rowTotalColumnE == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnE}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnF,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnF}" type="{!IF(rowTotalColumnF == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnF}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnG,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnG}" type="{!IF(rowTotalColumnG == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnG}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnH,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnH}" type="{!IF(rowTotalColumnH == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnH}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnI,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnI}" type="{!IF(rowTotalColumnI == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnI}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnJ,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnJ}" type="{!IF(rowTotalColumnJ == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnJ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnK,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnK}" type="{!IF(rowTotalColumnK == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnK}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnL,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnL}" type="{!IF(rowTotalColumnL == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnL}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnM,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnM}" type="{!IF(rowTotalColumnM == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnM}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnN,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnN}" type="{!IF(rowTotalColumnN == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnN}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnO,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnO}" type="{!IF(rowTotalColumnO == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnO}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnP,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnP}" type="{!IF(rowTotalColumnP == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnP}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnQ,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnQ}" type="{!IF(rowTotalColumnQ == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnQ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnR,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnR}" type="{!IF(rowTotalColumnR == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnR}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnS,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnS}" type="{!IF(rowTotalColumnS == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnS}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnT,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnT}" type="{!IF(rowTotalColumnT == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnT}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnU,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnU}" type="{!IF(rowTotalColumnU == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnU}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnV,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnV}" type="{!IF(rowTotalColumnV == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnV}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnW,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnW}" type="{!IF(rowTotalColumnW == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnW}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnX,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnX}" type="{!IF(rowTotalColumnX == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnX}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnY,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnY}" type="{!IF(rowTotalColumnY == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnY}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                    <td class="{!if(RenderColumnZ,'ffrgridsumd','ffrhidden')}"><c:Formatter value="{!rowTotalColumnZ}" type="{!IF(rowTotalColumnZ == 0, TypeZero, TypeDouble)}" rendered="{!RenderColumnZ}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></td>
+                </tr>
+    <!-- Make some vertical space before the next row -->
+                <tr><td class="ffrgridspacerd" colspan="16"></td></tr>
+    <!-- Go to the next row -->
+            </apex:repeat>
+        </table>
+    </apex:outputpanel>
+<!-- REGION 06: REPORT CHATTER START -->
+    <c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

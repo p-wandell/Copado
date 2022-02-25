@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__CustomObject__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Connection&apos;s Custom Object</label>
+    <referenceTo>ffct__ConnectionsCustomObject__c</referenceTo>
+    <relationshipLabel>Connection&apos;s Custom Fields</relationshipLabel>
+    <relationshipName>Connection_Custom_Fields</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

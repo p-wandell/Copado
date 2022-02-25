@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bolt_Components_Master_List__c</fullName>
+    <description>Links to a listing of which components make up each Bolt</description>
+    <externalId>false</externalId>
+    <formula>HYPERLINK(&quot;https://docs.google.com/spreadsheets/d/1fM7N1hhER-rrK9E5ND81omXV1jTjyYpAcLJKDKVK5ps/edit?usp=sharing&quot;, &quot;Lightning Bolts Lightning Solutions: Content Master&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Links to a listing of which components make up each Bolt</inlineHelpText>
+    <label>Bolt Components Master List</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

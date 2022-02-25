@@ -1,0 +1,276 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventListController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName">
+
+	<!-- Base model -->
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.doInit}"/>
+
+	<aura:registerEvent name="detailReady" type="c:SVNSUMMITS_Events_Detail_Event"/>
+	<aura:handler name="detailReady" event="c:SVNSUMMITS_Events_Detail_Event" action="{!c.detailLoaded}"/>
+
+	<!--Attributes Section Start-->
+	<aura:attribute name="init" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="sitePrefix"   type="String" access="global"/>
+	<aura:attribute name="useTopics" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showVolunteerButton" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="hideAddToCalendar" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="showEventType" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="iCalendar" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="googleCalendar" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="outlook" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="outlookOnline" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="yahooCalendar" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="atcPlainText" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="addToCalendarButtonText" type="String" default="{!$Label.c.ss_evt_label_AddToCalendar}"
+	                required="true"
+	                access="global"/>
+	<aura:attribute name="wrappedEventsObj" type="SVNSUMMITS_EventListWrapper" access="global"/>
+	<aura:attribute name="isEdit" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="isEditVolunteers" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="isEditable" type="Boolean" access="global"/>
+	<aura:attribute name="recordId" type="String" access="global"/>
+	<aura:attribute name="debugMode" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="bookEventTicketLabel" type="String" default="{!$Label.c.ss_evt_label_BookEventTicket}"
+	                access="global"/>
+	<aura:attribute name="limitToSpecificGroups" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="customLabel1" type="String" default="" access="global"/>
+	<aura:attribute name="customField1" type="String" default="" access="global"/>
+	<aura:attribute name="customLabel2" type="String" default="" access="global"/>
+	<aura:attribute name="customField2" type="String" default="" access="global"/>
+	<aura:attribute name="customLabel3" type="String" default="" access="global"/>
+	<aura:attribute name="customField3" type="String" default="" access="global"/>
+
+	<aura:attribute name="events" type="Event__c"
+	                default="{ 'sobjectType': 'Event__c'}" access="global"/>
+
+	<section class="slds-p-vertical--x-small">
+		<aura:if isTrue="{!v.isEditable}">
+			<lightning:button label="{!$Label.c.ss_evt_label_EditEvent}"
+			                  onclick="{!c.callEditPage}"
+			                  variant="brand"/>
+			<aura:if isTrue="{!v.showVolunteerButton}">
+				<lightning:button label="{!$Label.c.ss_evt_label_EditVolunteerOpportunities}"
+				                  onclick="{!c.callVolunteerPage}"
+				                  variant="brand"/>
+			</aura:if>
+		</aura:if>
+
+		<div class="content">
+			<div class="slds-grid slds-p-vertical--large slds-p-horizontal--small">
+				<div class="slds-col--padded slds-size--1-of-1 slds-medium-size--2-of-3 slds-large-size--2-of-3">
+					<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].All_Day_Event__c == false}">
+						<div class="slds-text-heading--small">
+							<b>
+								<ui:outputDateTime value="{!v.wrappedEventsObj.objEventList[0].strMinute}"
+								                   timezone="{!v.wrappedEventsObj.strTimeZone}"
+								                   format="hh:mm a"/>
+							</b>
+
+							<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].showTo}">
+								&nbsp;{!$Label.c.ss_evt_label_To}
+								&nbsp;
+								<b>
+									<ui:outputDateTime value="{!v.wrappedEventsObj.objEventList[0].strEndMinute}"
+									                   timezone="{!v.wrappedEventsObj.strTimeZone}"
+									                   format="hh:mm a"/>
+								</b>
+							</aura:if>
+						</div>
+					</aura:if>
+
+					<div class="slds-text-heading--medium slds-p-vertical--small">
+						{!v.wrappedEventsObj.objEventList[0].strMonth + ' '}{!v.wrappedEventsObj.objEventList[0].intDate}
+						<aura:if isTrue="{!v.init}">
+							<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].showEndDate}">
+								-&nbsp;
+								{!v.wrappedEventsObj.objEventList[0].endMonth + ' '}{!v.wrappedEventsObj.objEventList[0].endDay + ', '}{!v.wrappedEventsObj.objEventList[0].endYear}
+								<aura:set attribute="else">,&nbsp;{!v.wrappedEventsObj.objEventList[0].strYear}
+								</aura:set>
+							</aura:if>
+						</aura:if>
+					</div>
+
+					<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].Location_Name__c != undefined}">
+						<div class="slds-text-heading--small">
+							{!v.wrappedEventsObj.objEventList[0].Location_Name__c}
+						</div>
+					</aura:if>
+
+					<div class="slds-text-heading--label-normal slds-text-heading--label">
+						<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].Location_Address__c != undefined}">
+							{!v.wrappedEventsObj.objEventList[0].Location_Address__c}
+							&nbsp;
+							<a target="_blank"
+							   href="{!'http://maps.google.com/?q='+v.wrappedEventsObj.objEventList[0].Location_Address__c}">{!$Label.c.ss_evt_label_map}</a>
+						</aura:if>
+					</div>
+
+					<div class="slds-text-heading--label-normal">
+						<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].Venue_Information__c != undefined}">
+							{!v.wrappedEventsObj.objEventList[0].Venue_Information__c}
+						</aura:if>
+					</div>
+
+					<aura:if isTrue="{! notequals(v.customField1, '')}">
+						<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].customField1}">
+							<c:SVNSUMMITS_Events_CustomField customLabel="{!v.customLabel1}"
+							                                 customField="{!v.wrappedEventsObj.objEventList[0].customField1}"/>
+						</aura:if>
+					</aura:if>
+					<aura:if isTrue="{! notequals(v.customField2, '')}">
+						<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].customField2}">
+							<c:SVNSUMMITS_Events_CustomField customLabel="{!v.customLabel2}"
+							                                 customField="{!v.wrappedEventsObj.objEventList[0].customField2}"/>
+						</aura:if>
+					</aura:if>
+					<aura:if isTrue="{! notequals(v.customField3, '')}">
+						<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].customField3}">
+							<c:SVNSUMMITS_Events_CustomField customLabel="{!v.customLabel3}"
+							                                 customField="{!v.wrappedEventsObj.objEventList[0].customField3}"/>
+						</aura:if>
+					</aura:if>
+
+				</div>
+				<div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-3"
+				     style="text-align:right;">
+
+					<!--Calling Add to calendar button Section Start-->
+					<aura:renderIf isTrue="{!!v.hideAddToCalendar}">
+						<div id="ifaddtocalendar" class="setAddButton buttonAddToCalendar">
+							<span class="addtocalendar"
+							      data-calendars="iCalendar,Google Calendar"
+							      aura:id="atc_span">
+								<var class="atc_event">
+								    <var class="atc_date_start">{!v.wrappedEventsObj.objEventList[0].localeStartDate}</var>
+								    <var class="atc_date_end">{!v.wrappedEventsObj.objEventList[0].localeEndDate}</var>
+								    <var class="atc_timezone">{!v.wrappedEventsObj.strTimeZone} </var>
+								    <var class="atc_title">{!v.wrappedEventsObj.objEventList[0].Name} </var>
+								    <var class="atc_description">{! if(!v.atcPlainText, v.wrappedEventsObj.objEventList[0].Details__c, v.wrappedEventsObj.objEventList[0].plainText)}</var>
+								    <var class="atc_location">{!v.wrappedEventsObj.objEventList[0].Location_Name__c}</var>
+								</var>
+							</span>
+						</div>
+					</aura:renderIf>
+
+					<div class="slds-text-heading--small price">
+						<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].Enable_Pricing_Payment__c}">
+							<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].Ticket_Price__c != undefined}">
+								{!v.wrappedEventsObj.objEventList[0].Ticket_Price__c}
+							</aura:if>
+							&nbsp;
+							<ui:outputURL aura:id="payment" class="slds-button slds-button--neutral btn btn-link"
+							              value="{!v.wrappedEventsObj.objEventList[0].Payment_URL__c}"
+							              label="{!v.bookEventTicketLabel}" target="_blank"/>
+
+						</aura:if>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].Attachments.length > 0}">
+			<div class="featuredImage slds-p-vertical--large">
+				<img src="{! v.sitePrefix + '/servlet/servlet.FileDownload?file='+v.wrappedEventsObj.objEventList[0].Attachments[0].Id}"
+				     alt='Featured image'/>
+			</div>
+		</aura:if>
+
+		<!-- Event Type -->
+		<aura:if isTrue="{!v.showEventType}">
+			<aura:if isTrue="{!v.wrappedEventsObj.objEventList[0].Event_Type__c}">
+				<div class="slds-p-bottom--small">
+					{!v.wrappedEventsObj.objEventList[0].Event_Type__c}
+				</div>
+			</aura:if>
+		</aura:if>
+
+		<!-- Event Details -->
+		<ui:outputRichText class="slds-rich-text-editor__output uiOutputRichText forceOutputRichText"
+		                   value="{!v.wrappedEventsObj.objEventList[0].Details__c}"/>
+
+		<aura:iteration items="{!v.wrappedEventsObj.objEventList}" var="event">
+			<aura:if isTrue="{! and(event.topics.length > 0, event.topics[0])}">
+				<div class="topics slds-p-vertical--large">
+					<div class="slds-text-heading--small">Topic</div>
+					<aura:iteration var="topicsAssignments" items="{!event.topics}">
+						<aura:iteration var="topics" items="{!topicsAssignments}">
+                            <span class="topic">
+                                <c:SVNSUMMITS_Events_TopicURL topicName="{!topics.Topic.Name}"
+                                                              topicNameToId="{!v.wrappedEventsObj.topicNameToId}"/>
+                            </span>
+						</aura:iteration>
+					</aura:iteration>
+				</div>
+			</aura:if>
+			<!-- Group -->
+			<aura:if isTrue="{!v.limitToSpecificGroups}">
+				<aura:if isTrue="{!event.groupName}">
+					<div>
+						<div class="slds-text-heading--small group-name">{!$Label.c.ss_evt_label_Group}</div>
+						<a href="javascript:void(0);"
+						   onclick="{!c.gotoGroup}"
+						   data-id="{!event.GroupId__c}">{!event.groupName}</a>
+					</div>
+				</aura:if>
+			</aura:if>
+		</aura:iteration>
+
+
+		<!-- Modal Section On Click of Edit Button Section start -->
+		<aura:renderIf isTrue="{!v.isEdit}">
+			<div class="slds-modal slds-fade-in-open" aria-hidden="false" role="dialog">
+				<div class="slds-modal__container">
+					<div class="slds-modal__header">
+						<button class="slds-button slds-button--icon-inverse slds-modal__close"
+						        onclick="{!c.closeEdit}">
+							<lightning:icon iconName="utility:close" size="medium" alternativeText="close"
+							                title="close"/>
+							<span class="slds-assistive-text">{!$Label.c.ss_evt_label_Close}</span>
+						</button>
+						<h2 class="slds-text-heading--medium">{!$Label.c.ss_evt_label_Edit} &nbsp; <span
+									class="fontFixColor">{!v.wrappedEventsObj.objEventList[0].Name}</span></h2>
+					</div>
+					<div class="slds-modal__content createEventBox">
+						<div aura:id="editView" class="slds-grid slds-wrap"></div>
+					</div>
+				</div>
+			</div>
+			<div class="slds-backdrop slds-backdrop--open"></div>
+		</aura:renderIf>
+
+		<!-- MODAL: Edit Volunteer Opportunities -->
+		<aura:renderIf isTrue="{!v.isEditVolunteers}">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+			         aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<div class="slds-modal__header">
+						<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+						        title="{!$Label.c.ss_evt_label_Close}" onclick="{!c.closeVolunteerPage}">
+							<lightning:icon iconName="utility:close" size="medium"
+							                alternativeText="{!$Label.c.ss_evt_label_Close}"
+							                title="{!$Label.c.ss_evt_label_Close}"/>
+							<span class="slds-assistive-text">{!$Label.c.ss_evt_label_Close}</span>
+						</button>
+						<h2 class="slds-text-heading--medium"><span
+									class="fontFixColor">{!v.wrappedEventsObj.objEventList[0].Name}</span> {!' ' + $Label.c.ss_evt_label_VolunteerOpportunities}
+						</h2>
+					</div>
+					<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+						<div aura:id="editVolunteerView" class="slds-grid slds-wrap"></div>
+					</div>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop--open"></div>
+		</aura:renderIf>
+
+		<!-- Modal Section On Click of Edit Button Section end -->
+	</section>
+</aura:component>

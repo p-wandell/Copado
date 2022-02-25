@@ -1,0 +1,17 @@
+<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false">
+<apex:includeScript value="{!URLFOR($Resource.CoveoV2__JsSearch, 'js/CoveoJsSearch.Dependencies.min.js')}"/>
+<script>
+window.addEventListener("message", receiveMessage, false);
+function receiveMessage(event) {
+  if(event.origin != 'https://login.salesforce.com' && event.origin != 'https://test.salesforce.com') {
+    return $.ajax({
+      url: event.data,
+      dataType: 'jsonp',
+      complete: function() {
+        console.log('Iframe analytics result ' , arguments, event.data);
+      }
+    });
+  }
+}
+</script>  
+</apex:page>

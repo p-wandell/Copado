@@ -1,0 +1,37 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Navigation List -->
+<template>
+    <div class="slds-grid slds-wrap slds-grid_vertical-align-center">
+
+        <!-- mobile menu + hamburger icon -->
+        <lightning-button-icon-stateful if:true={mobileHamburger} icon-name={mobileMenuIcon} variant={mobileMenuIconVariant} class="slds-hide_medium" alternative-text="Toggle mobile menu" selected={showMobileMenu} onclick={handleMobileMenuClick}></lightning-button-icon-stateful>
+        <section if:true={mobileHamburger} class={navContainerClass}>
+            <ul class="slds-has-dividers_top slds-has-block-links_space slds-grid_vertical-align-center slds-is-absolute">
+                <li class="slds-item" if:true={link1}><c-x7s-exp-navigation-link link={link1} text={link1Text} is-button={link1IsButton} open-in-new-page={link1OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+                <li class="slds-item" if:true={link2}><c-x7s-exp-navigation-link link={link2} text={link2Text} is-button={link2IsButton} open-in-new-page={link2OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+                <li class="slds-item" if:true={link3}><c-x7s-exp-navigation-link link={link3} text={link3Text} is-button={link3IsButton} open-in-new-page={link3OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+                <li class="slds-item" if:true={link4}><c-x7s-exp-navigation-link link={link4} text={link4Text} is-button={link4IsButton} open-in-new-page={link4OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+                <li class="slds-item" if:true={link5}><c-x7s-exp-navigation-link link={link5} text={link5Text} is-button={link5IsButton} open-in-new-page={link5OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+                <li class="slds-item" if:true={link6}><c-x7s-exp-navigation-link link={link6} text={link6Text} is-button={link6IsButton} open-in-new-page={link6OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+                <li class="slds-item" if:true={link7}><c-x7s-exp-navigation-link link={link7} text={link7Text} is-button={link7IsButton} open-in-new-page={link7OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+                <li class="slds-item" if:true={link8}><c-x7s-exp-navigation-link link={link8} text={link8Text} is-button={link8IsButton} open-in-new-page={link8OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+            </ul>
+        </section>
+
+        <!-- Horizontal menu -->
+        <ul class={horizontalMenuContainerClass}>
+            <li class="slds-item" if:true={link1}><c-x7s-exp-navigation-link link={link1} text={link1Text} is-button={link1IsButton} open-in-new-page={link1OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+            <li class="slds-item" if:true={link2}><c-x7s-exp-navigation-link link={link2} text={link2Text} is-button={link2IsButton} open-in-new-page={link2OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+            <li class="slds-item" if:true={link3}><c-x7s-exp-navigation-link link={link3} text={link3Text} is-button={link3IsButton} open-in-new-page={link3OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+            <li class="slds-item" if:true={link4}><c-x7s-exp-navigation-link link={link4} text={link4Text} is-button={link4IsButton} open-in-new-page={link4OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+            <li class="slds-item" if:true={link5}><c-x7s-exp-navigation-link link={link5} text={link5Text} is-button={link5IsButton} open-in-new-page={link5OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+            <li class="slds-item" if:true={link6}><c-x7s-exp-navigation-link link={link6} text={link6Text} is-button={link6IsButton} open-in-new-page={link6OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+            <li class="slds-item" if:true={link7}><c-x7s-exp-navigation-link link={link7} text={link7Text} is-button={link7IsButton} open-in-new-page={link7OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+            <li class="slds-item" if:true={link8}><c-x7s-exp-navigation-link link={link8} text={link8Text} is-button={link8IsButton} open-in-new-page={link8OpenInNewPage} inverse={inverse}></c-x7s-exp-navigation-link></li>
+        </ul>
+
+    </div>
+</template>

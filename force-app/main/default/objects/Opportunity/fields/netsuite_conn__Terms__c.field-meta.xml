@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>netsuite_conn__Terms__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <formula>IF(CONTAINS(TEXT(netsuite_conn__Order_Type__c), &apos;Contract - New&apos;) ,((((netsuite_conn__End_Date__c -  netsuite_conn__Start_Date__c)) * 12)/365),((((netsuite_conn__End_Date__c -  netsuite_conn__Start_Date__c) + 1) * 12)/365))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Terms [Delete]</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>3</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

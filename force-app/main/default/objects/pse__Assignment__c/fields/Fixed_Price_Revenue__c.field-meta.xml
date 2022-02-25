@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fixed_Price_Revenue__c</fullName>
+    <description>ONLY USE FOR FIXED PRICE PROJECTS. Shows what the revenue would be for this Fixed Price project if it was a T&amp;M project. (Suggested Bill Rate x Billable Hours Approved).</description>
+    <externalId>false</externalId>
+    <formula>pse__Suggested_Bill_Rate_Number__c  *  pse__Billable_Hours_In_Financials__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>ONLY USE FOR FIXED PRICE PROJECTS. Shows what the revenue would be for this Fixed Price project if it was a T&amp;M project. (Suggested Bill Rate x Billable Hours Approved).</inlineHelpText>
+    <label>Fixed Price Revenue</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

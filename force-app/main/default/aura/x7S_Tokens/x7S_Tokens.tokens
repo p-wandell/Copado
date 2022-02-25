@@ -1,0 +1,22 @@
+<!--
+ - Copyright (c) 2019. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 2019-05-03.
+-->
+<aura:tokens extends="force:base">
+    <aura:token name="headerImageUrl" value='' />
+    <aura:token name="brandLogoImage" value='' />
+    <aura:token name="pageColorBackgroundPrimary" value='' />
+    <aura:token name="linkColor" value='{!colorTextLink}'/>
+    <aura:token name="linkHoverColor" value='{!colorTextLinkHover}'/>
+    <aura:token name="labelColor" value='{!colorTextLabel}'/>
+    <aura:token name="brandColor" value='{!colorBrand}'/>
+    <aura:token name="brandHoverColor" value='{!colorBackgroundButtonBrandHover}'/>
+    <aura:token name="textColor" value='{!colorTextDefault}'/>
+    <aura:token name="inverseTextColor" value='{!colorTextInverse}'/>
+    <aura:token name="borderColor" value='{!colorBorder}'/>
+    <aura:token name="transformText" value='{!textTransform}'/>
+
+    <aura:token name="inverseColor" value='{!colorTextInverse}' />
+    <aura:token name="color" value='{!colorTextLink}' />
+    <aura:token name="hover" value='{!colorTextLinkHover}'/>
+</aura:tokens>

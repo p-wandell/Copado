@@ -1,0 +1,24 @@
+/*
+ *   Copyright (c) 2020. 7Summits Inc.
+ */
+
+
+ .slds-form-element {
+    display: inline;
+}
+.slds-form-element .slds-form-element__icon{ 
+    display: none;
+}
+.slds-form-element__icon{ 
+    margin-top: -3px;
+    margin-left: 3px;
+}
+
+:not(.slds-checkbox__label) .slds-checkbox__label{
+    padding: unset;
+    background: white;
+}
+
+.inputWrapper {
+    text-align: left;
+}

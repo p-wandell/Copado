@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Calls To Action</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Calls To Action</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" type="String" label="Title"  />
+            <property name="titleAlign" type="String" label="Title Alignment" datasource="Left, Center, Right" />
+            <property
+                    name="titleColor"
+                    type="String"
+                    label="Title Color"
+                    description="Color of the component title. Use hex, RGB, or RGBA color values." />
+            <property
+                    name="totalItems"
+                    type="String"
+                    label="Number of Actions"
+                    datasource="1,2,3,4,5,6,7,8,9,10"
+                    description="If using the base layout, only 8 items will be displayed to avoid spacing issues." />
+
+            <property
+                    name="layout"
+                    type="String"
+                    label="Layout"
+                    datasource="Base Layout, Icon Layout"
+                    description="Base layout displays up to 10 tiles that display side by side with text inside the tile. Icon displays up to 10 actions with an icon, text or image above the link text." />
+
+            <property
+                    name="ctaText1"
+                    type="String"
+                    label="1 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription1"
+                    type="String"
+                    label="1 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL1" type="String" label="1 - Link Url" />
+            <property
+                    name="ctaImage1"
+                    type="String"
+                    label="1 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC'/>
+            <property
+                    name="useText1"
+                    type="Boolean"
+                    label="1 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize1"
+                    type="String"
+                    label="1 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor1"
+                    type="String"
+                    label="1 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property name="ctaBackgroundColor1" type="String" label="1 - Background Color" />
+            <property
+                    name="ctaTextColor1"
+                    type="String"
+                    label="1 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay1"
+                    type="Boolean"
+                    label="1 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText2"
+                    type="String"
+                    label="2 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription2"
+                    type="String"
+                    label="2 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL2" type="String" label="2 - Link Url" />
+            <property
+                    name="ctaImage2"
+                    type="String"
+                    label="2 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText2"
+                    type="Boolean"
+                    label="2 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize2"
+                    type="String"
+                    label="2 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor2"
+                    type="String"
+                    label="2 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property name="ctaBackgroundColor2" type="String" label="2 - Background Color" />
+            <property
+                    name="ctaTextColor2"
+                    type="String"
+                    label="2 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay2"
+                    type="Boolean"
+                    label="2 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText3"
+                    type="String"
+                    label="3 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription3"
+                    type="String"
+                    label="3 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL3" type="String" label="3 - Link Url" />
+            <property
+                    name="ctaImage3"
+                    type="String"
+                    label="3 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText3"
+                    type="Boolean"
+                    label="3 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize3"
+                    type="String"
+                    label="3 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor3"
+                    type="String"
+                    label="3 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property name="ctaBackgroundColor3" type="String" label="3 - Background Color" />
+            <property
+                    name="ctaTextColor3"
+                    type="String"
+                    label="3 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay3"
+                    type="Boolean"
+                    label="3 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText4"
+                    type="String"
+                    label="4 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription4"
+                    type="String"
+                    label="4 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL4" type="String" label="4 - Link Url" />
+            <property
+                    name="ctaImage4"
+                    type="String"
+                    label="4 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText4"
+                    type="Boolean"
+                    label="4 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize4"
+                    type="String"
+                    label="4 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor4"
+                    type="String"
+                    label="4 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property name="ctaBackgroundColor4" type="String" label="4 - Background Color" />
+            <property
+                    name="ctaTextColor4"
+                    type="String"
+                    label="4 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay4"
+                    type="Boolean"
+                    label="4 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText5"
+                    type="String"
+                    label="5 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription5"
+                    type="String"
+                    label="5 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL5" type="String" label="5 - Link Url" />
+            <property
+                    name="ctaImage5"
+                    type="String"
+                    label="5 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText5"
+                    type="Boolean"
+                    label="5 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize5"
+                    type="String"
+                    label="5 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor5"
+                    type="String"
+                    label="5 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property
+                    name="ctaBackgroundColor5"
+                    type="String"
+                    label="5 - Background Color" />
+            <property
+                    name="ctaTextColor5"
+                    type="String"
+                    label="5 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay5"
+                    type="Boolean"
+                    label="5 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText6"
+                    type="String"
+                    label="6 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription6"
+                    type="String"
+                    label="6 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL6" type="String" label="6 - Link Url" />
+            <property
+                    name="ctaImage6"
+                    type="String"
+                    label="6 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText6"
+                    type="Boolean"
+                    label="6 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize6"
+                    type="String"
+                    label="6 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor6"
+                    type="String"
+                    label="6 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property name="ctaBackgroundColor6" type="String" label="6 - Background Color" />
+            <property
+                    name="ctaTextColor6"
+                    type="String"
+                    label="6 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay6"
+                    type="Boolean"
+                    label="6 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText7"
+                    type="String"
+                    label="7 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription7"
+                    type="String"
+                    label="7 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL7" type="String" label="7 - Link Url" />
+            <property
+                    name="ctaImage7"
+                    type="String"
+                    label="7 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText7"
+                    type="Boolean"
+                    label="7 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize7"
+                    type="String"
+                    label="7 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor7"
+                    type="String"
+                    label="7 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property name="ctaBackgroundColor7" type="String" label="7 - Background Color" />
+            <property
+                    name="ctaTextColor7"
+                    type="String"
+                    label="7 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay7"
+                    type="Boolean"
+                    label="7 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText8"
+                    type="String"
+                    label="8 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription8"
+                    type="String"
+                    label="8 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaURL8"
+                    type="String"
+                    label="8 - Link Url" />
+            <property
+                    name="ctaImage8"
+                    type="String"
+                    label="8 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText8"
+                    type="Boolean"
+                    label="8 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize8"
+                    type="String"
+                    label="8 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor8"
+                    type="String"
+                    label="8 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property
+                    name="ctaBackgroundColor8"
+                    type="String"
+                    label="8 - Background Color" />
+            <property
+                    name="ctaTextColor8"
+                    type="String"
+                    label="8 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay8"
+                    type="Boolean"
+                    label="8 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText9"
+                    type="String"
+                    label="9 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription9"
+                    type="String"
+                    label="9 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL9" type="String" label="9 - Link Url" />
+            <property
+                    name="ctaImage9"
+                    type="String"
+                    label="9 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText9"
+                    type="Boolean"
+                    label="9 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize9"
+                    type="String"
+                    label="9 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor9"
+                    type="String"
+                    label="9 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property name="ctaBackgroundColor9" type="String" label="9 - Background Color" />
+            <property
+                    name="ctaTextColor9"
+                    type="String"
+                    label="9 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay9"
+                    type="Boolean"
+                    label="9 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="ctaText10"
+                    type="String"
+                    label="10 - Text"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property
+                    name="ctaDescription10"
+                    type="String"
+                    label="10 - Description"
+                    description="This will accept rich text or custom labels. To include labels use: $Label.namespace.labelName. " />
+            <property name="ctaURL10" type="String" label="10 - Link Url" />
+            <property
+                    name="ctaImage10"
+                    type="String"
+                    label="10 - Image path, icon or text"
+                    description='If using the icon layout you can use a slds icon. To use an icon specify the category then the icon name separated by a ":". For example utility:add. If using the icon layout you may also enter text as well. This only should be done if using a  short acronym. For example ABC '/>
+            <property
+                    name="useText10"
+                    type="Boolean"
+                    label="10 - Use text as icon"
+                    description="Check this box if you entered text instead of an image." />
+            <property
+                    name="ctaBackgroundSize10"
+                    type="String"
+                    label="10 - Background Size"
+                    datasource="Cover, Contain"
+                    description="This will only take affect if you are using the base layout" />
+            <property
+                    name="iconColor10"
+                    type="String"
+                    label="10 - Icon Color"
+                    description="This will only take effect if you are using the icon layout" />
+            <property name="ctaBackgroundColor10" type="String" label="10 - Background Color" />
+            <property
+                    name="ctaTextColor10"
+                    type="String"
+                    label="10 - Text Color"
+                    description="The color of the text inside of the dashboard item. The default is the community link text color" />
+            <property
+                    name="ctaOverlay10"
+                    type="Boolean"
+                    label="10 - Use image overlay"
+                    description="This overlay will only take effect when using the base layout" />
+
+            <property
+                    name="verticalAlign"
+                    type="String"
+                    label="Text - vertical alignment"
+                    datasource="Start, Center, End" />
+            <property
+                    name="textAlign"
+                    type="String"
+                    label="Text - horizontal alignment"
+                    datasource="Left, Center, Right" />
+            <property
+                    name="textTransform"
+                    type="String"
+                    label="Text - capitalization"
+                    datasource="inherit,none,uppercase,lowercase,capitalize" />
+            <property
+                    name="ctaDefaultColor"
+                    type="String"
+                    label="Text - Default Color"
+                    description="This will accept any color format that is supported by browsers. If left blank the color will default to the community color brand" />
+            <property
+                    name="fontSize"
+                    type="String"
+                    label="Text - Font size"
+                    description="Adjust the font size of the text. Leave blank for default." />
+
+            <property
+                    name="ctaBorderRadius"
+                    type="String"
+                    label="Image - Border radius"
+                    description="Use a percentage like '50%' for a circle, or '0px' for a square." />
+            <property
+                    name="ctaDefaultBack"
+                    type="String"
+                    label="Image - Default background color"
+                    description="Use hex, RGB, or RGBA color values. If left blank the color will default to the community color brand." />
+            <property
+                    name="ctaHeight"
+                    type="String"
+                    label="Image - Height or Width"
+                    description="On base layout this will be the height of the calls to action. On the icon layout this will be the height and width of the shape that holds the icon." />
+            <property
+                    name="ctaDefaultIconSize"
+                    type="String"
+                    label="Icon - Size"
+                    description="This will only take effect if you are using the icon layout. This is configured based on default Salesforce Icon Sizes."
+                    datasource="xx-small,x-small,small,medium,large"/>
+            <property
+                    name="ctaDefaultIconColor"
+                    type="String"
+                    label="Icon - Default color"
+                    description="This will only take effect if you are using the icon layout. This will accept any color format that is supported by browsers. If left blank the color will default to the community color brand" />
+            <property
+                    name="ctaOverlayColor"
+                    type="String"
+                    label="Overlay - Color"
+                    description="Use hex, RGB, or RGBA color values. RGBA is best for transparency. Leave blank for default." />
+            <property
+                    name="ctaOverlayColorHover"
+                    type="String"
+                    label="Overlay - Hover color"
+                    description="Use hex, RGB, or RGBA color values. RGBA is best for transparency. Leave blank for default." />
+            <property
+                    name="ctaSpacing"
+                    type="Integer"
+                    label="Item spacing (in px)"
+                    description="Enter the spacing between items in pixels as an integer. (i.e., '10', for 10 pixels)" />
+
+            <property
+                    name="itemsPerRowBase"
+                    type="String"
+                    label="Items Per Row - Mobile"
+                    description="Shows this many items in each row for Mobile-sized screens. 'auto' may be useful if the amount of items to be shown aren't divisible by 12."
+                    datasource="1,2,3,4,6,auto" />
+            <property
+                    name="itemsPerRowSmall"
+                    type="String"
+                    label="Items Per Row - Small"
+                    description="Shows this many items in each row for Small-sized screens. 'auto' may be useful if the amount of items to be shown aren't divisible by 12."
+                    datasource="1,2,3,4,6,auto" />
+            <property
+                    name="itemsPerRowMedium"
+                    type="String"
+                    label="Items Per Row - Tablet"
+                    description="Shows this many items in each row for Tablet-sized screens. 'auto' may be useful if the amount of items to be shown aren't divisible by 12."
+                    datasource="1,2,3,4,6,auto" />
+            <property
+                    name="itemsPerRowLarge"
+                    type="String"
+                    label="Items Per Row - Desktop"
+                    description="Shows this many items in each row for Desktop-sized screens. 'auto' may be useful if the amount of items to be shown aren't divisible by 12."
+                    datasource="1,2,3,4,6,auto" />
+
+            <property
+                    name="customClassName"
+                    type="String"
+                    label="Custom Class Name"
+                    description="Custom CSS class name. Usually remains blank." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

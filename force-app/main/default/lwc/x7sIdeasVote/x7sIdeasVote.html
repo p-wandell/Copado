@@ -1,0 +1,101 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<div if:true={isIdeaId} role="region" aria-label={labels.labelAria}>
+		<c-x7s-shr-component-wrapper
+				custom-class={customClass}
+				variant={displayVariant}
+				title={titleText}
+				shaded-header
+				auto-slds-card={autoSlds}>
+			<slot>
+				<div class="slds-grid slds-grid_vertical slds-wrap slds-align_absolute-center">
+
+					<!--Points-->
+					<div if:true={showPoints} class='slds-col slds-p-vertical_small'>
+						<c-x7s-ideas-points points={points} variant='large'>
+						</c-x7s-ideas-points>
+					</div>
+
+					<!--Voting Buttons-->
+					<div if:true={allowVote} class='slds-col slds-p-vertical_small'>
+						<c-x7s-ideas-vote-buttons disable-down-voting={disableDownVoting}
+												  idea-created-by={ideaCreatedBy}
+						                          user-has-voted={currentVoteId}
+												  user-vote-type={currentVoteType}
+						                          onupvote={handleVoteUp}
+												  ondownvote={handleVoteDown}
+												  onremovevote={handleRemoveVote}
+						                          enable-vote={enableVoteValue}
+						                          idea-id={ideaId}
+						                          reduce-button-labels="false"
+						                          total-vote-count={totalVoteCount}
+												  current-vote-count={currentVoteCount}
+												  show-remove-vote={showRemoveVote}>
+						</c-x7s-ideas-vote-buttons>
+					</div>
+				</div>
+
+				<!--Voting Account Limit-->
+				<div if:true={istotalVoteCount} class="slds-grid slds-grid_vertical slds-wrap slds-m-vertical_x-small">
+					<div if:true={showHeaderText} class='slds-col'>
+						<lightning-formatted-text value={headerText} class="slds-text-heading--medium boldStyle">
+						</lightning-formatted-text>
+					</div>
+
+					<div class='slds-col slds-m-top_x-small'>
+						<lightning-formatted-text value={labels.labelCurrentVoting}>
+						</lightning-formatted-text>&nbsp;&nbsp;
+						<lightning-formatted-number value={currentVoteCount}>
+						</lightning-formatted-number>
+					</div>
+
+					<div class='slds-col slds-m-top_x-small slds-m-bottom_small'>
+						<lightning-formatted-text value={labels.labelAccountVotingLimit}>
+						</lightning-formatted-text>&nbsp;&nbsp;
+						<lightning-formatted-number value={totalVoteCount}>
+						</lightning-formatted-number>
+					</div>
+				</div>
+
+				<!--Supporters-->
+				<div if:true={displaySupporters} class="slds-grid slds-grid_vertical slds-wrap slds-m-vertical_x-small">
+					<div class='slds-col'>
+						<lightning-formatted-text value={supportersTitle} class="slds-text-heading--medium boldStyle">
+						</lightning-formatted-text>
+					</div>
+					<div class='slds-col slds-m-vertical_xx-small'>
+						<template for:each={voters} for:item="voter">
+							<a href={voter.avatarlink} title={voter.avatarlinkTitle} key={voter.Id}>
+								<template if:true={voter.SmallPhotoUrl}>
+									<lightning-avatar src={voter.SmallPhotoUrl}
+									                  size="medium"
+									                  alternative-text={voter.Name}
+									                  title={voter.Name}
+									                  variant="circle"
+									                  fallback-icon-name="standard:user"
+									                  class="slds-m-right_x-small">
+									</lightning-avatar>
+								</template>
+								<template if:false={voter.SmallPhotoUrl}>
+									<lightning-avatar src="/profilephoto/005/F"
+									                  size="medium"
+									                  title={voter.Name}
+									                  alternative-text={voter.Name}
+									                  variant="circle"
+									                  fallback-icon-name="standard:user"
+									                  class="slds-m-right_x-small">
+									</lightning-avatar>
+								</template>
+							</a>
+						</template>
+					</div>
+					<div if:true={showMoreVoters} class='slds-col'>
+						+ {additionalVoterNum} {labels.labelMore}
+					</div>
+				</div>
+			</slot>
+		</c-x7s-shr-component-wrapper>
+	</div>
+</template>

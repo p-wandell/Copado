@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <baseObject></baseObject>
+    <category>campaigns</category>
+    <deployed>true</deployed>
+    <description>This report is used to report on engagement metrics for landing pages and any campaigns with landing pages associated to them.</description>
+    <label>Engagement Metrics on Landing Pages</label>
+    <sections>
+        <masterLabel>Landing Pages</masterLabel>
+    </sections>
+    <sections>
+        <masterLabel>Landing Page Feed</masterLabel>
+    </sections>
+</ReportType>

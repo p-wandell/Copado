@@ -1,0 +1,23 @@
+<apex:page showHeader="false" sidebar="true" controller="pse.ForecastCalculatorController" lightningStylesheets="true">
+	<apex:insert name="sectionHeader"/>
+	<style>
+		.slds-vf-scope .errorMsg{ display: inline-block; }
+	</style>
+	<apex:form >
+		<apex:pageMessages />
+		<apex:pageBlock title="{!$Label.pse__forecasts_label_calculate_forecasts}" mode="edit" id="calcBlock">
+			<apex:actionFunction name="doCalculate" action="{!calculate}" />
+			<apex:actionFunction name="doCancel" action="{!cancel}" immediate="true"/>
+
+			<apex:pageBlockSection title="{!$Label.pse__common_label_information}" columns="2">
+				<apex:inputField value="{!runInfo.pse__Forecast_Calculation_Name__c}" required="true"/>
+
+				<apex:inputField value="{!runInfo.pse__Region__c}" rendered="{!isRegion}"/>
+				<apex:inputField value="{!runInfo.pse__Practice__c}" rendered="{!isPractice}"/>
+				<apex:inputField value="{!runInfo.pse__Group__c}" rendered="{!isGroup}"/>
+
+				<apex:inputField value="{!runInfo.pse__Time_Period__c}" required="true"/>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

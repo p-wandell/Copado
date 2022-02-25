@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Go_Live_Date_Required</fullName>
+    <active>false</active>
+    <description>The Go Live Date is required when the project moves to stage Completed</description>
+    <errorConditionFormula>AND(
+ISBLANK(Go_Live_Date__c),
+ISPICKVAL(pse__Stage__c,&quot;Completed&quot;)
+)</errorConditionFormula>
+    <errorDisplayField>Go_Live_Date__c</errorDisplayField>
+    <errorMessage>Go Live Date is required before the project can be completed</errorMessage>
+</ValidationRule>

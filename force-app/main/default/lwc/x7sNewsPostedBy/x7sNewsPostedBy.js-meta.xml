@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<isExposed>true</isExposed>
+	<masterLabel>7S News Posted By</masterLabel>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightningCommunity__Default">
+			<property name="variant"
+			          label="Display Options"
+			          type="String"
+			          description="Select the default layout variant"
+			          datasource="default,slds-card,featured"/>
+			<property name="headingTitle"
+			          label="Heading Title"
+			          type="String"
+			          description="Heading title for author."/>
+			<property name="headerAlignment"
+			          label="Heading Alignment"
+			          type="String"
+			          description="Header Alignment"
+			          datasource="left,center,right"/>
+			<property name="showAvatar"
+			          label="Show Avatar?"
+			          type="Boolean"/>
+			<property name="showNickName"
+			          label="Nick Name"
+			          type="Boolean"
+			          description="Enable to display the article author’s Nickname if enabled for the community."/>
+			<property name="showMemberSince"
+			          label="Member Since"
+			          type="Boolean"
+			          description=" Enable to display the author’s community join date."/>
+			<property name="profileURL"
+			          label="User Profile URL"
+			          type="String"
+			          description="Enter the page name for User Detail page"/>
+			<property name="recordId"
+			          type="String"
+			          label="Record Id"
+			          description="Automatically bind the page's record id to the component variable"
+			          default="{!recordId}"/>
+			<property name="customClass"
+			          label="Custom Class"
+			          type="String"
+			          description="Used for custom styling."/>
+		</targetConfig>
+		<targetConfig targets="lightning__RecordPage, lightning__AppPage, lightning__HomePage">
+			<property name="variant"
+			          label="Display Options"
+			          type="String"
+			          description="Select the default layout variant"
+			          datasource="default,slds-card,featured"/>
+			<property name="headingTitle"
+			          label="Heading Title"
+			          type="String"
+			          description="Heading title for author."/>
+			<property name="headerAlignment"
+			          label="Heading Alignment"
+			          type="String"
+			          description="Header Alignment"
+			          datasource="left,center,right"/>
+			<property name="showAvatar"
+			          label="Show Avatar?"
+			          type="Boolean"/>
+			<property name="showNickName"
+			          label="Nick Name"
+			          type="Boolean"
+			          description="Enable to display the article author’s Nickname."/>
+			<property name="showMemberSince"
+			          label="Member Since"
+			          type="Boolean"
+			          description=" Enable to display the author’s community join date."/>
+			<property name="profileURL"
+			          label="User Profile URL"
+			          type="String"
+			          description="Enter the page name for User Detail page"/>
+			<property name="customClass"
+			          label="Custom Class"
+			          type="String"
+			          description="Used for custom styling."/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

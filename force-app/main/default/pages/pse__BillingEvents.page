@@ -1,0 +1,663 @@
+<apex:page standardController="pse__Billing_Event__c" extensions="pse.BillingEventsController" tabStyle="Billing_Event_Generation__tab" title="{!$Label.pse__billing_events_title_label}" lightningStylesheets="true" doctype="html-5.0">
+	<style>
+		a.actionLink { text-decoration: underline; }
+		a.actionLink2 { font-weight: bold; }
+		div#wait { width: 100%; height: 100%; }
+		div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+		div#waitingHolder { width: 113px; }
+		table.items th.headerRow { font-weight: bold; }
+		img.sortIndicator { padding-left: 5px; }
+		.lookupInput img { vertical-align:bottom; }
+		.table-bottom-margin { margin-bottom: 8px; }
+		.td-padding { padding: 3px 2px 3px 10px; }
+		.td-label-padding { padding: 6px 10px 3px 0px; }
+		.prior-period-label { vertical-align: 3px; }
+		.checkbox-table-width { width: 60%; }
+		.td-width-checkbox { width:2%; }
+		.td-width-checkbox-label { width:28%; }
+        .lockDisplay { display:block; opacity:0.4; pointer-events:none; }
+	</style>
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<script type="text/javascript">
+		//Initialise from controller so if the page reloads after any error is generated batchesSelected and eventsSelected are in latest state.
+		var batchesSelected = {!batchesSelectedCount};
+		var eventsSelected = {!eventsSelectedCount};
+		var itemsSelected = 0;
+		
+		function checkEnter(e)
+		{
+			var characterCode;
+			if (e && e.which)
+			{
+		    	e = e;
+		    	characterCode = e.which;
+		  	}
+		  	else
+		  	{
+		    	e = event;
+		    	characterCode = e.keyCode;
+		  	}
+		
+		  	if (characterCode == 13)
+		  	{
+		    	wait(true);
+		    	refresh();
+		    	return false;
+		  	}
+		  	else
+		  	{
+		    	return true;
+		  	}
+		}
+		
+		function setVisible(name, visible)
+		{
+			var e = document.getElementById(name),
+		  	  usertheme = {!$User.UIThemeDisplayed != 'Theme3'};
+		  	if (e != null)
+		  	{
+		    	if (visible)
+		    	{
+		      		e.setAttribute("style", "display: block");
+		      		e.style.cssText = "display: block;";
+		      		if(usertheme)
+		      		{
+		      			e.style.cssText += " position: fixed;";
+		      		}
+		    	}
+		    	else
+		    	{
+		      		e.setAttribute("style", "display: none");
+		      		e.style.cssText = "display: none";
+		    	}
+		  	}
+		}
+		function wait(val)
+		{
+			setVisible('loading', val);
+			setVisible('wait', val);
+		}
+		
+		function selectBatch(val)
+		{
+			batchesSelected += (val ? 1 : -1);
+		}
+		
+		function selectEvent(val)
+		{
+			eventsSelected += (val ? 1 : -1);
+		}
+		
+		function selectItem(val)
+		{
+			itemsSelected += (val ? 1 : -1);
+		}
+		
+		function reset()
+		{
+			batchesSelected = 0;
+			eventsSelected = 0;
+			itemsSelected = 0;
+		}
+		
+		function prerelease()
+		{
+			if (eventsSelected <= 0 && batchesSelected <= 0)
+			{
+		    	alert('{!JSINHTMLENCODE($Label.Billing_events_error_message_to_select_at_least_one_batch)}');
+		    	return false;
+		  	}
+		  	else
+		  	{
+		    	var msg = '';
+		    	if (eventsSelected > 0 && batchesSelected > 0)
+		    	{
+		      		msg = batchesSelected + ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_selected_billing_event_batches)}' + ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_and)}' + ' ';
+		      		msg += eventsSelected + ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_selected_billing_event_s)}';
+		    	}
+		    	else if (eventsSelected > 0)
+		    	{
+		      		msg = eventsSelected + ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_selected_billing_event_s)}';
+		    	}
+		    	else
+		    	{
+		      		msg = batchesSelected + ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_selected_billing_event_batches)}';
+		    	}
+		    	if (confirm('{!JSINHTMLENCODE($Label.Billing_events_release_confirmation_message)}'.replace('{0}',msg)))
+		    	{
+		      		wait(true);
+		      		return true;
+		    	}
+		  	}
+		  	return false;
+		}
+		
+		function preremove()
+		{
+			if (itemsSelected <= 0 && eventsSelected <= 0 && batchesSelected <= 0)
+			{
+		    	alert('{!JSINHTMLENCODE($Label.Billing_events_select_billing_event_batch_event_or_item_to_remove_message)}');
+		    	return false;
+		  	}
+		  	else
+		  	{
+		    	var msg = '';
+		    	var first = true;
+		    	if (batchesSelected > 0)
+		    	{
+		      		msg += batchesSelected + ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_selected_billing_event_batches)}';
+		      		first = false;
+		    	}
+			    if (eventsSelected > 0)
+			    {
+			    	if (!first)
+			    	{
+			        	msg += ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_and)}' + ' ';
+			      	}
+		      		msg += eventsSelected + ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_selected_billing_event_s)}';
+		      		first = false;
+		    	}
+		    	if (itemsSelected > 0)
+		    	{
+		      		if (!first)
+		      		{
+		        		msg += ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_and)}' + ' ';
+		      		}
+		      		msg += itemsSelected + ' ' + '{!JSINHTMLENCODE($Label.Billing_events_label_for_selected_billing_event_item_s)}';
+		    	}
+		    	if (confirm('{!JSINHTMLENCODE($Label.Billing_events_remove_confirmation_message)}'.replace('{0}',msg)))
+		    	{
+		      		wait(true);
+		      		return true;
+		    	}
+		  	}
+		  	return false;
+		}
+		
+		function precancel()
+		{
+			if (confirm('{!JSINHTMLENCODE($Label.Billing_events_cancel_confirmation_message)}'))
+			{
+		    	wait(true);
+		    	return true;
+		  	}
+		  	return false;
+		}
+		
+		function trim(str)
+		{
+		    return str.replace(/^\s+|\s+$/g, '');
+		}
+		
+		function trimDash(str)
+		{
+		    return str.replace(/^\-*\s+/, '');
+		}
+		
+		// New code added for AT 000011105
+		function pregenerate()
+		{
+		    var configForConfirm = {!CONFIRM_BILLING_GENERATION};
+		    if (!configForConfirm) 
+		    {
+		    	//Adding wait component to prevent user from clicking generate button twice
+		    	wait(true);
+		        return true;
+		    } 
+		    else 
+		    {
+		        var region = regionList.options[regionList.selectedIndex].text;
+		        var period = periodList.options[periodList.selectedIndex].text;
+		    
+		        var confirmMsg = '{!JSINHTMLENCODE($Label.Billing_events_wish_to_generate_Billing_Events_message)}' + ' ';
+		        if (accnt.value != null && trim(accnt.value) != '')
+		        {
+		            confirmMsg += "\"" + trim(accnt.value) + "\" " + '{!JSINHTMLENCODE($Label.common_label_account)}';
+		            if (confirm(confirmMsg + '?'))
+		            {
+		                wait(true);
+		                return true;
+		            }
+		        }
+		        else if (project.value != null && trim(project.value) != '')
+		        {
+		            confirmMsg += "\"" + trim(project.value) + "\" " + '{!JSINHTMLENCODE($Label.common_label_project)}';
+		            if (confirm(confirmMsg + '?'))
+		            {
+		                wait(true);
+		                return true;
+		            }
+		        }
+		        else
+		        {
+		            var regionSelected = false;
+		            if (region != null && region != '')
+		            {
+		                confirmMsg += "\"" + trimDash(region) + "\" " + '{!JSINHTMLENCODE($Label.common_label_region)}';
+		                regionSelected = true;
+		            }
+		            if (period != null && period != '')
+		            {
+		                if (regionSelected) confirmMsg += ', ';
+		                confirmMsg += "\"" + period + "\" " + '{!JSINHTMLENCODE($Label.common_label_time_period)}';
+		                if (includePrior.checked || includePrior.checked == 'true')
+		                {
+		                    confirmMsg += " " + '{!JSINHTMLENCODE($Label.Billing_events_label_and_Prior_Time_Periods)}';
+		                }
+		            }
+		            if (confirm(confirmMsg + '?'))
+		            {
+		                wait(true);
+		                return true;
+		            }
+		        }   
+		        return false;
+		    }
+		}
+	</script>
+
+
+	<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+	<div id="loading" class="waitingSearchDiv" style="display: none">
+ 		<div id="waitingHolder" class="waitingHolder">
+  			<img class="waitingImage" src="/img/loading.gif"/>
+  			<span class="waitingDescription">{!$Label.common_loading_label}</span>
+ 		</div>
+	</div>
+
+	<apex:form id="form">
+		<apex:sectionHeader title="{!$Label.pse__billing_events_title_label}" help="{!$Page.pse__ProcessingBillingEventsHelp}"/>
+		<apex:actionFunction id="sortBatches" name="sortBatches" action="{!sortBatches}" rerender="events" immediate="true" oncomplete="wait(false);">
+			<apex:param id="sortColumn" name="sortColumn" value="" assignTo="{!sortColumn}" />
+		</apex:actionFunction>
+	
+		<apex:variable var="isLightningView" value="{!$User.UIThemeDisplayed!='Theme3'}" />
+		<apex:outputPanel layout="none" rendered="{!isLightningView}">
+			<style> 
+				.check-margin-top { margin-top: 0px!important; }
+				.td-padding-lex { padding: 4px 8px 4px 8px; }
+				.icon-margin-right { margin-right: 5px; width: 14px; vertical-align: middle; }
+	 		</style>
+		</apex:outputPanel>
+	
+		<apex:pageMessages id="msgs" />
+	
+		<!-- Generation -------------------------------------------------------------->
+        <apex:outputPanel styleClass="{!if(AND(isProcessing,NOT(isGenerating)), 'lockDisplay', '')}">
+			<apex:pageBlock title="{!$Label.pse__billing_event_label_generate_billing_events}" rendered="{!initError=null}">
+				<apex:pageBlockButtons id="generateButtons">
+					<apex:commandButton action="{!generate}" value="{!$Label.pse__billing_event_button_label_generate}" onclick="return pregenerate();" />
+					<apex:commandButton action="{!gotoPage}" value="{!$Label.pse__common_label_schedule}" onclick="wait(true);" />
+				</apex:pageBlockButtons>
+			
+				<table border="0" class="table-bottom-margin">
+					<tr>
+						<td class="td-label-padding td-padding-lex"> {!IF(USE_FLEXIBLE_PERIOD_MODE,$Label.pse__billing_events_label_for_cutoff,$Label.pse__billing_events_label_for_period)}</td>
+						<td class="td-padding td-padding-lex">
+							<apex:pageBlockSection rendered="{!USE_FLEXIBLE_PERIOD_MODE}" columns="1">
+								<apex:inputField value="{!selectedEndDate.pse__Date__c}" id="cutoffDate" label=""/>
+							</apex:pageBlockSection>
+							<apex:outputPanel rendered="{!NOT(USE_FLEXIBLE_PERIOD_MODE)}" id="periodSelector" >
+								<apex:selectList id="selectedPeriodId" title="{!$Label.pse__billing_events_label_selected_period}" value="{!selectedPeriodId}" size="1" >
+								   <apex:selectOptions value="{!periodOptions}" />
+								</apex:selectList>
+								<script>var periodList = document.getElementById("{!$Component.selectedPeriodId}");</script>
+								<apex:inputCheckbox id="includePriorPeriods" value="{!includePriorPeriods}" style="margin-left:20px;" />
+								<script>var includePrior = document.getElementById("{!$Component.includePriorPeriods}");</script>
+								<apex:outputLabel value="{!$Label.pse__billing_events_label_for_include_prior_periods}" for="includePriorPeriods" styleClass="prior-period-label" />
+							</apex:outputPanel>
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="td-label-padding td-padding-lex"> {!IF(UNIT_TYPE_LABEL=='Group',$Label.pse__common_label_group,IF(UNIT_TYPE_LABEL=='Region',$Label.pse__common_label_region,$Label.pse__common_label_practice))}</td>
+						<td class="td-padding td-padding-lex">
+							<apex:outputPanel id="unitSelector1" rendered="{!NOT(UNIT_TYPE_SUBFILTER)}">
+								<c:UnitPicker id="unitPicker1" unitTypeAttribute="{!UNIT_TYPE_LABEL}" selectedUnitId="{!selectedUnitId}" showLabel="false" />
+								<script>var regionList = document.getElementById("{!$Component.unitPicker1.unitPickerComponent.selectedUnitId}");</script>
+							</apex:outputPanel>
+							
+							<apex:outputPanel id="unitSelector2" rendered="{!UNIT_TYPE_SUBFILTER}">
+								<c:UnitPicker id="unitPicker2" unitTypeAttribute="{!UNIT_TYPE_LABEL}" selectedUnitId="{!selectedUnitId}" showLabel="false"  allowAnyAttribute="true" />
+								<script>var regionList = document.getElementById("{!$Component.unitPicker2.unitPickerComponent.selectedUnitId}");</script>
+							</apex:outputPanel>
+						</td>
+					</tr>
+					
+					<apex:outputPanel rendered="{!UNIT_TYPE_SUBFILTER}" >
+						<tr>
+							<td class="td-label-padding td-padding-lex"> {!IF(UNIT_TYPE_LABEL_SUB1=='Group',$Label.pse__common_label_group,IF(UNIT_TYPE_LABEL_SUB1=='Region',$Label.pse__common_label_region,$Label.pse__common_label_practice))}</td>
+							<td class="td-padding td-padding-lex">
+								<c:UnitPicker id="unitPickerSub1" unitTypeAttribute="{!UNIT_TYPE_LABEL_SUB1}" selectedUnitId="{!selectedUnitIdSub1}" showLabel="false" allowAnyAttribute="true" />
+							</td>
+						</tr>
+					</apex:outputPanel>
+					
+					<apex:outputPanel rendered="{!UNIT_TYPE_SUBFILTER}" >
+						<tr>
+							<td class="td-label-padding td-padding-lex"> {!IF(UNIT_TYPE_LABEL_SUB2=='Group',$Label.pse__common_label_group,IF(UNIT_TYPE_LABEL_SUB2=='Region',$Label.pse__common_label_region,$Label.pse__common_label_practice))}</td>
+							<td class="td-padding td-padding-lex">
+								<c:UnitPicker id="unitPickerSub2" unitTypeAttribute="{!UNIT_TYPE_LABEL_SUB2}" selectedUnitId="{!selectedUnitIdSub2}" showLabel="false" allowAnyAttribute="true" />
+							</td>
+						</tr>
+					</apex:outputPanel>
+				
+					<tr>
+						<td class="td-label-padding td-padding-lex"> {!$Label.pse__common_label_account}</td>
+						<td class="td-padding td-padding-lex">
+							<apex:inputField id="selectedAccount" value="{!selectedAccount.pse__Account__c}" label=""/>
+							<script>var accnt = document.getElementById("{!$Component.selectedAccount}");</script>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="td-label-padding td-padding-lex"> {!$Label.pse__common_label_project}</td>
+						<td class="td-padding td-padding-lex">
+							<apex:inputField id="selectedProject" value="{!selectedProject.pse__Project__c}" label=""/>
+							<script>var project = document.getElementById("{!$Component.selectedProject}");</script>
+						</td>
+					</tr>
+				</table>
+				
+				<table class="checkbox-table-width">
+					<tr>
+			        	<apex:outputText > {!$Label.pse__billing_events_select_records_to_include_in_billing_events} </apex:outputText>
+			        </tr>
+					<tr>
+						<td class="td-width-checkbox">
+			               	<apex:inputcheckbox value="{!INCLUDE_TIMECARDS}" />
+		               	</td>
+		               	<td class="td-width-checkbox-label">
+							<apex:outputLabel value="{!$Label.pse__billing_events_label_include_timecards}"/>
+						</td>
+						<td class="td-width-checkbox">
+			                <apex:inputcheckbox value="{!INCLUDE_MILESTONES}" />
+		               	</td>
+		               	<td class="td-width-checkbox-label">
+							<apex:outputLabel value="{!$Label.pse__billing_events_label_include_milestones}"/>
+						</td>
+					</tr>
+					<tr>
+						<td>	
+							<apex:inputcheckbox value="{!INCLUDE_EXPENSES}" />
+						</td>
+						<td>
+							<apex:outputLabel value="{!$Label.pse__billing_events_label_include_expenses}"/>
+						</td>
+						<td>
+		               		<apex:inputcheckbox value="{!INCLUDE_BUDGETS}" />
+		               	</td>
+		               	<td>
+							<apex:outputLabel value="{!$Label.pse__billing_events_label_include_budgets}"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+		              		<apex:inputcheckbox value="{!INCLUDE_MISC_ADJ}" />
+		              	</td>
+		              	<td>
+							<apex:outputLabel value="{!$Label.pse__billing_events_label_include_misc_adjustments}"/>
+						</td>
+					</tr>    
+			    </table>
+		        <br/>
+		        <apex:outputText rendered="{!selectedPeriodId != null}" >
+				    <apex:outputText value="{!SUBSTITUTE($Label.pse__billing_events_create_batches_for_type_message,'{0}', UNIT_TYPE_LABEL_LC)}"/>
+					<ul>
+						<li>{!$Label.pse__billing_events_separated_by_project_message}</li>
+						<apex:outputText rendered="{!SEPARATES != null}">
+						    <li>{!SUBSTITUTE($Label.pse__billing_events_business_records_are_placed_in_separate_billing_events_message,'{0}',SEPARATES)}</li>
+						</apex:outputText>
+						<apex:outputText rendered="{!APPEND_GENERATED_ITEMS}">
+							<li>{!$Label.pse__billing_events_existing_un_released_batches_and_events_will_be_reused_message}</li>
+						</apex:outputText>
+						<apex:outputText rendered="{!NOT APPEND_GENERATED_ITEMS}">
+							<li>{!$Label.pse__billing_events_new_batches_and_events_will_be_created_message}</li>
+						</apex:outputText>
+					</ul>
+				</apex:outputText>
+			</apex:pageBlock>
+		</apex:outputPanel>
+		<!-- Processing -------------------------------------------------------------->
+		<apex:outputPanel id="processEvents" rendered="{!initError=null}" styleClass="{!if(isProcessing,'lockDisplay', '')}">
+			<apex:pageBlock title="{!$Label.pse__billing_events_process_billing_events_title_label}" rendered="{!initError=null}">
+				<apex:pageBlockButtons id="processButtons">
+					<apex:actionFunction name="refresh" action="{!refresh}" rerender="events, msgs" oncomplete="wait(false);" />
+					<apex:commandButton action="{!refresh}" value="{!$Label.pse__common_label_refresh}" onclick="wait(true);" />
+					<apex:commandButton action="{!release}" value="{!$Label.pse__common_label_release}" onclick="return prerelease();" />
+					<apex:commandButton action="{!remove}" value="{!$Label.pse__common_label_remove}" onclick="return preremove();" />
+				</apex:pageBlockButtons>
+				
+				<apex:pageBlockSection title="{!$Label.pse__common_label_filters}">
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!IF(UNIT_TYPE_LABEL=='Group',$Label.pse__common_label_group,IF(UNIT_TYPE_LABEL=='Region',$Label.pse__common_label_region,$Label.pse__common_label_practice))}:" />
+						<apex:inputText value="{!filters.unit}" onkeypress="return checkEnter(event);" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$Label.pse__billing_events_label_time_period}" />
+						<apex:inputText value="{!filters.timePeriod}" onkeypress="return checkEnter(event);" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$Label.pse__billing_events_label_account}" />
+						<apex:inputText value="{!filters.account}" onkeypress="return checkEnter(event);" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$Label.pse__billing_events_label_category}" />
+						<apex:selectList value="{!filters.category}" size="1" onkeypress="return checkEnter(event);">
+							<apex:selectOptions value="{!categoryOptions}" />
+						</apex:selectList>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$Label.pse__billing_events_pre_bill}" />
+						<apex:inputCheckbox value="{!filters.prebill}" onkeypress="return checkEnter(event);" styleClass="check-margin-top"/>
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+				
+				<apex:outputPanel id="events">
+					<table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+						<tr class="headerRow">
+							<th></th>
+							<!-- columns headers for BEB records -->
+							<apex:repeat value="{!BEBFields.displayFields}" var="fld">
+								<th>
+									<a class="link" onclick="wait(true); sortBatches('{!JSENCODE(fld.fieldName)}');">
+										<apex:outputText value="{!fld.label}"/>
+									</a>
+									<apex:image styleClass="sortIndicator" value="/img/{!sortImage}" rendered="{!sortColumn == fld.fieldName}" />
+								</th>
+							</apex:repeat>
+						</tr>
+						
+						<!-- data for BEB records -->
+						<apex:repeat value="{!batchData.batches}" var="b">
+							<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+								<td class="{!IF(isLightningView,'','actionColumn')}" nowrap="true">
+									<apex:commandLink rendered="{!b.expanded}" action="{!collapseBatch}" onclick="wait(true);" rerender="events" oncomplete="wait(false);">
+										<apex:param name="selectedBatchId" value="{!b.Data.Id}" assignTo="{!selectedBatchId}" />
+										<apex:image url="{!IF(isLightningView,URLFOR($Resource.pse__sldsAssets, 'icons/dash_60.png'),URLFOR($Resource.pse__appirioCommon, 'collapse.gif'))}" styleClass="icon-margin-right" />
+									</apex:commandLink>
+									<apex:commandLink rendered="{!NOT b.expanded}" action="{!expandBatch}" onclick="wait(true);" rerender="events" oncomplete="wait(false);" >
+										<apex:param name="selectedBatchId" value="{!b.Data.Id}" assignTo="{!selectedBatchId}" />
+										<apex:image url="{!IF(isLightningView,URLFOR($Resource.pse__sldsAssets, '/icons/add_60.png'),URLFOR($Resource.pse__appirioCommon, 'expand.gif'))}" styleClass="icon-margin-right" />
+									</apex:commandLink>
+									<apex:inputCheckbox value="{!b.selected}" onclick="selectBatch(this.checked);" />
+								</td>
+						
+								<apex:repeat value="{!BEBFields.fields}" var="fld">
+									<td class="dataCell" nowrap="true">
+										<a href="../../{!b.linkMap.linkFields[fld.fieldName].hyperLinkId}">
+											<apex:outputField value="{!b.data[fld.fieldName]}" rendered="{!fld.shouldRender && b.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink && NOT(fld.isFormatField) && b.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+										</a>
+										<a href="../../{!b.linkMap.linkFields[fld.fieldName].hyperLinkId}">
+											<apex:outputText value="{!b.specialFormatMap.formatFields[fld.fieldName]}" rendered="{!fld.shouldRender && b.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink && fld.isFormatField && b.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+										</a>
+										<apex:outputField value="{!b.data[fld.fieldName]}" rendered="{!fld.shouldRender && NOT(b.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink) && NOT(fld.isFormatField) && b.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+										<apex:outputText value="{!b.specialFormatMap.formatFields[fld.fieldName]}" rendered="{!fld.shouldRender && NOT(b.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink) && fld.isFormatField && b.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+									</td>
+								</apex:repeat>
+							</tr>
+							<tr style="display: {!IF(b.expanded, '', 'none')}">
+								<td colspan="6">
+									<table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+										<tr class="headerRow">
+											<th></th>
+											<apex:repeat value="{!BEFields.displayFields}" var="fld">
+												<th>
+													<apex:outputText value="{!fld.label}"/>
+												</th>
+											</apex:repeat>
+										</tr>
+									
+										<apex:repeat value="{!b.events}" var="e">
+											<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+												<td class="{!IF(isLightningView,'','actionColumn')}" nowrap="true" style="padding-left: 45px;">
+													<apex:commandLink rendered="{!e.expanded}" action="{!collapseEvent}" onclick="wait(true);" rerender="events" oncomplete="wait(false);">
+														<apex:param name="selectedBatchId" value="{!b.Data.Id}" assignTo="{!selectedBatchId}" />
+														<apex:param name="selectedEventId" value="{!e.Data.Id}" assignTo="{!selectedEventId}" />
+														<apex:image url="{!IF(isLightningView,URLFOR($Resource.pse__sldsAssets, '/icons/dash_60.png'),URLFOR($Resource.pse__appirioCommon, 'collapse.gif'))}" styleClass="icon-margin-right" />
+													</apex:commandLink>
+													<apex:commandLink rendered="{!NOT e.expanded}" action="{!expandEvent}" onclick="wait(true);" rerender="events" oncomplete="wait(false);" >
+														<apex:param name="selectedBatchId" value="{!b.Data.Id}" assignTo="{!selectedBatchId}" />
+														<apex:param name="selectedEventId" value="{!e.Data.Id}" assignTo="{!selectedEventId}" />
+														<apex:image url="{!IF(isLightningView,URLFOR($Resource.pse__sldsAssets, '/icons/add_60.png'),URLFOR($Resource.pse__appirioCommon, 'expand.gif'))}" styleClass="icon-margin-right" />
+													</apex:commandLink>
+													<apex:inputCheckbox value="{!e.selected}" onclick="selectEvent(this.checked);" />
+												</td>
+										
+												<apex:repeat value="{!BEFields.fields}" var="fld">
+													<td class="dataCell" nowrap="true">
+														<a href="../../{!e.linkMap.linkFields[fld.fieldName].hyperLinkId}">
+															<apex:outputField value="{!e.data[fld.fieldName]}" rendered="{!fld.shouldRender && b.expanded && e.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink && NOT(fld.isFormatField) && e.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+														</a>
+														<a href="../../{!e.linkMap.linkFields[fld.fieldName].hyperLinkId}">
+															<apex:outputText value="{!e.specialFormatMap.formatFields[fld.fieldName]}" rendered="{!fld.shouldRender && b.expanded && e.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink && fld.isFormatField && e.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+														</a>
+														<apex:outputField value="{!e.data[fld.fieldName]}" rendered="{!fld.shouldRender && b.expanded && NOT(e.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink) && NOT(fld.isFormatField) && e.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+														<apex:outputText value="{!e.specialFormatMap.formatFields[fld.fieldName]}" rendered="{!fld.shouldRender && b.expanded && NOT(e.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink) && fld.isFormatField && e.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+													</td>
+												</apex:repeat>
+											</tr>
+											<tr style="display: {!IF(e.expanded, '', 'none')}">
+												<td colspan="11">
+													<table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+														<tr class="headerRow">
+															<th></th>
+															<apex:repeat value="{!BEIFields.displayFields}" var="fld">
+																<th><apex:outputText value="{!fld.label}"/></th>
+															</apex:repeat>
+														</tr>
+														<apex:repeat value="{!e.items}" var="i">
+															<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+																<td class="{!IF(isLightningView,'','actionColumn')}" nowrap="true" style="padding-left: 90px;">
+																	<apex:inputCheckbox value="{!i.selected}" onclick="selectItem(this.checked);" />
+																</td>
+																<apex:repeat value="{!BEIFields.fields}" var="fld">
+																	<td class="dataCell" nowrap="true">
+																		<a href="../../{!i.linkMap.linkFields[fld.fieldName].hyperLinkId}">
+																			<apex:outputField value="{!i.data[fld.fieldName]}" rendered="{!fld.shouldRender && i.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink && NOT(fld.isFormatField) && i.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+																		</a>
+																		<a href="../../{!i.linkMap.linkFields[fld.fieldName].hyperLinkId}">
+																			<apex:outputText value="{!i.specialFormatMap.formatFields[fld.fieldName]}" rendered="{!fld.shouldRender && i.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink && fld.isFormatField && i.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+																		</a>
+																		<apex:outputField value="{!i.data[fld.fieldName]}" rendered="{!fld.shouldRender && NOT(i.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink) && NOT(fld.isFormatField) && i.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+																		<apex:outputText value="{!i.specialFormatMap.formatFields[fld.fieldName]}" rendered="{!fld.shouldRender && NOT(i.linkMap.linkFields[fld.fieldName].canRenderAsHyperlink) && fld.isFormatField && i.fieldHasValueMap.fieldHasValueMap[fld.fieldName]}"/>
+																	</td>
+																</apex:repeat>
+															</tr>
+														</apex:repeat>
+													</table>
+												</td>
+											</tr>
+										</apex:repeat>
+									</table>
+								</td>
+							</tr>
+						</apex:repeat>
+					</table>
+					<c:PageControls pageActionsController="{!pageActionsController}" reRender="events"/>
+				</apex:outputPanel>
+			</apex:pageBlock>
+		</apex:outputPanel>
+
+		<!-- Processing Status -------------------------------------------------------------->
+		<apex:outputPanel id="processingStatus" rendered="{!initError=null}" >
+            <script>
+				// create function context for checking if application run in lightning mode.
+				(function(myContext)
+				{
+			    	myContext.ForceUI = myContext.ForceUI || {};
+			    	myContext.ForceUI.isSalesforce1 = function()
+			    	{
+			        	return((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+			    	}
+				})(this);
+			
+			  	// if refresh required
+			  	if({!AND(refreshRequired, NOT(isGenerating))})
+			  	{
+			  		// check if application run in lightning mode
+                    wait(true);
+			  		if (ForceUI.isSalesforce1())
+			  		{
+			  			// navigate to current page with lightning sforce api
+			  			sforce.one.navigateToURL('{!$Page.BillingEvents}', true)
+			 		}
+			 		else
+			 		{
+			 			// navigate to current page with classic mode.
+						window.top.location = '{!$Page.BillingEvents}';
+			 		}
+			  	}
+			</script>
+			<apex:pageBlock title="{!$Label.pse__common_label_processing_status}" rendered="{!isProcessing}">
+				<table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+					<tr class="headerRow">
+						<th>{!$Label.common_label_description}</th>
+						<th>{!$Label.common_label_status}</th>
+						<th style="display: {!IF(isGenerating, '', 'none')}">{!$Label.common_label_details}</th>
+						<th>{!$Label.common_label_user}</th>
+						<th>{!$Label.common_label_start_date}</th>
+					</tr>
+					<apex:repeat value="{!processingStatus}" var="s">
+						<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+							<td class="dataCell" nowrap="true"><apex:outputText value="{!s.description}" /></td>
+							<td class="dataCell"><apex:outputText value="{!s.status}" /></td>
+							<td class="dataCell" style="display: {!IF(isGenerating, '', 'none')}"><apex:outputText value="{!s.details}" /></td>
+							<td class="dataCell" nowrap="true"><apex:outputField value="{!s.logEntry.CreatedBy.Name}" /></td>
+							<td class="dataCell" nowrap="true"><apex:outputField value="{!s.logEntry.CreatedDate}" /></td>
+						</tr>
+						<tr style="display: {!IF(s.hasErrors, '', 'none')}">
+							<td colspan="5">
+								<table class="list" width="100%" cellspacing="0" cellpadding="0" border="0" style="padding-left: 50px;">
+									<tr class="headerRow">
+										<th>{!$Label.common_label_action}</th>
+										<th>{!$Label.common_label_error_detail}</th>
+									</tr>
+									<apex:repeat value="{!s.errors}" var="e">
+										<tr>
+											<td class="actionColumn" nowrap="true">
+												<apex:commandLink value="{!$Label.pse__billing_event_clear_message}" action="{!cancelTask}" styleClass="actionLink2" onclick="return precancel();">
+													<apex:param name="taskId" value="{!s.Id}" assignTo="{!selectedTaskId}" />
+													<apex:param name="errorId" value="{!e.Id}" assignTo="{!selectedErrorId}" />
+												</apex:commandLink>
+											</td>
+											<td>
+												<apex:outputPanel layout="inline">
+													<apex:outputText value="{!e.error}" />
+													<apex:repeat value="{!e.erroredRecordIds}" var="erroredRecordId">
+														(<apex:outputLink value="/{!erroredRecordId}" >{!erroredRecordId}</apex:outputLink>)
+													</apex:repeat>
+												</apex:outputPanel>
+											</td>
+										</tr>
+									</apex:repeat>
+								</table>
+							</td>
+						</tr>
+					</apex:repeat>
+				</table>
+			</apex:pageBlock>
+		</apex:outputPanel>
+		<apex:actionPoller action="{!refreshProcessingStatus}" interval="5" enabled="{!autoRefresh}" rerender="processingStatus, processEvents" />
+	</apex:form>
+</apex:page>

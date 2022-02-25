@@ -1,0 +1,688 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<aura:component controller="SVNSUMMITS_MembersController"
+                access="global"
+                extends="c:SVNSUMMITS_Members_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+	<!-- Listen for the load complete event fired by the list helper and turn off the spinner -->
+	<aura:handler event="c:SVNSUMMITS_Members_Header_Event" action="{!c.dataLoaded}"/>
+
+	<aura:registerEvent name="appEvent" type="c:SVNSUMMITS_Members_Filters_Event"/>
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<aura:attribute name="compactView"          type="Boolean"  default="false" access="global"/>
+
+	<aura:attribute name="showClearAll"         type="Boolean"  default="true"  access="global"/>
+	<aura:attribute name="disableClear"         type="Boolean"  default="true"  access="global"/>
+
+	<aura:attribute name="searchString"         type="String"   default="" access="global"/>
+	<aura:attribute name="searchThreshold"      type="Integer"  default="2" access="global"/>
+	<aura:attribute name="searchFields"         type="String"   default="" access="global"/>
+	<aura:attribute name="enableLastNameSearch" type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="searchLastName"       type="Boolean"  default="false" access="global"/>
+
+	<aura:attribute name="showMyMembers"        type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="isSearchText"         type="Boolean"  default="false" access="global"/>
+
+	<aura:attribute name="labelMembersFollow"   type="String"   default="Members I Follow" access="global"/>
+	<aura:attribute name="labelSearchMembers"   type="String"   default="Search members"
+	                access="global"/>
+	<aura:attribute name="searchPlaceHolder"    type="String"   default="Search" access="global"/>
+
+	<!-- Global show pick lists setting -->
+	<aura:attribute name="showPicklists"        type="Boolean"  default="false" access="global"/>
+
+	<!-- Contact record fields -->
+	<aura:attribute name="useContact"           type="Boolean"  default="true" access="global"/>
+
+	<aura:attribute name="showTitleFilter"      type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="titleValues"          type="Map"      access="public"/>
+	<aura:attribute name="titleSearch"          type="String"   default="" access="public"/>
+	<aura:attribute name="titleTypeAhead"       type="String"   default="" access="public"/>
+
+	<aura:attribute name="showMembersFollow"    type="Boolean"  default="true"  access="global"/>
+	<aura:attribute name="showSearch"           type="Boolean"  default="true"  access="global"/>
+	<aura:attribute name="showCountryFilter"    type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="countryValues"        type="Map"      access="public"/>
+	<aura:attribute name="countrySearch"        type="String"   default="" access="public"/>
+	<aura:attribute name="countryTypeAhead"     type="String"   default="" access="public"/>
+
+	<aura:attribute name="showStateFilter"      type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="stateValues"          type="Map"      access="public"/>
+	<aura:attribute name="stateSearch"          type="String"   default="" access="public"/>
+	<aura:attribute name="stateTypeAhead"       type="String"   default="" access="public"/>
+
+	<aura:attribute name="showCityFilter"       type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="cityValues"           type="Map"      access="public"/>
+	<aura:attribute name="citySearch"           type="String"   default="" access="public"/>
+	<aura:attribute name="cityTypeAhead"        type="String"   default="" access="public"/>
+
+	<aura:attribute name="showAccountFilter"    type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="accountValues"        type="Map"      access="public"/>
+	<aura:attribute name="accountSearch"        type="String"   default="" access="public"/>
+	<aura:attribute name="accountTypeAhead"     type="String"   default="" access="public"/>
+
+	<aura:attribute name="showTopicFilter"      type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="topicValues"          type="Map"      access="public"/>
+	<aura:attribute name="topicSearch"          type="String"   default="" access="public"/>
+
+	<!-- Custom Field1 -->
+	<aura:attribute name="customField1"             type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField1"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField1"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField1"       type="String" default="" access="public"/>
+	<aura:attribute name="pickListLabelField1"      type="String" default="" access="global"/>
+	<aura:attribute name="customValuesField1"       type="Map"    access="public"/>
+	<aura:attribute name="typeAheadField1"          type="String" default="" access="public"/>
+
+	<!-- Custom Field2 -->
+	<aura:attribute name="customField2"             type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField2"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField2"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField2"       type="String" default="" access="public"/>
+	<aura:attribute name="pickListLabelField2"      type="String" default="" access="global"/>
+	<aura:attribute name="customValuesField2"       type="Map"    access="public"/>
+	<aura:attribute name="typeAheadField2"          type="String" default="" access="public"/>
+
+	<!-- Custom Field3 -->
+	<aura:attribute name="customField3"             type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField3"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField3"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField3"       type="String" default="" access="public"/>
+	<aura:attribute name="pickListLabelField3"      type="String" default="" access="global"/>
+	<aura:attribute name="customValuesField3"       type="Map"    access="public"/>
+	<aura:attribute name="typeAheadField3"          type="String" default="" access="public"/>
+
+	<!-- Custom Field4 -->
+	<aura:attribute name="customField4"             type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField4"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField4"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField4"       type="String" default="" access="public"/>
+	<aura:attribute name="pickListLabelField4"      type="String" default="" access="global"/>
+	<aura:attribute name="customValuesField4"       type="Map"    access="public"/>
+	<aura:attribute name="typeAheadField4"          type="String" default="" access="public"/>
+
+	<!-- Custom Field5 -->
+	<aura:attribute name="customField5"             type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField5"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField5"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField5"       type="String" default="" access="public"/>
+	<aura:attribute name="pickListLabelField5"      type="String" default="" access="global"/>
+	<aura:attribute name="customValuesField5"       type="Map"    access="public"/>
+	<aura:attribute name="typeAheadField5"          type="String" default="" access="public"/>
+
+	<!-- Custom Field6 -->
+	<aura:attribute name="customField6"             type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField6"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField6"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField6"       type="String" default="" access="public"/>
+	<aura:attribute name="pickListLabelField6"      type="String" default="" access="global"/>
+	<aura:attribute name="customValuesField6"       type="Map"    access="public"/>
+	<aura:attribute name="typeAheadField6"          type="String" default="" access="public"/>
+
+	<!-- Custom label 'ALL' -->
+	<!-- Note: this is a hack to make sure the label is packaged -->
+	<aura:attribute name="selectAll" type="String" default="{!$Label.c.ss_mbr_text_selectAll}" access="public"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="start"
+	                  horizontalAlign="spread"
+	                  pullToBoundary="small"
+	                  class="slds-p-bottom--small">
+
+		<!-- MY MEMBERS -->
+		<aura:if isTrue="{!v.showMembersFollow}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      flexibility="grow"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<lightning:input type="checkbox"
+				                 class="slds-float_left"
+				                 name="checkMemberIFollow"
+				                 checked="{!v.showMyMembers}"
+				                 label="{!v.labelMembersFollow}"
+				                 onchange="{!c.onFilterMembers}"/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- SEARCH -->
+		<aura:if isTrue="{!v.showSearch}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      flexibility="grow"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 6}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<lightning:layout multipleRows="true">
+
+					<lightning:layoutItem size="12" class="slds-p-bottom--small">
+						<lightning:input name="memberSearch"
+						                 label="{!v.labelSearchMembers}"
+						                 placeholder="{!v.searchPlaceHolder}"
+						                 type="search"
+						                 onchange="{!c.searchMembers}"
+						                 value="{!v.searchString}"/>
+					</lightning:layoutItem>
+
+					<aura:if isTrue="{!v.enableLastNameSearch}">
+						<lightning:layoutItem size="12">
+
+							<lightning:layout multipleRows="false"
+							                  horizontalAlign="spread"
+							                  verticalAlign="center">
+								<lightning:layoutItem>
+									<lightning:input type="checkbox"
+									                 class="slds-p-top--small"
+									                 label="{!$Label.c.ss_mbr_label_Search_lastName}"
+									                 name="lastNameSearch"
+									                 onchange="{!c.handleEnabelLastFirst}"
+									                 checked="{!v.searchLastName}"/>
+								</lightning:layoutItem>
+
+								<lightning:layoutItem>
+									<lightning:button label="Search"
+									                  aura:id="searchLastFirstButton"
+									                  class="slds-hide"
+									                  onclick="{!c.searchLastFirstName}"
+									                  name="searchLastFirst"/>
+								</lightning:layoutItem>
+							</lightning:layout>
+						</lightning:layoutItem>
+					</aura:if>
+
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- CLEAR ALL -->
+		<aura:if isTrue="{!v.showClearAll}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<lightning:button iconName="utility:close"
+				                  class="slds-float_right"
+				                  name="clearAllFilters"
+				                  label="{!$Label.c.ss_mbr_button_clearAll}"
+				                  title="{!$Label.c.ss_mbr_clearAll}"
+				                  onclick="{!c.clearAll}"
+				                  disabled="{!v.disableClear}"
+				                  variant="brand"/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<lightning:spinner size="small"
+		                   class="slds-hide"
+		                   aura:id="loadingSpinner"
+		                   alternativeText="Loading..."/>
+	</lightning:layout>
+
+	<!-- FIELD FILTERS -->
+	<lightning:layout multipleRows="true"
+	                  pullToBoundary="small"
+	                  verticalAlign="start">
+
+		<aura:if isTrue="{!v.showTopicFilter}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<lightning:select name="topicFilter"
+				                  class="slds-p-horizontal--small"
+				                  onchange="{!c.onFilterMembers}"
+				                  label="{!$Label.c.ss_mbr_label_searchTopics}"
+				                  value="{!v.topicSearch}">
+					<aura:iteration items="{!v.topicValues}" var="topic">
+						<option value="{!topic.value}">{!topic.label}</option>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Title -->
+		<aura:if isTrue="{!v.showTitleFilter}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.titleTypeAhead}"
+					                 onchange="{!c.onContactTypeAhead}"
+					                 aura:id="titleTypeAhead"
+					                 name="titleTypeAhead"
+					                 placeholder="{!$Label.c.ss_mbr_label_placeholderTitle}"
+					                 label="{!$Label.c.ss_mbr_label_typeAheadTitle}"/>
+					<lightning:select name="titleFilter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!$Label.c.ss_mbr_label_searchTitle}"
+					                  value="{!v.titleSearch}">
+						<aura:iteration items="{!v.titleValues}" var="title">
+							<option value="{!title}">{!title}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.titleSearch}"
+						                 onchange="{!c.onFilterMembers}"
+						                 aura:id="titleSearch"
+						                 name="titleSearch"
+						                 placeholder="{!$Label.c.ss_mbr_label_placeholderTitle}"
+						                 label="{!$Label.c.ss_mbr_label_searchTitle}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Country -->
+		<aura:if isTrue="{!v.showCountryFilter}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.countryTypeAhead}"
+					                 onchange="{!c.onContactTypeAhead}"
+					                 aura:id="countryTypeAhead"
+					                 name="countryTypeAhead"
+					                 placeholder="{!$Label.c.ss_mbr_label_placeholderCountry}"
+					                 label="{!$Label.c.ss_mbr_label_typeAheadCountry}"/>
+					<lightning:select name="countryFilter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!$Label.c.ss_mbr_label_searchCountries}"
+					                  value="{!v.countrySearch}">
+						<aura:iteration items="{!v.countryValues}" var="countryItem">
+							<option value="{!countryItem}">{!countryItem}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.countrySearch}"
+						                 onchange="{!c.onFilterMembers}"
+						                 aura:id="countrySearch"
+						                 name="countrySearch"
+						                 placeholder="{!$Label.c.ss_mbr_label_placeholderCountry}"
+						                 label="{!$Label.c.ss_mbr_label_searchCountries}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- State -->
+		<aura:if isTrue="{!v.showStateFilter}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.stateTypeAhead}"
+					                 onchange="{!c.onContactTypeAhead}"
+					                 aura:id="stateTypeAhead"
+					                 name="stateTypeAhead"
+					                 placeholder="{!$Label.c.ss_mbr_label_placeholderState}"
+					                 label="{!$Label.c.ss_mbr_label_typeAheadState}"/>
+					<lightning:select name="stateFilter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!$Label.c.ss_mbr_label_searchStates}"
+					                  value="{!v.stateSearch}">
+						<aura:iteration items="{!v.stateValues}" var="state">
+							<option value="{!state}">{!state}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.stateSearch}"
+						                 onchange="{!c.onFilterMembers}"
+						                 aura:id="stateSearch"
+						                 name="stateSearch"
+						                 placeholder="{!$Label.c.ss_mbr_label_placeholderState}"
+						                 label="{!$Label.c.ss_mbr_label_searchStates}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- City -->
+		<aura:if isTrue="{!v.showCityFilter}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.cityTypeAhead}"
+					                 onchange="{!c.onContactTypeAhead}"
+					                 aura:id="cityTypeAhead"
+					                 name="cityTypeAhead"
+					                 placeholder="{!$Label.c.ss_mbr_label_placeholderCity}"
+					                 label="{!$Label.c.ss_mbr_label_typeAheadCity}"/>
+					<lightning:select name="cityFilter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!$Label.c.ss_mbr_label_searchCities}"
+					                  value="{!v.citySearch}">
+						<aura:iteration items="{!v.cityValues}" var="city">
+							<option value="{!city}">{!city}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.citySearch}"
+						                 onchange="{!c.onFilterMembers}"
+						                 aura:id="citySearch"
+						                 name="citySearch"
+						                 placeholder="{!$Label.c.ss_mbr_label_placeholderCity}"
+						                 label="{!$Label.c.ss_mbr_label_searchCities}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Account Name -->
+		<aura:if isTrue="{!v.showAccountFilter}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.accountTypeAhead}"
+					                 onchange="{!c.onContactTypeAhead}"
+					                 aura:id="accountTypeAhead"
+					                 name="accountTypeAhead"
+					                 placeholder="{!$Label.c.ss_mbr_label_placeholderAccount}"
+					                 label="{!$Label.c.ss_mbr_label_typeAheadAccount}"/>
+					<lightning:select name="accountFilter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!$Label.c.ss_mbr_label_searchAccounts}"
+					                  value="{!v.accountSearch}">
+						<aura:iteration items="{!v.accountValues}" var="account">
+							<option value="{!account}">{!account}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.accountSearch}"
+						                 onchange="{!c.onFilterMembers}"
+						                 aura:id="accountSearch"
+						                 name="accountSearch"
+						                 placeholder="{!$Label.c.ss_mbr_label_placeholderAccount}"
+						                 label="{!$Label.c.ss_mbr_label_searchAccounts}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- CUSTOM FILTERS -->
+
+		<!-- Custom Field1 -->
+		<aura:if isTrue="{!v.customField1 != ''}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.typeAheadField1}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField1"
+					                 name="typeAheadCustomField1"
+					                 placeholder="{!v.placeHolderCustomField1}"
+					                 label="{!v.labelCustomField1}"/>
+					<lightning:select name="customField1Filter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!v.pickListLabelField1}"
+					                  value="{!v.searchCustomField1}">
+						<aura:iteration items="{!v.customValuesField1}" var="field1">
+							<option value="{!field1}">{!field1}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.searchCustomField1}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField1"
+						                 placeholder="{!v.placeHolderCustomField1}"
+						                 label="{!v.labelCustomField1}"/>
+					</aura:set>
+				</aura:if>
+
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Custom Field2 -->
+		<aura:if isTrue="{!v.customField2 != ''}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.typeAheadField2}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField2"
+					                 name="typeAheadCustomField2"
+					                 placeholder="{!v.placeHolderCustomField2}"
+					                 label="{!v.labelCustomField2}"/>
+					<lightning:select name="customField2Filter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!v.pickListLabelField2}"
+					                  value="{!v.searchCustomField2}">
+						<aura:iteration items="{!v.customValuesField2}" var="Field2">
+							<option value="{!Field2}">{!Field2}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.searchCustomField2}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField2"
+						                 placeholder="{!v.placeHolderCustomField2}"
+						                 label="{!v.labelCustomField2}"/>
+					</aura:set>
+				</aura:if>
+
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Custom Field3 -->
+		<aura:if isTrue="{!v.customField3 != ''}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.typeAheadField3}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField3"
+					                 name="typeAheadCustomField3"
+					                 placeholder="{!v.placeHolderCustomField3}"
+					                 label="{!v.labelCustomField3}"/>
+					<lightning:select name="customField3Filter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!v.pickListLabelField3}"
+					                  value="{!v.searchCustomField3}">
+						<aura:iteration items="{!v.customValuesField3}" var="Field3">
+							<option value="{!Field3}">{!Field3}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.searchCustomField3}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField3"
+						                 placeholder="{!v.placeHolderCustomField3}"
+						                 label="{!v.labelCustomField3}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Custom Field4 -->
+		<aura:if isTrue="{!v.customField4 != ''}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.typeAheadField4}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField4"
+					                 name="typeAheadCustomField4"
+					                 placeholder="{!v.placeHolderCustomField4}"
+					                 label="{!v.labelCustomField4}"/>
+					<lightning:select name="customField4Filter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!v.pickListLabelField4}"
+					                  value="{!v.searchCustomField4}">
+						<aura:iteration items="{!v.customValuesField4}" var="Field4">
+							<option value="{!Field4}">{!Field4}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.searchCustomField4}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField4"
+						                 placeholder="{!v.placeHolderCustomField4}"
+						                 label="{!v.labelCustomField4}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Custom Field5 -->
+		<aura:if isTrue="{!v.customField5 != ''}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.typeAheadField5}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField5"
+					                 name="typeAheadCustomField5"
+					                 placeholder="{!v.placeHolderCustomField5}"
+					                 label="{!v.labelCustomField5}"/>
+					<lightning:select name="customField5Filter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!v.pickListLabelField5}"
+					                  value="{!v.searchCustomField5}">
+						<aura:iteration items="{!v.customValuesField5}" var="Field5">
+							<option value="{!Field5}">{!Field5}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.searchCustomField5}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField5"
+						                 placeholder="{!v.placeHolderCustomField5}"
+						                 label="{!v.labelCustomField5}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Custom Field6 -->
+		<aura:if isTrue="{!v.customField6 != ''}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPicklists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 class="slds-p-horizontal--small"
+					                 value="{!v.typeAheadField6}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField6"
+					                 name="typeAheadCustomField6"
+					                 placeholder="{!v.placeHolderCustomField6}"
+					                 label="{!v.labelCustomField6}"/>
+					<lightning:select name="customField6Filter"
+					                  class="slds-p-horizontal--small"
+					                  onchange="{!c.onFilterMembers}"
+					                  label="{!v.pickListLabelField6}"
+					                  value="{!v.searchCustomField6}">
+						<aura:iteration items="{!v.customValuesField6}" var="Field6">
+							<option value="{!Field6}">{!Field6}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 class="slds-p-horizontal--small"
+						                 value="{!v.searchCustomField6}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField6"
+						                 placeholder="{!v.placeHolderCustomField6}"
+						                 label="{!v.labelCustomField6}"/>
+					</aura:set>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+	</lightning:layout>
+</aura:component>

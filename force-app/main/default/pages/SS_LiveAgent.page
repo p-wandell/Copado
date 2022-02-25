@@ -1,0 +1,38 @@
+<apex:page contentType="text/javascript">
+    liveagent.init('https://d.la1s1.salesforceliveagent.com/chat', '5728000000000cd', '00D80000000bR1O');
+    liveagent.setName('{!$User.FirstName} {!$User.LastName}');
+
+    // Set the Contact on the Transcript
+    liveagent.findOrCreate('Contact').map('Id', '{!$User.ContactId}', true, true, false).saveToTranscript('ContactId').showOnCreate();
+    //liveagent.findOrCreate('Contact').map('FirstName', '{!$User.FirstName}', true, true, false).map('LastName', '{!$User.LastName}', true, true, false).saveToTranscript('ContactId').showOnCreate();
+
+    // For the Agent to View
+    liveagent.addCustomDetail('First Name', '{!$User.FirstName}', true);
+    liveagent.addCustomDetail('Last Name', '{!$User.LastName}', true);
+    liveagent.addCustomDetail('Contact ID', '{!$User.ContactId}', true);
+
+    if (!window._laq) { window._laq = []; }
+        window._laq.push(function(){liveagent.showWhenOnline('5738000000000ci', document.getElementById('liveagent_button_online_5738000000000ci'));
+        liveagent.showWhenOffline('5738000000000ci', document.getElementById('liveagent_button_offline_5738000000000ci'));
+    });
+
+    /*
+    liveagent.init('https://d.la1cs.salesforceliveagent.com/chat', '572Q000000000C4', '00DQ000000GJvJY');
+    liveagent.setName('{!$User.FirstName} {!$User.LastName}');
+
+    // Set the Contact on the Transcript
+    liveagent.findOrCreate('Contact').map('Id', '{!$User.ContactId}', true, true, false).saveToTranscript('ContactId').showOnCreate();
+    //liveagent.findOrCreate('Contact').map('FirstName', '{!$User.FirstName}', true, true, false).map('LastName', '{!$User.LastName}', true, true, false).saveToTranscript('ContactId').showOnCreate();
+
+    // For the Agent to View
+    liveagent.addCustomDetail('First Name', '{!$User.FirstName}', true);
+    liveagent.addCustomDetail('Last Name', '{!$User.LastName}', true);
+    liveagent.addCustomDetail('Contact ID', '{!$User.ContactId}', true);
+
+    if (!window._laq) { window._laq = []; }
+    window._laq.push(function(){
+        liveagent.showWhenOnline('573Q000000000Cn', document.getElementById('liveagent_button_online_573Q000000000Cn'));
+        liveagent.showWhenOffline('573Q000000000Cn', document.getElementById('liveagent_button_offline_573Q000000000Cn'));
+    });
+    */
+</apex:page>

@@ -1,0 +1,1274 @@
+<apex:page controller="pse.ForecastsController" tabStyle="Forecasts__tab" title="{!$Label.pse__forecasts_label_title}">
+<style>
+input.cur { width: 100px; }
+.miniTab ul.miniTabList li.hidden { display: none; }
+span.previous { color: #808080; }
+div.previous { color: #808080; padding-top: 5px; font-weight: bold; }
+span.warning { color: red;font-weight: bold; }
+span.actionStatus { padding-left: 15px; color: blue; font-weight: bold; }
+span.plan { color: blue; }
+span.total { color: #333333; }
+span.na { padding-left: 5px; color: red; }
+div#wait { width: 100%; height: 100% }
+div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+div#waitingHolder { width: 113px; }
+a.link { text-decoration: underline; cursor: pointer; }
+a.tooltip { text-decoration: none; }
+#historyStatus { font-style: italic; color: white; line-height: 20px; }
+
+.worksheetIcon {
+ background-image: url(/img/icon/custom51_100/compass16.png);
+ height: 16px;
+ width: 16px;
+ cursor: pointer;
+}
+.projectsIcon {
+ background-image: url(/img/icon/hammer16.png);
+ height: 16px;
+ width: 16px;
+ cursor: pointer;
+}
+.forecastDetailIcon {
+ background-image: url("/img/icon/telescope16.png");
+ height: 16px;
+ width: 16px;
+ cursor: pointer;
+}
+tr td {
+ border: none;
+ color: #333333;
+ padding: 4px 2px 4px 5px;
+}
+.headerRow th {
+ border-bottom:2px solid #CCCCCC;
+ white-space:nowrap;
+}
+
+</style>
+<script type="text/javascript">
+var timer;
+var timerStopped;
+var batchNum;
+var windowSpec = "menubar=no,width=1024,height=600,toolbar=yes,scrollbars=yes";
+
+function buildDetailUrl(mode, type, unit, periodId, forecastId, forecastName) {
+  return "{!$Page.ForecastsWorksheetDetail}?selectedPeriodId=" + periodId + "&selectedUnit=" + unit + "&fid=" + forecastId +
+    "&fname=" + escape(forecastName) +
+    "&mode=" + mode +
+    "&type=" + type;
+}
+function viewOpps(type, unit, periodId, forecastId, forecastName) {
+  var win = window.open(buildDetailUrl('sales', type, unit, periodId, forecastId, forecastName),
+    "Sales Opportunities", windowSpec);
+  win.focus();
+}
+function viewActuals(type, unit, periodId, forecastId, forecastName) {
+  var win = window.open(buildDetailUrl('actuals', type, unit, periodId, forecastId, forecastName),
+    "Actuals", windowSpec);
+  win.focus();
+}
+function viewBacklog(type, unit, periodId, forecastId, forecastName) {
+  var win = window.open(buildDetailUrl('backlog', type, unit, periodId, forecastId, forecastName),
+    "Backlog", windowSpec);
+  win.focus();
+}
+function wsScroll() {
+  document.getElementById('wsAnchor').scrollIntoView(true);
+}
+function wsScroll2() {
+  document.getElementById('wsAnchor2').scrollIntoView(true);
+}
+function setVisible(name, visible) {
+  var e = document.getElementById(name);
+  if (e != null) {
+    if (visible) {
+      e.setAttribute("style", "display: block");
+      e.style.cssText = "display: block";
+    } else {
+      e.setAttribute("style", "display: none");
+      e.style.cssText = "display: none";
+    }
+  }
+}
+
+function newBatch() {
+  timerStopped = false;
+  batchNum = 0;
+}
+function wait(val) {
+  setVisible('loading', val);
+  setVisible('wait', val);
+}
+function stopTimer() {
+  timerStopped = true;
+  if (timer == null) {
+    return;
+  }
+  clearTimeout(timer);
+}
+function processBatch() {
+  if (!timerStopped) {
+    timer = setTimeout("processBatch();", 5000);
+    jsSubmitBatch();
+  }
+}
+</script>
+<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+<div id="loading" class="waitingSearchDiv" style="display: none">
+ <div id="waitingHolder" class="waitingHolder">
+  <img class="waitingImage" src="/img/loading.gif"/>
+  <span class="waitingDescription">{!$Label.common_loading_label}</span>
+ </div>
+</div>
+
+<apex:form id="form">
+
+<apex:actionFunction name="jsSubmitBatch" reRender="worksheet" action="{!submitBacklogBatch}"/>
+
+<apex:actionFunction id="expand" name="expand" action="{!expand}" rerender="forecastPanel" immediate="true" oncomplete="wait(false);">
+ <apex:param id="expandParam" name="expandParam" value="" assignTo="{!currentNodeId}" />
+</apex:actionFunction>
+<apex:actionFunction id="collapse" name="collapse" action="{!collapse}" rerender="forecastPanel" immediate="true" oncomplete="wait(false);">
+ <apex:param id="collapseParam" name="collapseParam" value="" assignTo="{!currentNodeId}" />
+</apex:actionFunction>
+<apex:actionFunction id="refresh" name="refresh" action="{!refresh}" rerender="forecasts" immediate="true" oncomplete="wait(false); updateSummary()">
+ <apex:param id="refreshParam" name="refreshParam" value="" assignTo="{!selectedPeriodId}" />
+</apex:actionFunction>
+<apex:actionFunction id="refreshSummary" name="refreshSummary" action="{!refresh}" rerender="forecasts" immediate="true" oncomplete="wait(false);">
+ <apex:param id="refreshParamSummary" name="refreshParamSummary" value="" assignTo="{!selectedSummaryPeriodId}" />
+</apex:actionFunction>
+<apex:actionFunction id="refreshEntryMode" name="refreshEntryMode" action="{!refresh}" rerender="forecasts" immediate="true" oncomplete="wait(false);">
+ <apex:param id="refreshParamEntryMode" name="refreshParamEntryMode" value="" assignTo="{!selectedEntryMode}" />
+</apex:actionFunction>
+<apex:actionFunction id="showWorksheet" name="showWorksheet" action="{!showWorksheet}" rerender="worksheet" oncomplete="wait(false); wsScroll();" immediate="true">
+ <apex:param id="showWorksheetParam" name="showWorksheetParam" value="" assignTo="{!selectedForecastId}" />
+</apex:actionFunction>
+<apex:actionFunction id="showWorksheet2" name="showWorksheet2" action="{!showWorksheet2}" rerender="worksheet" immediate="true">
+ <apex:param id="showWorksheetParam2" name="showWorksheetParam2" value="" assignTo="{!selectedForecastId}" />
+</apex:actionFunction>
+<apex:actionFunction id="hideWorksheet" name="hideWorksheet" action="{!hideWorksheet}" rerender="worksheet" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="showProjectsRPG" name="showProjectsRPG" action="{!showProjectsRPG}" rerender="msgs,projects" oncomplete="wait(false); wsScroll2();" immediate="true">
+ <apex:param id="showProjectsRPGParam" name="showProjectsRPGParam" value="" assignTo="{!selectedForecastId}" />
+</apex:actionFunction>
+<apex:actionFunction id="hideProjects" name="hideProjects" action="{!hideProjects}" rerender="projects" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="myWorksheet" name="myWorksheet" action="{!myWorksheet}" rerender="worksheet" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="rollUpWorksheets" name="rollUpWorksheets" action="{!rollUpWorksheets}" rerender="worksheet" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="showRegions" name="showRegions" action="{!showRegions}" rerender="tabs, msgs, forecasts, projects" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="showGroups" name="showGroups" action="{!showGroups}" rerender="tabs, msgs, forecasts, projects" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="showPractices" name="showPractices" action="{!showPractices}" rerender="tabs, msgs, forecasts, projects" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="showProjects" name="showProjects" action="{!showProjects}" rerender="tabs, msgs, forecasts, projects" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+
+
+<apex:sectionHeader title="{!$Label.pse__forecasts_label_title}" help="{!$Page.pse__AboutForecastsHelp}" />
+
+<apex:outputPanel id="tabs" rendered="{!isUnitOwner}">
+<div class="miniTab secondaryPalette">
+ <ul class="miniTabList">
+  <li class="{!IF(showRegions, IF(regionsSelected, 'currentTab', 'secondaryPalette'), 'hidden')}"><a onclick="wait(true); showRegions();" title="{!$Label.forecasts_label_regions_subtab}" href="">{!$Label.forecasts_label_regions}</a></li>
+  <li class="{!IF(showPractices, IF(practicesSelected, 'currentTab', 'secondaryPalette'), 'hidden')}"><a onclick="wait(true); showPractices();" title="{!$Label.forecasts_label_practices_subtab}" href="">{!$Label.forecasts_label_practices}</a></li>
+  <li class="{!IF(showGroups, IF(groupsSelected, 'currentTab', 'secondaryPalette'), 'hidden')}"><a onclick="wait(true); showGroups();" title="{!$Label.forecasts_label_groups_subtab}" href="">{!$Label.forecasts_label_groups}</a></li>
+  <li class="{!IF(showProjects, IF(ProjectsSelected, 'currentTab', 'secondaryPalette'), 'hidden')}"><a onclick="wait(true); showProjects();" title="{!$Label.forecasts_label_projects_subtab}" href="">{!$Label.common_label_projects}</a></li>
+ </ul>
+</div>
+</apex:outputPanel>
+
+<div class="bMiniTabBlock">
+
+<apex:pageBlock id="forecasts" title="{!$Label.pse__forecasts_title_forecast_detail}">
+
+<apex:pageMessages id="msgs" />
+
+<apex:pageBlockButtons id="buttons">
+<apex:commandButton action="{!edit}" value="{!$Label.pse__forecasts_label_edit}" rendered="{!NOT isEditMode && NOT isDisabled && NOT isViewOnly}" disabled="{!NOT isEntryPeriod}" rerender="forecasts"
+    onclick="wait(true);" oncomplete="wait(false);" />
+<apex:commandButton action="{!save}" value="{!$Label.pse__common_label_save}" rendered="{!isEditMode}" />
+<apex:commandButton action="{!cancel}" value="{!$Label.pse__common_label_cancel}" immediate="true" rendered="{!isEditMode}" />
+</apex:pageBlockButtons>
+
+<apex:outputPanel id="periodSelector" rendered="{!NOT isDisabled}">
+
+<apex:outputLabel value="{!$Label.pse__forecasts_label_period}" for="selectedPeriodId" style="padding-right: 15px;" />
+<apex:selectList id="selectedPeriodId" disabled="{!isEditMode}" value="{!selectedPeriodId}" title="{!$Label.pse__forecasts_tool_tip_selected_period}" size="1" onchange="wait(true); refresh(this.value);">
+<apex:selectOptions value="{!periodOptions}" />
+</apex:selectList>
+
+
+<apex:selectList id="selectedSummaryPeriodId" disabled="{!isEditMode}" value="{!selectedSummaryPeriodId}" title="{!$Label.pse__forecasts_tool_tip_summary_period}" size="1" onchange="wait(true); refreshSummary(this.value);">
+<apex:selectOptions value="{!summaryPeriodOptions}" />
+</apex:selectList>
+
+<script type="text/javascript">
+
+ //selecting 'summary period' value based on value selected from 'entry period' value. 
+//Function shall be called by ajax callback (actionFunction - id : 'refresh')
+  function updateSummary(){
+    var elem = document.getElementById("{!$Component.selectedSummaryPeriodId}");
+
+    if(elem.options.length > 0){
+      elem.options[0].selected = true;
+      
+      var selectedNode = elem.options[0].value;
+      refreshSummary(selectedNode);
+    }
+  }
+</script>
+
+
+<span style="padding-left: 15px;">{!$Label.forecasts_label_summary_period}
+  <span style="padding-left: 5px;">{!periodInfo.summaryPeriodStartFormatted}&nbsp;-&nbsp;{!periodInfo.summaryPeriodEndFormatted}</span>
+</span>
+
+<span style="padding-left: 15px;"> 
+<apex:selectList id="selectEntryMode" rendered="{!isEditMode && NOT isDisabled && NOT isViewOnly}" value="{!selectedEntryMode}" title="{!$Label.pse__forecasts_tool_tip_entrymode_drop_down_list}" size="1" onchange="wait(true); refreshEntryMode(this.value);">
+<apex:selectOptions value="{!entryModes}" />
+</apex:selectList>
+</span>
+
+</apex:outputPanel>
+
+<apex:outputPanel id="forecastPanel" rendered="{!NOT isDisabled}">
+<table id="rollupData" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr class="headerRow">
+ <th style="white-space:nowrap;text-align:left;">{!$Label.common_label_name}</th>
+ <th style="white-space:nowrap;text-align:left;">{!$Label.forecasts_label_owner}</th>
+ <th style="white-space:nowrap;text-align:left;"></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!NOT(projectsSelected)}">{!$Label.pse__forecasts_label_plan}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!NOT(projectsSelected)}">{!$Label.pse__forecasts_label_percent_of_plan}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;"></th>
+ <th style="white-space:nowrap;text-align:left;"></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!IS_WORST_CASE_VISIBLE}">{!$Label.pse__forecasts_label_worst_case}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!IS_DOWNSIDE_VISIBLE}">{!$Label.pse__forecasts_label_downside}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!IS_COMMIT_VISIBLE}">{!$Label.pse__forecasts_label_commit}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!IS_FORECAST_VISIBLE}">{!$Label.pse__forecasts_header_label_forecast}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!IS_MOST_LIKELY_VISIBLE}">{!$Label.pse__forecasts_label_most_likely}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!IS_UPSIDE_VISIBLE}">{!$Label.pse__forecasts_label_upside}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;"><apex:outputText rendered="{!IS_BEST_CASE_VISIBLE}">{!$Label.pse__forecasts_label_best_case}</apex:outputText></th>
+ </tr>
+<apex:repeat value="{!forecasts}" var="r">
+
+<!-- row 1 -->
+<tr style="background-color:{!if(r.oddRow,'#E0E0E0','#F8F8F8')};display:{!r.style}">
+ 
+ <td nowrap="true">
+  <span style="margin-left: {!r.Level}0px; padding-left: {!r.Level}0px;">&nbsp;</span>
+  <apex:outputPanel rendered="{!r.hasChildren}">
+  <a href="" onclick="wait(true); collapse('{!r.Id}'); return false;"><apex:image url="{!URLFOR($Resource.pse__appirioCommon, 'collapse.gif')}" rendered="{!r.expanded}" /></a>
+  <a href="" onclick="wait(true); expand('{!r.Id}'); return false;"><apex:image url="{!URLFOR($Resource.pse__appirioCommon, 'expand.gif')}" rendered="{!NOT r.expanded}" /></a>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!NOT r.hasChildren}">
+  <span style="padding-left: 12px">&nbsp;</span>
+  </apex:outputPanel>
+  <apex:outputText value="{!r.Name}" style="vertical-align: top; padding-left: 5px;" />
+ </td>
+ 
+ <td nowrap="true">
+  <apex:outputText value="{!r.Owner}" />
+  <apex:outputPanel rendered="{!r.isMissing}" styleClass="na">{!$Label.pse__forecasts_message_no_forecast}</apex:outputPanel>
+ </td>
+ 
+ <td nowrap="true">
+  <a href="" onclick="wait(true); newBatch(); showWorksheet('{!r.Id}'); return false;"><apex:image styleClass="worksheetIcon" title="{!SUBSTITUTE(($Label.pse__forecasts_show_worksheet_tooltip), '{0}', r.Name)}" url="/s.gif" rendered="{!r.isDirectManager || r.isOwner || r.isManager}"/></a>
+  <a href="" onclick="wait(true); newBatch(); showProjectsRPG('{!r.Id}'); return false;"><apex:image styleClass="projectsIcon" title="{!SUBSTITUTE(($Label.pse__forecasts_show_project_tooltip), '{0}', r.Name)}" url="/s.gif" rendered="{!NOT(projectsSelected) && PROJECTS_ENABLED && (r.isDirectManager || r.isOwner || r.isManager)}"/></a>
+  <apex:variable rendered="{!r.hasForecastRecord}" value="tempval" var="tempHasForecastRecord">
+    <a href="/{!r.data.Id}" target="_blank"><apex:image styleClass="forecastDetailIcon" title="{!SUBSTITUTE(($Label.pse__forecasts_show_forecast_detail_tooltip), '{0}', r.Name)}" url="/s.gif" rendered="{!(r.isDirectManager || r.isOwner || r.isManager)}"/></a>
+  </apex:variable>
+ </td>
+ 
+ <td nowrap="true">
+  <span class="plan">
+   <apex:outputText rendered="{!NOT(projectsSelected)}" value="{!r.plan}" />
+  </span>
+ </td>
+
+ <td style="white-space:nowrap" >
+  <span class="plan"><apex:outputText rendered="{!NOT(projectsSelected)}" value="{!r.PercentOfPlanFormatted}" /></span>
+ </td>
+
+ <td style="white-space:nowrap">
+    <apex:outputText value="{!$Label.pse__forecasts_label_total_forecast}" rendered="{!((r.isOwner && isEditMode) || (r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+ </td>
+
+ <td style="white-space:nowrap">
+  <apex:outputText value="{!r.data.CurrencyIsoCode}" rendered="{!((r.isOwner && isEditMode) || (r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+ </td>
+
+ <td  style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.enteredWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && (NOT(selectedEntryMode='TOTAL') || NOT (isEditMode && r.isOwner)) && ((r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+  <apex:inputField value="{!r.Data.pse__Entered_Worst_Case__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_WORST_CASE_VISIBLE && selectedEntryMode='TOTAL' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+  
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.enteredDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && (NOT(selectedEntryMode='TOTAL') || NOT (isEditMode && r.isOwner)) && ((r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+  <apex:inputField value="{!r.Data.pse__Entered_Downside__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_DOWNSIDE_VISIBLE && selectedEntryMode='TOTAL' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.enteredCommit}" rendered="{!IS_COMMIT_VISIBLE && (NOT(selectedEntryMode='TOTAL') || NOT (isEditMode && r.isOwner)) && ((r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+  <apex:inputField value="{!r.Data.pse__Entered_Commit__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_COMMIT_VISIBLE && selectedEntryMode='TOTAL' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.enteredForecast}" rendered="{!IS_FORECAST_VISIBLE && (NOT(selectedEntryMode='TOTAL') || NOT (isEditMode && r.isOwner)) && ((r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+  <apex:inputField value="{!r.Data.pse__Entered_Forecast__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_FORECAST_VISIBLE && selectedEntryMode='TOTAL' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.enteredMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && (NOT(selectedEntryMode='TOTAL') || NOT (isEditMode && r.isOwner)) && ((r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+  <apex:inputField value="{!r.Data.pse__Entered_Most_Likely__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_MOST_LIKELY_VISIBLE && selectedEntryMode='TOTAL' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.enteredUpside}" rendered="{!IS_UPSIDE_VISIBLE && (NOT(selectedEntryMode='TOTAL') || NOT (isEditMode && r.isOwner))  && ((r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+  <apex:inputField value="{!r.Data.pse__Entered_Upside__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_UPSIDE_VISIBLE && selectedEntryMode='TOTAL' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.enteredBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && (NOT(selectedEntryMode='TOTAL') || NOT (isEditMode && r.isOwner)) && ((r.isViewable && ShowTotalG) || (r.isOwner && ShowTotalO) || (r.isDirectManager && ShowTotalDM))}" />
+  <apex:inputField value="{!r.Data.pse__Entered_Best_Case__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_BEST_CASE_VISIBLE && selectedEntryMode='TOTAL' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+ 
+</tr>
+
+<!--Row 5A -->
+<tr style="background-color:{!if(r.oddRow,'#E0E0E0','#F8F8F8')};display:{!IF(r.visible && ((r.isDirectManager && isEditMode) || (r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM)))), '', 'none')}" >
+ <td></td>
+ <td></td>
+ <td></td>
+ <td></td>
+<td></td>
+
+ <td style="white-space:nowrap">
+   <apex:outputText value="{!SUBSTITUTE(($Label.pse__forecasts_label_selected_mode_override), '{0}', modeSelected)}" rendered="{!(r.isDirectManager && isEditMode) || (r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM)))}" />
+ </td>
+
+ <td style="white-space:nowrap">
+  <apex:outputText value="{!r.data.CurrencyIsoCode}" rendered="{!(r.isDirectManager && isEditMode) || (r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM)))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:inputField value="{!r.Data.pse__Override_Worst_Case__c}" styleClass="cur" rendered="{!IS_WORST_CASE_VISIBLE && r.isDirectManager && isEditMode}"/>
+  <apex:outputText value="{!r.overrideWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && NOT r.isMissing && NOT isEditMode && r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM))}" />
+ </td>
+  
+ <td style="white-space:nowrap;text-align:left;">
+   <apex:inputField value="{!r.Data.pse__Override_Downside__c}" styleClass="cur" rendered="{!IS_DOWNSIDE_VISIBLE && r.isDirectManager && isEditMode}"/>
+   <apex:outputText value="{!r.overrideDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && NOT r.isMissing && NOT isEditMode && r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+   <apex:inputField value="{!r.Data.pse__Override_Commit__c}" styleClass="cur" rendered="{!IS_COMMIT_VISIBLE && r.isDirectManager && isEditMode}"/>
+   <apex:outputText value="{!r.overrideCommit}" rendered="{!IS_COMMIT_VISIBLE && NOT r.isMissing && NOT isEditMode && r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:inputField value="{!r.Data.pse__Override_Forecast__c}" styleClass="cur" rendered="{!IS_FORECAST_VISIBLE && r.isDirectManager && isEditMode}"/>
+  <apex:outputText value="{!r.overrideForecast}" rendered="{!IS_FORECAST_VISIBLE && NOT r.isMissing && NOT isEditMode && r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:inputField value="{!r.Data.pse__Override_Most_Likely__c}" styleClass="cur" rendered="{!IS_MOST_LIKELY_VISIBLE && r.isDirectManager && isEditMode}"/>
+  <apex:outputText value="{!r.overrideMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && NOT r.isMissing && NOT isEditMode && r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:inputField value="{!r.Data.pse__Override_Upside__c}" styleClass="cur" rendered="{!IS_UPSIDE_VISIBLE && r.isDirectManager && isEditMode}"/>
+  <apex:outputText value="{!r.overrideUpside}" rendered="{!IS_UPSIDE_VISIBLE && NOT r.isMissing && NOT isEditMode && r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:inputField value="{!r.Data.pse__Override_Best_Case__c}" styleClass="cur" rendered="{!IS_BEST_CASE_VISIBLE && r.isDirectManager && isEditMode}"/>
+  <apex:outputText value="{!r.overrideBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && NOT r.isMissing && NOT isEditMode && r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM))}" />
+ </td>
+  
+</tr>
+
+
+<!-- row 2 -->
+ <tr style="background-color:{!if(r.oddRow,'#E0E0E0','#F8F8F8')};display:{!IF(((isEditMode && r.visible) || (r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM)), '', 'none')}">
+ <td></td>
+ <td></td>
+ <td></td>
+ <td></td>
+ <td></td>
+
+ <td style="white-space:nowrap;">
+    <apex:outputText value="{!SUBSTITUTE(($Label.pse__forecasts_label_this_mode_selected), '{0}', modeSelected)}" rendered="{!((r.isOwner && isEditMode) || (r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;">
+  <apex:outputText value="{!r.data.CurrencyIsoCode}" rendered="{!((r.isOwner && isEditMode) || (r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}"  />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.thisWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && (NOT(selectedEntryMode='THIS') || NOT(isEditMode && r.isOwner)) && r.hasThisData && ((r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}" />
+  <apex:inputField value="{!r.Data.pse__This_Worst_Case__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_WORST_CASE_VISIBLE && selectedEntryMode='THIS' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+  
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.thisDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && (NOT(selectedEntryMode='THIS') || NOT(isEditMode && r.isOwner)) && r.hasThisData && ((r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}" />
+  <apex:inputField value="{!r.Data.pse__This_Downside__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_DOWNSIDE_VISIBLE && selectedEntryMode='THIS' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.thisCommit}" rendered="{!IS_COMMIT_VISIBLE && (NOT(selectedEntryMode='THIS') || NOT(isEditMode && r.isOwner)) && r.hasThisData && ((r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}" />
+  <apex:inputField value="{!r.Data.pse__This_Commit__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_COMMIT_VISIBLE && selectedEntryMode='THIS' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.thisForecast}" rendered="{!IS_FORECAST_VISIBLE && (NOT(selectedEntryMode='THIS') || NOT(isEditMode && r.isOwner)) && r.hasThisData && ((r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}" />
+  <apex:inputField value="{!r.Data.pse__This_Forecast__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_FORECAST_VISIBLE && selectedEntryMode='THIS' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.thisMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && (NOT(selectedEntryMode='THIS') || NOT(isEditMode && r.isOwner)) && r.hasThisData && ((r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}" />
+  <apex:inputField value="{!r.Data.pse__This_Most_Likely__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_MOST_LIKELY_VISIBLE && selectedEntryMode='THIS' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.thisUpside}" rendered="{!IS_UPSIDE_VISIBLE && (NOT(selectedEntryMode='THIS') || NOT(isEditMode && r.isOwner)) && r.hasThisData && ((r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}" />
+  <apex:inputField value="{!r.Data.pse__This_Upside__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_UPSIDE_VISIBLE && selectedEntryMode='THIS' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.thisBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && (NOT(selectedEntryMode='THIS') || NOT(isEditMode && r.isOwner)) && r.hasThisData && ((r.isViewable && ShowThisG) || (r.isOwner && ShowThisO) || (r.isDirectManager && ShowThisDM))}" />
+  <apex:inputField value="{!r.Data.pse__This_Best_Case__c}" styleClass="cur" required="{!FORECAST_FIELDS_REQUIRED}" rendered="{!IS_BEST_CASE_VISIBLE && selectedEntryMode='THIS' && isEditMode && r.isOwner}" onfocus="newBatch(); showWorksheet2('{!r.Id}'); return false;" />
+ </td>
+
+</tr>
+
+<!-- row 3 -->
+ <tr style="background-color:{!if(r.oddRow,'#E0E0E0','#F8F8F8')};display:{!IF(((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM)) && r.visible && r.HasSubLevelData, '', 'none')}" >
+ <td></td>
+ <td></td>
+ <td style="white-space:nowrap;" colspan="3">
+  <span class="warning">
+  <apex:outputText value="{!SUBSTITUTE(($Label.pse__forecasts_info_label_selected_mode_data_updated), '{0}', modeSelected)}" rendered="{!r.subLevelDeltaExists && ((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+  </span>
+ </td>
+ 
+ <td style="white-space:nowrap;">
+    <apex:outputText value="{!SUBSTITUTE(($Label.pse__forecasts_label_selected_sub_modes), '{0}', modeSelected)}" rendered="{!((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+
+ <td style="white-space:nowrap">
+   <apex:outputText value="{!r.data.CurrencyIsoCode}" rendered="{!((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.subLevelWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && ((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+  
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.subLevelDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && ((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.subLevelCommit}" rendered="{!IS_COMMIT_VISIBLE && ((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.subLevelForecast}" rendered="{!IS_FORECAST_VISIBLE && ((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.subLevelMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && ((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.subLevelUpside}" rendered="{!IS_UPSIDE_VISIBLE && ((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+  <apex:outputText value="{!r.subLevelBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && ((isEditMode && r.isOwner) || (r.isViewable && ShowSublevelG) || (r.isOwner && ShowSublevelO) || (r.isDirectManager && ShowSublevelDM))}" />
+ </td>
+
+</tr>
+
+
+
+<!--Row 4 -->
+ <tr style="background-color:{!if(r.oddRow,'#E0E0E0','#F8F8F8')};display:{!IF(r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM)) && r.visible, '', 'none')}" >
+ <td></td>
+ <td></td>
+ <td  style="white-space:nowrap" colspan="3">
+   <!-- note: prev data not retrieved for direct report data -->
+  <div class="previous"><apex:outputField value="{!previousTimePeriod.Name}" rendered="{!r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" /></div>
+</td>
+
+ <td style="white-space:nowrap">
+ <apex:outputText value="{!$Label.pse__forecasts_label_previous_period}" rendered="{!r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" />
+ </td>
+ 
+ <td style="white-space:nowrap">
+   <apex:outputText value="{!r.data.CurrencyIsoCode}" rendered="{!r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" />
+ </td>
+  
+ <td style="white-space:nowrap;text-align:left;">
+   <span class="previous"><apex:outputText value="{!r.previousPeriodWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" /></span>
+  </td>
+  
+ <td style="white-space:nowrap;text-align:left;">
+    <span class="previous"><apex:outputText value="{!r.previousPeriodDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" /></span>
+  </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+    <span class="previous"><apex:outputText value="{!r.previousPeriodCommit}" rendered="{!IS_COMMIT_VISIBLE && r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" /></span>
+  </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+   <span class="previous"><apex:outputText value="{!r.previousPeriodForecast}" rendered="{!IS_FORECAST_VISIBLE && r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" /></span>
+  </td>
+
+
+ <td style="white-space:nowrap;text-align:left;">
+    <span class="previous"><apex:outputText value="{!r.previousPeriodMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" /></span>
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+    <span class="previous"><apex:outputText value="{!r.previousPeriodUpside}" rendered="{!IS_UPSIDE_VISIBLE && r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" /></span>
+ </td>
+
+ <td style="white-space:nowrap;text-align:left;">
+    <span class="previous"><apex:outputText value="{!r.previousPeriodBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && r.hasPrevData && ((isEditMode && r.isOwner) || (r.isViewable && ShowPreviousG) || (r.isOwner && ShowPreviousO) || (r.isDirectManager && ShowPreviousDM))}" /></span>
+ </td>
+
+</tr>
+
+ 
+ <!--Row 5B -->
+<tr style="background-color:{!if(r.oddRow,'#E0E0E0','#F8F8F8')};display:{!IF(r.visible && ((r.isDirectManager && isEditMode) || (r.Data.Comments__c!=null && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM)))), '', 'none')}" >
+ <td></td>
+ <td></td>
+ <td></td>
+ <td></td>
+<td></td>
+
+ <td>
+   <apex:outputText value="{!$Label.pse__forecasts_label_override_comments}" rendered="{!(r.isDirectManager && isEditMode) || (r.hasOverrideData && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM)))}" />
+ </td>
+
+ <td style="white-space:nowrap">
+ </td>
+ 
+ <td  style="white-space:nowrap" colspan="7">
+  <apex:outputField style="width:99%;" value="{!r.Data.pse__Comments__c}" rendered="{!NOT isEditMode && ((r.isViewable && ShowOverrideG) || (r.isOwner && ShowOverrideO) || (r.isDirectManager && ShowOverrideDM))}" />
+  <apex:inputField style="width:99%;" value="{!r.Data.pse__Comments__c}" rendered="{!isEditMode && NOT r.isOwner && r.isDirectManager}" />
+ </td>
+  
+</tr>
+ 
+ 
+ 
+ 
+</apex:repeat>
+</table>
+</apex:outputPanel>
+
+
+
+
+<a id="wsAnchor"></a>
+<apex:outputPanel id="worksheet" rendered="{!NOT isDisabled}">
+<p />
+
+<apex:pageBlockSection collapsible="false" rendered="{!isWorksheetVisible}" columns="1">
+<apex:facet name="header">
+{!worksheetInfoHeaderString}
+<span style="padding-left: 30px;"><a onclick="wait(true); hideWorksheet(); return false;" href="" class="link">{!$Label.forecasts_link_hide}</a></span>
+</apex:facet>
+<div class="miniTab secondaryPalette">
+ <ul class="miniTabList">
+  <li class="{!IF(myWorksheetSelected, 'currentTab', 'secondaryPalette')}"><a onclick="wait(true); newBatch(); myWorksheet();" title="{!$Label.forecasts_owner_worksheet_tab_tool_tip}" href="">{!$Label.forecasts_owner_worksheet_tab_title}</a></li>
+  <li class="{!IF(rollupWorksheetsSelected, 'currentTab', 'secondaryPalette')}"><a onclick="wait(true); rollUpWorksheets();" title="{!$Label.forecasts_rolled_up_worksheet_tab_tool_tip}" href="">{!$Label.forecasts_rolled_up_worksheet_tab_title}</a></li>
+ </ul>
+</div>
+<apex:outputPanel rendered="{!NOT isDisabled && myWorksheetSelected}">
+<div class="bMiniTabBlock">
+
+<table id="worksheetData" class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+
+<tr class="headerRow">
+ <th style="display:{!IF(SHOW_WS_ACTUALS, '', 'none')}">{!$Label.forecasts_label_actuals}</th>
+ <th style="display:{!IF(SHOW_WS_BACKLOG, '', 'none')}">{!$Label.forecasts_label_backlog}</th>
+ <th style="display:{!IF(SHOW_WS_SALES && NOT(projectsSelected), '', 'none')}">{!if(USE_PROD_ATTACHED_FROM_SERVICES, $Label.forecasts_label_product_services, $Label.forecasts_label_sales)}</th>
+ <th style="display:{!IF(SHOW_WS_CALCULATIONS, '', 'none')}">{!$Label.forecasts_label_calculations}</th>
+</tr>
+
+<apex:repeat value="{!worksheets}" var="w">
+<tr>
+ <td style="display:{!IF(SHOW_WS_ACTUALS, '', 'none')}">
+  <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+   <tr class="dataRow">
+     <td class="dataCell" nowrap="true">
+        <i>{!$Label.forecasts_label_internal}</i>
+        <p/>
+		<table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+		    <tr style="display: {!IF(TIMECARD_ACTUAL_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true" width="80%">{!$Label.common_label_timecard}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('it', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.actualTimecard}" /></a></td>
+		    </tr>
+		    <tr style="display: {!IF(TIMECARD_SUBMITTED_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true" width="80%">{!$Label.forecasts_label_submitted_timecard}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('its', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.submittedTimecard}" /></a></td>
+		    </tr>
+		    <tr style="display: {!IF(EXPENSES_ACTUAL_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true">{!$Label.common_label_expenses}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ie', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.actualExpenses}" /></a></td>
+		    </tr>
+		    <tr style="display: {!IF(EXPENSES_SUBMITTED_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true">{!$Label.forecasts_label_submitted_expenses}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ies', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.submittedExpenses}" /></a></td>
+		    </tr>
+		    <tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true">{!$Label.common_label_milestones}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('m', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.actualMilestone}" /></a></td>
+		    </tr>
+		    <tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true">{!$Label.common_label_miscellaneous_adjustments}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('a', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.actualMiscellaneousAdjustments}" /></a></td>
+		    </tr>
+		</table>
+        <p/>
+        <i>{!$label.forecasts_label_external}</i>
+        <p/>
+	    <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+		    <tr style="display: {!IF(TIMECARD_ACTUAL_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true" width="80%">{!$Label.common_label_timecard}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('et', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.actualTimecardExternal}" /></a></td>
+		    </tr>
+		    <tr style="display: {!IF(TIMECARD_SUBMITTED_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true" width="80%">{!$Label.forecasts_label_submitted_timecard}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ets', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.submittedTimecardExternal}" /></a></td>
+		    </tr>
+		    <tr style="display: {!IF(EXPENSES_ACTUAL_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true">{!$Label.common_label_expenses}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ee', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.actualExpensesExternal}" /></a></td>
+		    </tr>
+		    <tr style="display: {!IF(EXPENSES_SUBMITTED_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		     <td class="dataCell" nowrap="true">{!$Label.forecasts_label_submitted_expenses}</td>
+		     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ees', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.submittedExpensesExternal}" /></a></td>
+		    </tr>
+
+		</table>
+    </td>
+   </tr>
+  </table>
+ </td>
+ <td style="display:{!IF(SHOW_WS_BACKLOG, '', 'none')}">
+   <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+    <tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+      <td class="dataCell" nowrap="true">{!$Label.forecasts_label_scheduled}</td>
+      <td class="dataCell" nowrap="true">
+     <apex:outputText rendered="{!ISNULL(w.backlogId)}" value="{!w.backlogScheduled}"/>
+     <apex:outputText rendered="{!NOT(ISNULL(w.backlogId))}">
+        <a class="link" href="{!URLFOR($Action.pse__Backlog_Detail__c.View, w.backlogId)}" target="_blank"><apex:outputText value="{!w.backlogScheduled}" /></a>
+     </apex:outputText>
+	 </td>
+  </tr>
+  <tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+    <td class="dataCell" nowrap="true">{!$Label.forecasts_label_unscheduled}</td>
+    <td class="dataCell" nowrap="true">
+		  <apex:outputText rendered="{!ISNULL(w.unscheduledBacklogId)}" value="{!w.backlogUnscheduled}"/>
+		  <apex:outputText rendered="{!NOT(ISNULL(w.unscheduledBacklogId))}">
+		    <a class="link" href="{!URLFOR($Action.pse__Backlog_Detail__c.View, w.unscheduledBacklogId)}" target="_blank"><apex:outputText value="{!w.backlogUnscheduled}" /></a>
+		  </apex:outputText>
+		
+    </td>
+   </tr>
+   <tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}">
+	 <td class="dataCell" nowrap="true">{!$Label.common_label_milestones}</td>
+	 <td class="dataCell" nowrap="true">
+	   <a class="link" onclick="viewBacklog('m', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;">
+	     <apex:outputText value="{!w.backlogMilestone}" />
+	   </a>
+	 </td>
+   </tr>
+  </table>
+ </td>
+ <td style="display:{!IF(SHOW_WS_SALES && NOT(projectsSelected), '', 'none')}">
+   <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+	<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+	 <td class="dataCell" nowrap="true">{!CASE(LOWER(SALES_OPPS_LOW_LABEL),
+	 											"pipeline", $Label.forecasts_label_pipeline,
+	 											"best case", $Label.forecasts_label_best_case,
+	 											"commit", $Label.forecasts_label_commit,
+	 											SALES_OPPS_LOW_LABEL)}</td>
+	 <td class="dataCell" nowrap="true"><a class="link" onclick="viewOpps('L', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.salesOppsLow}" /></a></td>
+	</tr>
+	<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+	 <td class="dataCell" nowrap="true">{!CASE(LOWER(SALES_OPPS_MEDIUM_LABEL),
+	 											"pipeline", $Label.forecasts_label_pipeline,
+	 											"best case", $Label.forecasts_label_best_case,
+	 											"commit", $Label.forecasts_label_commit,
+	 											SALES_OPPS_MEDIUM_LABEL)}</td>
+	 <td class="dataCell" nowrap="true"><a class="link" onclick="viewOpps('M', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.salesOppsMedium}" /></a></td>
+	</tr>
+	<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+	 <td class="dataCell" nowrap="true">{!CASE(LOWER(SALES_OPPS_HIGH_LABEL),
+	 											"pipeline", $Label.forecasts_label_pipeline,
+	 											"best case", $Label.forecasts_label_best_case,
+	 											"commit", $Label.forecasts_label_commit,
+	 											SALES_OPPS_HIGH_LABEL)}</td>
+	 <td class="dataCell" nowrap="true"><a class="link" onclick="viewOpps('H', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!selectedForecastId}', '{!selectedForecastNameEscaped}'); return false;"><apex:outputText value="{!w.salesOppsHigh}" /></a></td>
+	</tr>
+   </table>
+  </td>
+  <td style="display:{!IF(SHOW_WS_CALCULATIONS, '', 'none')}">
+     <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		 <td class="dataCell" nowrap="true">{!$Label.forecasts_label_run_rate}</td>
+		 <td class="dataCell" nowrap="true">
+		   <apex:outputText value="{!w.runRate}" rendered="{!w.Data.pse__Run_Rate__c != null}" />
+		   <apex:outputText value="N/A" rendered="{!w.Data.pse__Run_Rate__c == null}" />
+		 </td>
+		</tr>
+		<tr style="display: {!IF(EXPENSES_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		 <td class="dataCell" nowrap="true">{!$Label.forecasts_label_run_rate_with_expenses}</td>
+		 <td class="dataCell" nowrap="true">
+		   <apex:outputText value="{!w.runRateWithExpenses}" rendered="{!w.Data.pse__Run_Rate_With_Expenses__c != null}" />
+		   <apex:outputText value="N/A" rendered="{!w.Data.pse__Run_Rate_With_Expenses__c == null}" />
+		 </td>
+		</tr>
+		<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		 <td class="dataCell" nowrap="true">{!$Label.forecasts_label_running_total}</td>
+		 <td class="dataCell" nowrap="true"><apex:outputText value="{!w.runningTotal}" /></td>
+		</tr>
+		<tr style="display: {!IF(EXPENSES_VISIBLE, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		 <td class="dataCell" nowrap="true">{!$Label.forecasts_label_running_total_with_expenses}</td>
+		 <td class="dataCell" nowrap="true"><apex:outputText value="{!w.runningTotalWithExpenses}" /></td>
+		</tr>
+		<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		 <td class="dataCell" nowrap="true">{!$Label.forecasts_label_billable_hours}</td>
+		 <td class="dataCell" nowrap="true"><apex:outputText value="{!w.actualBillableHours}" /></td>
+		</tr>
+		<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+		 <td class="dataCell" nowrap="true">{!$Label.forecasts_label_bill_rates}</td>
+		 <td class="dataCell" nowrap="true"><apex:outputText value="{!w.billRate}" /></td>
+		</tr>
+     </table>
+  </td>
+ </tr>
+
+</apex:repeat>
+</table>
+</div>
+
+
+<script type="text/javascript">
+  if({!isBacklogDone})
+    stopTimer();
+</script>
+</apex:outputPanel>
+
+
+
+<apex:outputPanel rendered="{!NOT isDisabled && rollUpWorksheetsSelected}">
+<div class="bMiniTabBlock">
+<table id="rollUpWorksheetsData" class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr class="headerRow">
+ <th >{!$Label.common_label_name}</th>
+ <th style="display:{!IF(SHOW_WS_ACTUALS, '', 'none')}">{!$Label.forecasts_label_actuals}</th>
+ <th style="display:{!IF(SHOW_WS_BACKLOG, '', 'none')}">{!$Label.forecasts_label_backlog}</th>
+ <th style="display:{!IF(SHOW_WS_SALES && NOT(projectsSelected), '', 'none')}">{!$Label.forecasts_label_sales}</th>
+ <th style="display:{!IF(SHOW_WS_CALCULATIONS, '', 'none')}">{!$Label.forecasts_label_calculations}</th>
+</tr>
+<apex:repeat value="{!rollUpWorksheets}" var="w">
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">
+   <span style="margin-left: {!w.Level}0px; padding-left: {!w.Level}0px;">&nbsp;</span>
+   <apex:outputText value="{!w.Name}" />
+ </td>
+ 
+ <td style="display:{!IF(SHOW_WS_ACTUALS, '', 'none')}">
+  <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">
+ <u>{!$Label.forecasts_label_internal}</u><p />
+
+  <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+    <tr style="display:{!IF(TIMECARD_ACTUAL_VISIBLE, '', 'none')}" class="dataRow">
+     <td class="dataCell" nowrap="true">{!$Label.common_label_timecard}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('it', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.actualTimecard}" /></a></td>
+    </tr>
+    <tr style="display:{!IF(TIMECARD_SUBMITTED_VISIBLE, '', 'none')}" class="dataRow">
+     <td class="dataCell" nowrap="true">{!$Label.forecasts_label_submitted_timecard}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('its', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.submittedTimecard}" /></a></td>
+    </tr>
+    <tr style="display:{!IF(EXPENSES_ACTUAL_VISIBLE, '', 'none')}" class="dataRow">
+     <td class="dataCell" nowrap="true">{!$Label.common_label_expenses}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ie', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.actualExpenses}" /></a></td>
+    </tr>
+    <tr style="display:{!IF(EXPENSES_SUBMITTED_VISIBLE, '', 'none')}" class="dataRow">
+     <td class="dataCell" nowrap="true">{!$Label.forecasts_label_submitted_expenses}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ies', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.submittedExpenses}" /></a></td>
+    </tr>
+    <tr class="dataRow">
+     <td class="dataCell" nowrap="true">{!$Label.pse__common_label_milestones}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('m', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.actualMilestone}" /></a></td>
+    </tr>
+    <tr class="dataRow">
+     <td class="dataCell" nowrap="true">{!$Label.pse__common_label_miscellaneous_adjustments}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('a', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.actualMiscellaneousAdjustments}" /></a></td>
+    </tr>
+  </table>
+
+ <p /><u>{!$label.forecasts_label_external}</u><p />
+
+  <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+    <tr style="display:{!IF(TIMECARD_ACTUAL_VISIBLE, '', 'none')}" class="dataRow">
+     <td class="dataCell" nowrap="true" width="80%">{!$Label.common_label_timecard}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('et', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.actualTimecardExternal}" /></a></td>
+    </tr>
+    <tr style="display:{!IF(TIMECARD_SUBMITTED_VISIBLE, '', 'none')}" class="dataRow">
+     <td class="dataCell" nowrap="true" width="80%">{!$Label.forecasts_label_submitted_timecard}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ets', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.submittedTimecardExternal}" /></a></td>
+    </tr>
+    <tr style="display:{!IF(EXPENSES_ACTUAL_VISIBLE, '', 'none')}" class="dataRow">
+     <td class="dataCell" nowrap="true">{!$Label.common_label_expenses}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ee', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.actualExpensesExternal}" /></a></td>
+    </tr>
+    <tr  style="display:{!IF(EXPENSES_SUBMITTED_VISIBLE, '', 'none')}" class="dataRow">
+     <td class="dataCell" nowrap="true">{!$Label.forecasts_label_submitted_expenses}</td>
+     <td class="dataCell" nowrap="true"><a class="link" onclick="viewActuals('ees', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.submittedExpensesExternal}" /></a></td>
+    </tr>
+
+  </table>
+
+ </td>
+ </tr>
+ </table>
+ </td>
+
+ <td style="display:{!IF(SHOW_WS_BACKLOG, '', 'none')}">
+   <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.forecasts_label_scheduled}</td>
+ <td class="dataCell" nowrap="true">
+  <apex:outputText rendered="{!ISNULL(w.backlogId)}" value="{!w.backlogScheduled}"/>
+  <apex:outputText rendered="{!NOT(ISNULL(w.backlogId))}">
+     <a class="link" href="{!URLFOR($Action.pse__Backlog_Detail__c.View, w.backlogId)}" target="_blank">
+       <apex:outputText value="{!w.backlogScheduled}" />
+     </a>
+  </apex:outputText>
+
+ </td>
+</tr>
+
+<tr class="dataRow">
+  <td class="dataCell" nowrap="true">{!$Label.pse__forecasts_label_unscheduled}</td>
+  <td class="dataCell" nowrap="true">
+  
+	  <apex:outputText rendered="{!ISNULL(w.unscheduledBacklogId)}" value="{!w.backlogUnscheduled}"/>
+	  <apex:outputText rendered="{!NOT(ISNULL(w.unscheduledBacklogId))}">
+	    <a class="link" href="{!URLFOR($Action.pse__Backlog_Detail__c.View, w.unscheduledBacklogId)}" target="_blank"><apex:outputText value="{!w.backlogUnscheduled}" /></a>
+	  </apex:outputText>
+		
+  </td>
+
+</tr>
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.pse__common_label_milestones}</td>
+ <td class="dataCell" nowrap="true"><a class="link" onclick="viewBacklog('m', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.Id}', '{!w.nameEscaped}'); return false;"> <apex:outputText value="{!w.backlogMilestone}" /></a></td>
+</tr>
+   </table>
+  </td>
+  
+  <td style="display:{!IF(SHOW_WS_SALES && NOT(projectsSelected), '', 'none')}">
+   <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!CASE(LOWER(SALES_OPPS_LOW_LABEL),
+	 											"pipeline", $Label.forecasts_label_pipeline,
+	 											"best case", $Label.forecasts_label_best_case,
+	 											"commit", $Label.forecasts_label_commit,
+	 											SALES_OPPS_LOW_LABEL)}</td>
+ <td class="dataCell" nowrap="true"><a class="link" onclick="viewOpps('L', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.Id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.salesOppsLow}" /></a></td>
+</tr>
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!CASE(LOWER(SALES_OPPS_MEDIUM_LABEL),
+	 											"pipeline", $Label.forecasts_label_pipeline,
+	 											"best case", $Label.forecasts_label_best_case,
+	 											"commit", $Label.forecasts_label_commit,
+	 											SALES_OPPS_MEDIUM_LABEL)}</td>
+ <td class="dataCell" nowrap="true"><a class="link" onclick="viewOpps('M', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.Id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.salesOppsMedium}" /></a></td>
+</tr>
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!CASE(LOWER(SALES_OPPS_HIGH_LABEL),
+	 											"pipeline", $Label.forecasts_label_pipeline,
+	 											"best case", $Label.forecasts_label_best_case,
+	 											"commit", $Label.forecasts_label_commit,
+	 											SALES_OPPS_HIGH_LABEL)}</td>
+ <td class="dataCell" nowrap="true"><a class="link" onclick="viewOpps('H', '{!selectedUnit}', '{!selectedSummaryPeriodId}', '{!w.Id}', '{!w.nameEscaped}'); return false;"><apex:outputText value="{!w.salesOppsHigh}" /></a></td>
+</tr>
+   </table>
+  </td>
+
+  <td style="display:{!IF(SHOW_WS_CALCULATIONS, '', 'none')}">
+   <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.forecasts_label_run_rate}</td>
+ <td class="dataCell" nowrap="true">
+   <apex:outputText value="{!w.runRate}" rendered="{!w.Data.pse__Run_Rate__c > -1}" />
+   <apex:outputText value="{!$Label.pse__forecasts_label_no_plan}" rendered="{!w.Data.pse__Run_Rate__c == -1}" />
+ </td>
+</tr>
+<tr style="display: {!IF(EXPENSES_VISIBLE, '', 'none')}" class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.forecasts_label_run_rate_with_expenses}</td>
+ <td class="dataCell" nowrap="true">
+   <apex:outputText value="{!w.runRateWithExpenses}" rendered="{!w.Data.pse__Run_Rate_With_Expenses__c > -1}" />
+   <apex:outputText value="{!$Label.pse__forecasts_label_no_plan}" rendered="{!w.Data.pse__Run_Rate_With_Expenses__c == -1}" />
+ </td>
+</tr>
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.pse__forecasts_label_running_total}</td>
+ <td class="dataCell" nowrap="true"><apex:outputText value="{!w.runningTotal}" /></td>
+</tr>
+<tr style="display: {!IF(EXPENSES_VISIBLE, '', 'none')}" class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.forecasts_label_running_total_with_expenses}</td>
+ <td class="dataCell" nowrap="true"><apex:outputText value="{!w.runningTotalWithExpenses}" /></td>
+</tr>
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.pse__forecasts_label_this_period_totals}</td>
+ <td class="dataCell" nowrap="true"><apex:outputText value="{!w.periodTotal}" /></td>
+</tr>
+<tr style="display: {!IF(EXPENSES_VISIBLE, '', 'none')}" class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.forecasts_label_this_period_totals_with_expenses}</td>
+ <td class="dataCell" nowrap="true"><apex:outputText value="{!w.periodTotalWithExpenses}" /></td>
+</tr>
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.pse__forecasts_label_billable_hours}</td>
+ <td class="dataCell" nowrap="true"><apex:outputText value="{!w.actualBillableHours}" /></td>
+</tr>
+<tr class="dataRow">
+ <td class="dataCell" nowrap="true">{!$Label.pse__forecasts_label_bill_rates}</td>
+ <td class="dataCell" nowrap="true"><apex:outputText value="{!w.billRate}" /></td>
+</tr>
+   </table>
+  </td>
+</tr>
+
+</apex:repeat>
+</table>
+</div>
+</apex:outputPanel>
+
+</apex:pageBlockSection>
+</apex:outputPanel>
+
+
+
+
+
+
+<!-- BEGIN RPG Override Project Forecasting -->
+<a id="wsAnchor2"></a>
+<apex:outputPanel id="projects" rendered="{!NOT isDisabled}">
+<p />
+<apex:pageBlockSection collapsible="false" rendered="{!isProjectsVisible}" columns="1">
+<apex:facet name="header">
+<apex:outputPanel >{!SUBSTITUTE(SUBSTITUTE(($label.forecasts_project_detail_information_header), '{0}', selectedForecastName), '{1}', selectedPeriodName)}
+  <span style="padding-left: 30px;"><a onclick="wait(true); hideProjects(); return false;" href="" class="link">{!$Label.forecasts_link_hide}</a></span>
+</apex:outputPanel>
+</apex:facet>
+
+<apex:outputPanel >
+<table id="projectData" class="list" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-style:none;">
+<tr class="headerRow" style="border-style:none;">
+ <th style="white-space:nowrap;text-align:left;border-style:none;">{!$Label.common_label_project_name}</th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;">{!$Label.common_label_account}</th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;">{!$Label.forecasts_label_manager}</th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;">{!$Label.forecasts_label_actuals}</th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;">{!$Label.forecasts_label_scheduled}</th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;">{!$Label.forecasts_label_unscheduled}</th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"></th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"></th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"><apex:outputText rendered="{!IS_WORST_CASE_VISIBLE}">{!$Label.pse__forecasts_label_worst_case}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"><apex:outputText rendered="{!IS_DOWNSIDE_VISIBLE}">{!$Label.pse__forecasts_label_downside}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"><apex:outputText rendered="{!IS_COMMIT_VISIBLE}">{!$Label.pse__forecasts_label_commit}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"><apex:outputText rendered="{!IS_FORECAST_VISIBLE}">{!$Label.pse__forecasts_header_label_forecast}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"><apex:outputText rendered="{!IS_MOST_LIKELY_VISIBLE}">{!$Label.pse__forecasts_label_most_likely}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"><apex:outputText rendered="{!IS_UPSIDE_VISIBLE}">{!$Label.pse__forecasts_label_upside}</apex:outputText></th>
+ <th style="white-space:nowrap;text-align:left;border-style:none;"><apex:outputText rendered="{!IS_BEST_CASE_VISIBLE}">{!$Label.pse__forecasts_label_best_case}</apex:outputText></th>
+</tr>
+
+<tr style="background-color:#dddddd;{!IF(isEditMode, 'display: none', '')};border-style:none;">
+ 
+ <td style="border-style:none;">
+  <apex:outputText value="{!$Label.pse__common_label_total}" style="vertical-align: top" styleClass="total" />
+ </td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"><apex:commandButton value="{!$Label.pse__forecasts_button_label_copy_to_forecast}"  disabled="{!isEditMode || isDisabled || isViewOnly || NOT(isEntryPeriod)}" action="{!copyToForecast}" /></td>
+ 
+ <td style="border-style:none;">
+   <apex:outputText value="{!pfs.data.CurrencyIsoCode}" />
+ 
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <apex:outputText value="{!pfs.totalWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && NOT isEditMode}" styleClass="total" />
+ </td>
+ <td style="border-style:none;" nowrap="true">
+  <apex:outputText value="{!pfs.totalDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && NOT isEditMode}" styleClass="total" />
+ </td>
+ <td style="border-style:none;" nowrap="true">
+  <apex:outputText value="{!pfs.totalCommit}" rendered="{!IS_COMMIT_VISIBLE && NOT isEditMode}" styleClass="total" />
+ </td>
+ <td style="border-style:none;" nowrap="true">
+  <apex:outputText value="{!pfs.totalForecast}" rendered="{!IS_FORECAST_VISIBLE && NOT isEditMode}" styleClass="total" />
+ </td>
+ <td style="border-style:none;" nowrap="true">
+  <apex:outputText value="{!pfs.totalMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && NOT isEditMode}" styleClass="total" />
+ </td>
+ <td style="border-style:none;" nowrap="true">
+  <apex:outputText value="{!pfs.totalUpside}" rendered="{!IS_UPSIDE_VISIBLE && NOT isEditMode}" styleClass="total" />
+ </td>
+ <td style="border-style:none;" nowrap="true">
+  <apex:outputText value="{!pfs.totalBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && NOT isEditMode}" styleClass="total" />
+ </td>
+</tr>
+
+<apex:repeat value="{!projectForecasts}" var="pf">
+
+ <!-- row1 -->
+<tr style="background-color:{!if(pf.oddRow,'#E0E0E0','#F8F8F8')};border-style:none;">
+ <td style="border-style:none;" >
+  <apex:outputField value="{!pf.data.pse__Project__c}" style="vertical-align: top" />
+ </td>
+ <td style="border-style:none;" >
+  <apex:outputText value="{!pf.data.Project__r.Account__r.Name}" style="vertical-align: top" />
+ </td>
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText rendered="{!NOT pf.isMissing}" value="{!pf.Owner}" />
+  <apex:outputPanel rendered="{!pf.isMissing}" styleClass="na">{!$Label.pse__forecasts_message_no_forecast}</apex:outputPanel>
+ </td>
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputPanel rendered="{!NOT pf.excludePassThroughBillings}">
+   <a class="tooltip" title="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__forecasts_tooltip_for_actuals_value_when_excludepassthroughbillings_false), '{0}', pf.actualsBillings), '{1}', pf.actualsPassThroughBillings)}"><apex:outputText value="{!pf.actuals}" /></a>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!pf.excludePassThroughBillings}">
+   <a class="tooltip" title="{!SUBSTITUTE(($Label.pse__forecasts_tooltip_for_actuals_value_when_excludepassthroughbillings_true), '{0}', pf.actualsBillings)}"><apex:outputText value="{!pf.actuals}" /></a>
+  </apex:outputPanel>
+ </td>
+ <td style="border-style:none;"  nowrap="true">
+ <a class="tooltip" title="{!SUBSTITUTE(SUBSTITUTE(($Label.forecasts_tooltip_for_scheduledBacklog_value), '{0}', pf.scheduledTime), '{1}', pf.scheduledMilestone)}"><apex:outputText value="{!pf.scheduledBacklog}" /></a>
+ </td>
+ <td style="border-style:none;"  nowrap="true">
+ <apex:outputText value="{!pf.unscheduledBacklog}" />
+ </td>
+ 
+ <td style="border-style:none;"  nowrap="true">{!$Label.forecasts_label_this_project}</td>
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText value="{!pf.data.CurrencyIsoCode}" />
+ </td>
+  
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText value="{!pf.thisWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && NOT pf.isMissing}" />
+ </td>
+ 
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText value="{!pf.thisDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && NOT pf.isMissing}" />
+ </td>
+ 
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText value="{!pf.thisCommit}" rendered="{!IS_COMMIT_VISIBLE && NOT pf.isMissing}" />
+ </td>
+ 
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText value="{!pf.thisForecast}" rendered="{!IS_FORECAST_VISIBLE && NOT pf.isMissing}" />
+ </td>
+ 
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText value="{!pf.thisMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && NOT pf.isMissing}" />
+ </td>
+ 
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText value="{!pf.thisUpside}" rendered="{!IS_UPSIDE_VISIBLE && NOT pf.isMissing}" />
+ </td>
+ 
+ <td style="border-style:none;"  nowrap="true">
+  <apex:outputText value="{!pf.thisBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && NOT pf.isMissing}" />
+ </td>
+
+</tr>
+ 
+ <!-- row2 -->
+ <tr style="background-color:{!if(pf.oddRow,'#E0E0E0','#F8F8F8')};display:{!IF(pf.hasPrevData, '', 'none')}">
+ <td style="border-style:none;" ></td>
+ <td style="border-style:none;" ></td>
+ <td style="border-style:none;" ></td>
+ <td style="border-style:none;" ></td>
+ <td style="border-style:none;" ></td>
+ <td style="border-style:none;" ></td>
+ <td style="border-style:none;" >{!$Label.pse__forecasts_label_previous_period}</td>
+ <td style="border-style:none;">
+  <apex:outputText value="{!pf.data.CurrencyIsoCode}" />
+ </td>
+  
+ <td style="border-style:none;"  nowrap="true">
+  <span class="previous">
+    <apex:outputText value="{!pf.previousPeriodWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && pf.hasPrevData}" />
+  </span>
+ </td>
+ 
+ <td style="border-style:none;"  nowrap="true">
+  <span class="previous">
+    <apex:outputText value="{!pf.previousPeriodDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && pf.hasPrevData}" />
+  </span>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <span class="previous">
+    <apex:outputText value="{!pf.previousPeriodCommit}" rendered="{!IS_COMMIT_VISIBLE && pf.hasPrevData}" />
+  </span>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <span class="previous">
+    <apex:outputText value="{!pf.previousPeriodForecast}" rendered="{!IS_FORECAST_VISIBLE && pf.hasPrevData}" />
+  </span>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <span class="previous">
+    <apex:outputText value="{!pf.previousPeriodMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && pf.hasPrevData}" />
+  </span>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <span class="previous">
+    <apex:outputText value="{!pf.previousPeriodUpside}" rendered="{!IS_UPSIDE_VISIBLE && pf.hasPrevData}" />
+  </span>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <span class="previous">
+    <apex:outputText value="{!pf.previousPeriodBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && pf.hasPrevData}" />
+  </span>
+ </td>
+
+</tr>
+
+ <!-- row3 -->
+ <tr style="background-color:{!if(pf.oddRow,'#E0E0E0','#F8F8F8')};display:{!IF(isEditMode || (NOT pf.isMissing && NOT isEditMode), '', 'none')};border-style:none;">
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;" nowrap="true">{!SUBSTITUTE(($Label.pse__forecasts_label_selected_mode_override), '{0}', modeSelected)}</td>
+ <td style="border-style:none;">
+  <apex:outputText value="{!pf.data.CurrencyIsoCode}" />
+ </td>
+    
+ <td style="border-style:none;" nowrap="true">
+  <apex:inputField value="{!pf.Data.pse__Region_Override_This_Worst_Case__c}" styleClass="cur" rendered="{!IS_WORST_CASE_VISIBLE && isEditMode && regionsSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Practice_Override_This_Worst_Case__c}" styleClass="cur" rendered="{!IS_WORST_CASE_VISIBLE && isEditMode && PracticesSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Group_Override_This_Worst_Case__c}" styleClass="cur" rendered="{!IS_WORST_CASE_VISIBLE && isEditMode && GroupsSelected}"/>
+  <apex:outputText value="{!pf.regionOverrideThisWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && NOT pf.isMissing && NOT isEditMode && regionsSelected}"/>
+  <apex:outputText value="{!pf.practiceOverrideThisWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && NOT pf.isMissing && NOT isEditMode && practicesSelected}"/>
+  <apex:outputText value="{!pf.groupOverrideThisWorstCase}" rendered="{!IS_WORST_CASE_VISIBLE && NOT pf.isMissing && NOT isEditMode && groupsSelected}"/>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <apex:inputField value="{!pf.Data.pse__Region_Override_This_Downside__c}" styleClass="cur" rendered="{!IS_DOWNSIDE_VISIBLE && isEditMode && regionsSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Practice_Override_This_Downside__c}" styleClass="cur" rendered="{!IS_DOWNSIDE_VISIBLE && isEditMode && practicesSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Group_Override_This_Downside__c}" styleClass="cur" rendered="{!IS_DOWNSIDE_VISIBLE && isEditMode && groupsSelected}"/>
+  <apex:outputText value="{!pf.regionOverrideThisDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && NOT pf.isMissing && NOT isEditMode && regionsSelected}"/>
+  <apex:outputText value="{!pf.practiceOverrideThisDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && NOT pf.isMissing && NOT isEditMode && practicesSelected}"/>
+  <apex:outputText value="{!pf.groupOverrideThisDownside}" rendered="{!IS_DOWNSIDE_VISIBLE && NOT pf.isMissing && NOT isEditMode && groupsSelected}"/>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <apex:inputField value="{!pf.Data.pse__Region_Override_This_Commit__c}" styleClass="cur" rendered="{!IS_COMMIT_VISIBLE && isEditMode && regionsSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Practice_Override_This_Commit__c}" styleClass="cur" rendered="{!IS_COMMIT_VISIBLE && isEditMode && practicesSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Group_Override_This_Commit__c}" styleClass="cur" rendered="{!IS_COMMIT_VISIBLE && isEditMode && groupsSelected}"/>
+  <apex:outputText value="{!pf.regionOverrideThisCommit}" rendered="{!IS_COMMIT_VISIBLE && NOT pf.isMissing && NOT isEditMode && regionsSelected}"/>
+  <apex:outputText value="{!pf.practiceOverrideThisCommit}" rendered="{!IS_COMMIT_VISIBLE && NOT pf.isMissing && NOT isEditMode && practicesSelected}"/>
+  <apex:outputText value="{!pf.groupOverrideThisCommit}" rendered="{!IS_COMMIT_VISIBLE && NOT pf.isMissing && NOT isEditMode && groupsSelected}"/>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <apex:inputField value="{!pf.Data.pse__Region_Override_This_Forecast__c}" styleClass="cur" rendered="{!IS_FORECAST_VISIBLE && isEditMode && regionsSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Practice_Override_This_Forecast__c}" styleClass="cur" rendered="{!IS_FORECAST_VISIBLE && isEditMode && practicesSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Group_Override_This_Forecast__c}" styleClass="cur" rendered="{!IS_FORECAST_VISIBLE && isEditMode && groupsSelected}"/>
+  <apex:outputText value="{!pf.regionOverrideThisForecast}" rendered="{!IS_FORECAST_VISIBLE && NOT pf.isMissing && NOT isEditMode && regionsSelected}"/>
+  <apex:outputText value="{!pf.practiceOverrideThisForecast}" rendered="{!IS_FORECAST_VISIBLE && NOT pf.isMissing && NOT isEditMode && practicesSelected}"/>
+  <apex:outputText value="{!pf.groupOverrideThisForecast}" rendered="{!IS_FORECAST_VISIBLE && NOT pf.isMissing && NOT isEditMode && groupsSelected}"/>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <apex:inputField value="{!pf.Data.pse__Region_Override_This_Most_Likely__c}" styleClass="cur" rendered="{!IS_MOST_LIKELY_VISIBLE && isEditMode && regionsSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Practice_Override_This_Most_Likely__c}" styleClass="cur" rendered="{!IS_MOST_LIKELY_VISIBLE && isEditMode && practicesSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Group_Override_This_Most_Likely__c}" styleClass="cur" rendered="{!IS_MOST_LIKELY_VISIBLE && isEditMode && groupsSelected}"/>
+  <apex:outputText value="{!pf.regionOverrideThisMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && NOT pf.isMissing && NOT isEditMode && regionsSelected}"/>
+  <apex:outputText value="{!pf.practiceOverrideThisMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && NOT pf.isMissing && NOT isEditMode && practicesSelected}"/>
+  <apex:outputText value="{!pf.groupOverrideThisMostLikely}" rendered="{!IS_MOST_LIKELY_VISIBLE && NOT pf.isMissing && NOT isEditMode && groupsSelected}"/>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <apex:inputField value="{!pf.Data.pse__Region_Override_This_Upside__c}" styleClass="cur" rendered="{!IS_UPSIDE_VISIBLE && isEditMode && regionsSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Practice_Override_This_Upside__c}" styleClass="cur" rendered="{!IS_UPSIDE_VISIBLE && isEditMode && practicesSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Group_Override_This_Upside__c}" styleClass="cur" rendered="{!IS_UPSIDE_VISIBLE && isEditMode && groupsSelected}"/>
+  <apex:outputText value="{!pf.regionOverrideThisUpside}" rendered="{!IS_UPSIDE_VISIBLE && NOT pf.isMissing && NOT isEditMode && regionsSelected}"/>
+  <apex:outputText value="{!pf.practiceOverrideThisUpside}" rendered="{!IS_UPSIDE_VISIBLE && NOT pf.isMissing && NOT isEditMode && practicesSelected}"/>
+  <apex:outputText value="{!pf.groupOverrideThisUpside}" rendered="{!IS_UPSIDE_VISIBLE && NOT pf.isMissing && NOT isEditMode && groupsSelected}"/>
+ </td>
+ 
+ <td style="border-style:none;" nowrap="true">
+  <apex:inputField value="{!pf.Data.pse__Region_Override_This_Best_Case__c}" styleClass="cur" rendered="{!IS_BEST_CASE_VISIBLE && isEditMode && regionsSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Practice_Override_This_Best_Case__c}" styleClass="cur" rendered="{!IS_BEST_CASE_VISIBLE && isEditMode && practicesSelected}"/>
+  <apex:inputField value="{!pf.Data.pse__Group_Override_This_Best_Case__c}" styleClass="cur" rendered="{!IS_BEST_CASE_VISIBLE && isEditMode && groupsSelected}"/>
+  <apex:outputText value="{!pf.regionOverrideThisBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && NOT pf.isMissing && NOT isEditMode && regionsSelected}"/>
+  <apex:outputText value="{!pf.practiceOverrideThisBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && NOT pf.isMissing && NOT isEditMode && practicesSelected}"/>
+  <apex:outputText value="{!pf.groupOverrideThisBestCase}" rendered="{!IS_BEST_CASE_VISIBLE && NOT pf.isMissing && NOT isEditMode && groupsSelected}"/>
+ </td>
+
+</tr>
+
+ <!-- row4 -->
+ <tr style="background-color:{!if(pf.oddRow,'#E0E0E0','#F8F8F8')};display:{!IF(isEditMode, '', 'none')}">
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;"></td>
+ <td style="border-style:none;" nowrap="true">{!$Label.pse__forecasts_label_override_comments}</td>
+ <td style="border-style:none;"></td>
+ 
+ <td style="border-style:none;" colspan="7">
+  <apex:outputField style="width:99%;" value="{!pf.Data.pse__Comments__c}" rendered="{!NOT isEditMode}" />
+  <apex:inputField style="width:99%;" value="{!pf.Data.pse__Comments__c}" rendered="{!isEditMode}" />
+ </td>
+
+</tr>
+
+</apex:repeat>
+</table>
+</apex:outputPanel>
+</apex:pageBlockSection>
+</apex:outputPanel>
+<!-- END Project Forecasting -->
+
+</apex:pageBlock>
+</div>
+
+</apex:form>
+</apex:page>

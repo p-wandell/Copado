@@ -1,0 +1,43 @@
+<apex:page standardController="pse__Grp__c" action="{!initForGroup}" extensions="pse.ForecastCalculatorController" tabStyle="Forecast_Scheduler__tab" lightningStylesheets="true"> <!-- We use the scheduler tab style so we can easily get the chess piece icon -->
+	<apex:outputText value="{!pse__Grp__c.Name}" rendered="false"/>
+
+	<apex:composition template="pse__ForecastCalculatorPage">
+		<apex:define name="sectionHeader">
+			<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+			<c:ffui_header instanceName="$FFHEADER" />
+			<c:WaitComponent />
+
+			<script>
+				prepareVFConfig();
+				function prepareVFConfig() {
+					var config = {
+						objectName: '{!JSENCODE($Label.forecasts_label_calculate_forecasts)}',
+						recordName: '{!JSENCODE(Grp__c.Name)}',
+						onRender: 'onHeaderLoadCallback',
+						documentIcon: {
+							name: 'psa_rpgs',
+							namespace: $FFOUTAPP.getNamespace()
+						},
+						helpUrl: '{!$Page.ForecastRunHelp}',
+						buttons: [{
+							id: 'cancel',
+							label: '{!JSENCODE($Label.common_label_cancel)}',
+							actionFn: 'doCancel'
+						}, {
+							id: 'calculate',
+							label: '{!JSENCODE($Label.common_label_calculate)}',
+							actionFn: 'doCalculate'
+						}]
+					};
+
+					wait(true);
+					$FFHEADER.renderHeader(config);
+				}
+
+				function onHeaderLoadCallback() {
+					wait(false);
+				}
+			</script>
+		</apex:define>
+	</apex:composition>
+</apex:page>

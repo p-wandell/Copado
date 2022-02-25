@@ -1,0 +1,162 @@
+<apex:page standardController="pse__Resource_Request__c" extensions="pse.OppAddResReqFromTemplateController" action="{!init}" tabStyle="pse__Resource_Request__c"
+ recordSetVar="tempRRs" lightningStylesheets="true">
+
+	<style>
+		.pageBlockTableScroll {
+			display: block;
+			overflow: auto;
+			width: {!IF($User.UIThemeDisplayed=='Theme4d', '93vw', '78vw')};
+			margin-bottom: 5px;
+		}
+
+		.detailList th.headerRow+th.headerRow {
+			border-left: 1px solid #dedede;
+		}
+
+		/*Override for css rule against slds.css to resolve field error message distortion issue.*/
+		.slds-vf-scope .errorMsg {
+			display: block;
+		}
+	</style>
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<apex:outputPanel id="scriptBlock" layout="block">
+		<script>
+			prepareVFConfig();
+			function prepareVFConfig() {
+				var config;
+
+				if ({!showProjectPicker}) {
+					config = {
+						objectName: '{!JSENCODE($Label.Project_Picker_Label_Select_Project_Template)}',
+						helpUrl: '{!$Page.projectHelp}',
+						onRender: 'onHeaderLoadCallback',
+						buttons: [{
+							id: 'cancelButton',
+							label: '{!JSENCODE($Label.common_label_cancel)}',
+							actionFn: 'cancelClick'
+						},{
+							id: 'nextButton',
+							label: '{!JSENCODE($Label.common_label_select)}',
+							actionFn: 'onSelectProjectAction'
+						}]
+					};
+				} else {
+					config = {
+						objectName: '{!JSENCODE($Label.opp_add_res_req_from_template_label_Add_Resource_Requests)}',
+						recordName: '{!JSENCODE(subTitle)}',
+						helpUrl: '{!$Page.OppAddResReqFromTemplateHelp}',
+						onRender: 'onHeaderLoadCallback',
+						buttons: [{
+							id: 'backToTemplate',
+							label: '{!JSENCODE($Label.opp_add_res_req_from_template_label_Back_to_Templates)}',
+							actionFn: 'backToTemplate',
+						}]
+					};
+
+					if ({!AND(isReqFromOpportunity,hasResourceRequests)}) {
+						config.buttons.push({ id: 'addToOpportunity', label: '{!JSENCODE($Label.opp_add_res_req_from_template_label_Add_To_Opportunity)}', actionFn: 'addToOpportunity' });
+					}
+
+					if ({!AND(isReqFromProject,hasResourceRequests)}) {
+						config.buttons.push({ id: 'addToProject', label: '{!JSENCODE($Label.opp_add_res_req_from_template_label_Add_To_Project)}', actionFn: 'addToProject' });
+					}
+				}
+
+				// define icon
+				config['objectApiName'] = '{!$ObjectType["Resource_Request__c"].Name}';
+
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+		</script>
+	</apex:outputPanel>
+
+
+	<c:projectPicker modelAttribute="{!projectPickerModel}" rendered="{!showProjectPicker}" />
+
+	<apex:form rendered="{!NOT(showProjectPicker)}" id="RRM_Form">
+		<apex:actionFunction name="masterDateChange" reRender="RRM_PBS,msg" action="{!onResReqMasterDateChange}" status="rrDateChangeStatus" />
+
+		<apex:actionFunction name="backToTemplate" action="{!onBackToTemplates}" immediate="true" />
+		<apex:actionFunction name="addToOpportunity" action="{!onAddToOpportunity}" />
+		<apex:actionFunction name="addToProject" action="{!onAddToProject}" />
+
+		<apex:pageMessages />
+		<apex:pageBlock id="RRM_PB">
+
+			<apex:pageBlockSection columns="1" rendered="{!NOT(hasResourceRequests)}">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__opp_add_res_req_from_template_label_resource_request_mappings}" />
+				</apex:facet>
+				<apex:outputText value="{!$Label.pse__opp_add_res_req_from_template_message_no_resource_requests_available}" />
+			</apex:pageBlockSection>
+
+			<!-- Opportunity Details section -->
+			<apex:pageBlockSection rendered="{!isReqFromOpportunity}">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__opp_add_res_req_from_template_label_opportunity_details}" />
+				</apex:facet>
+				<apex:repeat value="{!oppDetailOnRRFromTemplateFields}" var="fName">
+					<apex:outputField value="{!opportunity[fName]}" />
+				</apex:repeat>
+			</apex:pageBlockSection>
+
+			<!-- Project Details section -->
+			<apex:pageBlockSection rendered="{!isReqFromProject}">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__create_project_details}" />
+				</apex:facet>
+				<apex:repeat value="{!projectDetailOnRRFromTemplateFields}" var="fName">
+					<apex:outputField value="{!project[fName]}" />
+				</apex:repeat>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection rendered="{!hasResourceRequests}">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__opp_add_res_req_from_template_label_quick_adjust_dates}" />
+				</apex:facet>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__opp_add_res_req_from_template_label_master_date}" for="RR_Master_Date" />
+					<apex:inputField value="{!resourceRequestMaster.pse__End_Date__c}" onchange="masterDateChange();" id="RR_Master_Date" />
+				</apex:pageBlockSectionItem>
+				<apex:actionStatus id="rrDateChangeStatus" startText="{!$Label.pse__opp_add_res_req_from_template_label_changing_dates}" />
+			</apex:pageBlockSection>
+
+			<!-- Resource request mappings to be copied from Opportunity to Project-->
+			<apex:pageBlockSection columns="1" rendered="{!hasResourceRequests}" id="RRM_PBS">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__create_project_rr_header}" />
+				</apex:facet>
+				<apex:outputPanel styleClass="pageBlockTableScroll">
+					<apex:pageBlockTable value="{!resourceRequests}" var="resReqWrapper" id="RRM_Table">
+						<apex:column >
+							<apex:inputcheckbox value="{!resReqWrapper.isSelected}" id="RR_Select" />
+						</apex:column>
+						<apex:repeat value="{!resReqFromTemplateReadOnlyColumnFieldSet}" var="fName">
+							<apex:column value="{!resReqWrapper.resourceRequest[fName]}" />
+						</apex:repeat>
+						<apex:repeat value="{!resReqFromTemplateEditableColumnFieldSet}" var="editfName">
+							<apex:column headerValue="{!editfName.Label}">
+								<apex:inputField value="{!resReqWrapper.resourceRequest[editfName]}" required="{!OR(editfName.required,editfName.DBRequired)}" />
+							</apex:column>
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+
+	<script>
+		//Code to move focus from date field
+		function setFocusOnLoad() {
+		}
+	</script>
+
+</apex:page>

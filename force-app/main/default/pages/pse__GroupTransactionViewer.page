@@ -1,0 +1,20 @@
+<apex:page standardController="pse__Grp__c" extensions="pse.TransactionViewerController" 
+    action="{!initGroupAction}" showHeader="false" sidebar="false" lightningStylesheets="true">
+<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+<apex:composition template="pse__TransactionViewerTemplate">
+    <apex:define name="sectionHeader">
+      <apex:sectionHeader title="{!$Label.pse__txviewer_title}" subtitle="{!pse__Grp__c.Name}"/>  
+    </apex:define>
+    
+    <apex:define name="infoSection">
+        <apex:pageBlockSection title="{!$Label.pse__common_label_information}" collapsible="false" rendered="true">
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel value="{!$Label.pse__common_label_group}"/>
+              <apex:outputLink value="{!URLFOR($Action.pse__Grp__c.View, pse__Grp__c.Id)}">{!pse__Grp__c.Name}</apex:outputLink>
+          </apex:pageBlockSectionItem>
+          <apex:outputField value="{!pse__Grp__c.pse__Group_Head__c}"/>
+      </apex:pageBlockSection>
+    </apex:define>
+</apex:composition>
+
+</apex:page>

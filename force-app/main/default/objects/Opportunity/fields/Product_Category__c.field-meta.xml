@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Category__c</fullName>
+    <description>This field - Product Category - at the Opportunity level was used until 12/31/2015.  After that, &apos;Product Family&apos; began being used in PRODUCTS and this field was no longer used in OPPORTUNITIES.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field - Product Category - at the Opportunity level was used until 12/31/2015.  After that, &apos;Product Family&apos; began being used in PRODUCTS and this field was no longer used in OPPORTUNITIES.</inlineHelpText>
+    <label>Prod Cat Opps 2009-2015</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Services</fullName>
+                <default>false</default>
+                <label>Services</label>
+            </value>
+            <value>
+                <fullName>Software</fullName>
+                <default>false</default>
+                <label>Software</label>
+            </value>
+            <value>
+                <fullName>Solutions</fullName>
+                <default>false</default>
+                <label>Solutions</label>
+            </value>
+            <value>
+                <fullName>IP Framework</fullName>
+                <default>false</default>
+                <label>IP Framework</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

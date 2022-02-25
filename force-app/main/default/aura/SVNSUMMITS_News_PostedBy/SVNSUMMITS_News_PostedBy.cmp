@@ -1,0 +1,105 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_NewsController"
+                access="global"
+                extends="c:SVNSUMMITS_News_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId">
+
+	<ltng:require scripts="{!join(',',
+			$Resource.SVNSUMMITS_News_jQuery     + '/jquery-3.3.1.min.js',
+			$Resource.SVNSUMMITS_News_Custom     + '/NewsCustom/moment.min.js',
+			$Resource.SVNSUMMITS_News_Custom     + '/NewsCustom/moment-timezone-with-data.min.js')}"/>
+
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler   name="baseReady" event="c:SVNSUMMITS_News_BaseReady" action="{!c.doInit}"/>
+
+	<aura:attribute name="debugMode" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="newsListWrapper" type="SVNSUMMITS_WrapperNews" access="global"/>
+	<aura:attribute name="showNickName" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="showMemberSince" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="strDate" type="string" access="global"/>
+	<aura:attribute name="sitePath" type="String" access="global"/>
+	<aura:attribute name="profileURL" type="String" default="/profile/" access="global"/>
+	<aura:attribute name="isNicknameDisplayEnabled" type="Boolean" access="global"/>
+
+	<aura:attribute name="headingTitle" type="String" default="Author" access="global"/>
+	<aura:attribute name="headerAlignment" type="String" access="global" default="center"/>
+
+	<aura:if isTrue="{!v.newsListWrapper.newsList[0].Show_Author__c}">
+		<div class="postedByDiv">
+			<aura:if isTrue="{!v.headingTitle != null}">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+					<div class="{! equals(v.headerAlignment, 'center') ? ' slds-text-align--center' : equals(v.headerAlignment, 'right') ? ' slds-text-align--right' :' slds-text-align--left'}">
+						{!v.headingTitle}
+					</div>
+				</div>
+			</aura:if>
+
+			<div class="slds-grid slds-grid--align-center slds-align_absolute-center">
+				<aura:if isTrue="{!v.newsListWrapper.newsList[0].Author__c.length > 0}">
+					<img src="{!v.newsListWrapper.newsList[0].Author__r.SmallPhotoUrl}" class="userImg" alt="User image"/>
+					<aura:set attribute="else">
+						<img src="{!v.newsListWrapper.newsList[0].CreatedBy.SmallPhotoUrl}" class="userImg" alt="User Image"/>
+					</aura:set>
+				</aura:if>
+			</div>
+
+			<div class="slds-grid slds-grid--align-center slds-grid-al">
+            <span class="userText">
+                <aura:if isTrue="{!v.newsListWrapper.newsList[0].Show_Author__c}">
+
+                    <aura:if isTrue="{!v.newsListWrapper.newsList[0].Author__c.length > 0}">
+                        <aura:if isTrue="{!v.isNicknameDisplayEnabled}">
+                            <aura:if isTrue="{!v.showNickName}">
+                                <a href="{!v.sitePath+v.profileURL+v.newsListWrapper.newsList[0].Author__c}">{!v.newsListWrapper.newsList[0].Author__r.CommunityNickname}</a>
+                                <aura:set attribute="else">
+                                    <a href="{!v.sitePath+v.profileURL+v.newsListWrapper.newsList[0].Author__c}">{!v.newsListWrapper.newsList[0].Author__r.Name}</a>
+                                </aura:set>
+                            </aura:if>
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!v.showNickName}">
+                                    <a href="{!v.sitePath+v.profileURL+v.newsListWrapper.newsList[0].Author__c}">{!v.newsListWrapper.newsList[0].Author__r.CommunityNickname}</a>
+                                    <aura:set attribute="else">
+                                        <a href="{!v.sitePath+v.profileURL+v.newsListWrapper.newsList[0].Author__c}">{!v.newsListWrapper.newsList[0].Author__r.Name}</a>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+
+                        <aura:set attribute="else">
+                            <aura:if isTrue="{!v.isNicknameDisplayEnabled}">
+                                <aura:if isTrue="{!v.showNickName}">
+                                    <a href="{!v.sitePath+v.profileURL+v.newsListWrapper.newsList[0].CreatedBy.Id}">{!v.newsListWrapper.newsList[0].CreatedBy.CommunityNickname}</a>
+                                    <aura:set attribute="else">
+                                        <a href="{!v.sitePath+v.profileURL+v.newsListWrapper.newsList[0].CreatedBy.Id}">{!v.newsListWrapper.newsList[0].CreatedBy.Name}</a>
+                                    </aura:set>
+                                </aura:if>
+                                <aura:set attribute="else">
+                                    <aura:if isTrue="{!v.showNickName}">
+                                        <a href="{!v.sitePath+v.profileURL+v.newsListWrapper.newsList[0].CreatedBy.Id}">{!v.newsListWrapper.newsList[0].CreatedBy.CommunityNickname}</a>
+                                        <aura:set attribute="else">
+                                            <a href="{!v.sitePath+v.profileURL+v.newsListWrapper.newsList[0].CreatedBy.Id}">{!v.newsListWrapper.newsList[0].CreatedBy.Name}</a>
+                                        </aura:set>
+                                    </aura:if>
+                                </aura:set>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if>
+                </aura:if>
+            </span>
+			</div>
+			<div class="blankDiv"></div>
+			<div class="slds-grid slds-wrap slds-grid--pull-padded memberSince">
+				<aura:if isTrue="{!v.strDate.length > 0}">
+					<aura:if isTrue="{!v.showMemberSince}">
+						<div class="slds-col--padded slds-size--1-of-1">
+							<span class="commText">{!$Label.c.ss_nws_label_communityMemberSince}</span>
+						</div>
+						<div class="slds-col--padded slds-size--1-of-1">
+							{!v.strDate}
+						</div>
+					</aura:if>
+				</aura:if>
+			</div>
+		</div>
+	</aura:if>
+</aura:component>

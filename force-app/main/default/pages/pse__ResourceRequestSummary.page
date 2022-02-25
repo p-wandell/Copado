@@ -1,0 +1,243 @@
+<apex:page id="RRSummary" title="{!$Label.pse__rr_summary_page_title_label}" sidebar="false" standardController="pse__Resource_Request__c"
+ recordSetVar="resourceRequests" extensions="pse.ResourceRequestSummaryController" tabStyle="pse__Resource_Request__c" lightningStylesheets="true">
+	<c:selectAllCheckboxes functionName="selectAllResourceRequests" />
+
+	<script>
+		function checkDelete(checkBoxIdPattern) {
+			var count = 0;
+			var inputElem = document.getElementsByTagName("input");
+			for ( var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(checkBoxIdPattern) != -1) {
+					if (inputElem[i].checked) {
+						count++;
+						break;
+					}
+				}
+			}
+			if (count>0) {
+				return confirm('{!JSINHTMLENCODE($Label.RR_Summary_confirm_delete)}');
+			} else {
+				alert('{!JSINHTMLENCODE($Label.RR_Summary_no_row_selected_alert_message)}');
+				return false;
+			}
+		}
+
+		function updateAnchorTargetAttribute() {
+			// This is to set the anchor tag target as _blank to open in new tab.
+			var parentDiv = document.getElementById('{!$Component.RRSummary.RRSummary_Form.pageBlock}');
+			if (parentDiv != null) {
+				var inputElem = parentDiv.getElementsByTagName("a");
+				for (var i = 0; i < inputElem.length; i++) {
+					if (inputElem[i].className.indexOf('sort') == -1) {
+						inputElem[i].target = '_blank';
+						inputElem[i].onmouseover = '';
+					}
+				}
+			}
+
+			var parentDiv2 = document.getElementById('{!$Component.RRSummary.RRSummary_Form.RR_Assignment}');
+			if (parentDiv != null) {
+				var inputElem = parentDiv2.getElementsByTagName("a");
+				for (var i = 0; i < inputElem.length; i++) {
+					if (inputElem[i].className.indexOf('sort') == -1) {
+						inputElem[i].target = '_blank';
+						inputElem[i].onmouseover = '';
+					}
+				}
+			}
+		}
+
+
+		document.addEventListener('DOMContentLoaded', updateAnchorTargetAttribute);
+
+	</script>
+
+	<!-- CSS added to display alternate row colors and Center align Text in PageblockTable -->
+	<style type="text/css">
+		.subTotal {
+			background-color: #f8f8f8;
+		}
+
+		.grandTotal {
+			background-color: #dedede;
+		}
+
+		.pageBlockTableScroll {
+			display: block;
+			overflow-x: auto;
+			width: 93vw;
+		}
+
+		table th+th {
+			border-left: 1px solid #dedede !important;
+		}
+
+		.width_25 {
+			width: 25px;
+		}
+	</style>
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<script>
+		prepareVFConfig();
+
+		function prepareVFConfig() {
+			var config = {
+				recordName: "{!JSENCODE(project.Name)}",
+				objectName: "{!JSENCODE($Label.RR_Summary_Page_Title_Label)}",
+				objectApiName: "{!$ObjectType['Resource_Request__c'].name}",
+				onRender: 'onHeaderLoadCallback',
+				buttons: [{
+					id: "ok",
+					label: "{!JSENCODE($Label.RR_Summary_Ok_Button_Label)}",
+					actionFn: "okClick"
+				}],
+				helpUrl: "{!$Page.ResourceRequestSummaryHelp}"
+			};
+
+			if ({!displayContent}) {
+				config.buttons.push({
+					id: "delete",
+					label: "{!JSENCODE($Label.RR_Summary_Delete_Button_Label)}",
+					actionFn: "onCheckDelete"
+				});
+			}
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onCheckDelete() {
+			if (checkDelete('matchingResourceRequestRowSelector')) {
+				deleteResourceRequest();
+			}
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+	</script>
+	<apex:form id="RRSummary_Form">
+		<apex:pageBlock id="pageBlock" title="{!JSINHTMLENCODE($Label.pse__rr_summary_page_title_label)}">
+			<apex:actionFunction name="okClick" action="{!onOkClick}" />
+			<apex:actionFunction name="deleteResourceRequest" action="{!DeleteRR}" rendered="{!displayContent}"/>
+			<apex:pageMessages id="pageMessages" />
+			<apex:pageBlockSection rendered="{!displayContent}">
+				<apex:outputPanel styleClass="pageBlockTableScroll">
+					<apex:pageBlockTable value="{!wrrList}" var="resReqWrapper" id="resourceRequestSummary">
+						<apex:column styleClass="{!resReqWrapper.rowStyle} width_25" headerClass="width_25">
+							<apex:facet name="header">
+								<input type="checkbox" class="slds-m-around_none" onclick="selectAllResourceRequests(this, 'matchingResourceRequestRowSelector')" />
+							</apex:facet>
+							<apex:inputcheckbox value="{!resReqWrapper.isSelected}" styleClass="slds-m-around_none" id="matchingResourceRequestRowSelector" rendered="{!Not(resReqWrapper.isSubTotalRow || resReqWrapper.isGrandTotalRow)}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_rr_id_column}</apex:facet>
+							<apex:outputLink value="/{!resReqWrapper.rr.Id}" target="_blank">{!resReqWrapper.rr.Name}</apex:outputLink>
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_resource_role_column}</apex:facet>
+							<apex:outputField value="{!resReqWrapper.rr.pse__Resource_Role__c}" rendered="{!Not(resReqWrapper.isSubTotalRow || resReqWrapper.isGrandTotalRow)}" />
+							<apex:outputText rendered="{!(resReqWrapper.isSubTotalRow || resReqWrapper.isGrandTotalRow)}" value="{!if(resReqWrapper.isSubTotalRow,$Label.pse__common_label_sub_total,$Label.pse__common_label_grand_total)}"></apex:outputText>
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_suggested_resource_column}</apex:facet>
+							<apex:outputField value="{!resReqWrapper.rr.pse__Resource__c}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_requested_hours_column}</apex:facet>
+							<apex:outputText value="{!resReqWrapper.requestedHoursString}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}" rendered="{!NOT(hideHoursAvgCostRateColumn)}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_hours_avg_cost_rate_column}</apex:facet>
+							<apex:outputText value="{!resReqWrapper.avgCost}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}" rendered="{!NOT(hideHoursSuggestedBillRateColumn)}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_hours_suggested_bill_rate_column}</apex:facet>
+							<apex:outputText value="{!resReqWrapper.suggestedBill}" />
+						</apex:column>
+						<apex:repeat value="{!rrSummaryAdditionalColumns}" var="fName">
+							<apex:column styleClass="{!resReqWrapper.rowStyle}" value="{!resReqWrapper.rr[fName]}" />
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		<!-- Assignments  section -->
+		<apex:pageBlock title="{!$Label.pse__rr_summary_assignment_section_label}" id="RR_Assignment" rendered="{!assignWrapperList.size > 0}">
+			<apex:pageBlockSection rendered="{!refereshRequired}">
+				<div id="ajaxStatusDiv" style="display:none;height:32px;" align="center">
+					<apex:outputPanel >
+						<apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'progress-rotation.gif')}" />
+						<span style="line-height:32px;vertical-align:top;margin-left:6px;">{!$Label.pse__common_message_processing_wait}</span>
+					</apex:outputPanel>
+				</div>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection columns="1" id="AssignmentSection" rendered="{!NOT(refereshRequired)}">
+				<apex:outputPanel styleClass="pageBlockTableScroll">
+					<apex:pageBlockTable value="{!assignWrapperList}" var="assignWrapper" id="assignSummary">
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$ObjectType.pse__Assignment__c.Fields.Name.Label}</apex:facet>
+							<apex:outputLink value="/{!assignWrapper.assign.Id}" target="_blank" styleClass="slds-truncate slds-show_inline-block" title="{!JSINHTMLENCODE(assignWrapper.assign.Name)}">{!assignWrapper.assign.Name}</apex:outputLink>
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_resource_column}</apex:facet>
+							<apex:outputField value="{!assignWrapper.assign.pse__Resource__c}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_resource_role_column}</apex:facet>
+							<apex:outputField value="{!assignWrapper.assign.pse__Role__c}" rendered="{!Not(assignWrapper.isSubTotalRow || assignWrapper.isGrandTotalRow)}" />
+							<apex:outputText rendered="{!(assignWrapper.isSubTotalRow || assignWrapper.isGrandTotalRow)}" value="{!if(assignWrapper.isSubTotalRow,$Label.pse__common_label_sub_total,$Label.pse__common_label_grand_total)}"></apex:outputText>
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_scheduled_hours_column}</apex:facet>
+							<apex:outputText value="{!assignWrapper.scheduledHoursString}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}" rendered="{!NOT(hideCostRateColumn)}" style="white-space: nowrap;">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_cost_rate_column}</apex:facet>
+							<apex:outputText value="{!assignWrapper.costRate}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}" rendered="{!NOT(hideBillRateColumn)}" style="white-space: nowrap;">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_bill_rate_column}</apex:facet>
+							<apex:outputText value="{!assignWrapper.billRate}" />
+						</apex:column>
+						<apex:repeat value="{!assignmentColumns}" var="fName">
+							<apex:column styleClass="{!assignWrapper.rowStyle}" value="{!assignWrapper.assign[fName]}" />
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+
+		<!-- Grand Total Section -->
+		<apex:outputPanel id="GrandTotalPanel">
+			<apex:pageBlock title="{!$Label.pse__rr_summary_grand_total_section}" rendered="{!displayContent && assignWrapperList.size > 0 && NOT(refereshRequired)}">
+				<apex:pageBlockSection columns="1" id="GTsection">
+					<apex:outputPanel styleClass="pageBlockTableScroll">
+						<apex:pageBlockTable value="{!totalWrapperList}" var="totalWrapper" id="totalSummary">
+							<apex:column styleClass="{!totalWrapper.rowStyle}">
+								<apex:facet name="header">{!$Label.pse__rr_summary_total_type_column}</apex:facet>
+								<apex:outputText value="{!totalWrapper.totalType}" />
+							</apex:column>
+							<apex:column styleClass="{!totalWrapper.rowStyle}">
+								<apex:facet name="header">{!$Label.pse__rr_summary_total_hours_column}</apex:facet>
+								<apex:outputText value="{!totalWrapper.totalHoursString}" />
+							</apex:column>
+							<apex:column styleClass="{!totalWrapper.rowStyle}" rendered="{!NOT(hideCostRateColumn)}">
+								<apex:facet name="header">{!$Label.pse__rr_summary_total_cost_rate_column}</apex:facet>
+								<apex:outputText value="{!totalWrapper.costRate}" />
+							</apex:column>
+							<apex:column styleClass="{!totalWrapper.rowStyle}" rendered="{!NOT(hideBillRateColumn)}">
+								<apex:facet name="header">{!$Label.pse__rr_summary_total_bill_rate_column}</apex:facet>
+								<apex:outputText value="{!totalWrapper.billRate}" />
+							</apex:column>
+						</apex:pageBlockTable>
+					</apex:outputPanel>
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+		</apex:outputPanel>
+		<apex:actionPoller action="{!refreshProcessingStatus}" interval="5" reRender="RR_Assignment,GrandTotalPanel" enabled="{!refereshRequired}" />
+	</apex:form>
+</apex:page>

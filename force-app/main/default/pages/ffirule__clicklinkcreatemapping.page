@@ -1,0 +1,44 @@
+<apex:page standardController="ffirule__IntegrationRule__c" extensions="ffirule.CreateMappingController" lightningStylesheets="true" action="{!checkPermissions}">
+	<apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}" layout="none">
+		<style>
+			.pageTitleIcon {
+				border-radius: .25rem;
+			    background-color: #f87d76;
+			    background-image: url("{!URLFOR($Asset.SLDS, 'assets/icons/custom/custom67.svg')}");
+			    background-repeat: no-repeat;
+			    background-position: center;
+			    background-size: 2rem;
+				display: block !important;
+			}
+		</style>
+	</apex:outputPanel>
+	<apex:sectionHeader title="{!$Label.ffirule__createbasicmapping}" subtitle="{!RuleName}"/>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pagemessages />
+            <apex:pageBlockSection rendered="{!hasPermissions}">
+            	<apex:pageBlockSectionItem >
+            		<apex:outputLabel value="{!$Label.ffirule__sourceobjectfield}" for="sourceField"/>
+		    		<apex:selectList id="sourceField" value="{!sourceField}" size="1">
+		    			<apex:selectOptions value="{!sourceObjectFieldLabels}"/>
+		    		</apex:selectList>
+            	</apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection rendered="{!hasPermissions}">
+                <apex:pageBlockSectionItem >
+            		<apex:outputLabel value="{!$Label.ffirule__targetobjectfield}" for="targetField"/>
+		    		<apex:selectList id="targetField" value="{!targetField}" size="1">
+		    			<apex:selectOptions value="{!targetObjectFieldLabels}"/>
+		    		</apex:selectList>
+            	</apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!saveMapping}" value="{!$Label.ffirule__save}" rendered="{!hasPermissions}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.ffirule__cancel}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+		<apex:inputField value="{!ffirule__IntegrationRule__c.Name}" rendered="false"/>
+		<apex:inputField value="{!ffirule__IntegrationRule__c.ffirule__SourceObject__c}" rendered="false"/>
+		<apex:inputField value="{!ffirule__IntegrationRule__c.ffirule__TargetObject__c}" rendered="false"/>
+    </apex:form>
+</apex:page>

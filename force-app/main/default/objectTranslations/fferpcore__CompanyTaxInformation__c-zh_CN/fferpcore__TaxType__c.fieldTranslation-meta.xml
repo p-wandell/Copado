@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>对该公司销售的产品使用的税种。例如，GST，SUT或VAT。</help>
+    <label><!-- Tax Type --></label>
+    <name>fferpcore__TaxType__c</name>
+    <picklistValues>
+        <masterLabel>GST</masterLabel>
+        <translation>GST</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SUT</masterLabel>
+        <translation>SUT</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>VAT</masterLabel>
+        <translation>增值税</translation>
+    </picklistValues>
+</CustomFieldTranslation>

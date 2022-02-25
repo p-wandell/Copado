@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+     <masterLabel>7S Questionnaire Navigation</masterLabel>
+     <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+     <property name="scriptText" label="Question" description="Question in the questionnaire" type="String" required="true" />
+     <property name="guidanceText" label="Guidance Text" description="Script text for internal agent to say to the user" type="String" />    
+     <property name="showGuidanceText" label="Show Guidance Text" description="Show guidance text to an internal user" type="Boolean" default="false"/>
+     <property name="answer1" label="Answer 1" type="String"/>
+     <property name="answer2" label="Answer 2" type="String" />
+     <property name="answer3" label="Answer 3" type="String"/>
+     <property name="answer4" label="Answer 4" type="String"/>
+     <property name="selectedValue" label="Selected Value" description="Value selected by the user" type="String"/>
+     <property name="answer3Populated" label="Answer 3 Populated" type="Boolean"/>
+     <property name="answer4Populated" label="Answer 4 Populated" type="Boolean" />
+     <property name="slds_icon" label="SLDS Icon" description="SLDS Icon to use" type="String" default="utility:question_mark"/> 
+     </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

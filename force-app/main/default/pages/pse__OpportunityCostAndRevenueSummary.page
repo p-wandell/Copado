@@ -1,0 +1,8 @@
+<apex:page standardController="Opportunity" lightningStylesheets="true">
+	<!-- Added this components to include jquery library and required script for tooltip -->
+	<c:fflib_thirdparty jQuery="true" jQueryUI="true"/>
+	<c:QuickTooltip tooltipTextAttrName="data-tooltip"/>
+	<apex:form >
+		<c:CostAndRevenueSummary sobjectRecord="{!Opportunity}" />
+	</apex:form>
+</apex:page>

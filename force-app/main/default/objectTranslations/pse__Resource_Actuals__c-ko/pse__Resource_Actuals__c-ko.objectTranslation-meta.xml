@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>리소스 실제</value>
+    </caseValues>
+    <nameFieldLabel>리소스 실제</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- A Resource Actuals record must have the same currency as its parent Resource. --></errorMessage>
+        <name>pse__Resource_Actuals_Currency_Mismatch</name>
+    </validationRules>
+</CustomObjectTranslation>

@@ -1,0 +1,7 @@
+<apex:page standardController="pse__Proj__c" tabStyle="pse__Billing_Event__c" title="{!$Label.pse__billing_by_project}" sidebar="false" lightningStylesheets="true">
+
+    <apex:composition template="pse__BillingTemplate">
+    </apex:composition>
+
+
+</apex:page>

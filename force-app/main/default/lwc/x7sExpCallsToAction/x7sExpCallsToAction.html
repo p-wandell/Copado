@@ -1,0 +1,72 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Calls To Action -->
+<template>
+	<section class={componentClass} role="banner">
+		<h2 if:true={title} class={titleClass} style={titleStyle}>
+			{title}
+		</h2>
+
+		<!-- Base Layout-->
+		<template if:true={baseLayout}>
+			<ul class="x7s-call-to-action__layout slds-grid" style={rowStyles}>
+				<template for:each={ctaData} for:item="cta">
+					<li key={cta.key} class={colClass} style={colStyles}>
+						<c-x7s-shr-tile
+								background-color={cta.bgColor}
+								background-size={cta.bgSize}
+								border-radius={ctaBorderRadius}
+								description={cta.description}
+								hide-overlay={cta.overlay}
+								horizontal-alignment={textAlignLower}
+								title={cta.text}
+								title-color={cta.textColor}
+								title-size={fontSize}
+								title-text-transform={textTransform}
+								link={cta.url}
+								image-src={cta.image}
+								image-width="100%"
+								image-height={ctaHeight}
+								vertical-alignment={verticalAlignLower}></c-x7s-shr-tile>
+					</li>
+				</template>
+			</ul>
+		</template>
+
+		<!-- Icon Layout-->
+		<template if:false={baseLayout}>
+			<ul class="x7s-call-to-action__layout slds-grid" style={rowStyles}>
+				<template for:each={ctaData} for:item="cta">
+					<li key={cta.key} class={colClass} style={colStyles}>
+						<c-x7s-shr-icon-card
+								background-color={cta.bgColor}
+								border-radius={ctaBorderRadius}
+								description={cta.description}
+								hide-image="true"
+								hide-overlay="true"
+								horizontal-alignment={textAlignLower}
+								icon-name={cta.iconImage}
+								icon-size={ctaDefaultIconSize}
+								image-src={cta.image}
+								icon-color={cta.iconColor}
+								image-height={ctaHeight}
+								image-width={ctaHeight}
+								overlay-color={ctaOverlayColor}
+								overlay-color-hover={ctaOverlayColorHover}
+								reduce-animation="true"
+								title={cta.text}
+								title-size={fontSize}
+								title-text-transform={textTransform}
+								title-color={cta.textColor}
+								link={cta.url}
+								vertical-alignment={verticalAlignLower}
+								use-text={cta.useText}></c-x7s-shr-icon-card>
+					</li>
+				</template>
+			</ul>
+		</template>
+
+	</section>
+</template>

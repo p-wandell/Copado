@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>ffct__MigrationSet__c$Name</field>
+    </columns>
+    <columns>
+        <field>ffct__MigrationSet__c.ffct__MetadataMigration__r$Name</field>
+    </columns>
+    <columns>
+        <field>ffct__MigrationSet__c.ffct__MetadataMigration__r$ffct__MetadataType__c</field>
+    </columns>
+    <columns>
+        <field>ffct__MigrationSet__c.ffct__MetadataMigration__r$ffct__NamespacePrefix__c</field>
+    </columns>
+    <columns>
+        <field>ffct__MigrationSet__c.ffct__MetadataMigration__r$ffct__APIName__c</field>
+    </columns>
+    <columns>
+        <field>ffct__MigrationSet__c.ffct__MetadataMigration__r$ffct__ChangedById__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Report for showing metadata changes captured by the given Migration Set</description>
+    <filter>
+        <criteriaItems>
+            <column>ffct__MigrationSet__c$Id</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value></value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Metadata Migrations for Migration Set</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>ffct__MigrationSetWithMetadataMigrations__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>false</showGrandTotal>
+    <showSubTotals>false</showSubTotals>
+    <sortColumn>ffct__MigrationSet__c.ffct__MetadataMigration__r$ffct__MetadataType__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>ffct__MigrationSet__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

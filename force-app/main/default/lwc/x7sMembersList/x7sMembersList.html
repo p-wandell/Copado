@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper custom-class={componentClass} auto-slds-card>
+		<lightning-layout multiple-rows="true"
+		                  vertical-align="stretch"
+		                  pull-to-boundary="small">
+			<template if:true={membersListWrapper}>
+				<template for:each={membersListWrapper.membersList} for:item="member">
+					<lightning-layout-item class={viewSelectorStyle} key={member.Id}
+					                       padding="around-small">
+						<c-x7s-members-list-item member={member}
+												 show-images={showImages}
+												 show-avatar={showAvatar}
+												 layout={layout}
+												 text-align={cardTextAlign}
+						                         tile-variant={variant}
+						                         display-title={displayTitle}
+						                         display-phone={displayPhone}
+						                         click-to-call={clickToCall}
+						                         display-email={displayEmail}
+						                         display-knowledge={displayKnowledge}
+						                         display-chatter-stats={displayChatterStats}
+												 display-follow-button={displayFollowButton}
+												 custom-label1 = {customLabel1}
+												 custom-label2 = {customLabel2}
+												 custom-label3 = {customLabel3}
+												 custom-label4 = {customLabel4}
+												 custom-label5 = {customLabel5}
+												 custom-label6 = {customLabel6}
+												 chk-custom-field-length1 ={chkCustomFieldLength1}
+												 chk-custom-field-length2 ={chkCustomFieldLength2}
+												 chk-custom-field-length3 ={chkCustomFieldLength3}
+												 chk-custom-field-length4 ={chkCustomFieldLength4}
+												 chk-custom-field-length5 ={chkCustomFieldLength5}
+												 chk-custom-field-length6 ={chkCustomFieldLength6}
+						>
+						</c-x7s-members-list-item>
+
+					</lightning-layout-item>
+				</template>
+			</template>
+			<template if:true={isloading}>
+				<lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+			</template>
+		</lightning-layout>
+	</c-x7s-shr-component-wrapper>
+</template>

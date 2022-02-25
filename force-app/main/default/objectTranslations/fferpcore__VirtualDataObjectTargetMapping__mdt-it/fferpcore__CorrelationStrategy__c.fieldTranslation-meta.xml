@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>La strategia utilizzata per determinare come dovrebbero essere trattati gli obiettivi figli esistenti.</help>
+    <label><!-- Correlation Strategy --></label>
+    <name>fferpcore__CorrelationStrategy__c</name>
+    <picklistValues>
+        <masterLabel>Append</masterLabel>
+        <translation>Aggiungere</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Replace</masterLabel>
+        <translation>Sostituire</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Update</masterLabel>
+        <translation>Aggiornare</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UpdateTotal</masterLabel>
+        <translation>Aggiornamento totale</translation>
+    </picklistValues>
+</CustomFieldTranslation>

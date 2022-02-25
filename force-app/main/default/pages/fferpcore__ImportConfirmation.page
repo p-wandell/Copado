@@ -1,0 +1,11 @@
+<apex:page tabStyle="fferpcore__MessageType__c" controller="fferpcore.ImportController">
+	<apex:sectionHeader title="{!$Label.fferpcore__erpimportpagetitle}" />
+	<apex:form >
+		<apex:pageBlock >
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.fferpcore__erpimportconfirmationbackbutton}" action="{!clearPage}" />
+			</apex:pageBlockButtons>
+				<apex:pageMessages />
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

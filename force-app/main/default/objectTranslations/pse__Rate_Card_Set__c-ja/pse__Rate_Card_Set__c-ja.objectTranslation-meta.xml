@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>料金表セット</value>
+    </caseValues>
+    <fieldSets>
+        <label><!-- Rate Card Set Fields For Creation --></label>
+        <name>pse__Rate_Card_Set_Fields_For_Creation</name>
+    </fieldSets>
+    <nameFieldLabel>料金表セット名</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- A Rate Card Set&apos;s Currency field value may not be updated once set. --></errorMessage>
+        <name>pse__Rate_Card_Set_Currency_is_Constant</name>
+    </validationRules>
+</CustomObjectTranslation>

@@ -1,0 +1,50 @@
+<!--
+ - Created by kentheberling on 5/7/18.
+ -->
+
+<aura:component description="Peak_JSONFeed" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" extends="c:Peak_Base" controller="Peak_JSONFeedController">
+
+    <aura:attribute name="feedTitle" type="String" default=""/>
+    <aura:attribute name="feedUrlEndpoint" type="String" default=""/>
+    <aura:attribute name="recordsToShow" type="String" default="10" />
+    <aura:attribute name="feedType" type="String" default="Test" />
+
+    <aura:attribute name="emptyListText" type="String" default="No feed items found"/>
+    <aura:attribute name="responseText" type="String"/>
+    <aura:attribute name="isJSONFeedInit" type="Boolean" default="false"/>
+
+    <aura:attribute name="feed" type="Map"/>
+    <aura:attribute name="feedItems" type="Object[]"/>
+
+    <aura:attribute name="CustomClassName" type="String" default=""/>
+    <aura:attribute name="CustomIdName" type="String" default=""/>
+
+    <aura:handler name="init" action="{!c.initJSONFeed}" value="{!this}"/>
+
+    <section class="{!'peak-component ' + v.CustomClassName}" id="{!v.CustomIdName}">
+        <h4 class="slds-text-heading_medium"><c:Peak_Base labelText="{!v.feedTitle}" /></h4>
+        <hr />
+        <aura:iteration items="{!v.feedItems}" var="feedItem" end="{!v.recordsToShow}">
+            <!-- For each feed being consumed
+                create a unique FeedItem subcomponent.
+                Add to switch in this component's controller
+                Add to the .design file dataSource
+            -->
+            <aura:if isTrue="{!v.feedType == 'Test'}">
+                <c:Peak_FeedItemTest feedItem="{!feedItem}"/>
+            </aura:if>
+            <aura:if isTrue="{!v.feedType == 'Blog'}">
+                <c:Peak_FeedItemBlog feedItem="{!feedItem}"/>
+            </aura:if>
+            <aura:if isTrue="{!v.feedType == 'Events'}">
+                <c:Peak_FeedItemEvent feedItem="{!feedItem}"/>
+            </aura:if>
+            <hr />
+        </aura:iteration>
+
+        <!-- All good, but empty feed. Real errors displayed in showmessage -->
+        <aura:if isTrue="{!and(v.isJSONFeedInit,v.feedItems.length lt 1)}">
+            {!v.emptyListText}
+        </aura:if>
+    </section>
+</aura:component>

@@ -1,0 +1,8 @@
+<apex:page controller="ffct.BundleBankFormatConfigController" action="{!init}">
+	<apex:form id="form">
+	    <apex:sectionHeader title="{!$Label.ffct__managebankformatbundler}" subtitle="{!$Label.ffct__managesbundlebuttonsforbankformatmapping}" help="helploader?topicid=1014"/>
+		<apex:pageMessages escape="false" />
+		<apex:commandButton value="{!ManageAction}" action="{!manage}" rendered="{!ISNULL(AsyncResults)}"/>
+		<apex:actionPoller action="{!checkAsyncRequest}" interval="5" rerender="form" rendered="{!NOT(ISNULL(AsyncResults))}"/>
+	</apex:form>	
+</apex:page>

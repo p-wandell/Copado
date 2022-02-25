@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Solution_Category__c</fullName>
+    <description>7Summits Solution Categories</description>
+    <externalId>false</externalId>
+    <label>Retired 12-31-15 Solution Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Product_Category__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>AdmissionsConnect</fullName>
+                <default>false</default>
+                <label>AdmissionsConnect</label>
+            </value>
+            <value>
+                <fullName>Case Management</fullName>
+                <default>false</default>
+                <label>Case Management</label>
+            </value>
+            <value>
+                <fullName>CMaaS</fullName>
+                <default>false</default>
+                <label>CMaaS</label>
+            </value>
+            <value>
+                <fullName>Customer Centric Community</fullName>
+                <default>false</default>
+                <label>Customer Centric Community</label>
+            </value>
+            <value>
+                <fullName>CustomerConnect</fullName>
+                <default>false</default>
+                <label>CustomerConnect</label>
+            </value>
+            <value>
+                <fullName>Employee Centric Community</fullName>
+                <default>false</default>
+                <label>Employee Centric Community</label>
+            </value>
+            <value>
+                <fullName>EmployeeConnect</fullName>
+                <default>false</default>
+                <label>EmployeeConnect</label>
+            </value>
+            <value>
+                <fullName>Jive Optimizer</fullName>
+                <default>false</default>
+                <label>Jive Optimizer</label>
+            </value>
+            <value>
+                <fullName>Maintenance</fullName>
+                <default>false</default>
+                <label>Maintenance</label>
+            </value>
+            <value>
+                <fullName>PartnerConnect</fullName>
+                <default>false</default>
+                <label>PartnerConnect</label>
+            </value>
+            <value>
+                <fullName>Peak Framework</fullName>
+                <default>false</default>
+                <label>Peak Framework</label>
+            </value>
+            <value>
+                <fullName>SIaaS</fullName>
+                <default>false</default>
+                <label>SIaaS</label>
+            </value>
+            <value>
+                <fullName>Social Business Mgmt</fullName>
+                <default>false</default>
+                <label>Social Business Mgmt</label>
+            </value>
+            <value>
+                <fullName>Social Business Processes</fullName>
+                <default>false</default>
+                <label>Social Business Processes</label>
+            </value>
+            <value>
+                <fullName>Social Marketing &amp; Outreach</fullName>
+                <default>false</default>
+                <label>Social Marketing &amp; Outreach</label>
+            </value>
+            <value>
+                <fullName>StudentConnect</fullName>
+                <default>false</default>
+                <label>StudentConnect</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <valueName>CMaaS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <valueName>Customer Centric Community</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <valueName>Employee Centric Community</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <valueName>SIaaS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <valueName>Social Business Mgmt</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <valueName>Social Business Processes</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <valueName>Social Marketing &amp; Outreach</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>AdmissionsConnect</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <valueName>Case Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>CustomerConnect</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>EmployeeConnect</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>Jive Optimizer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <valueName>Maintenance</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>PartnerConnect</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>Peak Framework</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>StudentConnect</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

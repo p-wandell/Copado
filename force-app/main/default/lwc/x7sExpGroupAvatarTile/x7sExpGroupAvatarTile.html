@@ -1,0 +1,27 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Group Avatar Tile -->
+<template>
+    <div if:true={hasValidGroup} class="slds-grid slds-grid_align-spread slds-grid_pull-padded">
+
+        <div if:true={group.SmallPhotoUrl} class="slds-p-around_small slds-p-right_none slds-col">
+            <a data-id={group.Id} onclick={navigateToGroup}>
+                <lightning-avatar src={group.SmallPhotoUrl} size="large"></lightning-avatar>
+            </a>
+        </div>
+
+        <div class="slds-p-around_small slds-grow">
+            <h3 if:true={group.Id} class="slds-text-heading_small">
+                <a data-id={group.Id} onclick={navigateToGroup}>{group.Name}</a>
+            </h3>
+            <p if:true={showDescription} class="slds-text-body_small">
+                {group.Description}
+            </p>
+            <p if:true={showMembers} class="slds-text-color--weak slds-text-body_small">
+                <lightning-icon icon-name={group.memberIcon} size="xx-small" class="slds-m-right_xxx-small"></lightning-icon> {group.MemberCount} {group.memberText}
+            </p>
+        </div>
+    </div>
+</template>

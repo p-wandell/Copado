@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>When a Pursuit Lead is requested, an email goes to the preferred Pursuit Lead requested.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Preferred Pursuit Lead Requested</name>
+    <style>none</style>
+    <subject>Pursuit Lead Requested for {!Pursuit_Lead_Request__c.Opportunity__c}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>이 레코드의 값이 실제 수익 또는 예측 수익에 적용되는지 여부를 나타냅니다.</help>
+    <label><!-- Revenue Type --></label>
+    <name>pse__Revenue_Type__c</name>
+    <picklistValues>
+        <masterLabel>Actuals</masterLabel>
+        <translation>실제</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Forecast</masterLabel>
+        <translation>예보</translation>
+    </picklistValues>
+</CustomFieldTranslation>

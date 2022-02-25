@@ -1,0 +1,33 @@
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingDefinitionExportController" lightningStylesheets="true">
+	<apex:form >
+		<apex:sectionHeader title="{!$Label.ffr__reportingdefinitionexporttitle}" help="{!helpLink}"/>
+		<apex:pageBlock mode="edit">
+			<apex:PageMessages />
+			<apex:pageBlockSection title="{!$Label.ffr__reportingdefinitionexportsectiontitle}" collapsible="false" rendered="{!NoErrors}" >
+				<apex:pageBlockSectionItem >
+					<apex:outputText id="ExportedNameLabel" value="{!$Label.ffr__reportingdefinitionexportname}"/>
+					<apex:outputPanel styleClass="requiredInput">
+						<div class="requiredBlock"></div>
+						<apex:inputText id="ExportedName" value="{!ExportedName}"/>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection rendered="{!NoErrors}">
+				<apex:pageBlockSectionItem >
+					<apex:outputText id="IncludeReportingObjectLabel" value="{!$Label.ffr__reportingdefinitionexportincludereportingobject}"/>
+					<apex:inputCheckbox id="IncludeReportingObject" value="{!IncludeReportingObjects}"/>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection rendered="{!NoErrors}">
+				<apex:pageBlockSectionItem >
+					<apex:outputText id="IncludeReportingFilterDefinitionLabel" value="{!$Label.ffr__reportingdefinitionexportincludereportingfilterdefinitions}"/>
+					<apex:inputCheckbox id="IncludeReportingFilterDefinition" value="{!IncludeReportingFilterDefinitions}"/>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!export}" value="{!$Label.ffr__reportingdefinitionexportsave}" rendered="{!NoErrors}"/> 
+				<apex:commandButton action="{!cancel}" value="{!$Label.ffr__reportingdefinitionexportcancel}"/>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

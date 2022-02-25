@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X2018_Quota_Target__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( LastName = &quot;Brown&quot;,(4250000.00), 
+IF( LastName = &quot;Ebrahim&quot;,(4250000.00), 
+IF( LastName = &quot;Walsh&quot;,(4250000.00), 
+IF( LastName = &quot;Hogervorst&quot;,(3500000.00), 
+IF (LastName = &quot;Capute&quot;,(2041667.00), 
+IF (LastName = &quot;MacManus&quot;,(2333333.00), 
+IF (LastName = &quot;McSkimming&quot;,(2333333.00), 
+IF (LastName = &quot;Friedhoff&quot;,(1166667), 
+IF (LastName = &quot;Cugno&quot;,(641667), 
+IF (LastName = &quot;Fortino&quot;,(408333.00),
+0))))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>2018 Quota Target</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Currency</type>
+</CustomField>

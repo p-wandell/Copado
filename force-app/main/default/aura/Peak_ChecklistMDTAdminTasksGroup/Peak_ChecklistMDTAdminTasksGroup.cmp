@@ -1,0 +1,46 @@
+<!--
+ - Created by shashiarrabeli on 4/18/18.
+ -->
+
+<aura:component description="Peak_ChecklistMDTAdminTasksGroup" implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                    controller="Peak_ChecklistMDTTaskGroupController" extends="c:Peak_ChecklistBase">
+    <aura:handler name="init" value="{!this}" action="{!c.doChecklistAdminTaskGroupsInit}"/>
+
+    <aura:attribute name="listOfTaskGroups" type="Peak_CommunityTaskGroupMDTWrapper[]"/>
+        <aura:attribute name="newTaskGroupName" type="string"/>
+
+    <aura:registerEvent name="refreshEvent" type="c:Peak_CheckListRefreshEvent" />
+
+    <aura:if isTrue="{!v.isLoading}">
+        <c:Peak_LoadingGif />
+    </aura:if>
+
+        <div>
+            <form><H1 class="slds-m-bottom_large">Task Groups</H1>
+
+                <ui:inputText aura:id="TaskGroup"
+                              class="slds-m-bottom_large"
+                              labelClass="slds-form-element__label"
+                              value="{!v.newTaskGroupName}"
+                              required="true"/>
+
+                <ui:button label="Add Task Group"
+                           class="slds-button slds-button_neutral slds-m-bottom_large"
+                           labelClass="label"
+                           press="{!c.createTaskGroupMDT}"/>
+
+            </form>
+
+        </div>
+
+
+    <aura:iteration items="{!v.listOfTaskGroups}" var="tskGrp">
+        <div>
+            <!--<lightning:input type="checkbox" label="{!tskGrp.label}" name="{!tskGrp.label}" checked="{!tskGrp.isSelected}"/>
+            -->
+            <a data-name="{!tskGrp.name}" data-label="{!tskGrp.label}" onclick="{!c.deleteSelectedTaskGroup}" title="Delete">Del</a>
+            &nbsp;{!tskGrp.label}
+        </div>
+    </aura:iteration>
+
+    </aura:component>

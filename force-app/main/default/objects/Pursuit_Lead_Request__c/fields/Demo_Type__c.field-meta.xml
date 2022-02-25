@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Demo_Type__c</fullName>
+    <description>Used to designated whether a Generic or Custom demo is needed.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the type of demo required.  Generic is for a pre-built generic use case and Custom is for anything outside of the generic.</inlineHelpText>
+    <label>Demo Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Custom</fullName>
+                <default>false</default>
+                <label>Custom</label>
+            </value>
+            <value>
+                <fullName>Standard</fullName>
+                <default>false</default>
+                <label>Standard</label>
+            </value>
+            <value>
+                <fullName>Product</fullName>
+                <default>false</default>
+                <label>Product</label>
+            </value>
+            <value>
+                <fullName>Generic</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Generic</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

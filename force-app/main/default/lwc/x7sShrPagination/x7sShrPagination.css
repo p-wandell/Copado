@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ */
+.x7s-pagination_label {
+  display: inline-block;
+}
+.x7s-pagination_label + .x7s-pagination_button-default {
+  margin-left: 0.5rem;
+}
+.x7s-pagination_button {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  min-width: 2rem;
+}
+.x7s-pagination_button-placeholder {
+  padding-left: 0;
+  padding-right: 0;
+  min-width: 1px;
+}
+.x7s-pagination_button-default + .x7s-pagination_button-default {
+  margin-left: 0.25rem;
+}
+.x7s-pagination_button-icon {
+  height: 2rem;
+}
+@media screen and (max-width: 47.99em) {
+  .x7s-pagination {
+    text-align: center;
+  }
+}

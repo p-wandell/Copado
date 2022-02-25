@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Demo_Build_Request_Notification</fullName>
+        <description>Demo Build Request Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Demo_Requests</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Demo_Build_Request_Notification</template>
+    </alerts>
+    <rules>
+        <fullName>Demo Build Request</fullName>
+        <actions>
+            <name>Demo_Build_Request_Notification</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Demo_Build__c.Status__c</field>
+            <operation>equals</operation>
+            <value>New</value>
+        </criteriaItems>
+        <description>Workflow to notify the SE team of a new Demo Build request.</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+</Workflow>

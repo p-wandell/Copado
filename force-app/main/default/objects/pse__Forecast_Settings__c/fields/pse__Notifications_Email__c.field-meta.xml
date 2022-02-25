@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Notifications_Email__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>If selected, notifications from Forecast batch processes are sent via email to recipients listed in the Notification Recipients setting. This is deselected by default.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If selected, notifications from Forecast batch processes are sent via email to recipients listed in the Notification Recipients setting. This is deselected by default.</inlineHelpText>
+    <label>Notifications by Email</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

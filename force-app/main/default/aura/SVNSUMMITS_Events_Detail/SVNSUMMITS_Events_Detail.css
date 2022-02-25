@@ -1,0 +1,126 @@
+/* Copyright ©2016-2017 7Summits Inc. All rights reserved. */
+.THIS.content{
+    border: token(borderWidthThin) solid token(colorBorder);
+    position: relative;
+    padding: 20px;
+    margin:20px 0;
+}
+
+.THIS.featuredImage{
+    overflow:hidden;
+    margin:30px 0 50px 0;
+}
+
+.THIS.featuredImage .image{
+    height:400px;
+    width:100%;
+    background-size:cover;
+    background-position:center center;
+    transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -webkit-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+}
+
+.THIS.featuredImage .image{
+    transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -webkit-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    -ms-transform: scale(1.05); /* IE 9 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=1.05, M12=0, M21=0, M22=1.5, SizingMethod='auto expand')"; /* IE8 */
+    filter: progid:DXImageTransform.Microsoft.Matrix(M11=1.05, M12=0, M21=0, M22=1.5, SizingMethod='auto expand'); /* IE6 and 7 */
+}
+
+.THIS .topic{
+    display: inline-block;
+    padding-right:7px;
+    margin-right:7px;
+    margin-bottom:7px;
+    border-right:token(borderWidthThin) solid;
+}
+
+.THIS span.topic:last-of-type {
+    border-right: none;
+}
+
+.THIS .topic a{
+    font-weight:bold;
+    text-transform: uppercase;
+    color: token(colorTextLabel);
+}
+
+.THIS.topics .topic:last-child{
+    border-right:0;
+}
+
+.THIS.topics .topicHeader{
+    margin-top:30px;
+    margin-bottom:10px;
+}
+
+.THIS .btn-primary{
+    background:token(colorBackgroundButtonBrand);
+    border-color:token(colorBorderButtonBrand);
+}
+
+.THIS.btn-primary{
+    background:token(colorBackgroundButtonBrand);
+    border-color:token(colorBorderButtonBrand);
+}
+
+.THIS .btn-link, .THIS .btn-link a{
+    color:token(colorTextLink);
+}
+
+.THIS.content .location,.THIS.content .price,.THIS.content .date,.THIS.content .time,.THIS.content .address{
+    padding:5px 0;
+}
+
+.THIS .date {
+    font-weight: bolder;
+}
+
+.THIS.content .price{
+    margin-top:25px;
+    padding-bottom:10px;
+}
+.THIS .buttonAddToCalendar {
+    margin-bottom: 5px;
+}
+
+.THIS .addtocalendar:hover {
+    background-color: token(colorBackgroundButtonDefaultHover) !important;
+}
+
+.THIS .atcb-list{
+    border: token(borderWidthThin) solid token(colorBorder);
+    padding: 7px 0;
+}
+
+.THIS .atcb-list a{
+    color:#666;
+    text-transform: capitalize;
+    padding-left: 7px;
+}
+
+.THIS .atcb-item:hover {
+    background-color: token(colorBackgroundButtonDefaultHover);
+}
+
+/*.THIS  ol {*/
+    /*list-style:decimal;*/
+    /*padding-left:20px;*/
+    /*margin:20px;*/
+/*}*/
+/*.THIS  ul {*/
+    /*list-style:disc;*/
+	/*padding-left:20px;*/
+    /*margin:20px;*/
+/*}*/
+
+.THIS  .slds-modal__container {
+    width: 80%;
+    max-width: 80rem;
+}

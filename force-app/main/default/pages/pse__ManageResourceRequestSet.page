@@ -1,0 +1,264 @@
+<apex:page standardController="pse__Resource_Request__c" extensions="pse.ManageResourceRequestSetController" action="{!init}" title="{!$Label.pse__create_resource_request_set_manage_resource_request_set}"
+ sidebar="false" tabStyle="pse__Resource_Request__c" id="manageRRSetPage" lightningStylesheets="true">
+	<style>
+		.slds-vf-scope .bPageBlock .detailList .data2Col {
+			width: 82% !important;
+		}
+
+		.pageBlockTableScroll {
+			display: block;
+			overflow-x: auto;
+			width: 93vw;
+		}
+
+		.pageBlockTableScroll table th.headerRow+th.headerRow {
+			border-left: 1px solid #dedede;
+		}
+	</style>
+
+	<script>
+		// Method for formating string label by inserting some dynamic values passed as argument.
+		String.prototype.format = function () {
+			var content = this;
+			for (var i = 0; i < arguments.length; i++) {
+				var replacement = '{' + i + '}';
+				content = content.replace(replacement, arguments[i]);
+			}
+			return content;
+		};
+
+		function selectAll(comp, matchingStr) {
+			var isSelectAll = comp.checked;
+			var inputElem = document.getElementsByTagName("input");
+			//Code change for Agile Task: AT12105  Dated: 21 March, 2013
+			// taking initial total count as zero because master record can not be selected for deletion.
+			var totalCheckboxCount = 0;
+			for (var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(matchingStr) != -1) {
+					inputElem[i].checked = isSelectAll;
+					totalCheckboxCount += 1;
+				}
+			}
+			var label = '{!JSINHTMLENCODE($Label.common_label_selected_record_count)}';
+			var countInfo = '';
+			if (isSelectAll) {
+				countInfo = label.format(totalCheckboxCount, totalCheckboxCount);
+			} else {
+				countInfo = label.format(0, totalCheckboxCount);
+			}
+			document.getElementById('checkResReqCountInfo').innerHTML = countInfo;
+		}
+
+		function selectItem(comp, selectAllCheckboxStr) {
+			var allchecked = true;
+			var lstindex = comp.id.lastIndexOf(':') + 1;
+			var compID = comp.id.substring(lstindex, comp.id.length);
+			var inputElem = document.getElementsByTagName("input");
+
+			var checkedCount = 0;
+			//Code change for Agile Task: AT12105  Dated: 21 March, 2013
+			// taking initial total count as zero because master record can not be selected for deletion.
+			var totalCheckboxCount = 0;
+			for (var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(compID) != -1) {
+					totalCheckboxCount += 1;
+					if (inputElem[i].checked) {
+						checkedCount += 1;
+					} else {
+						allchecked = false;
+					}
+				}
+			}
+			if (allchecked)
+				document.getElementById(selectAllCheckboxStr).checked = true;
+			else
+				document.getElementById(selectAllCheckboxStr).checked = false;
+
+			var label = '{!JSINHTMLENCODE($Label.common_label_selected_record_count)}';
+			var countInfo = label.format(checkedCount, totalCheckboxCount);
+			document.getElementById('checkResReqCountInfo').innerHTML = countInfo;
+		}
+
+		function setDirty(checkboxIdMatchingStr) {
+			_hasUnsavedChanges = false;
+			var inputElem = document.getElementsByTagName("input");
+			for (var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(checkboxIdMatchingStr) != -1) {
+					if (inputElem[i].checked) {
+						_hasUnsavedChanges = true;
+						break;
+					}
+				}
+			}
+		}
+
+		function onDeleteClick() {
+			if (!_hasUnsavedChanges) {
+				alert('{!JSINHTMLENCODE($Label.create_resource_request_set_no_resource_request_selected_to_delete)}');
+				return;
+			}
+
+			if (confirm('{!JSINHTMLENCODE($Label.create_resource_request_set_delete_selected_resource_requests)}')) {
+				jsDeleteRR();
+			}
+		}
+	</script>
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+
+	<apex:PageMessages id="messageSection" />
+	<apex:form id="manageRRForm" rendered="{!isEverythingOk}">
+		<apex:actionFunction action="{!cancel}" name="jsdoCancel" />
+		<apex:actionFunction action="{!deleteAndGoToRecord}" name="jsDeleteAndGoToRecord" />
+		<apex:actionFunction action="{!deleteResourceRequest}" name="jsDeleteRR" status="ajaxStatus" reRender="manageRRForm,messageSection"
+		 oncomplete="updateAnchorTargetAttribute();" />
+
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+
+		<apex:pageBlock id="createResReqPB">
+			<apex:pageBlockSection columns="1" collapsible="false" id="createRRPBS">
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.pse__Resource_Request_Set__c.Fields.pse__Master_Resource_Request__c.Label}" />
+					<apex:inputField value="{!mockedMasterResourceRequest.pse__Master_Resource_Request__c}" required="true" />
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__create_resource_request_label_number_of_master_resource_requests_to_copy}" />
+					<apex:selectList value="{!resourceRequestToCloneCount}" multiselect="false" size="1">
+						<apex:selectOptions value="{!resourceRequestToCloneCountOption}" />
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.pse__create_resource_request_label_add_copies_of_master_resource_request}" status="ajaxStatus"
+				 action="{!createOrAddResourceRequest}" reRender="manageRRForm,messageSection" oncomplete="updateAnchorTargetAttribute();" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+
+		<apex:pageBlock id="resourceReqResult" title="{!$Label.pse__mass_reassign_label_resource_requests}">
+			<apex:pageBlockButtons >
+				<apex:commandButton value="{!$Label.pse__common_label_delete_resource_requests}" status="ajaxStatus" onclick="onDeleteClick();return false;"
+				 disabled="{!NOT(foundResourceRequestItems)}" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection columns="1" collapsible="false" id="resReqResultPBS">
+				<apex:outputPanel id="resReqResultDiv" rendered="{!foundResourceRequestItems}">
+					<div id="checkResReqCountInfo" style="font-weight: bold;">{!HTMLENCODE(selectedResReqCountInfo)}</div>
+					<apex:outputPanel styleClass="pageBlockTableScroll">
+						<apex:pageBlockTable value="{!resReqGroupedByResReqSetWrapperList}" var="rrw" id="resReqResultPBT" styleClass="slds-border_bottom">
+							<apex:column width="20px">
+								<apex:facet name="header">
+									<input type="checkbox" onclick="selectAll(this, 'resReqCheckbox');setDirty('resReqCheckbox');" id="resReqSelectAllCheckbox" />
+								</apex:facet>
+								<apex:inputCheckbox value="{!rrw.isSelected}" id="resReqCheckbox" onclick="selectItem(this, 'resReqSelectAllCheckbox');setDirty('resReqCheckbox');"
+								 rendered="{!NOT(rrw.isMasterResReq)}" />
+								<apex:outputText value="{!$Label.pse__create_resource_request_label_master}" rendered="{!rrw.isMasterResReq}" />
+							</apex:column>
+							<apex:repeat value="{!resourceRequestColumns}" var="f">
+								<apex:column value="{!rrw.resReq[f.fieldPath]}" rendered="{!NOT(f.Label == $ObjectType.pse__Resource_Request__c.Fields.Name.Label)}" />
+								<apex:column headerValue="{!f.Label}" rendered="{!f.Label == $ObjectType.pse__Resource_Request__c.Fields.Name.Label}">
+									<apex:outputpanel >
+										<a href="/{!rrw.resReq.id}" target="_blank">
+											<apex:outputField value="{!rrw.resReq[f.fieldPath]}" />
+										</a>
+									</apex:outputpanel>
+								</apex:column>
+							</apex:repeat>
+						</apex:pageBlockTable>
+					</apex:outputPanel>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+			<apex:outputPanel rendered="{!NOT(foundResourceRequestItems)}">
+				<apex:outputText value="{!$Label.pse__create_resource_request_set_resource_requests_found}" />
+			</apex:outputPanel>
+		</apex:pageBlock>
+	</apex:form>
+
+	<apex:outputPanel id="OutDialogContainer" layout="block" />
+	<c:lightningAlert exportObjectName="$FFDC" outContainerId="{!$Component.OutDialogContainer}" />
+
+	<script>
+		prepareHeader();
+
+		function prepareHeader() {
+			var config = {
+				objectName: '{!JSENCODE($Label.create_resource_request_set_Manage_Resource_Request_Set)}',
+				objectApiName: '{!$ObjectType["Resource_Request__c"].name}',
+				helpUrl: '{!$Page.ManageResourceRequestSetHelp}',
+				onRender: 'onHeaderLoadCallback',
+				buttons: [{
+					id: 'resourceRequest',
+					label: '{!JSENCODE(resourceRequestName)}',
+					actionFn: 'redirectToDetailPage'
+				}]
+			};
+
+			if ('{!isEverythingOk}' === 'true') {
+				config.buttons.push({
+					id: 'done',
+					label: '{!JSENCODE($Label.common_label_done)}',
+					actionFn: 'showDialog'
+				});
+			}
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+
+		function redirectToDetailPage() {
+			window.open('/{!$CurrentPage.parameters.id}', '_blank');
+		}
+
+		window.onload = function () {
+			updateAnchorTargetAttribute();
+		};
+
+		function updateAnchorTargetAttribute() {
+			_hasUnsavedChanges = false;
+			// This is to set the anchor tag target as _blank to open in new tab.
+			var parentDiv = document.getElementById('{!$Component.manageRRSetPage.manageRRForm.resourceReqResult.resReqResultPBS.resReqResultPBT}');
+			var inputElem = parentDiv.getElementsByTagName("a");
+			for (var i = 0; i < inputElem.length; i++) {
+				inputElem[i].target = '_blank';
+				inputElem[i].onmouseover = '';
+			}
+		}
+
+		function showDialog() {
+			if (!_hasUnsavedChanges) {
+				jsdoCancel();
+				return false;
+			}
+			var buttons = [{
+				'name': 'continue',
+				'label': '{!JSENCODE($Label.common_label_continue_without_deleting)}'
+			}, {
+				'name': 'cancel',
+				'label': '{!JSENCODE($Label.common_label_cancel)}'
+			}, {
+				'name': 'delete',
+				'label': '{!JSENCODE($Label.common_label_delete_and_continue)}',
+				'variant': 'brand'
+			}];
+
+			var config = {
+				'buttons': buttons,
+				'text': '{!JSENCODE($Label.create_resource_request_set_resource_request_selected_for_deletion)}',
+				'icon': 'utility:info'
+			};
+
+			$FFDC.showAlert(config, function (sourceEventKey) {
+				if (sourceEventKey === 'continue') {
+					jsdoCancel();
+				} else if (sourceEventKey === 'delete') {
+					jsDeleteAndGoToRecord();
+				}
+				return true;
+			});
+		}
+	</script>
+</apex:page>

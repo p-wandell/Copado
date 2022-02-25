@@ -1,0 +1,263 @@
+<apex:page id="CreateRCS" title="{!if(mode=='View',$Label.pse__rate_card_set_title,if(mode=='Edit',$Label.pse__rate_card_set_edit_title,$Label.pse__rate_card_set_create_title))}"
+ sidebar="false" standardController="pse__Rate_Card_Set__c" extensions="pse.CreateRateCardSetController" lightningStylesheets="true">
+
+	<c:selectAllCheckboxes functionName="selectAllRows" />
+
+	<apex:outputPanel rendered="{!$User.UIThemeDisplayed!='Theme3'}" layout="none">
+		<style>
+			.resultTable th:not(:first-of-type) {
+				border-left: 1px solid rgb(221, 219, 218) !important;
+			}
+
+			.resultTable th {
+				border-bottom: 1px solid rgb(221, 219, 218) !important;
+			}
+
+			.resultTable tbody tr:first-of-type td {
+				border-top: none !important;
+			}
+		</style>
+	</apex:outputPanel>
+
+	<script type="text/javascript">
+
+		function confirmDissociate(checkBoxIdPattern) {
+			if (checkSelections(checkBoxIdPattern)) {
+				actionToDissociate();
+			} else {
+				return false;
+			}
+		}
+
+		function checkSelections(checkBoxIdPattern) {
+			var count = 0;
+			var inputElem = document.getElementsByTagName("input");
+			for (var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(checkBoxIdPattern) != -1) {
+					if (inputElem[i].checked) {
+						count++;
+						break;
+					}
+				}
+			}
+
+			if (count < 1) {
+				alert('{!JSINHTMLENCODE($Label.Rate_Card_Set_No_Row_Selected_Msg)}');
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		function singleDissociate(id, name) {
+			actionToSingleDissociate(id, name);
+		}
+
+		function confirmDelete() {
+			if (confirm('{!JSINHTMLENCODE($Label.Rate_Card_Set_Delete_Confirm_Msg)}')) {
+				onDelete();
+			}
+		}
+
+	</script>
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<script>
+		prepareHeader();
+
+		function prepareHeader() {
+			var config,
+				objectName = '{!JSENCODE(if(mode=="View", $Label.Rate_Card_Set_Title, if(mode=="Edit", $Label.Rate_Card_Set_Edit_Title, "")))}',
+				recordName = '{!JSENCODE(if(mode=="Create", $Label.Rate_Card_Set_Create_Title, rateCardSet.Name))}';
+
+			config = {
+				objectName: objectName,
+				recordName: recordName,
+				objectApiName: '{!$ObjectType["Rate_Card_Set__c"].name}',
+				buttons: [],
+				helpUrl: '{!$Page.CreateRateCardSetHelp}',
+				onRender: 'onHeaderLoadCallback'
+			};
+
+			if ('{!mode}' !== 'View') {
+				config.buttons.push({
+					id: 'cancel',
+					label: '{!JSENCODE($Label.Rate_Card_Set_Cancel_Btn)}',
+					actionFn: 'onCancel'
+				}, {
+					id: 'save',
+					label: '{!JSENCODE($Label.Rate_Card_Set_Save_Btn)}',
+					actionFn: 'onSave'
+				});
+			}
+
+			if ('{!mode}' === 'View') {
+				config.buttons.push({
+					id: 'edit',
+					label: '{!JSENCODE($Label.Rate_Card_Set_Edit_Btn)}',
+					actionFn: 'onEdit'
+				});
+			}
+
+			if ('{!mode}' !== 'Create') {
+				config.buttons.push({
+					id: 'delete',
+					label: '{!JSENCODE($Label.Rate_Card_Set_Delete_Btn)}',
+					actionFn: 'confirmDelete'
+				});
+			}
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+	</script>
+
+	<apex:form id="CreateRCS_Form">
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+		<apex:actionFunction name="actionToAssociate" status="ajaxStatus" action="{!createRateCardSetJunctions}" rerender="AssociatedRCSection,DissociatedRCSection,MsgSection,dataView">
+			<apex:param name="dissociatedRatecardsList" assignTo="{!dissociatedRatecardsList}" value="" />
+		</apex:actionFunction>
+		<apex:actionFunction name="actionToDissociate" status="ajaxStatus" action="{!deleteRateCardSetJunctions}" rerender="AssociatedRCSection,DissociatedRCSection,MsgSection,dataView" />
+		<apex:actionFunction name="actionToSingleDissociate" status="ajaxStatus" action="{!deleteSingleRateCardSetJunctions}" rerender="AssociatedRCSection,DissociatedRCSection,MsgSection,dataView">
+			<apex:param name="myParamId" value="" />
+			<apex:param name="myParamName" value="" />
+		</apex:actionFunction>
+		<apex:actionFunction name="onCancel" action="{!cancel}" rendered="{!(mode!='View')}" immediate="true" />
+		<apex:actionFunction name="onEdit" action="{!edit}" rendered="{!(mode=='View')}" />
+		<apex:actionFunction name="onSave" action="{!save}" rendered="{!(mode!='View')}" />
+		<apex:actionFunction name="onDelete" action="{!deleteRateCradSet}" rendered="{!(mode!='Create')}" />
+
+		<apex:pageMessages id="MsgSection" />
+		<apex:pageBlock id="CreateRCS_PB" rendered="{!displayContent}" title="{!$Label.pse__rate_card_set_info_title}">
+
+			<!-- Rate Card Set Details section -->
+			<apex:pageBlockSection id="info_section_display" columns="2" rendered="{!(mode=='View')}">
+				<apex:outputField value="{!rateCardSet.Name}" />
+				<apex:outputField value="{!rateCardSet.CurrencyIsoCode}" />
+
+				<apex:repeat value="{!RateCardSetDisplayFields}" var="fName">
+					<apex:outputField value="{!rateCardSet[fName]}" rendered="{!AND(NOT(fName.Label == $ObjectType.Rate_Card_Set__c.Fields.Name.Label),
+									 NOT(fName.Label == $ObjectType.Rate_Card_Set__c.Fields.CurrencyIsoCode.Label))}" />
+				</apex:repeat>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection id="info_section_edit" columns="2" rendered="{!(mode!='View')}">
+				<apex:inputField value="{!rateCardSet.Name}" required="true" />
+				<apex:inputField value="{!rateCardSet.CurrencyIsoCode}" required="true" />
+				<apex:repeat value="{!RateCardSetDisplayFields}" var="fName">
+					<apex:inputField value="{!rateCardSet[fName]}" rendered="{!AND(NOT(fName.Label == $ObjectType.Rate_Card_Set__c.Fields.Name.Label),
+									 NOT(fName.Label == $ObjectType.Rate_Card_Set__c.Fields.CurrencyIsoCode.Label))}" required="{!OR(fName.required,fName.DBRequired)}" />
+				</apex:repeat>
+			</apex:pageBlockSection>
+			<apex:outputPanel id="gap" layout="block" styleClass="slds-p-bottom_small">
+			</apex:outputPanel>
+
+			<!-- Associated Rate Card Set section -->
+			<apex:pageBlock title="{!$Label.pse__rate_card_set_associated_title}" id="RC_Associated" rendered="{!(mode!='Create')}">
+				<apex:pageBlockButtons location="top">
+					<apex:commandButton value="{!$Label.pse__rate_card_set_display_associate_btn}" onclick="showAssociateModalDialog(); return false;" />
+					<apex:commandButton value="{!$Label.pse__rate_card_set_disassociate_btn}" onclick="confirmDissociate('matchingAssocitedRowSelector'); return false;" />
+				</apex:pageBlockButtons>
+				<apex:pageBlockSection columns="1" id="AssociatedRCSection">
+					<apex:outputPanel id="detail">
+						<apex:outputText id="recordCountLabel" value="{!$Label.pse__rate_card_set_associated_count} :  " />
+						<apex:outputText id="recordCount" value="{!associatedRateCards.size}" />
+					</apex:outputPanel>
+					<apex:pageBlockTable styleClass="resultTable" value="{!associatedRateCards}" var="rcWrapper" id="AssociatedRCList">
+						<apex:column >
+							<apex:facet name="header">
+								<input type="checkbox" onclick="selectAllRows(this, 'matchingAssocitedRowSelector')" />
+							</apex:facet>
+							<apex:inputcheckbox value="{!rcWrapper.isSelected}" id="matchingAssocitedRowSelector" />
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">{!$Label.pse__rate_card_set_action_column}</apex:facet>
+							<apex:outputLink value="" onclick="singleDissociate('{!rcWrapper.ratecard.Id}','{!rcWrapper.ratecard.name}'); return false;">{!$Label.pse__rate_card_set_disassociate_btn}</apex:outputLink>
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">{!$Label.pse__rate_card_set_rate_card_column}</apex:facet>
+							<apex:outputLink value="/{!rcWrapper.ratecard.Id}" target="_blank">{!rcWrapper.ratecard.Name}</apex:outputLink>
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">{!$Label.pse__rate_card_set_role_column}</apex:facet>
+							<apex:outputField value="{!rcWrapper.ratecard.pse__Role__c}" />
+						</apex:column>
+						<apex:repeat value="{!RateCardDisplayFields}" var="fName">
+							<apex:column rendered="{!AND(NOT(fName.Label == $ObjectType.Rate_Card__c.Fields.Name.Label),
+									 NOT(fName.Label == $ObjectType.Rate_Card__c.Fields.Role__c.Label))}">
+								<apex:facet name="header">{!fName.Label}</apex:facet>
+								<apex:outputField value="{!rcWrapper.ratecard[fName]}" />
+							</apex:column>
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+
+			<!-- Rate Card Set Project Section -->
+			<apex:pageBlock title="{!$Label.pse__rate_card_set_project_title}" id="RCS_Project" rendered="{!(mode!='Create')}">
+				<apex:pageBlockSection columns="1" id="ProjectSection">
+					<apex:pageBlockTable styleClass="resultTable" value="{!projects}" var="proj" id="ProjectList">
+						<apex:column >
+							<apex:facet name="header">{!$Label.pse__rate_card_set_project_column}</apex:facet>
+							<apex:outputLink value="/{!proj.Id}" target="_blank">{!proj.Name}</apex:outputLink>
+						</apex:column>
+						<apex:repeat value="{!ProjectDisplayFields}" var="fName">
+							<apex:column rendered="{!(NOT(fName.Label == $ObjectType.pse__Proj__c.Fields.Name.Label))}">
+								<apex:facet name="header">{!fName.Label}</apex:facet>
+								<apex:outputField value="{!proj[fName]}" />
+							</apex:column>
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+
+			<!-- Rate Card Set Opportunity Section -->
+			<apex:pageBlock title="{!$Label.pse__rate_card_set_opp_title}" id="RCS_Opportunity" rendered="{!(mode!='Create')}">
+				<apex:pageBlockSection columns="1" id="OpportunitySection">
+					<apex:pageBlockTable styleClass="resultTable" value="{!opportunities}" var="opp" id="OpportunityList">
+						<apex:column >
+							<apex:facet name="header">{!$Label.pse__rate_card_set_opp_column}</apex:facet>
+							<apex:outputLink value="/{!opp.Id}" target="_blank">{!opp.Name}</apex:outputLink>
+						</apex:column>
+						<apex:repeat value="{!OpportunityDisplayFields}" var="fName">
+							<apex:column rendered="{!(NOT(fName.Label == $ObjectType.Opportunity.Fields.Name.Label))}">
+								<apex:facet name="header">{!fName.Label}</apex:facet>
+								<apex:outputField value="{!opp[fName]}" />
+							</apex:column>
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+		</apex:pageBlock>
+
+	</apex:form>
+
+	<apex:outputPanel id="OutDialogContainer" layout="block" />
+	<c:lightningAssociateRateCard exportObjectName="$FFDC" outContainerId="{!$Component.OutDialogContainer}" />
+	<apex:outputPanel id="dataView" layout="block">
+		<script>
+			function showAssociateModalDialog() {
+				wait(true);
+				var associateConfig = {
+					columns: '{!JSENCODE(rateCardColumns)}',
+					associatedrcIds: '{!JSENCODE(associatedIDList)}',
+					rcsCurrency: '{!JSENCODE(rateCardSet.CurrencyIsoCode)}',
+					selectedRole: '{!JSINHTMLENCODE(mockRateCard.Role__c)}'
+				}
+
+				$FFDC.showAssociateModal(associateConfig, function (selectedRateCards) {
+					if (selectedRateCards) {
+						actionToAssociate(JSON.stringify(selectedRateCards));
+					}
+					return true;
+				}, function () {
+					wait(false);
+				});
+			}
+		</script>
+	</apex:outputPanel>
+</apex:page>

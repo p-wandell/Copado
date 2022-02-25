@@ -1,0 +1,14 @@
+<!--
+ - Copyright (c) 2018. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 3/21/18.
+-->
+<aura:component abstract="true" extensible="true" controller="Peak_FileUploadController" extends="c:Peak_Base">
+
+    <!--If using this in a form, set inForm on the Peak_FileUploader component, and uploadList will be populated with the file list from the file uploader-->
+    <aura:attribute name="uploadList" type="List"/>
+
+    <aura:attribute name="uploadMessage" type="String"/>
+    <aura:handler name="setFileList" event="c:Peak_SetFileListEvent" action="{!c.setFileUploadList}"/>
+
+    {!v.body}
+</aura:component>

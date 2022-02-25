@@ -1,0 +1,247 @@
+<apex:page standardController="ffct__BundleSubComponent__c" recordSetVar="subComponents" extensions="ffct.BundleSubComponentAutoCreateExtension" action="{!isToolMustBeActivated}" doctype="html-5.0">
+<style type="text/css">
+	.inputText {
+		margin-right: 10px;
+		width: 435px;
+	}
+</style>
+	<apex:actionStatus id="eventStatus">
+		<apex:facet name="start">
+			<apex:outputPanel >
+				<div
+					style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+					<div style="position: absolute; top: 50%; left: 50%">
+						<apex:image value="/img/loading32.gif"></apex:image>
+					</div>
+				</div>
+			</apex:outputPanel>
+		</apex:facet>
+	</apex:actionStatus>
+	<apex:form id="form" >
+		<apex:outputPanel id="progressPanel">
+			<div id="progressImg" style="display:none;width:100%;height:100%;position:absolute;top:0;left:0;">
+				<div style="position:absolute;top:50%;left:50%">
+					<apex:image value="/img/loading32.gif"></apex:image>
+				</div>
+			</div>
+		</apex:outputPanel>
+		<apex:sectionheader title="{!$Label.ffct__autocreatesubcomponents}" help="helploader?topicid=1046"/>
+		<apex:pagemessages id="pgMsg" escape="false" />
+		<apex:outputLink style="padding-top:50px;padding-left:50px;color: #015BA7;" value="{!URLFOR($Action.ffct__BundleComponent__c.View,ComponentId)}" rendered="{!ISBLANK(DisplayInfo)}">
+			{!$Label.ffct__gotocomponent}
+		</apex:outputLink>
+
+		<apex:pageBlock id="pgBlck" rendered="{! !ISBLANK(DisplayInfo) && ISBLANK(DisplayInfo.nodesToBeDeleted)}">
+			<div style="margin-bottom: 20px;">
+				<label class="labelCol" >{!$Label.InputObjectName}</label>
+				<apex:panelGroup >
+					<apex:input type="text" list="{!DisplayInfo.objectNames}"
+						value="{!DisplayInfo.objectDisplayName}" styleClass="inputText">
+					</apex:input>
+				</apex:panelGroup>
+			</div>
+			<apex:pageBlockButtons location="bottom">
+				<apex:outputPanel id="btnPanel">
+					<apex:commandButton action="{!showMetadata}" value="{!$Label.ffct__getrelatedsubcomponents}" status="eventStatus"
+					 rerender="form" oncomplete="prepareTree({!TreeJsonString})" />
+					 <apex:commandButton action="{!Cancel}" value="Cancel" />
+				</apex:outputPanel>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+
+		<apex:pageBlock id="treeBlock" rendered="{!AND(NOT(ISBLANK(TreeJsonString)), ISBLANK(DisplayInfo.nodesToBeDeleted))}">
+			<div>
+					<label class="labelCol" >{!$Label.UnmanagedOnly}</label><input type="checkbox" id="unmanagedOnly" onclick="prepareTree(TreeObj);"></input>			
+			</div>
+			<div id="treeStructure"></div>
+			<apex:pageBlockButtons location="bottom">
+				<apex:outputPanel id="btnPanel">
+					<apex:commandButton value="{!$Label.ffct__create}"  oncomplete="createSubComponents(JSON.stringify(TreeObj))" status="eventStatus"/>
+					<apex:commandButton action="{!Cancel}" value="Cancel" />
+				</apex:outputPanel>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+
+		<apex:pageBlock id="nodeBlock" rendered="{!NOT(ISBLANK(DisplayInfo.nodesToBeDeleted))}">
+			<ul style='list-style: none;padding: 0 0 0 16px;'>
+			<apex:repeat var="node" value="{!DisplayInfo.nodesToBeDeleted}">
+				<li>
+					<apex:inputCheckbox value="{!node.IsSelected}" label="{!node.Title}"/><label >{!node.Title} ({!node.Type})</label>
+				</li>							
+			</apex:repeat>
+			</ul>
+			
+			<apex:pageBlockButtons location="bottom">
+				<apex:outputPanel id="btnPanel">
+					<apex:commandButton value="{!$Label.ffct__finish}" status="eventStatus"
+					 rerender="form"  action="{!continueWithDeletedSubComponents}" />
+					<apex:commandButton action="{!Cancel}" value="Cancel" />
+				</apex:outputPanel>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:actionFunction name="createSubComponents" action="{!createSubComponents}" oncomplete="" status="eventStatus" reRender="form">
+			<apex:param name="tree" value="" />
+		</apex:actionFunction>
+	</apex:form>	
+
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+	  $(function() {
+	    $("form").attr('autocomplete', 'off');
+	  });
+
+	   var TreeObj=null;
+	  function nodeClicked(chkbox, nodeId)
+	  {
+	  		var currentNode=getNodeById(nodeId, TreeObj);	  		
+	  		if(currentNode)
+	  		{
+	  			if(document.getElementById("unmanagedOnly").checked)
+	  			{
+	  				if(!currentNode.IsManaged && currentNode.Title!='unfiled$public')
+	  				{
+	  					currentNode.IsSelected=chkbox.checked;
+	  					document.getElementById(nodeId).checked=chkbox.checked;
+	  				}
+	  			}
+	  			else
+	  			{
+	  				if(currentNode.Title!='unfiled$public')
+	  				{
+	  					currentNode.IsSelected=chkbox.checked;
+	  					document.getElementById(nodeId).checked=chkbox.checked;
+	  				}	  				
+	  			}	
+	  			if(currentNode.Children)
+		  		{
+		  			for(var i=0;i<currentNode.Children.length;i++)
+		  			{
+		  				nodeClicked(chkbox, currentNode.Children[i].Id);
+		  			}
+		  		}  			
+	  		}
+	  }
+	  
+	  function getNodeById(nodeId, treeNodes)
+	  {
+	  		var node=null;
+
+	  		if(treeNodes)
+	  		{
+	  			for(var i=0;i<treeNodes.length;i++)
+	            {
+	            	if(treeNodes[i].Id==nodeId)
+	            	{
+	            		node=treeNodes[i];	
+	            	}
+	            	else if(treeNodes[i].Children)
+	            	{
+	            		node = getNodeById(nodeId, treeNodes[i].Children);	            		
+	            	}
+
+	            	if(node!=null)
+	            	{
+	            		break;
+	            	}
+	            }
+	  		}
+	  		return node;	
+	  }
+
+	  function prepareTree(jsonObj)
+	  {      
+            var treeStr="<ul style='list-style: none;padding: 0 0 0 16px;'>";
+            if(jsonObj)
+            {
+            	for(var i=0;i<jsonObj.length;i++)
+	            {
+	            	var disableStr="";
+	            	if(document.getElementById("unmanagedOnly").checked && jsonObj[i].IsManaged)
+	                {                	
+	                	jsonObj[i].IsSelected=false;
+	                	disableStr= "disabled";
+	                }
+	            	var checkedStr=jsonObj[i].IsSelected?'checked':'';
+	                jsonObj[i].Id = getNodeId(jsonObj[i],null);
+	                var idStr="id = '"+jsonObj[i].Id+"'";
+	                
+
+	                treeStr+="<li><input type='checkbox' value='"+jsonObj[i].IsSelected+"' "+checkedStr+" onclick='nodeClicked(this, &#39;"+jsonObj[i].Id+"&#39;)' "+idStr+" "+disableStr+" > <b>"+jsonObj[i].Title+" </b></input></li>";
+	                treeStr=addChildren(jsonObj[i].Children,treeStr,jsonObj[i].Id);
+	            }
+	            
+	            treeStr+="</ul>";
+	            
+	            $("#treeStructure").html(treeStr);
+	            TreeObj =  jsonObj;
+            }
+            
+        }
+        
+        function addChildren(children,parentStr, parentId)
+        {
+            if(children && children.length>0)
+            {
+                parentStr+="<ul style='list-style: none;padding: 0 0 0 16px;'>";
+                for(var i=0;i<children.length;i++)
+                {
+                	if(children[i])
+                	{                		
+                		var titleStr='';
+                		var disableStr="";
+                		if(children[i].Type=='WorkflowRule')
+                		{
+                			titleStr = "<b>"+children[i].Title+" ("+children[i].Type+") </b>";
+                		}
+                		else if(children[i].Type=='EmailTemplate' && children[i].Children)
+                		{
+                			titleStr = children[i].Title+" ("+children[i].Type + " - Folder)";
+                			if(children[i].Title=='unfiled$public')
+                			{
+                				children[i].IsSelected=false;
+		                		disableStr= "disabled";
+                			}
+                		}
+                		else
+                		{
+                			titleStr = children[i].Title+" ("+children[i].Type+")";
+                		}
+                		
+		            	if(document.getElementById("unmanagedOnly").checked && children[i].IsManaged)
+		                {
+		                	children[i].IsSelected=false;
+		                	disableStr= "disabled";
+		                }
+		                children[i].Id = getNodeId(children[i],parentId);
+                		var idStr="id = '"+children[i].Id+"'";
+                		var checkedStr=children[i].IsSelected?'checked':'';
+                		parentStr+="<li><input type='checkbox' value='"+children[i].IsSelected+"' "+checkedStr+" onclick='nodeClicked(this, &#39;"+children[i].Id+"&#39;)' "+idStr+" "+disableStr+" >"+titleStr+"</input></li>";
+                    	parentStr=addChildren(children[i].Children,parentStr,children[i].Id);
+                	}
+                    
+                }
+                parentStr+="</ul>";
+            }
+            
+            return parentStr;
+        }
+
+        function getNodeId(node, parentId)
+        {
+        	var id='';        	
+        	if(node)
+        	{
+        		if(!parentId)
+	        	{
+	        		parentId="";
+	        	}
+	        	else
+	        	{
+	        		parentId+="_";
+	        	}
+        		id = parentId+node.FullName.replace(/ /g , "_").replace(/\./g , "_").replace(/\//g , "_").replace(/\\/g , "_")+node.Type;
+        	}
+        	return id;
+        }
+</script>
+</apex:page>

@@ -1,0 +1,384 @@
+<apex:page standardController="pse__Proj__c" extensions="pse.MassResourceReplacementController" action="{!init}" tabStyle="Search_Resources__tab" title="{!$Label.pse__mass_reassign_label_replace_resources}" sidebar="false"  lightningStyleSheets="true">
+    <script>
+        String.prototype.format = function() {
+		    var content = this;
+		    for (var i = 0; i < arguments.length; i++) {
+		        var replacement = '{' + i + '}';
+		        content = content.replace(replacement, arguments[i]);
+		    }
+		    return content;
+		};
+		
+		function selectAll(comp, matchingStr, countInfoEle, selectedCompId, total) {
+		    var selectCount = parseInt(document.getElementById(selectedCompId).value);
+		    var totalCount = total;
+		    var isSelectAll = comp.checked;
+		    var inputElem = document.getElementsByTagName("input");
+		    var label = '{!JSENCODE($Label.common_label_selected_record_count)}';
+		    for (var i = 0; i < inputElem.length; i++) {
+		        if ((inputElem[i].id.indexOf(matchingStr) != -1) && (!inputElem[i].disabled)) {
+		            if (inputElem[i].checked != isSelectAll) {
+		                inputElem[i].checked = isSelectAll
+		                if (isSelectAll) {
+		                    selectCount = selectCount + 1;
+		                } else {
+		                    selectCount = selectCount - 1;
+		                }
+		            }
+		
+		        }
+		    }
+		    countInfo = label.format(selectCount, totalCount);
+		    document.getElementById(selectedCompId).value = selectCount;
+		    document.getElementById(countInfoEle).innerHTML = countInfo;
+		}
+		
+		function selectItem(comp, selectAllCheckboxStr, countInfoEle, selectedCompId, total) {
+		    var selectCount = parseInt(document.getElementById(selectedCompId).value);
+		    var totalCount = total;
+		    var label = '{!JSENCODE($Label.common_label_selected_record_count)}';
+		    var lstindex = comp.id.lastIndexOf(':') + 1;
+		    var compID = comp.id.substring(lstindex, comp.id.length);
+		
+		    if (comp.checked) {
+		        selectCount = selectCount + 1;
+		    } else {
+		        selectCount = selectCount - 1;
+		    }
+		
+		    countInfo = label.format(selectCount, totalCount);
+		    document.getElementById(selectedCompId).value = selectCount;
+		    document.getElementById(countInfoEle).innerHTML = countInfo;
+		    selectCheckAll(compID, selectAllCheckboxStr);
+		}
+		
+		function selectCheckAll(compID, selectAllCheckboxStr) {
+		    var inputElem = document.getElementsByTagName("input");
+		    var j = 0;
+		    for (var i = 0; i < inputElem.length; i++) {
+		        if (inputElem[i].id.indexOf(compID) != -1 && (!inputElem[i].disabled)) {
+		            j++;
+		            if (!inputElem[i].checked) {
+		                document.getElementById(selectAllCheckboxStr).checked = false;
+		                return;
+		            }
+		        }
+		    }
+		    if (j > 0) {
+		        document.getElementById(selectAllCheckboxStr).checked = true;
+		    }
+		}
+    </script>
+	<style>
+		.headerLink {
+			font-weight: bold;
+		}
+		.pagingButtonTableHeader {
+			padding: 5px;
+		}
+		.warningImage {
+		    padding-left: 2px;
+		    height: 14px;
+		}
+		.td-row-align {
+       		float: left;
+       	}
+       	
+	</style>
+	<apex:variable var="isLightningView" value="{!$User.UIThemeDisplayed!='Theme3'}" />
+	<apex:outputPanel rendered="{!!isLightningView}" layout="none">
+		<style>
+			.headerLink {
+				padding-left: 39px;
+			}
+			.inputBox {
+				width: 150px;
+			}
+			.labelStyle {
+				padding-right: 10px;
+			}
+			.td-row-align div.errorMsg {
+	        	margin: 2% 0 0 41%;
+	       	}
+		</style>
+	</apex:outputPanel>
+	<apex:outputPanel rendered="{!isLightningView}" layout="none">
+		<style>
+			.inputBox {
+				width: 200px;
+			}
+			.resultTable th:not(:first-of-type) { 
+				border-left: 1px solid rgb(221, 219, 218) !important; 
+			}
+			.td-row-align div.errorMsg {
+	        	margin: 2% 0 0 45%;
+	       	}
+		</style>
+        <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	</apex:outputPanel>
+    <c:WaitComponent />
+    <apex:sectionHeader title="{!$Label.pse__mass_reassign_label_replace_resources}" subtitle="{!projectName}" help="{!$Page.pse__MassResourceReplacementHelp}" />
+    <a href="/{!$CurrentPage.parameters.id}" class="headerLink">
+        <apex:outputText value="{!$Label.pse__mass_assign_proj_resources_label_back_to_project}" />
+    </a><br /><br />
+
+    <apex:PageMessages id="messageSection" />
+    <apex:form id="resRepAppForm" rendered="{!isEverythingOk}">
+        <apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+        <apex:actionFunction name="sortAssignmentData" action="{!assignmentPaginator.doSort}" rerender="projAssignmentSec,messageSection" status="ajaxStatus">
+            <apex:param name="sortField" assignTo="{!assignmentPaginator.dataSource.sortField}" value="" />
+        </apex:actionFunction>
+
+        <apex:actionFunction name="sortTaskAssignData" action="{!taskAssignmentPaginator.doSort}" rerender="projTaskAssignmentSec,messageSection" status="ajaxStatus">
+            <apex:param name="sortField" assignTo="{!taskAssignmentPaginator.dataSource.sortField}" value="" />
+        </apex:actionFunction>
+
+        <apex:actionFunction name="sortResReqData" action="{!resourceReqPaginator.doSort}" rerender="resourceReqSec,messageSection" status="ajaxStatus">
+            <apex:param name="sortField" assignTo="{!resourceReqPaginator.dataSource.sortField}" value="" />
+        </apex:actionFunction>
+
+        <apex:pageBlock id="filterPB" >
+            <apex:pageBlockSection columns="1" id="filterSec" collapsible="false" title="{!$Label.pse__common_label_filter}"/>
+            <table width="100%">
+                <tr>
+                    <td width="40%">
+                        <c:MultiselectPicklist leftLabel="{!$Label.pse__mass_reassign_label_available_resource_roles}" leftOptionsAttribute="{!allResourceRoles}" rightLabel="{!$Label.pse__mass_reassign_label_resource_roles_to_filter}" rightOptionsAttribute="{!selectedResourceRoles}" size="5" width="140px" />
+                    </td>
+                    <td width="60%">
+                        <table>
+                            <tr>
+                                <td>
+                                    <apex:outputLabel value="{!$Label.pse__mass_reassign_label_filter_text}" />
+                                </td>
+                                <td>
+                                    <apex:inputText value="{!searchText}" styleClass="inputBox"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <br/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <apex:outputLabel value="{!$Label.pse__common_label_resource}" />
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!filterRecourceMockup.pse__Resource__c}" styleClass="inputBox"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="{!$Label.pse__common_label_filter}" action="{!filter}" rerender="messageSection,filterResult,filterPB" status="ajaxStatus" />
+                <apex:commandButton value="{!$Label.pse__common_label_clear}" action="{!clear}" rerender="messageSection,resRepAppForm" status="ajaxStatus" />
+                <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancel}" rerender="messageSection" status="ajaxStatus" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <apex:pageBlock >
+        	<apex:pageBlockSection columns="1" collapsible="false" title="{!$Label.pse__mass_reassign_label_resource_replacement}"> 
+        	<apex:outputPanel >
+        	<table>
+        		<tr>
+        			<td class="td-row-align">
+        				<apex:outputLabel value="{!$Label.pse__common_label_resource}" for="resourceName" styleClass="labelStyle"/>
+	               		<apex:inputField value="{!recourceMockup.pse__Resource__c}" id="resourceName"/>
+	               	</td>
+	               	<td class="td-row-align">
+	               		<apex:commandButton value="{!$Label.pse__mass_reassign_label_replace_resource}" action="{!replaceResource}" id="filterButton" status="ajaxStatus" reRender="messageSection,resRepAppForm"/>
+        			</td>
+        		</tr>
+        	</table>
+        	</apex:outputPanel>
+        	</apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <apex:pageBlock title="{!$Label.pse__mass_reassign_label_filter_results}" id="filterResult">
+
+            <apex:outputPanel id="projAssignmentSec" rendered="{!showAssignments}">
+                <apex:inputHidden value="{!assignmentPaginator.selectedAssignmentCount}" id="assignHidField" />
+                <apex:pageBlockSection columns="1" title="{!$Label.pse__mass_reassign_label_project_assignments}" collapsible="false">
+                    <div id="countSelectedAssignments" style="font-weight: bold;">{!HTMLENCODE(selectedProjAssCountInfo)}</div>
+                    <apex:pageBlockTable styleClass="resultTable" value="{!assignmentPaginator.currentItems}" var="assignWrapper" rendered="{!foundAssignmentItems}">
+                        <apex:column >
+                            <apex:facet name="header">
+                                <input type="checkbox" onclick="selectAll(this, 'assignCheckbox' , 'countSelectedAssignments', '{!$Component.assignHidField}', {!totalAssignmentCount})" id="assignSelectAllCheckbox" />
+                            </apex:facet>
+                            <apex:inputCheckbox value="{!assignWrapper.isSelected}" id="assignCheckbox" onclick="selectItem(this, 'assignSelectAllCheckbox' , 'countSelectedAssignments', '{!$Component.assignHidField}', {!totalAssignmentCount});" disabled="{!Not(assignWrapper.isResourceReplacable)}" />
+                            <apex:outputPanel rendered="{!Not(assignWrapper.isResourceReplacable)}">
+                            	<apex:image styleClass="warningImage" url="/img/msg_icons/warning24.png" title="{!$Label.pse__mass_reassign_label_not_resource_replacable}"/>
+                            </apex:outputPanel>
+                        </apex:column>
+                        <apex:repeat value="{!assignmentColumns}" var="f">
+                            <apex:column styleClass="slds-cell-wrap">
+                                <apex:facet name="header">
+                                    <apex:variable var="isSortable" value="{!sortables[nameSpacePrefix + 'Assignment__c.' + f.fieldPath]}">
+                                        <apex:outputLink value="javascript:void(0);" onclick="sortAssignmentData('{!f.fieldPath}');" rendered="{!isSortable}">
+                                            <apex:outputText value="{!IF(f.Label == $ObjectType.Contact.Fields.Name.Label, $Label.pse__common_label_resource_name, f.Label)}" />
+                                        </apex:outputLink>
+                                        <apex:image value="/s.gif" styleClass="{!IF(assignmentPaginator.dataSource.sortField == f.fieldPath, IF(assignmentPaginator.dataSource.isAscending , 'sortAsc','sortDesc'),'')}" rendered="{!isSortable}" />
+                                        <apex:outputText value="{!IF(f.Label == $ObjectType.Contact.Fields.Name.Label, $Label.pse__common_label_resource_name, f.Label)}" rendered="{!!isSortable}" />
+                                    </apex:variable>
+                                </apex:facet>
+
+                                <apex:outputpanel rendered="{!NOT(f.Label == $ObjectType.pse__Assignment__c.Fields.pse__Assignment_Number__c.Label)}">
+                                    <apex:outputField value="{!assignWrapper.projAssignment[f.fieldPath]}" />
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!f.Label == $ObjectType.pse__Assignment__c.Fields.pse__Assignment_Number__c.Label}">
+                                    <a href="/{!assignWrapper.projAssignment.id}" target="_blank">
+                                        <apex:outputField value="{!assignWrapper.projAssignment[f.fieldPath]}" />
+                                    </a>
+                                </apex:outputpanel>
+                            </apex:column>
+                        </apex:repeat>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:outputPanel rendered="{!foundAssignmentItems}">
+                    <table class="list">
+                        <tfoot>
+                            <tr class="totalRow">
+                                <th class="totalRow pagingButtonTableHeader" scope="col" align="left">
+                                    <apex:outputText value="{!assignmentPaginator.recordStatusMessage}" />
+                                    &nbsp;&nbsp;&nbsp;
+                                    <apex:commandButton styleClass="btn" action="{!assignmentPaginator.first}" value="{!$Label.pse__common_label_first}" disabled="{!NOT(assignmentPaginator.hasFirst)}" rerender="projAssignmentSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!assignmentPaginator.previous}" value="{!$Label.pse__common_label_previous}" disabled="{!NOT(assignmentPaginator.hasPrevious)}" rerender="projAssignmentSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!assignmentPaginator.next}" value="{!$Label.pse__common_label_next}" disabled="{!NOT(assignmentPaginator.hasNext)}" rerender="projAssignmentSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!assignmentPaginator.last}" value="{!$Label.pse__common_label_last}" disabled="{!NOT(assignmentPaginator.hasLast)}" rerender="projAssignmentSec" status="ajaxStatus" />
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <script type="text/javascript">
+                        selectCheckAll('assignCheckbox', 'assignSelectAllCheckbox');
+                    </script>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(foundAssignmentItems)}">
+                    <apex:outputText value="{!$Label.pse__mass_reassign_label_no_project_assignment_records_found}"/>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <apex:outputPanel id="projTaskAssignmentSec" rendered="{!showProjTaskAssignments}">
+                <apex:inputHidden value="{!taskAssignmentPaginator.selectedTaskAssignmentCount}" id="taskAssignHidField" />
+                <apex:pageBlockSection columns="1" title="{!$Label.pse__mass_reassign_label_project_task_assignments}" collapsible="false">
+                    <div id="countSelectedProjTaskAssignments" style="font-weight: bold;">{!HTMLENCODE(selectedTaskAssCountInfo)}</div>
+                    <apex:pageBlockTable styleClass="resultTable" value="{!taskAssignmentPaginator.currentItems}" var="itemWrapper" rendered="{!foundTaskAssignmentItems}">
+                        <apex:column >
+                            <apex:facet name="header">
+                                <input type="checkbox" onclick="selectAll(this, 'taskAssignCheckbox', 'countSelectedProjTaskAssignments', '{!$Component.taskAssignHidField}', {!totalTaskAssignmentCount})" id="taskAssignSelectAllCheckbox" />
+                            </apex:facet>
+                            <apex:inputCheckbox value="{!itemWrapper.isSelected}" id="taskAssignCheckbox" onclick="selectItem(this, 'taskAssignSelectAllCheckbox' , 'countSelectedProjTaskAssignments', '{!$Component.taskAssignHidField}', {!totalTaskAssignmentCount});" />
+                        </apex:column>
+                        <apex:repeat value="{!taskAssignmentColumns}" var="f">
+                            <apex:column styleClass="slds-cell-wrap">
+                                <apex:facet name="header">
+                                    <apex:variable var="isSortable" value="{!sortables[nameSpacePrefix + 'Project_Task_Assignment__c.' + f.fieldPath]}">
+                                        <apex:outputLink value="javascript:void(0);" onclick="sortTaskAssignData('{!f.fieldPath}');" rendered="{!isSortable}">
+                                            <apex:outputText value="{!IF(f.Label == $ObjectType.Contact.Fields.Name.Label, $Label.pse__common_label_resource_name, f.Label)}" />
+                                        </apex:outputLink>
+                                        <apex:image value="/s.gif" styleClass="{!IF(taskAssignmentPaginator.dataSource.sortField == f.fieldPath, IF(taskAssignmentPaginator.dataSource.isAscending , 'sortAsc','sortDesc'),'')}" rendered="{!isSortable}" />
+                                        <apex:outputText value="{!IF(f.Label == $ObjectType.Contact.Fields.Name.Label, $Label.pse__common_label_resource_name, f.Label)}" rendered="{!!isSortable}" />
+                                    </apex:variable>
+                                </apex:facet>
+
+                                <apex:outputpanel rendered="{!NOT(f.Label == $ObjectType.pse__Project_Task_Assignment__c.Fields.Name.Label)}">
+                                    <apex:outputField value="{!itemWrapper.taskAssignment[f.fieldPath]}" />
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!f.Label == $ObjectType.pse__Project_Task_Assignment__c.Fields.Name.Label}">
+                                    <a href="/{!itemWrapper.taskAssignment.id}" target="_blank">
+                                        <apex:outputField value="{!itemWrapper.taskAssignment[f.fieldPath]}" />
+                                    </a>
+                                </apex:outputpanel>
+                            </apex:column>
+                        </apex:repeat>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:outputPanel rendered="{!foundTaskAssignmentItems}">
+                    <table class="list">
+                        <tfoot>
+                            <tr class="totalRow">
+                                <th class="totalRow pagingButtonTableHeader" scope="col" align="left">
+                                    <apex:outputText value="{!taskAssignmentPaginator.recordStatusMessage}" />
+                                    &nbsp;&nbsp;&nbsp;
+                                    <apex:commandButton styleClass="btn" action="{!taskAssignmentPaginator.first}" value="{!$Label.pse__common_label_first}" disabled="{!NOT(taskAssignmentPaginator.hasFirst)}" rerender="projTaskAssignmentSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!taskAssignmentPaginator.previous}" value="{!$Label.pse__common_label_previous}" disabled="{!NOT(taskAssignmentPaginator.hasPrevious)}" rerender="projTaskAssignmentSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!taskAssignmentPaginator.next}" value="{!$Label.pse__common_label_next}" disabled="{!NOT(taskAssignmentPaginator.hasNext)}" rerender="projTaskAssignmentSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!taskAssignmentPaginator.last}" value="{!$Label.pse__common_label_last}" disabled="{!NOT(taskAssignmentPaginator.hasLast)}" rerender="projTaskAssignmentSec" status="ajaxStatus" />
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <script type="text/javascript">
+                        selectCheckAll('taskAssignCheckbox', 'taskAssignSelectAllCheckbox');
+                    </script>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(foundTaskAssignmentItems)}">
+                    <apex:outputText value="{!$Label.pse__mass_reassign_label_no_project_task_assignment_records_found}"/>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <apex:outputPanel id="resourceReqSec" rendered="{!showResourceRequests}">
+                <apex:inputHidden value="{!resourceReqPaginator.selectedResourceReqCount}" id="rrHidField" />
+                <apex:pageBlockSection columns="1" title="{!$Label.pse__mass_reassign_label_resource_requests}" collapsible="false">
+                    <div id="countSelectedResourceRequests" style="font-weight: bold;">{!HTMLENCODE(selectedResReqCountInfo)}</div>
+                    <apex:pageBlockTable styleClass="resultTable" value="{!resourceReqPaginator.currentItems}" var="itemWrapper" rendered="{!foundResourceReqItems}">
+                        <apex:column styleClass="slds-cell-wrap">
+                            <apex:facet name="header">
+                                <input type="checkbox" onclick="selectAll(this, 'rrCheckbox', 'countSelectedResourceRequests', '{!$Component.rrHidField}', {!totalResourceReqCount})" id="rrSelectAllCheckbox" />
+                            </apex:facet>
+                            <apex:inputCheckbox value="{!itemWrapper.isSelected}" id="rrCheckbox" onclick="selectItem(this, 'rrSelectAllCheckbox' , 'countSelectedResourceRequests', '{!$Component.rrHidField}', {!totalResourceReqCount});" />
+                        </apex:column>
+                        <apex:repeat value="{!resourceRequestColumns}" var="f">
+                            <apex:column styleClass="slds-cell-wrap">
+                                <apex:facet name="header">
+                                    <apex:variable var="isSortable" value="{!sortables[nameSpacePrefix + 'Resource_Request__c.' + f.fieldPath]}">
+                                        <apex:outputLink value="javascript:void(0);" onclick="sortResReqData('{!f.fieldPath}');" rendered="{!isSortable}">
+                                            <apex:outputText value="{!IF(f.Label == $ObjectType.Contact.Fields.Name.Label, $Label.pse__common_label_resource_name, f.Label)}" />
+                                        </apex:outputLink>
+                                        <apex:image value="/s.gif" styleClass="{!IF(resourceReqPaginator.dataSource.sortField == f.fieldPath, IF(resourceReqPaginator.dataSource.isAscending , 'sortAsc','sortDesc'),'')}" rendered="{!isSortable}" />
+                                        <apex:outputText value="{!IF(f.Label == $ObjectType.Contact.Fields.Name.Label, $Label.pse__common_label_resource_name, f.Label)}" rendered="{!!isSortable}" />
+                                    </apex:variable>
+                                </apex:facet>
+
+                                <apex:outputpanel rendered="{!NOT(f.Label == $ObjectType.pse__Resource_Request__c.Fields.Name.Label)}">
+                                    <apex:outputField value="{!itemWrapper.resourceRequest[f.fieldPath]}" />
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!f.Label == $ObjectType.pse__Resource_Request__c.Fields.Name.Label}">
+                                    <a href="/{!itemWrapper.resourceRequest.id}" target="_blank">
+                                        <apex:outputField value="{!itemWrapper.resourceRequest[f.fieldPath]}" />
+                                    </a>
+                                </apex:outputpanel>
+                            </apex:column>
+                        </apex:repeat>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:outputPanel rendered="{!foundResourceReqItems}">
+                    <table class="list">
+                        <tfoot>
+                            <tr class="totalRow">
+                                <th class="totalRow pagingButtonTableHeader" scope="col" align="left">
+                                    <apex:outputText value="{!resourceReqPaginator.recordStatusMessage}" />
+                                    &nbsp;&nbsp;&nbsp;
+                                    <apex:commandButton styleClass="btn" action="{!resourceReqPaginator.first}" value="{!$Label.pse__common_label_first}" disabled="{!NOT(resourceReqPaginator.hasFirst)}" rerender="resourceReqSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!resourceReqPaginator.previous}" value="{!$Label.pse__common_label_previous}" disabled="{!NOT(resourceReqPaginator.hasPrevious)}" rerender="resourceReqSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!resourceReqPaginator.next}" value="{!$Label.pse__common_label_next}" disabled="{!NOT(resourceReqPaginator.hasNext)}" rerender="resourceReqSec" status="ajaxStatus" />
+                                    <apex:commandButton styleClass="btn" action="{!resourceReqPaginator.last}" value="{!$Label.pse__common_label_last}" disabled="{!NOT(resourceReqPaginator.hasLast)}" rerender="resourceReqSec" status="ajaxStatus" />
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <script type="text/javascript">
+                        selectCheckAll('rrCheckbox', 'rrSelectAllCheckbox');
+                    </script>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(foundResourceReqItems)}">
+                    <apex:outputText value="{!$Label.pse__mass_reassign_label_no_resource_request_records_found}"/>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:pageBlock>
+
+    </apex:form>
+
+</apex:page>

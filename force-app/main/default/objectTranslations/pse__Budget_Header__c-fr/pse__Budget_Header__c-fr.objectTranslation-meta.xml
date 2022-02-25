@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>En-tête du budget</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>En-têtes du budget</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Nom d&apos;en-tête budgétaire</nameFieldLabel>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <errorMessage><!-- Account is required and cannot be changed once set --></errorMessage>
+        <name>pse__Account_required_and_constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Budget Amount Consumed is required --></errorMessage>
+        <name>pse__Budget_Amount_Consumed_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Budget Total is required --></errorMessage>
+        <name>pse__Budget_Total_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Currency cannot be changed --></errorMessage>
+        <name>pse__Currency_is_constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot update budget amount because the amount consumed is greater than the maximum allowable amount. --></errorMessage>
+        <name>pse__Enforce_Amount_Overrun</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot update budget amount because the amount consumed is greater than the maximum allowable expense amount. --></errorMessage>
+        <name>pse__Enforce_Expense_Amount_Overrun</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot update budget amount because the amount consumed is greater than the maximum allowable total amount. --></errorMessage>
+        <name>pse__Enforce_Total_Amount_Overrun</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The project&apos;s currency must match the currency of this budget header --></errorMessage>
+        <name>pse__Project_Currency_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Project is required and cannot be changed once set --></errorMessage>
+        <name>pse__Project_required_and_constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- If Total Amount Overrun Allowed is checked, Amount Overrun Allowed and/or Expense Amount Overrun Allowed must also be checked. --></errorMessage>
+        <name>pse__Total_Overrun_Requires_Other_Overrun</name>
+    </validationRules>
+</CustomObjectTranslation>

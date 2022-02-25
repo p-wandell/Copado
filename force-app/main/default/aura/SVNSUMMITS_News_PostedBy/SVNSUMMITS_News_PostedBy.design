@@ -1,0 +1,24 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S News Posted By">
+    <design:attribute name="debugMode"
+                      label="Debug Mode"
+                      description="Enable or disable debug mode, enabling debug mode will write messages to the browser console for debugging errors" />
+
+    <design:attribute name="headingTitle"
+                      label="Heading Title"
+                      description="Heading title for author."/>
+    <design:attribute name="headerAlignment"
+                      label="Heading Alignment"
+                      description="Header Alignment"
+                      datasource="left,center,right" />
+
+	<design:attribute name="showNickName"
+	                  label="Nick Name"
+	                  description=""/>
+    <design:attribute name="showMemberSince"
+                      label="Member Since"
+                      description=""/>
+	<design:attribute name="profileURL"
+	                  label="User Profile URL"
+	                  description="Enter the page name for User Detail page"/>
+</design:component>

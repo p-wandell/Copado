@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Product Request</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Product Requests</value>
+    </caseValues>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <errorMessage><!-- Based on the type of request, an Account value is required. Please also select the specific Opportunity, if known. --></errorMessage>
+        <name>Account_Required</name>
+    </validationRules>
+</CustomObjectTranslation>

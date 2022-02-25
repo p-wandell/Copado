@@ -1,0 +1,70 @@
+<apex:page controller="fferpcore.ImportController" tabStyle="fferpcore__MessageType__c" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+	<style>
+        .importTable table.radioColumn td{
+        	white-space:nowrap;
+        	border-top: none;
+			box-shadow: none !important;
+        }
+    </style>
+	<apex:sectionHeader title="Messaging Import" help="{!helpUrl}"/>
+	<apex:form id="importForm">
+		<apex:pageBlock title="{!FileName}">
+			<apex:pageMessages />
+			<apex:pageBlockButtons location="bottom" rendered="{!ISNULL(requestContainer)}">
+				<apex:commandButton value="{!$Label.fferpcore__erpimportuploadbutton}" action="{!upload}" />
+				<apex:commandButton action="{!cancel}" value="{!$Label.fferpcore__erpvisualforcecancelbutton}"/>
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection columns="1" collapsible="false" rendered="{!ISNULL(requestContainer)}">
+				<apex:inputFile value="{!FileContent}" fileName="{!FileName}"/>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection columns="1" title="{!newSectionTitle}" rendered="{!shouldRenderNew}">
+				<apex:pageBlockTable columnsWidth="20%,10%,25%,25%,20%" value="{!newRequests}" var="request" styleClass="importTable">
+					<apex:column headerValue="{!$Label.fferpcore__erpimportnamecolumn}" value="{!request.name}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimporttypecolumn}" value="{!request.type}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimportdescriptioncolumn}" value="{!request.description}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimportinformationcolumn}">
+						<apex:outputText style="white-space: pre-wrap;" value="{!request.messages}"/>
+					</apex:column>
+					<apex:column headerValue="{!$Label.fferpcore__erpimportactioncolumn}">
+						<apex:selectRadio value="{!request.selectedOption}" styleClass="radioColumn">
+							<apex:selectOption itemValue="{!VALUE_CREATE}" itemLabel="{!$Label.fferpcore__erpimportactioncreate}" />
+							<apex:selectOption itemValue="{!VALUE_IGNORE}" itemLabel="{!$Label.fferpcore__erpimportactionignore}" />
+						</apex:selectRadio>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection columns="1" title="{!conflictsSectionTitle}" rendered="{!shouldRenderConflicts}"	>
+				<apex:pageBlockTable columnsWidth="20%,10%,25%,25%,20%" value="{!existingRequests}" var="request" styleClass="importTable">
+					<apex:column headerValue="{!$Label.fferpcore__erpimportnamecolumn}" value="{!request.name}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimporttypecolumn}" value="{!request.type}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimportdescriptioncolumn}" value="{!request.description}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimportinformationcolumn}">
+						<apex:outputText style="white-space: pre-wrap;" value="{!request.messages}"/>
+					</apex:column>
+					<apex:column headerValue="{!$Label.fferpcore__erpimportactioncolumn}">
+						<apex:selectRadio value="{!request.selectedOption}" styleClass="radioColumn">
+							<apex:selectOption itemValue="{!VALUE_CREATE}" itemLabel="{!$Label.fferpcore__erpimportactioncreate}" itemDisabled="{!NOT(request.canCreate)}"/>
+							<apex:selectOption itemValue="{!VALUE_OVERWRITE}" itemLabel="{!$Label.fferpcore__erpimportactionoverwrite}" />
+							<apex:selectOption itemValue="{!VALUE_IGNORE}" itemLabel="{!$Label.fferpcore__erpimportactionignore}" />
+						</apex:selectRadio>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection columns="1" title="{!errorsSectionTitle}" rendered="{!shouldRenderErrors}">	
+				<apex:pageBlockTable value="{!errorRequests}" var="request">
+					<apex:column headerValue="{!$Label.fferpcore__erpimportnamecolumn}" value="{!request.name}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimporttypecolumn}" value="{!request.type}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimportdescriptioncolumn}" value="{!request.description}" />
+					<apex:column headerValue="{!$Label.fferpcore__erpimportreasoncolumn}">
+						<apex:outputText style="white-space: pre-wrap;" value="{!request.messages}"/>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+			<div align="center">
+				<apex:commandButton value="{!$Label.fferpcore__erpimportcancelbutton}" rendered="{!NOT(ISNULL(requestContainer))}" action="{!clearPage}"/>
+				<apex:commandButton value="{!$Label.fferpcore__erpimportimportbutton}" rendered="{!AND(NOT(ISNULL(requestContainer)), isImportButtonVisible)}" action="{!import}"/>
+			</div>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

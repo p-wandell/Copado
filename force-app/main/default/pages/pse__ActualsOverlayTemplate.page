@@ -1,0 +1,24 @@
+<apex:page controller="pse.ActualsOverlayController" lightningStylesheets="true">
+	<apex:pageBlock >
+		<apex:pageMessages />
+		<apex:pageBlockSection columns="2" rendered="{!hasData}">
+			<apex:outputField value="{!obj['Bookings__c']}" />
+			<apex:outputField value="{!obj['Billings__c']}" />
+			<apex:outputField value="{!obj['Internal_Budget__c']}" />
+			<apex:outputField value="{!obj['Expense_Budget__c']}" />
+			<apex:outputField value="{!obj['Pre_Billed__c']}" />
+			<apex:outputField value="{!obj['pass_Through_Billings__c']}" />
+			<apex:outputField value="{!obj['Billed__c']}" />
+			<apex:outputField value="{!obj['Invoiced__c']}" />
+			<apex:outputField value="{!obj['Revenue__c']}" />
+			<apex:outputField value="{!obj['Internal_Costs__c']}" />
+			<apex:outputField value="{!obj['External_Costs__c']}" />
+			<apex:outputField value="{!obj['Expense_Costs__c']}" />
+			<apex:outputField value="{!obj['Other_Costs__c']}" />
+			<apex:outputField value="{!obj['Total_Costs__c']}" />
+			<apex:outputField value="{!obj['Margin__c']}" />
+			<apex:outputField value="{!obj['LastModifiedById']}" />
+			<apex:outputField value="{!obj['LastModifiedDate']}" />
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:page>

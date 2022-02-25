@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Ideas Detail Banner</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="zoneName" label="Zone Name" type="String" required="true" description="Ideas Zone Name"/>
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="displayPostDateAuthor" label="Display Post Date and Author" type="Boolean" description="Display the idea post date and author name"/>
+            <property name="displayCategories" label="Display Idea Categories" type="Boolean" description="When enabled, displays the assigned Idea Category on the detail page."/>
+            <property name="displayTheme" label="Display Idea Theme" type="Boolean" description="When enabled, displays the associated Idea Theme on the detail page."/>
+            <property name="allowExploreIdeas" label="Enable Explore More Ideas" type="Boolean" description="Enable the Explore more Ideas link"/>
+            <property name="canFollow" label="Enable Follow Button" type="Boolean" description="Hide follow button if tracking is not required in the community"/>
+            <property name="canEdit" label="Enable Edit Button" type="Boolean" description="Check to enable the edit button"/>
+            <property name="canDelete" label="Enable Delete Button" type="Boolean" description="Check to enable the delete button"/>
+            <property name="editMyIdea" label="Edit/Delete My Ideas Only" type="Boolean" description="Check to limit user edit and delete to own ideas only - object access permissions still apply"/>
+            <property name="ideaDetailURL" label="Idea Detail Page API Name" type="String" description="Enter the API name for the Idea Detail page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="ideaNewURL" label="Idea Create Edit Page API Name" type="String" description="Enter the API name for the Idea Create Edit page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="ideasListURL" label="Idea List Page API Name" type="String" description="Enter the API name for the Idea List page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="customClass" label="Custom Class" type="String" description="Used for custom styling."/>
+            <property name="recordId" label="Record Id" type="String" default="{!recordId}" description="Set to {!recordId} to pass the page's record Id."/>
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,lightning__RecordPage">
+            <property name="zoneName" label="Zone Name" type="String" required="true" description="Ideas Zone Name"/>
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="displayPostDateAuthor" label="Display Post Date and Author" type="Boolean" description="Display the idea post date and author name"/>
+            <property name="displayCategories" label="Display Idea Categories" type="Boolean" description="When enabled, displays the assigned Idea Category on the detail page."/>
+            <property name="displayTheme" label="Display Idea Theme" type="Boolean" description="When enabled, displays the associated Idea Theme on the detail page."/>
+            <property name="allowExploreIdeas" label="Enable Explore More Ideas" type="Boolean" description="Enable the Explore more Ideas link"/>
+            <property name="canFollow" label="Enable Follow Button" type="Boolean" description="Hide follow button if tracking is not required in the community"/>
+            <property name="canEdit" label="Enable Edit Button" type="Boolean" description="Check to enable the edit button"/>
+            <property name="canDelete" label="Enable Delete Button" type="Boolean" description="Check to enable the delete button"/>
+            <property name="editMyIdea" label="Edit/Delete My Ideas Only" type="Boolean" description="Check to limit user edit and delete to own ideas only - object access permissions still apply"/>
+            <property name="ideaDetailURL" label="Idea Detail Page API Name" type="String" description="Enter the API name for the Idea Detail page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="ideaNewURL" label="Idea Create Edit Page API Name" type="String" description="Enter the API name for the Idea Create Edit page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="ideasListURL" label="Idea List Page API Name" type="String" description="Enter the API name for the Idea List page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="customClass" label="Custom Class" type="String" description="Used for custom styling."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

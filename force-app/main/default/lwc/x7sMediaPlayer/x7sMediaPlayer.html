@@ -1,0 +1,74 @@
+<template>
+    <div role={ariaLandmarkRoleForComponent} aria-label={labelForAriaDiv}>
+        <template if:true={hasError}>
+            <div class="container slds-align_absolute-center">
+                <template if:false={isNothing}>
+
+                    <lightning-formatted-text value={invalidMessage}>
+                    </lightning-formatted-text>
+
+                </template>
+            </div>
+        </template>
+        <template if:false={hasError}>
+            <div class={wrapperClass}>
+                <div class={componentBorder}>
+                    <div class="slds-p-left_small slds-p-right_small slds-p-bottom_small slds-p-top_small">
+                        <lightning-formatted-rich-text value={title} class="slds-text-heading_small">
+                        </lightning-formatted-rich-text>
+                    </div>
+                    <div class="slds-p-left_medium slds-p-right_small">
+                        <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                    </div>
+                    <template if:true={hasOneFile}>
+                        <div class="container">
+                            <template if:true={mediaOne}>
+                                <div style="width:100%">
+                                    <c-x7s-media-tile class={styleClass} media-file={mediaFile} width=100
+                                                      has-one-file=true title={titleOne} is-audio={isAudio}
+                                                      file-border={fileBorder}>
+                                    </c-x7s-media-tile>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template if:false={hasOneFile}>
+                        <div class="container video-m">
+                            <template if:true={mediaOne}>
+                                <c-x7s-media-tile class={styleClass} media-file={mediaFile} width={width}
+                                                  title={titleOne} is-audio={isAudio} file-border={fileBorder}>
+                                </c-x7s-media-tile>
+                            </template>
+                            <template if:true={mediaTwo}>
+                                <c-x7s-media-tile class="audioContainer" media-file={mediaFileTwo} width={width}
+                                                  title={titleTwo} is-audio={isAudio} file-border={fileBorder}>
+                                </c-x7s-media-tile>
+                            </template>
+                            <template if:true={mediaThree}>
+                                <c-x7s-media-tile class="audioContainer" media-file={mediaFileThree} width={width}
+                                                  title={titleThree} is-audio={isAudio} file-border={fileBorder}>
+                                </c-x7s-media-tile>
+                            </template>
+                            <template if:true={mediaFour}>
+                                <c-x7s-media-tile class="audioContainer" media-file={mediaFileFour} width={width}
+                                                  title={titleFour} is-audio={isAudio} file-border={fileBorder}>
+                                </c-x7s-media-tile>
+                            </template>
+                            <template if:true={mediaFive}>
+                                <c-x7s-media-tile class="audioContainer" media-file={mediaFileFive} width={width}
+                                                  title={titleFive} is-audio={isAudio} file-border={fileBorder}>
+                                </c-x7s-media-tile>
+                            </template>
+                            <template if:true={mediaSix}>
+                                <c-x7s-media-tile class="audioContainer" media-file={mediaFileSix} width={width}
+                                                  title={titleSix} is-audio={isAudio} file-border={fileBorder}>
+                                </c-x7s-media-tile>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

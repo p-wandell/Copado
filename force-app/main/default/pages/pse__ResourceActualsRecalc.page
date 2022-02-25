@@ -1,0 +1,254 @@
+<apex:page Controller="pse.ResourceActualsRecalcController" tabStyle="Resource_Actuals_Recalc__tab" lightningStylesheets="true">
+   <style>
+      div#wait { width: 100%; height: 100%; position: {!IF($User.UIThemeDisplayed == 'Theme4d', 'fixed', 'absolute')};}
+      div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+      div#waitingHolder { width: 113px; }
+      .tbl-padding { padding-top:10px; }
+      .text-align-td { text-align:right; }
+      .tbl-td-page-size { padding-bottom:5px;}
+      .project-container { float:left; }
+      .checkbox-col { width: 15px; }
+      .pagination-border { border-top: 1px rgba(128, 128, 128, 0.31) solid; }
+   </style>
+   <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+   <script type="text/javascript">
+      function setVisible(name, visible) {
+        var e = document.getElementById(name);
+        if (e != null) {
+          if (visible) {
+            e.setAttribute("style", "display: block");
+            e.style.cssText = "display: block";
+          } else {
+            e.setAttribute("style", "display: none");
+            e.style.cssText = "display: none";
+          }
+        }
+      }
+      function wait(val) {
+        setVisible('loading', val);
+        setVisible('wait', val);
+      }
+      function setFocusOnLoad() {}
+   </script>
+   <div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+   <div id="loading" class="waitingSearchDiv" style="display: none">
+      <div id="waitingHolder" class="waitingHolder">
+         <img class="waitingImage" src="/img/loading.gif"/>
+         <span class="waitingDescription">{!$Label.common_loading_label}</span>
+      </div>
+   </div>
+   <apex:sectionHeader title="{!$Label.pse__resource_actuals_recalc_title}" help="{!$Page.pse__ResourceActualsHelp}" />
+   <apex:form >
+      <apex:actionFunction name="refreshLists" action="{!refreshPage}" immediate="true" rerender="theList,msgs" oncomplete="wait(false);">
+         <apex:param id="param1" name="param1" assignTo="{!FilterID}" value=""/>
+      </apex:actionFunction>
+   </apex:form>
+   <apex:form >
+      <apex:actionFunction name="updatePageNumber" action="{!DoSetPageNumber}" immediate="true" rerender="theList" oncomplete="wait(false);">
+         <apex:param id="pageNumber" name="pageNumber" assignTo="{!PageNumber}" value=""/>
+      </apex:actionFunction>
+   </apex:form>
+   <apex:form >
+      <apex:actionFunction name="updateSelected" action="{!DoUpdateSelected}" immediate="true" rerender="SelectedCount" oncomplete="wait(false);">
+         <apex:param id="proj_id" name="proj_id" assignTo="{!SelectedId}"    value=""/>
+         <apex:param id="state"   name="state" assignTo="{!SelectedState}" value=""/>
+      </apex:actionFunction>
+   </apex:form>
+   <apex:form >
+      <apex:actionFunction name="DoSort" action="{!DoSort}" immediate="true" rerender="theList" oncomplete="wait(false);">
+         <apex:param id="column" name="column" assignTo="{!sortColumn}" value=""/>
+      </apex:actionFunction>
+   </apex:form>
+   <apex:form id="form">
+   	  <apex:pageMessages id="msgs" />
+
+   	  
+      <apex:pageBlock id="theList" rendered="{!step='select'}" >
+      
+      	   	  
+	   	  <apex:pageBlockButtons location="bottom">
+	   	  	<apex:commandButton action="{!Done}"   value="{!$Label.pse__common_label_done}" />
+	   	  </apex:pageBlockButtons>
+    	 <apex:pageBlock >
+       		
+	         <apex:outputPanel id="ResourceSelector" layout="block" styleClass="project-container">
+	            
+	            <apex:panelGrid columns="2">
+	               <apex:outputLabel value="{!$Label.pse__common_label_view}" for="Contact" style="padding-right: 15px;" />
+	               <apex:selectList value="{!FilterID}" size="1" onchange="wait(true);refreshLists(this.value)">
+	                  <apex:selectOptions value="{!ListViews}"/>
+	               </apex:selectList>
+	            </apex:panelGrid>
+	            
+	             <apex:outputText value="{!SelectedCount} {!$Label.pse__common_label_selected}"  id="SelectedCount" /> 
+	            
+	         </apex:outputPanel>
+	         
+	         <apex:pageBlockButtons location="top">
+	           		<apex:commandButton action="{!CheckPage}"  onclick="wait(true);" reRender="theList" oncomplete="wait(false);" value="{!$Label.pse__common_label_select} {!$Label.pse__common_label_page}"/>
+	       		 	<apex:commandButton action="{!unCheckPage}"  onclick="wait(true);" reRender="theList" oncomplete="wait(false);"  value="{!$Label.pse__common_label_deselect} {!$Label.pse__common_label_page}"/>
+	      		 	<apex:commandButton action="{!CheckAll}"  onclick="wait(true);" reRender="theList" oncomplete="wait(false);"  value="{!$Label.pse__common_label_select} {!$Label.pse__common_label_all}" />
+	       		   	<apex:commandButton action="{!unCheckAll}"  onclick="wait(true);" reRender="theList" oncomplete="wait(false);"  value="{!$Label.pse__common_label_deselect} {!$Label.pse__common_label_all}"/>
+			</apex:pageBlockButtons>         
+           <apex:pageBlockTable value="{!Resources}" var="c">
+         	<apex:column styleClass="checkbox-col">
+ 				<apex:inputCheckbox value="{!c.selected}" onclick="wait(true);updateSelected('{!c.c.id}',this.checked)" />
+ 			</apex:column>
+         	
+         	<apex:column >
+            	 <apex:facet name="header">
+						<apex:outputLink value="javascript:void(0);" onclick="wait(true);DoSort('Name');">
+							<apex:outputText value="{!$Label.pse__common_label_name}" />
+							<apex:image value="/s.gif" styleClass="{!IF( SortColumn='Name', IF(SortDirection='desc' , 'sortAsc','sortDesc'),'')}"/>
+						</apex:outputLink>
+               	 </apex:facet>
+               	 <apex:outputField value="{!c.c.Name}"/>
+            </apex:column> 
+            
+     		<apex:column >
+ 				<apex:facet name="header">
+						<apex:outputLink value="javascript:void(0);" onclick="wait(true);DoSort('Region__r.Name');">
+							<apex:outputText value="{!$Label.pse__common_label_region}" />
+							<apex:image value="/s.gif" styleClass="{!IF( SortColumn='Region__r.Name', IF(SortDirection='desc' , 'sortAsc','sortDesc'),'')}"/>
+						</apex:outputLink>
+               	 </apex:facet>
+ 			 	<apex:outputField value="{!c.c.pse__Region__c}"/>
+ 			</apex:column>
+ 			
+ 			<apex:column >
+ 				<apex:facet name="header">
+						<apex:outputLink value="javascript:void(0);" onclick="wait(true);DoSort('Practice__r.Name');">
+							<apex:outputText value="{!$Label.pse__common_label_practice}" />
+							<apex:image value="/s.gif" styleClass="{!IF( SortColumn='Practice__r.Name', IF(SortDirection='desc' , 'sortAsc','sortDesc'),'')}"/>
+						</apex:outputLink>
+               	 </apex:facet>
+ 			 	<apex:outputField value="{!c.c.pse__Practice__c}"/>
+ 			</apex:column>
+ 			
+ 			<apex:column >
+ 				<apex:facet name="header">
+						<apex:outputLink value="javascript:void(0);" onclick="wait(true);DoSort('Group__r.Name');">
+							<apex:outputText value="{!$Label.pse__common_label_group}" />
+							<apex:image value="/s.gif" styleClass="{!IF( SortColumn='Group__r.Name', IF(SortDirection='desc' , 'sortAsc','sortDesc'),'')}"/>
+						</apex:outputLink>
+               	 </apex:facet>
+ 			 	<apex:outputField value="{!c.c.pse__Group__c}"/>
+ 			</apex:column>
+ 
+         </apex:pageBlockTable>
+         
+         <table width="100%" border="0" class="slds-table slds-table_bordered slds-table_cell-buffer tbl-padding pagination-border">
+            <tr>
+            	<td width="25%">
+	                <div class="tbl-td-page-size">
+	             	  	<apex:outputText value="{!SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(($Label.pse__common_label_displaying_from_and_to_record_count),'{0}', TEXT(currentPageStart)),'{1}', TEXT(currentPageEnd)), '{2}', TEXT(setCon.ResultSize))}" />
+	               	</div>
+	               	<div>
+	               		<apex:outputText value="{!$Label.pse__common_label_page} " />
+	               		<apex:inputText value="{!setCon.pageNumber}" size="1" maxlength="3" onchange="updatePageNumber(this.value)" />
+	               		<apex:outputText value=" {!$Label.pse__txviewer_message_of} {!numPages}" />
+	               	</div>
+            	</td>
+				<td width="50%" align="center">
+            	 	<apex:commandButton action="{!setCon.first}"  value="{!$Label.pse__common_label_first}" disabled="{!NOT(setCon.HasPrevious)}"  status="pagenatorStatus" styleClass="btn" />
+         			<apex:commandButton action="{!setCon.previous}"  value="{!$Label.pse__common_label_previous}" disabled="{!NOT(setCon.HasPrevious)}"   styleClass="btn" />
+            		<apex:commandButton action="{!setCon.next}"  value="{!$Label.pse__common_label_next}" disabled="{!NOT(setCon.HasNext)}"   styleClass="btn"/>
+            		<apex:commandButton action="{!setCon.last}"  value="{!$Label.pse__common_label_last}" disabled="{!NOT(setCon.HasNext)}"  styleClass="btn"/>
+            	</td>
+            	
+            	
+            	  
+                 <td  width="25%" class="text-align-td">
+               		<apex:outputText value="{!$Label.pse__common_label_show} " styleClass="dataCell" /> 
+		            <apex:selectList value="{!PageSize}" multiselect="false" size="1" id="pageSize" styleClass="dataCell" style="width:50px !important;">
+		                <apex:selectOptions value="{!pageSizeOptions}"/>
+		                <apex:actionSupport event="onchange" action="{!refreshPage}" rerender="theList,msgs"/>
+		            </apex:selectList>
+                    <apex:outputText value="  {!$Label.pse__common_label_records_per_page}" styleClass="dataCell"/>
+               </td>
+            </tr>
+         </table>
+                 
+      </apex:pageBlock>
+      </apex:pageBlock>
+      <!-- Processing Status -------------------------------------------------------------->
+      <apex:outputPanel id="processingStatus" rendered="{!NOT(step='select')}">
+         <apex:pageBlock id="params" rendered="{!NOT avc.isProcessing && NOT avc.hasDeltas}">
+            <apex:pageBlockButtons id="buttons">
+               <apex:commandButton action="{!cancel}"      value="{!$Label.pse__common_label_cancel}"    disabled="{!NOT(step='lock')}"   />
+               <apex:commandButton action="{!lock}"        value="{!$Label.pse__common_label_lock}"      disabled="{!NOT(step='lock')}"   />
+               <apex:commandButton action="{!deleteBatch}" value="{!$Label.pse__common_label_delete}"    disabled="{!NOT(step='delete')}" />
+               <apex:commandButton action="{!start}"       value="{!$Label.pse__common_label_calculate}" disabled="{!NOT(step='recalc')}" />
+               <apex:commandButton action="{!unlock}"      value="{!$Label.pse__common_label_unlock}"    disabled="{!NOT(step='unlock')}" />
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockTable value="{!theSet}" var="c">
+               <apex:column headerValue="{!$Label.pse__common_label_resource_name}" value="{!c.Name}"/>
+            </apex:pageBlockTable>
+         </apex:pageBlock>
+         
+         <apex:pageBlock title="Feature Unavailable" rendered="{!avc.hasDeltas && NOT avc.isProcessing}">
+            <p>{!$Label.pse__resource_actuals_feature_unavailable_msg_para1}</p>
+            <p>{!$Label.pse__resource_actuals_feature_unavailable_msg_para2}</p>
+            
+            <apex:pageBlockButtons >
+               <apex:commandButton action="{!avc.processDeltas}" value="{!$Label.pse__common_label_process}" immediate="true" />
+            </apex:pageBlockButtons>
+            
+         </apex:pageBlock>
+         
+         <apex:pageBlock title="{!$Label.pse__common_label_processing_status}" rendered="{!avc.isProcessing}">
+            <table  class="list slds-table slds-table_bordered slds-table_cell-buffer" width="100%" cellspacing="0" cellpadding="0" border="0">
+               <tr class="headerRow">
+                  <th>{!$Label.common_label_description}</th>
+                  <th>{!$Label.common_label_status}</th>
+                  <th>{!$Label.common_label_user}</th>
+                  <th>{!$Label.common_label_start_date}</th>
+               </tr>
+               <apex:repeat value="{!avc.processingStatus}" var="s">
+                  <tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+                     <td class="dataCell" nowrap="true">
+                        <apex:outputText value="{!s.description}" />
+                     </td>
+                     <td class="dataCell" nowrap="true">
+                        <apex:outputText value="{!s.status}" />
+                     </td>
+                     <td class="dataCell" nowrap="true">
+                        <apex:outputField value="{!s.logEntry.CreatedBy.Name}" />
+                     </td>
+                     <td class="dataCell" nowrap="true">
+                        <apex:outputField value="{!s.logEntry.CreatedDate}" />
+                     </td>
+                  </tr>
+                  <tr style="display: {!IF(s.hasErrors, '', 'none')}">
+                     <td colspan="4">
+                        <table class="list" width="100%" cellspacing="0" cellpadding="0" border="0" style="padding-left: 50px;">
+                           <tr class="headerRow">
+                              <th>{!$Label.common_label_action}</th>
+                              <th>{!$Label.common_label_error_detail}</th>
+                           </tr>
+                           <apex:repeat value="{!s.errors}" var="e">
+                              <tr>
+                                 <td>
+                                    <apex:outputPanel layout="inline">
+                                       <apex:outputText value="{!e.error}" />
+                                       <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(e.erroredRecordId))}">
+                                          (
+                                          <apex:outputLink value="/{!e.erroredRecordId}" >{!e.erroredRecordId}</apex:outputLink>
+                                          )
+                                       </apex:outputPanel>
+                                    </apex:outputPanel>
+                                 </td>
+                              </tr>
+                           </apex:repeat>
+                        </table>
+                     </td>
+                  </tr>
+               </apex:repeat>
+            </table>
+         </apex:pageBlock>
+         <apex:actionPoller action="{!avc.refreshProcessingStatus}" interval="10" enabled="{!avc.autoRefresh}" rerender="processingStatus" />
+      </apex:outputPanel>
+   </apex:form>
+   
+</apex:page>

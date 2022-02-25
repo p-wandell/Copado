@@ -1,0 +1,54 @@
+<apex:page sidebar="true" standardStylesheets="false" controller="ffct.ConnectionSetupController" action="{!OAuthAccess}" doctype="html-5.0">
+	<apex:sectionHeader title="{!ConnectionLabel}" help="helploader?topicid=1013"/>
+	<apex:form id="setupconform">
+		<apex:pagemessages id="pgMsg"/>
+	  	<apex:actionStatus id="eventStatus"  >
+	         <apex:facet name="start">
+	          <apex:outputPanel >
+	                        <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+	                            <div style="position:absolute;top:50%;left:50%">
+	                                <apex:image value="/img/loading32.gif"></apex:image>
+	                            </div>
+	                        </div>
+	           </apex:outputPanel>
+	        </apex:facet>   
+	    </apex:actionStatus>
+	  	<apex:pageBlock tabStyle="Connection__c">
+			<apex:pageblockbuttons location="bottom" >
+		        <apex:commandButton value="Authorize" action="{!validateUserCredentials}" reRender="setupconform,pgMsg" rendered="{!setUpNewConnectionFlag}" status="eventStatus"></apex:commandButton>
+		        <apex:commandButton value="{!$Label.ffct__save}" action="{!updateConnection}" rendered="{!Mode=='editMode'}" status="eventStatus"></apex:commandButton>
+			 	<apex:commandButton value="{!$Label.ffct__close}" action="{!closeConnection}" rendered="{!Mode=='viewMode'}"></apex:commandButton>
+			 	<apex:commandButton value="{!$Label.ffct__edit}" action="{!editConnection}" status="eventStatus" rendered="{!Mode=='viewMode'}" rerender="setupconform"></apex:commandButton>
+			 	<apex:commandButton value="{!$Label.ffct__delete}" onclick="return confirm('Are you sure?')" action="{!deleteConnection}" rendered="{!Mode=='viewMode'}" ></apex:commandButton>
+			 	<apex:commandButton value="{!$Label.ffct__cancel}" action="{!cancelEditingConnection}" rendered="{!Mode=='editMode'}" rerender="setupconform,pgMsg" status="eventStatus" ></apex:commandButton>
+			 	<apex:commandButton value="{!$Label.ffct__cancel}" action="{!closeConnection}" rendered="{!setUpNewConnectionFlag}" />
+			</apex:pageblockbuttons>
+	        <apex:pageBlockSection columns="2"  rendered="{!setUpNewConnectionFlag}" >
+			    	<apex:pageBlockSectionItem helpText="{!$Label.ffct__connectionnamehelptext}"><apex:outputLabel value="{!$Label.ffct__connectionname}" ></apex:outputLabel> <apex:inputfield value="{!connection.Name}" ></apex:inputfield></apex:pageBlockSectionItem>
+			    	<apex:pageBlockSectionItem helpText="{!$Label.ffct__environmentnamehelptext}"><apex:outputLabel value="{!$Label.ffct__environmenttype}" ></apex:outputLabel> <apex:inputfield value="{!connection.ffct__Environment_Type__c}"></apex:inputfield></apex:pageBlockSectionItem>
+	        </apex:pageBlockSection>
+	        <apex:pageBlockSection columns="2"  rendered="{!!setUpNewConnectionFlag}" >
+			    	<apex:outputfield value="{!connection.Name}"></apex:outputfield>
+			    	<apex:outputfield value="{!connection.ffct__Environment_Type__c}"></apex:outputfield>
+	        </apex:pageBlockSection>
+	        <apex:pageBlockSection columns="1" title="Compare and Deploy Settings" rendered="{!!CONTAINS(ReturningFeature, 'bundlepush') && !CONTAINS(ReturningFeature, 'migrationset')}">
+			    	<apex:pageBlockSectionItem >
+			    		<apex:outputLabel value="{!$Label.ffct__filterbynamespace}" />
+			    		<apex:outputField value="{!Connection.ffct__FilterBy_Namespace__c}"  rendered="{!Mode=='viewMode'}" />
+			    	</apex:pageBlockSectionItem>
+			    	<apex:outputPanel rendered="{!Mode=='editMode' || setUpNewConnectionFlag}">
+			    	<c:userMultiselectPickList DataToselect="{!NamespacePrefixToChooseList}" DataSelected="{!NamespacePrefixChosenList}" aLeftLabel="{!$Label.ffct__selectpackagenamespaceprefix}" aRightLabel="{!$Label.ffct__selectedpackagenamespaceprefix}" />
+			    	</apex:outputPanel>
+			    	<apex:inputField value="{!connection.ffct__Compare_Standard_and_Unmanaged_Objects__c}" html-selected="true" rendered="{!setUpNewConnectionFlag}"></apex:inputField>
+			    	<apex:inputField value="{!connection.ffct__Compare_Standard_and_Unmanaged_Objects__c}" rendered="{!Mode=='editMode'}"></apex:inputField>
+			    	<apex:outputField value="{!connection.ffct__Compare_Standard_and_Unmanaged_Objects__c}" rendered="{!Mode=='viewMode'}" ></apex:outputField>
+	        </apex:pageBlockSection>
+	         <apex:pageBlockSection columns="2" title="{!$Label.ffct__provisionpushsettings}" rendered="{!!CONTAINS(ReturningFeature, 'compareprofiles') && !CONTAINS(ReturningFeature, 'migrationset')}">
+			    <apex:inputField value="{!connection.ffct__Is_TSO__c}" rendered="{!setUpNewConnectionFlag || Mode=='editMode'}"></apex:inputField>
+			    <apex:outputField value="{!connection.ffct__Is_TSO__c}"  rendered="{!Mode=='viewMode'}" />
+			    <apex:inputField value="{!connection.ffct__Template_Id__c}" rendered="{!setUpNewConnectionFlag || Mode=='editMode'}"></apex:inputField>
+			    <apex:outputField value="{!connection.ffct__Template_Id__c}"  rendered="{!Mode=='viewMode'}" />
+	        </apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

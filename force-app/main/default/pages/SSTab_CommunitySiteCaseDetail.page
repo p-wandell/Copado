@@ -1,0 +1,49 @@
+<apex:page showHeader="true" standardController="Case" sidebar="false" standardStylesheets="true" extensions="SS_CommunitySiteCaseDetailControllerExt" showChat="true" title="{!$ObjectType.Case.label} {!Case.CaseNumber}">
+    <c:SSTab_CommunitySiteIncludes />
+    <style>
+        .command {
+            color: blue !important;
+            text-decoration: underline;
+        }
+
+        .pageLabel {
+            font-weight: bold; 
+            font-size:14px;
+        }
+
+        .fieldBox {
+            margin: 8px;
+            padding: 10px;
+        }
+    </style>
+    <title>{!$ObjectType.Case.label} {!Case.CaseNumber}</title>
+    <div id="content">
+        <c:SS_PageHeader title="{!Case.Subject}" subtitle="{!$ObjectType.Case.label} {!Case.CaseNumber} - {!$ObjectType.Case.fields.Status.label}: {!Case.Status}" rendered="{!NOT(ISNULL(myCase.Id))}"/>
+        <c:SS_PageHeader title="{!$Label.newCase}" rendered="{!ISNULL(myCase.Id)}"/>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="alert alert-info">
+                  <strong>{!$Label.Note}:</strong> {!$Label.CaseDetailFeedMessage}
+                </div>
+                <apex:outputPanel layout="block" rendered="{!NOT(ISNULL(myCase.Id))}">
+                    <chatter:feed rendered="{!NOT(ISNULL(myCase.Id))}" entityId="{!myCase.Id}"/>
+                </apex:outputPanel>
+            </div>
+            <div class="col-md-4">
+                <apex:outputPanel layout="inline" id="block">
+                     <apex:repeat value="{!$ObjectType.Case.FieldSets.CommunityFieldset}" var="f">
+                        <div class="row">
+                            <div class="panel panel-info">
+                               <div class="panel-heading pageLabel">{!f.label}</div>
+                               <div class="panel-body">
+                                    <apex:outputField value="{!myCase[f]}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:repeat>
+                </apex:outputPanel>
+            </div>
+        </div>
+    </div>
+</apex:page>

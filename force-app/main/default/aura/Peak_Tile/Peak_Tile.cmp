@@ -1,0 +1,139 @@
+<!--
+ - Created by jonbalza on 12/9/18.
+ -->
+
+<aura:component description="Peak_Tile">
+    <!-- Data Attributes -->
+    <aura:attribute name="description" type="String" />
+    <aura:attribute name="id" type="String" required="true" />
+    <aura:attribute name="imageURL" type="String" />
+    <aura:attribute name="title" type="String" required="true" />
+    <aura:attribute name="topic" type="Map" required="true" />
+
+    <!-- Display Attributes -->
+    <aura:attribute name="animateHover" type="Boolean" default="true" />
+    <aura:attribute name="descriptionColor" type="String" default="" />
+    <aura:attribute name="descriptionColorHover" type="String" default="" />
+    <aura:attribute name="horizontalAlignment" type="String" default="center" />
+    <aura:attribute name="imageBorderRadius" type="String" default="2px" />
+    <aura:attribute name="imageHeight" type="String" default="48px" />
+    <aura:attribute name="imageWidth" type="String" default="48px" />
+    <aura:attribute name="isHovering" type="Boolean" default="false" />
+    <aura:attribute name="overlayColor" type="String" default="" />
+    <aura:attribute name="overlayColorHover" type="String" default="" />
+    <aura:attribute name="showDescription" type="Boolean" default="true" />
+    <aura:attribute name="showImage" type="Boolean" default="true" />
+    <aura:attribute name="showOverlay" type="Boolean" default="true" />
+    <aura:attribute name="titleColor" type="String" default="" />
+    <aura:attribute name="titleColorHover" type="String" default="" />
+    <aura:attribute name="verticalAlignment" type="String" default="center" />
+    <aura:attribute name="viewType" type="String" default="Tile" />
+
+    <!-- Events -->
+    <aura:registerEvent name="onclick" type="c:Peak_TileEvent" />
+
+    <aura:if isTrue="{!equals(v.viewType, 'Tile')}">
+        <!-- Tile Layout -->
+        <a data-id="{!v.id}"
+           onclick="{!c.handleClick}"
+           class="{!'peak-tile peak-tile_tile slds-grid slds-text-align_' + v.horizontalAlignment + ' slds-grid_vertical-align-' + v.verticalAlignment + if(v.animateHover, ' peak-tile_animated', '')}"
+           style="{!'border-radius: ' + v.imageBorderRadius + ';'}"
+           onmouseenter="{!c.handleFocus}"
+           onmouseleave="{!c.handleBlur}"
+           onfocus="{!c.handleFocus}"
+           onblur="{!c.handleBlur}"
+        >
+            <aura:if isTrue="{!and(v.showImage, v.imageURL)}">
+                <span class="peak-tile__image" style="{!'background-image: url(' + v.imageURL + ');'}"></span>
+            </aura:if>
+            <aura:if isTrue="{!v.showOverlay}">
+                <span class="peak-tile__overlay"
+                      style="{!'background-color:' + if(v.isHovering, v.overlayColorHover, v.overlayColor) + ';'}"
+                ></span>
+            </aura:if>
+            <div class="peak-tile__info slds-col">
+                <span class="peak-tile__title"
+                      style="{!'color:' + if(v.isHovering, v.titleColorHover, v.titleColor) + ';'}"
+                >
+                    <lightning:formattedRichText value="{!v.title}" />
+                </span>
+                <aura:if isTrue="{!and(v.showDescription, v.description)}">
+                    <span class="peak-tile__description"
+                          style="{!'color:' + if(v.isHovering, v.descriptionColorHover, v.descriptionColor) + ';'}"
+                    >
+                        <lightning:formattedRichText value="{!v.description}" />
+                    </span>
+                </aura:if>
+            </div>
+        </a>
+
+        <aura:set attribute="else">
+            <aura:if isTrue="{!equals(v.viewType, 'List')}">
+                <!-- List Layout -->
+                <a data-id="{!v.id}"
+                   onclick="{!c.handleClick}"
+                   class="{!'peak-tile peak-tile_list slds-grid slds-text-align_' + v.horizontalAlignment + ' slds-grid_vertical-align-' + v.verticalAlignment + if(v.animateHover, ' peak-tile_animated', '')}"
+                >
+                    <aura:if isTrue="{!and(v.showImage, v.imageURL)}">
+                        <div class="peak-tile__image-wrapper slds-col slds-grow-none"
+                             style="{!'height: ' + v.imageHeight + ';flex-basis: ' + v.imageWidth+ ';'}"
+                        >
+                            <span class="peak-tile__image"
+                                  style="{!'background-image: url(' + v.imageURL + ');border-radius: ' + v.imageBorderRadius + ';height: ' + v.imageHeight + ';width: ' + v.imageWidth+ ';'}"
+                            ></span>
+                        </div>
+                    </aura:if>
+                    <div class="peak-tile__info slds-col">
+                        <div class="peak-tile__title"
+                             style="{!'color:' + if(v.isHovering, v.titleColorHover, v.titleColor) + ';'}"
+                        >
+                            <lightning:formattedRichText value="{!v.title}" />
+                        </div>
+                        <aura:if isTrue="{!and(v.showDescription, v.description)}">
+                            <div class="peak-tile__description"
+                                 style="{!'color:' + if(v.isHovering, v.descriptionColorHover, v.descriptionColor) + ';'}"
+                            >
+                                <lightning:formattedRichText value="{!v.description}" />
+                            </div>
+                        </aura:if>
+                    </div>
+                </a>
+                <aura:set attribute="else">
+                    <!-- Icon Layout -->
+                    <a data-id="{!v.id}"
+                       onclick="{!c.handleClick}"
+                       class="{!'peak-tile peak-tile_icon slds-grid slds-grid_vertical slds-text-align_' + v.horizontalAlignment + ' slds-grid_vertical-align-' + v.verticalAlignment + if(v.animateHover, ' peak-tile_animated', '')}"
+                    >
+                        <aura:if isTrue="{!and(v.showImage, v.imageURL)}">
+                            <div class="peak-tile__image-outer-wrapper"
+                                 style="{!'height: ' + v.imageHeight + ';'}"
+                            >
+                                <div class="peak-tile__image-wrapper"
+                                     style="{!'height: ' + v.imageHeight + ';width: ' + v.imageWidth+ ';border-radius: ' + v.imageBorderRadius + ';'}"
+                                >
+                                    <span class="peak-tile__image"
+                                          style="{!'background-image: url(' + v.imageURL + ');border-radius: ' + v.imageBorderRadius + ';height: ' + v.imageHeight + ';width: ' + v.imageWidth+ ';'}"
+                                    ></span>
+                                </div>
+                            </div>
+                        </aura:if>
+                        <div class="peak-tile__info">
+                            <div class="peak-tile__title"
+                                 style="{!'color:' + if(v.isHovering, v.titleColorHover, v.titleColor) + ';'}"
+                            >
+                                <lightning:formattedRichText value="{!v.title}" />
+                            </div>
+                            <aura:if isTrue="{!and(v.showDescription, v.description)}">
+                            <div class="peak-tile__description"
+                                 style="{!'color:' + if(v.isHovering, v.descriptionColorHover, v.descriptionColor) + ';'}"
+                            >
+                                <lightning:formattedRichText value="{!v.description}" />
+                            </div>
+                            </aura:if>
+                        </div>
+                    </a>
+                </aura:set>
+            </aura:if>
+        </aura:set>
+    </aura:if>
+</aura:component>

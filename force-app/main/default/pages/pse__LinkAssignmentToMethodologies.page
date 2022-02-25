@@ -1,0 +1,180 @@
+<apex:page standardController="pse__Assignment__c" extensions="pse.LinkAssignmentToMethodologiesController" action="{!init}" title="{!$Label.pse__link_assignment_label_link_assignment_to_methodologies}"
+ sidebar="false" tabStyle="pse__Assignment__c" id="linkAssignPage" lightningStylesheets="true">
+
+	<script type="text/javascript">
+		_Label = {
+			selectedRecordCount: '{!JSINHTMLENCODE($Label.common_label_selected_record_count)}',
+			noUnsavedChanges: '{!JSINHTMLENCODE($Label.link_assignment_message_no_unsaved_changes)}'
+		}
+
+		_Component = {
+			recordCountInfo: 'checkMethodologyCountInfo',
+			recordResultPBT: '{!$Component.linkAssignPage.linkAssignForm.methodologyResult.methodologyResultPBS.methodologyResultPBT}'
+		}
+	</script>
+
+	<apex:includeScript value="{!$Resource.pse__linkAssignmentjs}" />
+
+	<style>
+		.selectAllCheckbox {
+			width: 40px;
+		}
+
+		.currentCheckbox {
+			width: 80px;
+		}
+	</style>
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+
+	<apex:form id="linkAssignForm" rendered="{!isEverythingOk}">
+		<apex:pageBlock >
+			<apex:outputPanel >
+				<a href="/{!assignment.id}">
+					<apex:outputText value="{!assignment.Name}" />
+				</a>
+				<img src="/s.gif" class="infoIcon" data-tooltip="{!tooltip}" />
+			</apex:outputPanel>
+		</apex:pageBlock>
+		<apex:PageMessages id="messageSection" />
+
+		<apex:inputHidden id="dirtyHidden" value="{!dirty}" />
+
+		<apex:actionFunction action="{!saveAndGoToRecord}" name="jsdoSaveAndGo" />
+		<apex:actionFunction action="{!cancel}" name="jsdoCancel" />
+		<apex:actionFunction action="{!save}" name="jsdoSave" status="ajaxStatus" reRender="linkAssignForm,messageSection" oncomplete="updateAnchorTargetAttribute();" />
+		<apex:actionFunction action="{!reset}" name="jsdoReset" status="ajaxStatus" reRender="linkAssignForm,messageSection" oncomplete="updateAnchorTargetAttribute();" />
+
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+
+		<apex:pageBlock id="methodologyResult" title="{!$Label.pse__link_assignment_label_methodologies}" rendered="{!foundMethodologyItems}">
+
+			<apex:pageBlockSection columns="1" collapsible="false" id="methodologyResultPBS">
+				<div id="checkMethodologyCountInfo">{!HTMLENCODE(selectedMethodologyCountInfo)}</div>
+				<div id="methodologyResultDiv">
+					<apex:pageBlockTable value="{!methodologyWrapperList}" var="wr" id="methodologyResultPBT">
+						<apex:column headerClass="selectAllCheckbox">
+							<apex:facet name="header">
+								<input type="checkbox" onclick="selectAll(this, 'methodologyCheckbox')" id="methodologySelectAllCheckbox" onchange="setDirty('{!$Component.dirtyHidden}');" />
+							</apex:facet>
+							<apex:inputCheckbox value="{!wr.isSelectedForAMCreation}" id="methodologyCheckbox" onclick="selectItem(this, 'methodologySelectAllCheckbox');"
+							 onchange="setDirty('{!$Component.dirtyHidden}');" />
+						</apex:column>
+
+						<apex:column headerClass="currentCheckbox">
+							<apex:facet name="header">
+								<apex:outputLabel value="{!$Label.pse__common_label_current}" />
+							</apex:facet>
+							<apex:inputCheckbox value="{!wr.isAssignMethodologyJuctionExist}" rendered="{!!wr.isAssignMethodologyJuctionExist}" disabled="true" />
+							<apex:image value="/img/checkbox_checked.gif" alt="Checked" width="21" height="16" styleClass="checkImg" title="Checked"
+							 rendered="{!wr.isAssignMethodologyJuctionExist}" />
+						</apex:column>
+
+						<apex:repeat value="{!methodologyColumns}" var="f">
+
+							<apex:column value="{!wr.methodology[f.fieldPath]}" rendered="{!NOT(f.Label == $ObjectType.pse__Project_Methodology__c.Fields.Name.Label)}" />
+
+							<apex:column headerValue="{!f.Label}" rendered="{!f.Label == $ObjectType.pse__Project_Methodology__c.Fields.Name.Label}">
+								<apex:outputpanel rendered="{!f.Label == $ObjectType.pse__Project_Methodology__c.Fields.Name.Label}">
+									<a href="/{!wr.methodology.id}" target="_blank">
+										<apex:outputField value="{!wr.methodology[f.fieldPath]}" />
+									</a>
+								</apex:outputpanel>
+							</apex:column>
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</div>
+			</apex:pageBlockSection>
+
+		</apex:pageBlock>
+		<!-- Block for updating the SelectAllCheckboxs based on allmethodologySelected value -->
+		<script>
+			if ({!allMethodologySelected}) {
+				document.getElementById('methodologySelectAllCheckbox').checked = true;
+			}
+		</script>
+		<!-- Component to include required script for tooltip -->
+		<c:QuickTooltip tooltipTextAttrName="data-tooltip" />
+	</apex:form>
+
+	<script>
+		prepareHeader();
+
+		function prepareHeader() {
+			var config = {
+				objectName: '{!JSENCODE($Label.link_assignment_label_link_assignment_to_methodologies)}',
+				objectApiName: '{!$ObjectType["Assignment__c"].name}',
+				helpUrl: '{!$Page.LinkAssignmentToMethodologiesHelp}',
+				onRender: 'onHeaderLoadCallback'
+			};
+
+			if ('{!foundMethodologyItems}' === 'true') {
+				config.buttons = [{
+					id: 'reset',
+					label: '{!JSENCODE($Label.common_label_reset)}',
+					actionFn: 'onResetClick'
+				}, {
+					id: 'done',
+					label: '{!JSENCODE($Label.common_label_done)}',
+					actionFn: 'showDialog'
+				}, {
+					id: 'save',
+					label: '{!JSENCODE($Label.common_label_save)}',
+					actionFn: 'onSaveClick'
+				}];
+			}
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+
+		document.addEventListener('DOMContentLoaded', updateAnchorTargetAttribute);
+
+		function showDialog() {
+			if (!_hasUnsavedChanges) {
+				jsdoCancel();
+				return false;
+			}
+
+			let buttons = [{
+				'name': 'continue',
+				'label': '{!JSENCODE($Label.common_label_continue_without_saving)}'
+			}, {
+				'name': 'cancel',
+				'label': '{!JSENCODE($Label.common_label_cancel)}'
+			}, {
+				'name': 'save',
+				'label': '{!JSENCODE($Label.common_label_save_and_continue)}',
+				'variant': 'brand'
+			}];
+
+			let config = {
+				'buttons': buttons,
+				'text': '{!JSENCODE($Label.link_assignment_message_unsaved_changes_want_to_save_changes)}',
+				'icon': 'utility:info'
+			};
+
+			$FFDC.showAlert(config, function (sourceEventKey) {
+				if (sourceEventKey === 'continue') {
+					jsdoCancel();
+				} else if (sourceEventKey === 'save') {
+					jsdoSaveAndGo();
+				}
+				return true;
+			});
+		}
+
+	</script>
+
+	<apex:outputPanel id="OutDialogContainer" layout="block" />
+	<c:lightningAlert exportObjectName="$FFDC" outContainerId="{!$Component.OutDialogContainer}" />
+
+	<!-- Component to include jquery library -->
+	<c:fflib_thirdparty jQuery="true" jQueryUI="true" />
+
+</apex:page>

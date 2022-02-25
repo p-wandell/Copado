@@ -1,0 +1,42 @@
+<apex:page standardController="pse__Proj__c" extensions="pse.ProjectShareController" title="{!$Label.pse__projectshare_label_share_project}" tabStyle="pse__Permission_Control__c" lightningStylesheets="true">
+	
+	<c:WaitComponent />
+    <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+    <apex:sectionHeader title="{!$Label.pse__projectshare_label_share_project}" subtitle="{!pse__Proj__c.Name}"/>
+	<apex:pageMessage summary="{!$Label.pse__projectshare_label_portal_share_not_supported}" severity="info" strength="2" />
+    <apex:pageMessages id="messages"/>
+
+    <apex:form >
+	<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+        <apex:pageBlock title="{!$Label.pse__projectshare_label_share_project}" mode="edit">
+            <apex:pageBlockButtons location="both">
+                <apex:commandButton value="{!$Label.pse__projectshare_label_share_with_project_manager}" action="{!createPMShares}"
+                    rendered="{!displayPMShareButton}" status="ajaxStatus"/>
+                <apex:commandButton value="{!$Label.pse__projectshare_label_share_with_project_team}" action="{!createTeamShares}"
+                    rendered="{!displayTeamShareButton}" status="ajaxStatus"/>
+                <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection title="{!$Label.pse__projectshare_label_information}" columns="2">
+                <apex:outputField value="{!pse__Proj__c.Name}"/>
+                <apex:outputField value="{!pse__Proj__c.pse__Project_Manager__c}"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__projectshare_label_default_access}" for="changeAllSelect"/>
+                    <apex:selectList value="{!changeAllAccessLevel}" id="changeAllSelect" multiselect="false" size="1">
+                         <apex:selectOptions value="{!accessLevelOptions}"/>
+                         <apex:actionSupport event="onchange" action="{!changeAllAccessLevels}" status="ajaxStatus" rerender="actionSection"/>
+                     </apex:selectList>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="{!$Label.pse__projectshare_label_access_page_block_section_title}" columns="2" id="actionSection">
+                <apex:repeat var="so" value="{!projShareableObjects.shareList}">
+                    <apex:selectList value="{!so.accessLevelText}" id="accessLevelSelect"
+                                     label="{!so.objectLabel}" size="1">
+                        <apex:selectOptions value="{!accessLevelOptions}"/>
+                    </apex:selectList>
+                </apex:repeat>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

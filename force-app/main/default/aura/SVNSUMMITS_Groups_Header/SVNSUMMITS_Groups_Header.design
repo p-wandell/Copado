@@ -1,0 +1,25 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Groups Banner">
+	<design:attribute name="showIcon"
+	                  label="Show group icon"
+	                  description="Show the group icon in the header"/>
+    <design:attribute name="groupTitle"
+                      label="Group Directory Title"
+                      description="Text to display as title - enter none to leave blank"/>
+    <design:attribute name="showNumberOfGroups"
+                      label="Display Number of Groups"
+                      description="Enable/Disable number of groups to be displayed." />
+	<design:attribute name="showBottomBorder"
+	                  label="Show bottom border"
+	                  description="Display a border line below the header"/>
+    <design:attribute name="newGroupURL"
+                      label="Create New Group URL"
+                      description="Enter Create New Group URL" />
+	<design:attribute name="newGroupLabel"
+	                  label="Button Text for New Group"
+	                  description="Button Text for New Group"/>
+    <design:attribute name="debugMode"
+                      label="Debug Mode"
+                      description="Enabling debug mode will write messages to the browser console for debugging errors" />
+    
+</design:component>

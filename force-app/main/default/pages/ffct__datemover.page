@@ -1,0 +1,163 @@
+<apex:page sidebar="true" standardStylesheets="true" controller="ffct.DateMoverController" action="{!isToolMustBeActivated}" doctype="html-5.0">
+    <style type="text/css">
+    .empty-column-content {
+        display: none;
+    }
+    </style>
+    <apex:form id="dateMoverForm">
+        <apex:actionStatus id="eventStatus"  >
+            <apex:facet name="start">
+                <apex:outputPanel >
+                   <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                      <div style="position:absolute;top:50%;left:50%">
+                        <apex:image value="/img/loading32.gif"></apex:image>
+                      </div>
+                  </div>
+                </apex:outputPanel>
+            </apex:facet>   
+        </apex:actionStatus>
+    	<apex:sectionheader title="{!$Label.ffct__datemovertool}" help="helploader?topicid=1039"/>
+        <apex:pagemessages id="pgMsg" escape="false"/>
+        <apex:pageBlock tabStyle="Bundle__c">
+       	<apex:outputPanel id="progressIcon" layout="block" rendered="{!StartJob}">
+               <img src="{!URLFOR($Resource.progressGIF)}" />
+        </apex:outputPanel>
+            <apex:pageBlockSection columns="1" title="{!$Label.ffct__selectproduct}" id="productSel"  rendered="{!ViewMode=='selectProduct'}" collapsible="false">
+                <c:userMultiselectPickList DataToselect="{!PackagesToSelect}" DataSelected="{!PackagesSelected}" aLeftLabel="{!$Label.ffct__packagestoselect}" aRightLabel="{!$Label.ffct__packageselected}"  />
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" title="{!$Label.ffct__selectfieldstoblacklist}" id="blacklstsec"  rendered="{!ViewMode=='BlacklistData'}" collapsible="false">
+            	<apex:selectList label="{!$Label.ffct__selectobjecttoexcludefields}" multiselect="false" size="1" value="{!ObjectSelected}" rendered="{!DisplayObjectListForFields}" Id="blacklistObject">
+					<apex:selectOptions value="{!ObjectsForFieldBlacklistList}"/>
+						<apex:actionSupport id="objectFields" event="onchange" action="{!populateObjectFields}" rerender="selectFields" status="eventStatus" >
+							<apex:param name="objectName" value="ObjSelected"/>
+                    	</apex:actionSupport>
+                </apex:selectList>
+                <apex:inputText label="{!$Label.ffct__objectforfieldblacklist}" value="{!ObjectSelected}" rendered="{!!DisplayObjectListForFields}">
+                	<apex:actionSupport id="fetchFields" event="onblur" action="{!populateObjectFields}" rerender="selectFields,dateMoverForm,blacklstsec" status="eventStatus" >
+                		<apex:param name="objectName" value="ObjSelected"/>
+                    </apex:actionSupport>
+                </apex:inputText>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="1">
+            	<apex:outputPanel id="selectFields" rendered="{!ViewMode=='BlacklistData'}">
+					<table>
+						<tr>
+							<th></th>
+        					<th class="selectTitle">{!$Label.ffct__selectfields}</th>
+        					<th ></th>
+        					<th >{!$Label.SelectedFields}</th>
+        				</tr>
+        				
+        				<tr>
+        					<td>
+        					</td>
+        					<td>
+        						<apex:selectList title="Select Fields" label="{!$Label.ffct__selectfields}" id="sel1" value="{!LeftSelectedField}" multiselect="true" size="10">
+                					<apex:selectOptions value="{!FieldsAvailable}" />
+            					</apex:selectList>
+            				</td>
+            				<td style="vertical-align: middle">
+            					<div>
+            						<apex:commandButton action="{!selectField}" value="{!$Label.ffct__add}"  status="eventStatus" reRender="selectFields" title="{!$Label.ffct__addtoselectedfields}"/> 
+                    				<br/><br/>
+                    				<apex:commandButton action="{!unselectField}" value="{!$Label.ffct__remove}" status="eventStatus" reRender="selectFields" title="{!$Label.ffct__removeselectedfields}"/> 
+            					</div>
+            				</td>
+            				<td >
+            					<apex:selectList id="selField" value="{!rightSelectedField}" multiselect="true"  size="10">
+                					<apex:selectOptions value="{!FieldsSelected}" />
+            					</apex:selectList>
+            				</td>
+            			</tr>
+        			</table>
+        		</apex:outputPanel>
+        	</apex:pageBlockSection>
+        		
+            <apex:pageBlockSection columns="3" title="{!$Label.ffct__selectbasedatecritera}"  rendered="{!ViewMode=='dateSetting'}"  id="baseDateObjField" collapsible="false">
+                <apex:selectList title="Select the Object for Base Date" label="{!$Label.ffct__selectbasedateobject}" id="baseObj" value="{!BaseDateObject}"  multiselect="false" size="1" rendered="{!DisplayObjectListForFields}">
+                    <apex:selectOptions value="{!BaseDateObjectList}" />
+                    <apex:actionSupport event="onchange" reRender="baseField,productSel,pgMsg,dateMoverForm" status="eventStatus" action="{!populateObjectFields}">
+                    <apex:param name="objectName" value="BaseDate"/>
+                    </apex:actionSupport>
+                </apex:selectList> 
+                <apex:inputText label="{!$Label.ffct__selectbasedateobject}" value="{!BaseDateObject}" rendered="{!!DisplayObjectListForFields}">
+                	<apex:actionSupport id="basedatefields" event="onblur" action="{!populateObjectFields}" reRender="baseField,productSel,pgMsg,dateMoverForm"  status="eventStatus" >
+                		<apex:param name="objectName" value="BaseDate"/>
+                    </apex:actionSupport>
+                </apex:inputText>
+                <apex:selectList title="Select the Field for Base Date" label="{!$Label.ffct__basedatefieldselection}" id="baseField" value="{!BaseDateField}"  multiselect="false" size="1" >
+                    <apex:selectOptions value="{!BaseDateFieldList}" />
+                    <apex:actionSupport event="onchange" reRender="dateMoverForm,table" status="eventStatus" action="{!populateRecordsInTable}"/>
+                </apex:selectList> 
+            </apex:pageBlockSection>
+           
+            <apex:pageBlockSection id="displayRecSec" title="{!$Label.ffct__selectbasedaterecord}" columns="1" rendered="{!DisplayRecords && ViewMode=='dateSetting'}" collapsible="false">
+            	<apex:panelGrid columns="4">
+            		<apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" status="eventStatus" reRender="table,dateMoverForm" rendered="{!DisplayRecords  && ViewMode=='dateSetting'}"/>
+                	<apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" status="eventStatus" reRender="table,dateMoverForm" rendered="{!DisplayRecords  && ViewMode=='dateSetting'}"/>        
+                	<apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" status="eventStatus" reRender="table,dateMoverForm" rendered="{!DisplayRecords  && ViewMode=='dateSetting'}"/>
+                	<apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" status="eventStatus" reRender="table,dateMoverForm" rendered="{!DisplayRecords  && ViewMode=='dateSetting'}"/>    
+           		</apex:panelGrid>
+            	<apex:pageBlockTable id="table" title="Records" var="objRec" value="{!recordsList}" rendered="{!DisplayRecords && ViewMode=='dateSetting'}" columns="{!Headers.size + 1}">
+                	<apex:column headerValue="Select Option" styleClass="empty-column-content" />
+                	<apex:repeat var="header" value="{!headers}">
+                    	<apex:column headerValue="{!header}" styleClass="empty-column-content" />
+                	</apex:repeat>
+                	<apex:repeat value="{!FieldNamesList}" var="objfield">
+                    	<apex:column rendered="{!objfield =='Id'}">
+                    		<input type="radio" name="recordId" value="{!objRec[objfield]}" />
+                    	</apex:column>
+                    	<apex:column >
+                    		<apex:outputField value="{!objRec[objfield]}"/> 
+            			</apex:column>
+            		</apex:repeat>
+            	</apex:pageBlockTable>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="dateSection" Title="{!BaseDateObject} Record" rendered="{!ViewMode=='displayrec' || ViewMode=='batchProcessing'}" collapsible="false">
+            	<apex:repeat value="{!FieldNamesList}" var="afield" >
+                	<apex:inputField value="{!selectedRecord[afield]}" rendered="{!LOWER(afield) ==LOWER(BaseDateField) && ViewMode!='batchProcessing'}" required="true"/>
+                	<apex:outputField value="{!selectedRecord[afield]}" rendered="{!LOWER(afield) ==LOWER(BaseDateField) && ViewMode=='batchProcessing'}"/>
+                	<apex:outputField value="{!selectedRecord[afield]}" rendered="{!LOWER(afield) !=LOWER(BaseDateField)}"/>
+            	</apex:repeat>
+            </apex:pageBlockSection>
+    
+             <apex:pageBlockButtons location="bottom" id="btns" dir="RTL">
+             	<apex:commandButton value="{!$Label.ffct__next}" action="{!ReloadObjects}"  status="eventStatus" rerender="btns,table,dateMoverForm,pgMsg" rendered="{!ViewMode=='BlacklistData' || ViewMode=='selectProduct'}"/>
+             	<apex:commandButton disabled="true"  value="Set Date" rendered="{!ViewMode=='dateSetting' && !DisplayRecords}" />
+             	<apex:commandButton onclick="getSelectedRecord(); return false;" value="{!$Label.ffct__setdate}" id="btn3" rerender="dateSection,btns,pgMsg"  status="eventStatus"  rendered="{!ViewMode=='dateSetting' && DisplayRecords}" />
+             	<apex:commandButton value="{!$Label.ffct__back}" action="{!backAction}" rendered="{!ViewMode=='dateSetting' || ViewMode=='BlacklistData'}" status="eventStatus" rerender="btns,table,dateMoverForm,pgMsg"/>
+             	<apex:commandButton value="{!$Label.ffct__fixalldates}" id="cancelButton3" action="{!fixAllDates}" rendered="{!ViewMode=='displayrec'}" status="eventStatus"  rerender="pgMsg,btns,table,dateMoverForm" />
+               	<apex:commandButton value="{!$Label.ffct__cancel}"  action="{!backAction}" status="eventStatus"  rendered="{!ViewMode=='displayrec'}"  rerender="dateMoverForm,pgMsg" />
+               	<apex:commandButton value="{!$Label.ffct__close}"  action="{!close}" status="eventStatus"  rendered="{!ProcessCompleted}"  rerender="dateMoverForm,pgMsg" />
+            </apex:pageBlockButtons>  
+        </apex:pageBlock>
+        
+        <apex:actionFunction name="setdate" action="{!setDate}" rerender="dateMoverForm, dateSection" status="eventStatus" rendered="{!DisplayRecords}">
+            <apex:param name="selected" value="" />
+        </apex:actionFunction>
+        <apex:outputPanel >
+			<apex:actionPoller action="{!checkJobStatus}" interval="5" rerender="dateSection,pgMsg,dateMoverForm" rendered="{!!ProcessCompleted && StartJob}"/>
+        </apex:outputPanel>
+    </apex:form>
+    <script>
+ function getSelectedRecord()
+        {
+        	var recChecked = false;
+            var radios = document.getElementsByName('recordId');
+            for (var i = 0, length = radios.length; i < length; i++) {
+                if (radios[i].checked) {
+                	recChecked = true;
+                 	setdate(radios[i].value);
+             		break;
+                }
+            }
+            if(!recChecked)
+            {
+            	setdate('');
+            }
+        }
+</script>
+</apex:page>

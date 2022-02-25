@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Suggest_Email__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Send contact an email when suggesting a product - default is unchecked</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Send an email to a contact when suggesting a product - uncheck for sanbox</inlineHelpText>
+    <label>Suggest Send Email</label>
+    <type>Checkbox</type>
+</CustomField>

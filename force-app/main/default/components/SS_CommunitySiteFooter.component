@@ -1,0 +1,9 @@
+<!--Footer component -->
+<apex:component >
+<div id="push"></div>
+<div id="footer">
+	<ul class="copyright">
+		<li>{!$Label.copyright}</li>
+	</ul>
+</div>
+</apex:component>

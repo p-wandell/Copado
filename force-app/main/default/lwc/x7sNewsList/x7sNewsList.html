@@ -1,0 +1,40 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc. All rights reserved.
+  -->
+<template>
+	<div role={ariaLandmarkRoleForComponent} aria-label={ariaLabelForNewsListLandmark}>
+		<c-x7s-shr-component-wrapper custom-class={componentClass} auto-slds-card>
+			<lightning-layout multiple-rows="true" vertical-align="stretch" pull-to-boundary="small">
+				<template if:true={newsListWrapper}>
+					<template for:each={newsListWrapper.newsList} for:item="news">
+						<lightning-layout-item class={viewSelectorStyle} key={news.Id} padding="around-small">
+							<c-x7s-news-list-item news={news}
+												  news-list-wrapper={newsListWrapper}
+												  is-guest-user={newsListWrapper.isGuestuser}
+												  layout={layout}
+												  tile-variant={tileVariant}
+												  text-align={cardTextAlign}
+												  profileurl={profileURL}
+												  news-url={newsURL}
+												  show-images={showImages}
+												  limit-to-specific-groups={limitToSpecificGroups}
+												  is-nickname-display-enabled={isNicknameDisplayEnabled}
+												  show-likes={showLikes}
+												  show-comments={showComments}
+												  language-enabled={languageEnabled}
+												  user-language={userLanguage}
+												  custom-class={customClass}
+												  show-avatar={showAvatar}
+							>
+							</c-x7s-news-list-item>
+						</lightning-layout-item>
+					</template>
+				</template>
+				<template if:true={loading}>
+					<lightning-spinner alternative-text="Loading"></lightning-spinner>
+				</template>
+			</lightning-layout>
+		</c-x7s-shr-component-wrapper>
+	</div>
+
+</template>

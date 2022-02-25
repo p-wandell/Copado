@@ -1,0 +1,270 @@
+<apex:page standardController="pse__Resource_Request__c" extensions="pse.ResourceStafferController" id="SingleStafferPage" lightningStylesheets="true">
+
+	<style>
+		img.sortIndicator { padding-left: 5px; }
+		span.modified { color: red; }
+		span.pinned { color: blue; }
+		img.info {
+			height:16px;
+			width:16px;
+			margin-bottom:2px;
+			margin-left:5px;
+			margin-top:0;
+			vertical-align:top;
+		}
+		.arSelectList select{
+			width: 70%;
+			resize: vertical;
+			overflow: auto;
+		}
+		tr.dataRow>td.availabilityColumn {
+			text-align: right;
+			width: 10%;
+            min-width:160px;
+		}
+		.slds-vf-scope input[type="radio"][disabled]:after, .slds-vf-scope input[type="checkbox"][disabled]:after {
+			border-color: gray;
+		}
+		body td.actionColumn:before, .slds-vf-scope td.actionColumn:before {
+			content: none;
+		}
+		body .list .actionColumn, .slds-vf-scope .list .actionColumn {
+			padding-left:0%;
+		}
+	</style>
+
+	<script type="text/javascript">
+	var prevSearchTerm = null;
+	var timer = null;
+	function setVisible(name, visible) {
+		var e = document.getElementById(name);
+		if (e != null) {
+			if (visible) {
+				e.setAttribute("style", "display: block");
+				e.style.cssText = "display: block";
+			} else {
+				e.setAttribute("style", "display: none");
+				e.style.cssText = "display: none";
+			}
+		}
+	}
+	function wait(val) {
+		setVisible('loading', val);
+		setVisible('wait', val);
+	}
+	</script>
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+
+	<apex:outputPanel id="scriptBlock" layout="block">
+		<script>
+			prepareVFConfig();
+			function prepareVFConfig() {
+				var config = {
+					recordName: '{!JSENCODE(resourceRequest.Name)}',
+					objectName: '{!JSENCODE($Label.Common_Label_Resource_Request)}',
+					helpUrl: '{!$Page.ResourceRequestHelp}',
+					recordId: '{!resourceRequest.Id}',
+					objectApiName: '{!$ObjectType["Resource_Request__c"].name}',
+					fields: [{
+						id: 'resourceRole',
+						field: '{!$ObjectType["Resource_Request__c"].fields["Resource_Role__c"].name}'
+					}, {
+						id: 'project',
+						field: '{!$ObjectType["Resource_Request__c"].fields["Project__c"].name}'
+					}, {
+						id: 'resourceHeld',
+						field: '{!$ObjectType["Resource_Request__c"].fields["Resource_Held__c"].name}'
+					},
+					{
+						id: 'startDate',
+						field: '{!$ObjectType["Resource_Request__c"].fields["Start_Date__c"].name}'
+					},
+					{
+						id: 'endDate',
+						field: '{!$ObjectType["Resource_Request__c"].fields["End_Date__c"].name}'
+					}],
+					onRender: 'onHeaderLoadCallback'
+				};
+
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+		</script>
+	</apex:outputPanel>
+
+	<apex:detail showChatter="true" title="true" relatedListHover="false"/>
+	<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+	<div id="loading" class="waitingSearchDiv" style="display: none">
+		<div id="waitingHolder" class="waitingHolder">
+			<img class="waitingImage" src="/img/loading.gif"/>
+			<span class="waitingDescription">{!$Label.common_loading_label}</span>
+		</div>
+	</div>
+
+	<apex:form id="form" >
+
+		<c:LoadMaskRegion >
+
+			<apex:pageBlock title="{!$Label.pse__skill_certification_section_header}" id="skillsAndRatingssHeader">
+				<apex:pageBlockTable value="{!resourceSkillRequests}" var="skills" rendered="{!resourceSkillRequestsExist}" id="skillsAndRatingsTable">
+					<apex:column value="{!skills.pse__Skill_Certification__c}"/>
+					<apex:column value="{!skills.pse__Minimum_Rating__c}"/>
+				</apex:pageBlockTable>
+
+				<apex:pageBlockSection rendered="{! NOT(resourceSkillRequestsExist)}">
+					<apex:outputText value="{!$Label.pse__common_label_no_records}"/>
+				</apex:pageBlockSection>
+
+				<apex:selectRadio value="{!conjunction}" styleClass="slds-vf-scope" style="min-width: 250px; width: 250px;" id="conjunctionOptions" disabled="true" rendered="{!resourceSkillRequestsExist}">
+					<apex:selectOptions value="{!conjunctionOptions}" />
+				</apex:selectRadio>
+			</apex:pageBlock>
+
+			<apex:pageBlock title="{!$Label.pse__assign_resource_title_label}" rendered="{!NOT isDisabled}" id="assignResourcePageBlock">
+				<c:ResourceFilter parentComponent="{!this}"
+					initialResource="{!filterContact}"
+					initialStartDate="{!filterStartDate}"
+					initialEndDate="{!filterEndDate}"
+					customContactFields="{!customResourceFilterFields}"
+					initialResourceRequest="{!filterResourceRequest}"
+					alwaysShowDates="true"
+					rerender="form"
+				/>
+				<apex:pageMessages id="msgs" />
+			</apex:pageBlock>
+
+			<apex:pageBlock >
+				<apex:outputPanel id="resources">
+				<apex:variable var="tableState" value="{!sortState}"/>
+					<table class="list" width="100%" cellspacing="0" cellpadding="0" border="0" id="resourcesTable">
+						<tr class="headerRow">
+							<th></th>
+							<th>{!$Label.assign_resource_resource_list_table_action_header_column}</th>
+							<th>
+								<c:SortColumnLink id="resourceNameHeader" value="{!$Label.pse__assign_resource_resource_list_table_name_header_column}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!nameComparator}" tableState="{!tableState}"/>
+							</th>
+							<th style="{!if(isUtilizationEnabled == false, 'display:none;', 'display:table-cell;')}">
+								<c:SortColumnLink id="resourceAvailabilityHeader" value="{!$Label.pse__common_availability_header_column}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!availabilityComparator}" tableState="{!tableState}"/>
+								<apex:image value="/s.gif" title="{!$Label.pse__common_availability_header_column_info}" styleClass="infoIcon" style="float: right;"/>
+							</th>
+							<th>
+								<c:SortColumnLink id="resourcePrimarySkillsHeader" value="{!$Label.pse__assign_resource_resource_list_table_primary_skills_header_column} {!$Label.pse__assign_resource_resource_list_table_rating_header_column}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!ratingComparator}" tableState="{!tableState}"/>
+							</th>
+							<th>
+								<c:SortColumnLink id="resourceRoleHeader" value="{!$Label.pse__common_label_role}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!roleComparator}" tableState="{!tableState}"/>
+							</th>
+							<th>
+								<c:SortColumnLink id="resourceRPGHeader" value="{!IF(UNIT_TYPE_LABEL=='Group',$Label.pse__common_label_group,IF(UNIT_TYPE_LABEL=='Region',$Label.pse__common_label_region,$Label.pse__common_label_practice))}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!RPGComparator}" tableState="{!tableState}"/>
+							</th>
+							<th>
+								<c:SortColumnLink id="resourceCostRateHeader" value="{!$Label.pse__assign_resource_resource_list_table_cost_rate_header_column}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!costRateComparator}" tableState="{!tableState}"/>
+							</th>
+							<th>
+								<c:SortColumnLink id="resourceAssignmentNumberHeader" value="{!$Label.pse__assign_resource_resource_list_table_assignments_header_column}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!assignmentNumberComparator}" tableState="{!tableState}"/>
+							</th>
+							<th>
+								<c:SortColumnLink id="resourceRequestsNumberHeader" value="{!$Label.pse__assign_resource_resource_list_table_requests_header_column}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!resourceRequestNumberComparator}" tableState="{!tableState}"/>
+							</th>
+							<th>
+								<c:SortColumnLink id="resourceExternalHeader" value="{!$Label.pse__assign_resource_resource_list_table_external_header_column}" rerender="form" recordsList="{!stafferResources.data}" comparatorImpl="{!externalComparator}" tableState="{!tableState}"/>
+							</th>
+						</tr>
+						<apex:repeat value="{!stafferResources.resources}" var="r">
+							<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+								<td nowrap="true">
+									<a href="" onclick="wait(true); collapse('{!r.Data.Id}'); return false;"><apex:image url="{!URLFOR($Resource.pse__appirioCommon, 'collapse.gif')}" rendered="{!r.expanded}" /></a>
+									<a href="" onclick="wait(true); expand('{!r.Data.Id}'); return false;"><apex:image url="{!URLFOR($Resource.pse__appirioCommon, 'expand.gif')}" rendered="{!NOT r.expanded}" /></a>
+								</td>
+								<td class="actionColumn" nowrap="true">
+									<apex:outputPanel rendered="{!resourceRequest.pse__Project__c != null && resourceRequest.pse__Assignment__c == null}">
+										<apex:commandLink action="{!assign}" value="{!$Label.pse__assign_resource_assign}" onclick="wait(true)" oncomplete="wait(false)" styleClass="actionLink">
+											<apex:param id="assign1" name="assign1" value="{!r.Data.Id}" assignTo="{!selectedResourceId}" />
+										</apex:commandLink>&nbsp;|&nbsp;
+									</apex:outputPanel>
+									<apex:commandLink action="{!hold}" value="{!$Label.pse__assign_resource_resource_list_table_hold_link_column}" onclick="wait(true)" oncomplete="wait(false)" styleClass="actionLink" rendered="{!resourceRequest.pse__Assignment__c == null}">
+										<apex:param id="hold1" name="hold1" value="{!r.Data.Id}" assignTo="{!selectedResourceId}" />
+									</apex:commandLink>
+									<apex:outputText rendered="{!resourceRequest.pse__Assignment__c == null && r.Data.pse__Exclude_from_Resource_Planner__c == false}">&nbsp;|&nbsp;
+										<apex:commandLink rendered="{!resourceRequest.pse__Assignment__c == null && r.Data.pse__Exclude_from_Resource_Planner__c == false}" action="{!redirectToResPlannerPage}" value="{!$Label.pse__assign_resource_resource_list_table_view_in_planner_link_column}" styleClass="actionLink" target="_blank">
+											<apex:param id="resourceId" name="resourceId" value="{!r.Data.Id}" assignTo="{!selectedResourceId}" />
+										</apex:commandLink>
+									</apex:outputText>
+
+								</td>
+								<td class="dataCell" nowrap="true">
+									<apex:outputText value="{!r.Data.name}" styleClass="{!IF(r.Pinned,'pinned','')}" style="vertical-align: top;" />
+								</td>
+								<td style="{!if(isUtilizationEnabled == false, 'display:none;', 'display:table-cell;')}" class="availabilityColumn" styleClass="availabilityColumn" nowrap="true">
+									<apex:outputText value="{!NULLVALUE(TEXT(FLOOR(r.availabilityPercent)), '–')}" />
+									&nbsp;
+									<c:IntensityIcon value="{!r.availabilityPercent}" thresholdGreen="100" thresholdAmber="50" size="16"/>
+								</td>
+								<td class="dataCell" nowrap="true"><apex:outputText value="{!r.SkillRating}" /></td>
+								<td class="dataCell" nowrap="true"><apex:outputField value="{!r.Data.pse__Resource_Role__c}" /></td>
+								<td class="dataCell" nowrap="true"><apex:outputText value="{!r.UnitTypeName}" /></td>
+								<td class="dataCell" nowrap="true"><apex:outputText value="{!r.DefaultCostRateFormatted}" /></td>
+								<td class="dataCell" nowrap="true"><apex:outputText value="{!r.AssignmentCount}" /><apex:outputText rendered="{!r.AssignmentCount == MAX_ASSIGNMENT_RESULTS}" value="+" /></td>
+								<td class="dataCell" nowrap="true"><apex:outputText value="{!r.RequestCount}" /><apex:outputText rendered="{!r.RequestCount == MAX_RESOURCE_REQUEST_RESULTS}" value="+" /></td>
+								<td class="dataCell" nowrap="true"><apex:outputField value="{!r.Data.pse__External_Resource__c}" /></td>
+							</tr>
+							<tr style="display: {!IF(r.expanded, '', 'none')}" class="dataRow">
+								<td colspan="10" nowrap="true" style="padding-left: 50px;">
+
+									<apex:pageBlockSection title="{!$Label.pse__assign_resource_label_skills_and_certifications_for} {!r.Data.Name}" columns="1" collapsible="false">
+										<apex:pageBlockTable value="{!r.ratings}" var="rating">
+											<apex:column headerValue="{!$Label.pse__common_label_type}" value="{!rating.Skill_Certification__r.pse__Type__c}" />
+											<apex:column headerValue="{!$Label.pse__assign_resource_skills_and_certifications_table_name_header_column}" value="{!rating.Skill_Certification__r.Name}" />
+											<apex:column headerValue="{!$Label.pse__assign_resource_skills_and_certifications_table_rating_header_column}" value="{!rating.pse__Rating__c}" />
+											<apex:column headerValue="{!$Label.pse__common_label_notes}" value="{!rating.pse__Notes__c}" />
+											<apex:column headerValue="{!$Label.pse__assign_resource_skills_and_certifications_table_evaluation_date_header_column}" value="{!rating.pse__Evaluation_Date__c}" />
+											<apex:column headerValue="{!$Label.pse__assign_resource_skills_and_certifications_table_expiration_date_header_column}" value="{!rating.pse__Expiration_Date__c}" />
+										</apex:pageBlockTable>
+									</apex:pageBlockSection>
+
+									<apex:pageBlockSection title="{!SUBSTITUTE(($Label.pse__assign_resource_availability_section_title),'{0}',r.Data.Name)}" columns="1" collapsible="false">
+										<apex:pageBlockTable value="{!r.availability}" var="a">
+											<apex:column headerValue="{!$Label.pse__common_label_action}">
+												<apex:outputPanel rendered="{!a.Assigned}">
+													<a href="/{!a.Id}">{!$Label.pse__common_label_view}</a>
+													<apex:image styleClass="info" value="/img/msg_icons/info16.png" title="{!a.Notes}" />
+												</apex:outputPanel>
+											</apex:column>
+											<apex:column headerValue="{!$Label.pse__common_label_account}" value="{!a.Account}" />
+											<apex:column headerValue="{!$Label.pse__common_label_project}" value="{!a.Project}" />
+											<apex:column headerValue="{!$Label.pse__common_label_start_date}" value="{!a.StartDate}" />
+											<apex:column headerValue="{!$Label.pse__common_label_end_date}" value="{!a.EndDate}" />
+											<apex:column headerValue="{!$Label.pse__assign_resource_availability_table_hours_scheduled_header_column}" value="{!a.Hours}" />
+											<apex:column headerValue="{!$Label.pse__assign_resource_availability_table_assigned_header_column}">
+												<apex:image styleClass="checkImg" width="21" height="16" value="/img/checkbox_{!IF(a.Assigned,'','un')}checked.gif" />
+											</apex:column>
+										</apex:pageBlockTable>
+									</apex:pageBlockSection>
+
+									<apex:pageBlockSection title="{!SUBSTITUTE(($Label.pse__assign_resource_schedule_section_title),'{0}',r.Data.Name)}" columns="1" collapsible="false" rendered="{!r.expanded}">
+										<c:ScheduleBuilder resourceScheduleAttribute="{!r.schedule}" resourceIdAttribute="{!r.Data.Id}" isEditModeAttribute="{!isEditMode}" autoChangeStrategyAttribute="true" resourceWorkCalendar="{!resourceWCMap[r.Data.Id]}"/>
+									</apex:pageBlockSection>
+								</td>
+							</tr>
+						</apex:repeat>
+					</table>
+				</apex:outputPanel>
+			</apex:pageBlock>
+
+			<apex:actionFunction id="expand" name="expand" action="{!expandResource}" rerender="resources, msgs" immediate="true" oncomplete="wait(false);">
+				<apex:param id="expandParam" name="expandParam" value="" assignTo="{!selectedResourceId}" />
+			</apex:actionFunction>
+			<apex:actionFunction id="collapse" name="collapse" action="{!collapseResource}" rerender="resources, msgs" immediate="true" oncomplete="wait(false);">
+				<apex:param id="collapseParam" name="collapseParam" value="" assignTo="{!selectedResourceId}" />
+			</apex:actionFunction>
+
+ 		</c:LoadMaskRegion>
+
+	</apex:form>
+</apex:page>

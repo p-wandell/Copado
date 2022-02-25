@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>false</plural>
+        <value>Trainieren</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>true</plural>
+        <value>Praktiken</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>false</plural>
+        <value><!-- Trainieren --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>true</plural>
+        <value><!-- Praktiken --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>false</plural>
+        <value><!-- Trainieren --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>true</plural>
+        <value><!-- Praktiken --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>false</plural>
+        <value><!-- Trainieren --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>true</plural>
+        <value><!-- Praktiken --></value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Übungsname</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- A Practice&apos;s Currency field value may not be updated once set. --></errorMessage>
+        <name>pse__Practice_Currency_is_Constant</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Calculate_Backlog --></label>
+        <name>pse__Calculate_Backlog</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Backlog_old --></label>
+        <name>pse__Calculate_Backlog_old</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Forecast --></label>
+        <name>pse__Calculate_Forecast</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Missing_Timecard --></label>
+        <name>pse__Calculate_Missing_Timecard</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Time_Variance --></label>
+        <name>pse__Calculate_Time_Variance</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Utilization --></label>
+        <name>pse__Calculate_Utilization</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Update_Utilization --></label>
+        <name>pse__Update_Utilization</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- View_Hierarchy --></label>
+        <name>pse__View_Hierarchy</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- View_Transactions --></label>
+        <name>pse__View_Transactions</name>
+    </webLinks>
+</CustomObjectTranslation>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>レポートデータ範囲の種類が[サマリー]の場合は、集計クエリ方法として[グループ]または[合計]を選択する必要があります。データ範囲の種類が[詳細]の場合は、リストのクエリ方法である[詳細]を選択する必要があります。これらのクエリメソッドを混在させることはできません。</help>
+    <label><!-- Type --></label>
+    <name>ffr__Type__c</name>
+    <picklistValues>
+        <masterLabel>Count</masterLabel>
+        <translation>カウント</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Detail</masterLabel>
+        <translation>細部</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Group</masterLabel>
+        <translation>グループ</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sum</masterLabel>
+        <translation>和</translation>
+    </picklistValues>
+</CustomFieldTranslation>

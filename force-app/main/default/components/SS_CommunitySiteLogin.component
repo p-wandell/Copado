@@ -1,0 +1,41 @@
+<apex:component controller="SS_CommunitySiteLoginController" id="loginComponentWWW">
+    <script src="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/script/validator.min.js')}"></script>
+    <div>
+        <div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h5>{!$Label.loginWith7summitsCommunityUser}</h5>
+                </div>
+                <div class="panel-body">
+                    <apex:form id="loginForm" forceSSL="true" html-data-toggle="validator">
+                        <apex:outputPanel layout="block" styleClass="alert alert-danger" rendered="{!showError}">
+                            {!$Label.invalidLogin}
+                        </apex:outputPanel>
+                        <div class="form-group">
+                            <label for="username">{!$Label.site.username}</label>
+                            <apex:inputText html-placeholder="{!$Label.site.username}" styleClass="form-control" id="username" value="{!username}"/>
+                            <div class="help-block with-errors"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">{!$Label.site.password}</label>
+                             <apex:inputSecret html-placeholder="{!$Label.site.password}" styleClass="form-control" id="password" value="{!password}"/>
+                            <div class="help-block with-errors"></div>
+                        </div>
+                        <div style="text-align: center;">
+                            <apex:commandButton action="{!login}" value="{!$Label.site.login_button}" styleClass="btn btn-primary" />
+                            <a href="/ForgotPassword">{!$Label.site.forgot_your_password_q}</a> | 
+                            <a href="/Register">{!$Label.site.new_user_q}</a>
+                        </div>
+                    </apex:form>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                // These are tweaks for the validator to set attributes that the Visualforce tags won't let us overwrite
+                jQuery("input[id$='submit']").attr("disabled", true);
+                jQuery("input[id$='username'], input[id$='password']").attr("required", true);
+            });
+        </script>
+    </div>
+</apex:component>

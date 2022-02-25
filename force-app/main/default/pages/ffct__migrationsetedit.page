@@ -1,0 +1,83 @@
+<apex:page standardController="ffct__MigrationSet__c" action="{!isToolMustBeActivated}" extensions="ffct.MigrationSetEditControllerExtension" >
+	<apex:form id="form">
+		<apex:actionStatus id="eventStatus"  >
+            <apex:facet name="start">
+                <apex:outputPanel >
+                   <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                      <div style="position:absolute;top:50%;left:50%">
+                        <apex:image value="/img/loading32.gif"></apex:image>
+                      </div>
+                  </div>
+                </apex:outputPanel>
+            </apex:facet>   
+        </apex:actionStatus>
+		<apex:sectionHeader title="{!$ObjectType.ffct__MigrationSet__c.label}" help="helploader?topicid=1047"/>
+		<apex:pagemessages id="pgMsg" escape="false"/>
+		
+		<apex:pageBlock >
+			<apex:pageBlockSection collapsible="false" id="migrationSetDetailsEditSection" title="{!$Label.ffct__migrationdetails}" rendered="{!!DisplayInfo.IsRuleView}">
+				<apex:inputField required="true" value="{!MigrationSet.Name}"/>
+				<apex:outputField value="{!MigrationSet.OwnerId}" />
+				<apex:inputField required="true" value="{!MigrationSet.ffct__StartDate__c}"/>
+				<apex:inputField required="true" value="{!MigrationSet.ffct__EndDate__c}"/>
+				<apex:inputField value="{!MigrationSet.ffct__ExcludeUnmanagedItems__c}"/>
+    		</apex:pageBlockSection>
+    		
+    		<apex:pageBlockSection collapsible="false" id="migrationSetDetailsSection" title="{!$Label.ffct__migrationdetails}" rendered="{!DisplayInfo.IsRuleView}">
+				<apex:outputField value="{!MigrationSet.Name}"/>
+				<apex:outputField value="{!MigrationSet.OwnerId}" />
+				<apex:outputField value="{!MigrationSet.ffct__StartDate__c}"/>
+				<apex:outputField value="{!MigrationSet.ffct__EndDate__c}"/>
+				<apex:outputField value="{!MigrationSet.ffct__ExcludeUnmanagedItems__c}"/>
+				<apex:outputField value="{!MigrationSet.ffct__FilterByNamespace__c}"/>
+    		</apex:pageBlockSection>
+    		
+    		<apex:pageBlockSection collapsible="false" id="migrationSetPackageSection" title="{!$Label.ffct__selectpackage}" rendered="{!!DisplayInfo.IsRuleView}">
+    			<apex:actionRegion >
+					<c:userMultiselectPickList DataToselect="{!DisplayInfo.PackagesToBeChoosen}" DataSelected="{!DisplayInfo.SelectedPackages}" aLeftLabel="{!$Label.ffct__availablepackages}" aRightLabel="{!$Label.ffct__enabledpackages}" RequiredSelectOption="true"/>
+				</apex:actionRegion>
+    		</apex:pageBlockSection>
+    		
+    		<apex:pageBlockSection collapsible="false" id="migrationSetRuleSection" title="{!$ObjectType.ffct__MigrationRule__c.label}" rendered="{!DisplayInfo.IsRuleView}">
+    			<apex:pageBlockTable value="{!DisplayInfo.DisplayRules}" var="rule" rendered="{!DisplayInfo.DisplayRules.size >0}">
+    				<apex:column headerValue="{!$Label.ffct__select}">
+    					<apex:inputCheckbox value="{!rule.IsSelected}"/>
+    				</apex:column>
+    				<apex:column value="{!rule.name}" headerValue="{!$Label.ffct__rulename}"/>
+    				<apex:column value="{!rule.FilterOperation}" headerValue="{!$ObjectType.ffct__MigrationRule__c.fields.ffct__FilterOperation__c.label}"/>
+    			</apex:pageBlockTable>
+    		</apex:pageBlockSection>
+    		
+    		<apex:outputPanel rendered="{!!DisplayInfo.IsRuleView}">
+    			<c:multiselectbylookup objectList="{!DisplayInfo.UserLookupList}" lookupFieldName="{!DisplayInfo.FieldName}" title="{!$ObjectType.ffct__MigrationSet__c.fields.ffct__FilterOnUsers__c.label}"/>
+    		</apex:outputPanel>
+    		<apex:pageblockbuttons location="bottom" >
+				<apex:commandbutton action="{!saveAndNext}" value="{!$Label.ffct__saveandnext}" rendered="{!!DisplayInfo.IsRuleView && (ISBLANK(MigrationSet.Id) || (!ISBLANK(MigrationSet.Id) && MigrationSet.ffct__Status__c!='Created'))}"/>
+				<apex:commandbutton value="{!$Label.ffct__saveandnext}" rendered="{!!DisplayInfo.IsRuleView && (!ISBLANK(MigrationSet.Id) && MigrationSet.ffct__Status__c=='Created')}" onclick="saveOnEdit()" 
+				rerender="form" styleClass="saveButtonClass"/>
+				<apex:commandbutton action="{!save}" value="{!$Label.ffct__save}" rendered="{!DisplayInfo.IsRuleView}"/>
+				<apex:commandbutton action="{!cancel}" value="{!$Label.ffct__cancel}" immediate="true" html-formnovalidate="formnovalidate"/>
+                <script type="text/javascript">
+                	var elemList = document.getElementsByClassName("saveButtonClass");
+			
+                    if(elemList && elemList[0])
+                    {
+                        elemList[0].type = "submit";
+                    }
+                </script>
+			</apex:pageblockbuttons>
+			<apex:actionFunction name="saveAndNext" action="{!saveAndNext}"  />
+			
+			<apex:outputLink style="padding-left:10px;color: #015BA7;" value="/apex/migrationrule?migrationsetid={!MigrationSet.Id}" rendered="{!DisplayInfo.IsRuleView}">
+                 {!$Label.ffct__addcustomfilters}
+            </apex:outputLink>
+		</apex:pageBlock>
+	</apex:form>
+	<script type="text/javascript">
+		function saveOnEdit(){
+			if(confirm('{!$Label.MigrationSetEditInfoMessage}')){
+				saveAndNext();
+			}
+		}  
+    </script>
+</apex:page>

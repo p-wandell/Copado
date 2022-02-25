@@ -1,0 +1,80 @@
+/**
+ * Hive_Lightning - Generates the assets used for 7S Hive Migration Lightning
+ * @version 1.0.0
+ * @author 7Summits
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+/*
+ * Copyright (c) 2019. 7Summits Inc.
+ * Created by 7Summits - Joe Callin on 2019-05-20.
+*/
+/*******************/
+/* Common CSS here */
+/*******************/
+@keyframes fadeIn {
+  0% {
+    z-index: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 0;
+  }
+  100% {
+    z-index: 1;
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    z-index: 1;
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    z-index: -1;
+    opacity: 0;
+  }
+}
+.THIS {
+  margin-bottom: token(spacingLarge);
+  font-weight: 400;
+}
+.THIS h1 {
+  font-size: 3.5rem;
+  line-height: 4.125rem;
+}
+.THIS.eyebrow h1 {
+  font-size: 0.875rem;
+  line-height: 22px;
+  text-transform: uppercase;
+}
+.THIS h2 {
+  font-size: 2.75rem;
+  line-height: 1.18;
+}
+.THIS h3 {
+  font-size: 2rem;
+  line-height: 40px;
+}
+.THIS h4 {
+  font-size: 1.5rem;
+  line-height: token(spacingXLarge);
+}
+.THIS h5 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 22px;
+  text-transform: uppercase;
+}
+.THIS.noBottomMargin {
+  margin-bottom: calc(-1 * 1.5rem);
+}
+.THIS.xLargeBottomMargin {
+  margin-bottom: token(spacingXLarge);
+}
+.THIS.smallBottomMargin {
+  margin-bottom: calc(-1 * 0.75rem);
+}

@@ -1,0 +1,114 @@
+<apex:page sidebar="false" showHeader="false" controller="ffc.LicenseOrderController" tabStyle="FinancialForce_Central__tab">
+	<apex:stylesheet value="{!$Setup.ffc__ClientDeveloperSettings__c.ffc__ResourcePrefix__c}{!URLFOR($Resource.ffc__ffCentral, '/license/base.css')}" />
+	
+	<style type="text/css">
+		body {
+			background:#f8f8f8;
+		}
+		.spacer {
+			min-height:15px;
+		}
+		input.numeric {
+			width:50px;
+		}
+		.errorMsg {
+			font-size:11px;
+			padding:4px;
+			font-weight:700;
+		}
+		.errorMsgTop {
+			display:block;
+			margin:10px;
+			font-size:11px;
+			padding:4px;
+			font-weight:700;
+			background-color:#ffffff;
+			text-align:center;
+			border:1px solid #D74C3B;
+			-moz-border-radius:4px;
+			-webkit-border-radius:4px;
+			border-radius:4px;
+		}
+		
+		.errorMsgTop span {
+			font-size:13px;
+			color:#D74C3B;
+		}
+		
+		.labelCol {
+			width:200px !important;
+		}
+		
+		.dataCol, .data2Col {
+			width:auto !important;
+		}
+		
+		.bPageBlock {
+			border-top:1px solid #eaeaea !important;
+		}
+	</style>
+	
+	
+	<apex:form >
+			
+		<apex:pageBlock id="orderlicenses" mode="maindetail">
+			<!-- Buttons -->
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="Submit" id="submit" action="{!sendEmail}"/>
+			</apex:pageBlockButtons>
+		
+			<div class="spacer">
+				<apex:outputPanel styleClass="errorMsgTop" rendered="{!formErrorText <> ''}">
+					<apex:outputText id="Formerror" value="{!formErrorText}" />
+				</apex:outputPanel>
+			</div>
+		
+			<apex:pageBlockSection columns="1">
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel >
+							<apex:outputPanel styleClass="fieldLevelHelp">
+							<img src="/s.gif" alt="" class="helpIcon" title="Number of additional users with full access to FinancialForce Accounting."/>
+							</apex:outputPanel>
+							<apex:outputLabel value="Accounting users" for="accountingUsers"/>
+						</apex:outputPanel>
+						<apex:outputPanel >
+							<apex:inputText styleClass="numeric" id="accountingUsers" value="{!accountingUsers}"/> 
+							<apex:outputText styleClass="errorMsg" id="accountingUserserror" value="{!accountingUsersErrorText}" rendered="{!accountingUsersErrorText <> ''}"/> 
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel >
+							<apex:outputPanel styleClass="fieldLevelHelp">
+							<img src="/s.gif" alt="" class="helpIcon" title="Number of additional users with read-only access to FinancialForce Accounting data."/>
+							</apex:outputPanel>
+							<apex:outputLabel value="360 users" for="threeSixtyUsers"/>
+						</apex:outputPanel>
+						<apex:outputPanel >
+							<apex:inputText styleClass="numeric" id="threeSixtyUsers" value="{!threeSixtyUsers}"/> 
+							<apex:outputText styleClass="errorMsg" id="threeSixtyUserserror" value="{!threeSixtyUsersErrorText}" rendered="{!threeSixtyUsersErrorText <> ''}"/> 
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel >
+						
+						<apex:outputPanel styleClass="fieldLevelHelp">
+							<img src="/s.gif" alt="" class="helpIcon" title="Number of additional users with full access to FinancialForce Accounting and its API."/>
+						</apex:outputPanel>
+						
+						<apex:outputLabel value="Link users" for="linkUsers"/>
+						</apex:outputPanel>
+						<apex:outputPanel >
+							<apex:inputText styleClass="numeric" id="linkUsers" value="{!linkUsers}"/> 
+							<apex:outputText styleClass="errorMsg" id="linkUserserror" value="{!linkUsersErrorText}" rendered="{!linkUsersErrorText <> ''}"/> 
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel >
+						<apex:outputLabel value="Do you require consulting services?" for="consultingServices"/>
+						</apex:outputPanel>
+						<apex:inputCheckbox id="consultingServices" value="{!consultingServices}"/> 
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+	</apex:form>
+</apex:page>

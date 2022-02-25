@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Operations Request</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Operations Requests</value>
+    </caseValues>
+    <recordTypes>
+        <description><!-- Complete to request the creation of a new PSA resource. --></description>
+        <label><!-- New User --></label>
+        <name>New_User</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Requests to have a nonbill assignment created on a project. --></description>
+        <label><!-- Nonbill Assignment --></label>
+        <name>Nonbill_Assignment</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Requests to have a project workbook loaded for a new project. --></description>
+        <label><!-- Project Workbook Load --></label>
+        <name>Project_Workbook_Load</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Requests to edit time logged - billable status, milestone, assignment, project, etc. --></description>
+        <label><!-- Time Movement --></label>
+        <name>Time_Movement</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- New_PSA_Contact --></label>
+        <name>New_PSA_Contact</name>
+    </webLinks>
+</CustomObjectTranslation>

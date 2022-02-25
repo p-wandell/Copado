@@ -1,0 +1,364 @@
+<apex:page sidebar="true" standardStylesheets="true"
+	controller="ffct.PicklistUpdateController" action="{!isToolMustBeActivated}"
+	doctype="html-5.0">
+	
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />
+
+<style type="text/css">
+.pbSubheader {
+	color: black !important;
+}
+
+.inputText {
+	margin-right: 10px;
+	width: 435px;
+}
+
+.inputText {
+}
+
+.innerTable thead {
+	display: none;
+}
+
+.innerTable, .innerTable tr td {
+	border: none !important;
+}
+
+.ui-menu-item {
+	
+}
+
+.ui-menu .ui-menu-item a {
+	background: red;
+	height: 10px;
+	font-size: 8px;
+}
+
+.ui-helper-hidden-accessible {
+	display: none;
+}
+
+.ui-autocomplete {
+	list-style-type: none;
+	width: -moz-fit-content !important;
+	width: -webkit-fit-content !important;
+	width: fit-content !important;
+	background-color: red;
+}
+
+.detailList .dataCol {
+	padding-top: 7px !important;
+}
+
+.deleteCheckbox{
+	margin-left: 116px;
+    margin-top: -16px;
+}
+.deleteDiv{
+	margin-top: 10px;
+}
+.check_class{
+	margin-right: 88px;
+	margin-left: 10px;
+}
+.headerRow{
+ 	background-color: #ccc !important;
+	border-bottom: 1px solid white !important;
+	border-right: 1px solid white !important;
+	vertical-align: top !important;
+	font-weight: bold !important;
+	text-align: left !important;
+	white-space: nowrap !important;
+	text-overflow: ellipsis !important;
+	color: #000 !important;
+	font-family: Arial,Helvetica,sans-serif !important;
+}
+.dependantTable thead tr th,.dependantTable thead tr th div{
+	width: 200px !important;
+	font-size: 1em !important;
+}
+
+.dependantTable tbody tr td{
+	white-space: nowrap !important;
+	vertical-align: top !important;
+}
+.dependantTable .col1{
+	font-family: Arial,Helvetica,sans-serif !important;
+	background-color: #ccc !important;
+	font-weight: bold !important;
+	color: #000 !important;
+	border-bottom: 1px solid white !important;
+	border-right: 1px solid white !important;
+	text-align: left !important;
+	font-size: 1em !important;
+}
+.sectionDiv{
+	overflow-x: auto;
+	width: 1100px;
+}
+.sectionDiv .pbSubsection{
+	overflow-x: auto
+}
+
+.pbSubheader{
+	background-color: #8e9dbe !important;
+	color: white !important;
+}
+
+.popup
+{
+    background-color:white;
+    border-width: 1px;
+    border-style: solid;
+    z-index: 9999;
+    left: 50%;
+    padding:10px;
+    margin-left: -300px;
+    opacity: 1;
+    position: absolute;
+    overflow : scroll;
+    top: 25px;
+}
+
+.popup input {
+	margin-left: 10px;
+}
+.popupBg
+{
+    background-color:rgba(0,0,0,0.5);
+    opacity: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9998;   
+}
+</style>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+<script>
+  $(function() {
+    $("form").attr('autocomplete', 'off');
+  });
+    
+  function showWarningMsg(){
+  var check="{!UpdaterInfo.deleteExistingValues}";
+ 	if($('.check_class').is(":checked")){
+  		alert("{!$Label.PicklistDeleteWarning}");
+  	}  
+  }
+   
+  function hideSections(){
+  	$('.hideListButton').click();
+  }
+       
+    function handleFileSelect(evt) 
+	{
+		var file = evt.target.files[0];     
+		var reader = new FileReader();
+         
+        reader.onload = (function(file) 
+        {
+        	return function(e) 
+            { 
+				var text = reader.result;
+             	showProgressImage(evt);
+             	populateCsvFileData(text);
+            };
+        }(file));                                   
+        reader.readAsText(file,'UTF-8');
+     }
+     
+        function showProgressImage(evt)
+        {
+			var progressDiv = document.getElementById('progressImg');
+			if(progressDiv!=null)
+			{
+				progressDiv.style.display="block";
+        	}
+       	}
+       	    
+  </script>
+	<apex:actionStatus id="eventStatus">
+		<apex:facet name="start">
+			<apex:outputPanel >
+				<div
+					style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+					<div style="position: absolute; top: 50%; left: 50%">
+						<apex:image value="/img/loading32.gif"></apex:image>
+					</div>
+				</div>
+			</apex:outputPanel>
+		</apex:facet>
+	</apex:actionStatus>
+	<apex:form id="form" >
+		<apex:outputPanel id="progressPanel">
+			<div id="progressImg" style="display:none;width:100%;height:100%;position:absolute;top:0;left:0;">
+				<div style="position:absolute;top:50%;left:50%">
+					<apex:image value="/img/loading32.gif"></apex:image>
+				</div>
+			</div>
+		</apex:outputPanel>
+		<apex:sectionheader title="{!$Label.ffct__picklistupdater}" help="helploader?topicid=1027"/>
+		<apex:pagemessages id="pgMsg" escape="false" />
+		<apex:pageBlock rendered="{!!DisplayInfo.showPreview}" id="pgBlck">
+			<div style="margin-bottom: 20px;">
+					<label class="labelCol" >{!$Label.ffct__inputobjectname}</label>
+					<apex:panelGroup >
+						<apex:input type="text" list="{!DisplayInfo.objectNames}"
+							value="{!UpdaterInfo.objectDisplayName}" styleClass="inputText" disabled="{!DisplayInfo.showPicklist || DisplayInfo.showUploadOption}" >
+						</apex:input>
+					</apex:panelGroup>
+				</div>	
+			<apex:pageBlockSection title="{!$Label.ffct__selectoption}" collapsible="false" rendered="{!!DisplayInfo.showPicklist && !DisplayInfo.showUploadOption}">
+				<apex:selectRadio value="{!UpdaterInfo.ProcessingOption}" layout="pageDirection">
+					<apex:selectOption itemValue="Records"	itemlabel="{!$Label.ffct__updatepicklistwithrecords}"	/>
+					<apex:selectOption itemValue="File" itemlabel="{!$Label.ffct__updatepicklistwithuploadedvalues}" />
+				</apex:selectRadio>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection title="{!$Label.ffct__selectfilefromcomputer}" id="csvFile" collapsible="false" rendered="{!DisplayInfo.showUploadOption}" columns="1">
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel >{!$Label.ffct__selectfile}</apex:outputLabel>
+					 <input type="file" id="files" onchange="handleFileSelect(event)"/>
+	            	</apex:pageBlockSectionItem>
+            	<apex:pageBlockSectionItem >
+            		<apex:outputLabel >{!$Label.ffct__overwriteexistingvalues}</apex:outputLabel>
+					<apex:inputCheckbox value="{!UpdaterInfo.overWriteExistingValues}"  onchange="showWarningMsg();" />
+				</apex:pageBlockSectionItem>
+				<apex:actionFunction name="populateCsvFileData" action="{!populateCsVData}" rerender="progressPanel, btnPanel, pgMsg">
+						<apex:param name="csvdata" assignTo="{!UpdaterInfo.CsvAsString}" value="0"/>
+	            </apex:actionFunction>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection title="{!$Label.ffct__availablepicklists}"
+				rendered="{!DisplayInfo.showPicklist}" id="picklists" collapsible="false">
+				<apex:pageBlockTable id="table1" value="{!DisplayInfo.groupList}" var="group">
+					<apex:column headerValue="{!$Label.ffct__selectoption}">
+						<apex:inputCheckbox value="{!group.checked}" disabled="{!group.isDisabled}" />
+					</apex:column>
+					<apex:column headerValue="{!$Label.ffct__picklists}">
+						<apex:pageBlockTable id="table2" value="{!group.infoList}"
+							var="info" styleClass="innerTable">
+							<apex:column value="{!info.label}" />
+							<apex:column rendered="{!info.controllingFieldLabel != null}">
+								<img src="{!URLFOR($Resource.ffct_images,'arrow-right.png')}" />
+							</apex:column>
+							<apex:column rendered="{!info.controllingFieldLabel == null}"></apex:column>
+							<apex:column value="{!info.controllingFieldLabel}" />
+						</apex:pageBlockTable>
+					</apex:column>
+
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+
+			<apex:panelGroup rendered="{!DisplayInfo.showPicklist}">
+			
+				<div class="deleteDiv">
+					<apex:outputLabel styleClass="labelCol vfLabelColTextWrap  first  last">{!$Label.ffct__deleteunusedvalues}</apex:outputLabel>
+					<div class="deleteCheckbox">
+						<apex:inputCheckbox value="{!UpdaterInfo.deleteExistingValues}"  onchange="showWarningMsg();" styleClass="check_class"/>
+					</div>
+					<div style="margin-left: 170px;margin-top: -19px;">
+						<label class="labelCol vfLabelColTextWrap first last">{!$Label.ffct__orderby}</label>
+						<div style="margin-left: 55px;margin-top: -16px;">
+							<apex:selectList multiselect="false" size="1" value="{!UpdaterInfo.orderByFieldName}" id="sortFields" >
+								<apex:selectOptions value="{!DisplayInfo.orderByFieldOptions}"/>
+		                	</apex:selectList>
+						</div>
+					</div>
+				</div>
+				<br />
+				<br />
+			</apex:panelGroup>
+			
+			<apex:pageBlockButtons location="bottom">
+				<apex:outputPanel id="btnPanel">
+					<apex:commandButton action="{!showPickListPreview}" value="{!$Label.ffct__preview}" status="eventStatus"
+					 rerender="form,repeatedFields"  oncomplete="hideSections()" rendered="{!DisplayInfo.showPicklist || (DisplayInfo.showUploadOption && DisplayInfo.processUploadFile)}"/>	
+				<apex:commandButton value="{!$Label.ffct__continue}" status="eventStatus"
+							styleClass="showButton" action="{!processSelection}" rerender="form" rendered="{!!DisplayInfo.showPicklist && !DisplayInfo.showUploadOption }"/>
+				<apex:commandButton action="{!back}" value="{!$Label.ffct__back}" rendered="{!DisplayInfo.showPicklist || DisplayInfo.showUploadOption}"/>
+				</apex:outputPanel>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		
+		<apex:pageBlock rendered="{!DisplayInfo.showPreview}"  title="{!$Label.ffct__picklistpreviewsectionname}" id="previewPage">
+			<div class="sectionDiv">
+				<apex:pageBlockSection title="{!$Label.ffct__inputvaluessectionname}" collapsible="false" columns="1">
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$Label.ffct__inputobjectname}"/> <apex:outputText value="{!UpdaterInfo.customObjectName}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem rendered="{!DisplayInfo.showPicklist}">
+						<apex:outputLabel value="{!$Label.ffct__orderby}"/> <apex:outputText value="{!UpdaterInfo.orderByFieldName}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem rendered="{!DisplayInfo.showPicklist}">
+						<apex:outputLabel value="{!$Label.ffct__deleteunusedvalues}"/> <apex:inputCheckbox value="{!UpdaterInfo.deleteExistingValues}"  disabled="true"/> 
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem rendered="{!DisplayInfo.showUploadOption}">
+						<apex:outputLabel value="{!$Label.ffct__overwriteexistingvalues}"/> <apex:inputCheckbox value="{!UpdaterInfo.overWriteExistingValues}"  disabled="true"/>
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+			</div>
+				
+				<apex:repeat value="{!DisplayInfo.updatedFields}" var="field" id="repeatedFields" >
+				<div class="sectionDiv" id="previewDiv">
+					<apex:pageBlockSection title="{!field.label}"  columns="1">
+						<apex:commandLink action="{!openPopup}" status="eventStatus"  rendered="{!!DisplayInfo.processCompleted}">{!$Label.ffct__reorder}
+						<apex:param name="contIdParam" value="{!field.fullName}" assignTo="{!DisplayInfo.picklistNameToBeReordered}"/>
+						</apex:commandLink>
+						<apex:outputPanel id="compDetail" styleClass="popupBg" layout="block" rendered="{!DisplayInfo.displayPopUp==true && DisplayInfo.picklistNameToBeReordered==field.fullName}">
+							<apex:outputPanel styleClass="popup" layout="block" > 
+				        		<apex:pageBlockSection title="{!field.label}" columns="1" collapsible="false" >
+				        				<c:reorderlist listValues="{!field.PicklistValuesString}" />
+								</apex:pageBlockSection>
+								<br/>
+								<apex:commandButton action="{!reOrderPicklists}" value="{!$Label.ffct__apply}" /> &nbsp;
+								<apex:commandButton action="{!closePopup}" value="{!$Label.ffct__cancel}"  />
+				        	</apex:outputPanel>
+						</apex:outputPanel>
+						<apex:pageBlockTable value="{!field.picklistFieldValues}" var="picklistValue" rendered="{!field.controllingField==null}" >
+							<apex:column headerValue="Values" >
+							<apex:outputLabel >{!picklistValue.fullName}</apex:outputLabel>
+							</apex:column>
+						</apex:pageBlockTable>
+						<apex:outputPanel rendered="{!field.controllingField!=null}" layout="block">
+							<b>Controlling Field </b>&nbsp;&nbsp;&nbsp;<apex:outputLabel >{!field.controllingField.label}</apex:outputLabel><br/>
+							<b>Dependent Field </b>&nbsp;&nbsp;&nbsp;<apex:outputLabel >{!field.label}</apex:outputLabel><br/><br/><br/>
+						 <apex:pageBlockTable value="{!field}" var="fieldVar" rendered="{!field.controllingField!=null}" rules="cols" styleClass="dependantTable">
+							<apex:column headerValue="{!field.controllingField.label}" styleClass="col1">
+								<apex:outputLabel >{!field.label}</apex:outputLabel>
+							</apex:column>
+							<apex:repeat value="{!field.controllingField.picklistFieldValues}" var="controllerFieldValue"  >
+								<apex:column headerValue="{!controllerFieldValue.fullName}" >
+									<apex:repeat value="{!field.picklistFieldValues}" var="fieldPicklistValue" >
+										<apex:repeat value="{!fieldPicklistValue.controllingFieldValues}" var="controllingFieldValue" >
+											<apex:outputLabel rendered="{!LOWER(controllingFieldValue) == LOWER(controllerFieldValue.fullName)}">{!fieldPicklistValue.fullName}<br/></apex:outputLabel>
+										</apex:repeat>
+									</apex:repeat>
+								</apex:column>
+							</apex:repeat> 
+						</apex:pageBlockTable>
+						</apex:outputPanel>
+					</apex:pageBlockSection>
+				</div>
+				</apex:repeat>
+				<apex:pageBlockButtons location="bottom" rendered="{!!DisplayInfo.processCompleted && (DisplayInfo.showPicklist || DisplayInfo.showUploadOption)}">
+				 <apex:commandButton action="{!updatePickLists}" value="{!$Label.ffct__update}"
+					status="eventStatus" rerender="form,pgMsg"   oncomplete="hideSections()" /> 
+				<apex:commandButton action="{!cancelUpdate}" value="{!$Label.ffct__cancel}" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockButtons location="bottom" rendered="{!DisplayInfo.processCompleted &&  (DisplayInfo.showPicklist || DisplayInfo.showUploadOption)}">
+				<apex:commandButton action="{!close}" value="{!$Label.ffct__close}"/>	
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		 <apex:actionFunction name="showPickLists" action="{!showPickLists}"
+			status="eventStatus" rerender="form" /> 
+	</apex:form>
+</apex:page>

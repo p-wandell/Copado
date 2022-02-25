@@ -1,0 +1,7 @@
+<apex:page showheader="false" sidebar="false" controller="ffr.AjaxProxyController" standardStylesheets="false" action="{!doAction}" cache="true">
+	<div>
+		<apex:repeat value="{!responseValues}" var="responseValue">
+			<div class="{!responseValue.name}">{!responseValue.value}</div>
+		</apex:repeat>
+	</div>
+</apex:page>

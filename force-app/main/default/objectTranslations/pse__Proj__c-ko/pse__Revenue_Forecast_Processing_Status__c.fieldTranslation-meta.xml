@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>이 수익 예측의 처리 상태입니다.</help>
+    <label><!-- Revenue Forecast Processing Status --></label>
+    <name>pse__Revenue_Forecast_Processing_Status__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>완전한</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Error</masterLabel>
+        <translation>오류</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Started</masterLabel>
+        <translation>시작되지 않음</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending</masterLabel>
+        <translation>대기중인</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Processing</masterLabel>
+        <translation>가공</translation>
+    </picklistValues>
+</CustomFieldTranslation>

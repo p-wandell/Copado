@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+ */
+
+.files__sidebar {
+    background-color: #efefef;
+    position: relative;
+    padding-right: 20px;
+    border-radius: .5rem 0 0 .5rem;
+    overflow: hidden;
+}
+.files__filters {
+    display: block;
+    min-width: 180px;
+    padding: var(--lwc-spacingSmall) var(--lwc-spacingSmall) var(--lwc-spacingSmall) var(--lwc-spacingMedium);
+}
+.closed .files__filters {
+    display: none;
+}
+.files__filters-toggle {
+    border: none;
+    border-left: 1px solid var(--lwc-colorBorder);
+    border-right: 1px solid var(--lwc-colorBorder);
+    display: block;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    padding: 0;
+}
+.files__filters-toggle:hover,
+.files__filters-toggle:focus {
+    background: rgba(0,0,0,.05);
+}
+.closed .files__filters-toggle {
+    border-left: none;
+}
+
+.files__main {
+    min-height: 64px;
+    padding: var(--lwc-spacingMedium);
+    position: relative;
+    overflow: hidden;
+}
+.files__main-list c-x7s-files-list-item {
+    border-top: 1px solid var(--lwc-colorBorder);
+    border-bottom: 1px solid var(--lwc-colorBorder);
+}
+.files__main-list c-x7s-files-list-item + c-x7s-files-list-item {
+    display: block;
+    border-top: none;
+}
+
+
+@media screen and (max-width: 30em) {
+    .files__layout {
+        display: block;
+    }
+    .files__sidebar {
+        display: block;
+        padding-right: 0px;
+        padding-bottom: 20px;
+        border-radius: .5rem .5rem 0 0;
+    }
+    .files__filters-toggle {
+        border: none;
+        border-top: 1px solid var(--lwc-colorBorder);
+        border-bottom: 1px solid var(--lwc-colorBorder);
+        height: 20px;
+        right: 0;
+        top: auto;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    .closed .files__filters-toggle {
+        border-top: none;
+    }
+    .files__main {
+        display: block;
+    }
+}

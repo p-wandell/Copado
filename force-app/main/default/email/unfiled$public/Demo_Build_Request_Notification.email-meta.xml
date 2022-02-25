@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Blank_Letterhead</letterhead>
+    <name>Demo Build Request Notification</name>
+    <style>freeForm</style>
+    <subject>New Demo Build Request: {!Demo_Build__c.Name}</subject>
+    <textOnly>A new demo build has been requested by {!Demo_Build__c.CreatedBy}. Please review, assign and prioritize accordingly.
+
+Primary Use Case: {!Demo_Build__c.Name}
+
+Type: {!Demo_Build__c.Type__c}
+
+Industry: {!Demo_Build__c.Industry__c}
+
+Description: {!Demo_Build__c.Description__c}
+
+Compelling Reason: {!Demo_Build__c.Compelling_Reason__c}
+
+IBM Partners: {!Demo_Build__c.IBM_Partners__c}
+
+
+View Demo Build here: {!Demo_Build__c.Link}</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

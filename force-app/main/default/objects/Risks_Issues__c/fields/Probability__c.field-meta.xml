@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Probability__c</fullName>
+    <description>High Probability - 80 -&gt; 100%
+Medium-High Probability - 60 -&gt; 80%
+Medium-Low Probability - 30 -&gt; 60%
+Low Probability - 0 -&gt; 30%</description>
+    <externalId>false</externalId>
+    <inlineHelpText>High Probability - 80 -&gt; 100%
+Medium-High Probability - 60 -&gt; 80%
+Medium-Low Probability - 30 -&gt; 60%
+Low Probability - 0 -&gt; 30%</inlineHelpText>
+    <label>Probability</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>High</fullName>
+                <default>false</default>
+                <label>High</label>
+            </value>
+            <value>
+                <fullName>Medium</fullName>
+                <default>false</default>
+                <label>Medium</label>
+            </value>
+            <value>
+                <fullName>Low</fullName>
+                <default>false</default>
+                <label>Low</label>
+            </value>
+            <value>
+                <fullName>Medium-High</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Medium-High</label>
+            </value>
+            <value>
+                <fullName>Medium-Low</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Medium-Low</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

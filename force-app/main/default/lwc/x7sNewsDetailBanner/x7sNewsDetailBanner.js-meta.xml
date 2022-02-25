@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<isExposed>true</isExposed>
+	<masterLabel>7S News Detail Banner</masterLabel>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightningCommunity__Default">
+			<property name="variant"
+			          label="Display Options"
+			          type="String"
+			          description="Select the default layout variant"
+			          datasource="default,slds-card,featured"/>
+			<property name="showTopics"
+			          label="Show Topics?"
+			          type="Boolean"
+			          default="true"
+			          description="Enable topics in the header"/>
+			<property name="newsListURL"
+			          label="News List URL"
+			          type="String"
+			          description="Enter the page name for News list view page"/>
+			<property name="editNewsUrl"
+			          type="String"
+			          label="News Edit URL"
+			          description="After Clicking on Edit button, It will redirect to record edit form which is Create News component"/>
+			<property name="editNewsLabel"
+			          label="Edit News Button Label"
+			          type="String"
+					  default="Edit"
+			          description="Button label for authorised users to edit the article."/>
+			<property name="deleteNewsLabel"
+			          label="Delete News Button Label"
+			          type="String"
+					  default="Delete"
+			          description="Button label for authorised users to delete the article."/>
+			<property name="showFollowButton"
+			          label="Enable follow button"
+			          type="Boolean"
+			          description="Hide follow button if feed tracking is not enabled on the News object in the community"/>
+			<property name="showLikeButton"
+			          label="Enable like button"
+			          type="Boolean"
+			          description="Allow users to like news articles"/>
+			<property name="allowShowSource"
+			          label="Allow Show Source Button"
+			          type="Boolean"
+			          description="Adds a Show Source button to the page to allow for editing of the raw HTML within the editor."/>
+			<property name="limitToSpecificGroups"
+			          label="Enable Limit to Specific Groups"
+			          type="Boolean"
+			          description="Check to limit to specified collaboration groups"/>
+			<property name="editsRequireTopics"
+			          label="Require topics on Edit?"
+			          type="Boolean"
+			          description="Should the users be required to use topics when editing"/>
+			<property name="recordId"
+			          type="String"
+			          label="Record Id"
+			          description="Automatically bind the page's record id to the component variable"
+			          default="{!recordId}"/>
+			<property name="customClass"
+			          label="Custom Class"
+			          type="String"
+			          default=""
+			          description="Used for custom styling."/>
+		</targetConfig>
+		<targetConfig targets="lightning__RecordPage, lightning__AppPage, lightning__HomePage">
+			<property name="variant"
+			          label="Display Options"
+			          type="String"
+			          description="Select the default layout variant"
+			          datasource="default,slds-card,featured"/>
+			<property name="showTopics"
+			          label="Show Topics?"
+			          type="Boolean"
+			          default="true"
+			          description="Enable topics in the header"/>
+			<property name="newsListURL"
+			          label="News List URL"
+			          type="String"
+			          description="Enter the page name for News list view page"/>
+			<property name="editNewsUrl"
+			          type="String"
+			          label="News Edit URL"
+			          description="After Clicking on Edit button, It will redirect to record edit form which is Create News component"/>
+			<property name="editNewsLabel"
+			          label="Edit News Button Label"
+			          type="String"
+			          description="Button label for authorised users to edit the article."/>
+			<property name="deleteNewsLabel"
+			          label="Delete News Button Label"
+			          type="String"
+			          description="Button label for authorised users to delete the article."/>
+			<property name="showFollowButton"
+			          label="Enable follow button"
+			          type="Boolean"
+			          description="Hide follow button if feed tracking is not enabled on the News object in the community"/>
+			<property name="showLikeButton"
+			          label="Enable like button"
+			          type="Boolean"
+			          description="Allow users to like news articles"/>
+			<property name="allowShowSource"
+			          label="Allow Show Source Button"
+			          type="Boolean"
+			          description="Adds a Show Source button to the page to allow for editing of the raw HTML within the editor."/>
+			<property name="limitToSpecificGroups"
+			          label="Enable Limit to Specific Groups"
+			          type="Boolean"
+			          description="Check to limit to specified collaboration groups"/>
+			<property name="editsRequireTopics"
+			          label="Require topics on Edit?"
+			          type="Boolean"
+			          description="Should the users be required to use topics when editing"/>
+			<property name="customClass"
+			          label="Custom Class"
+			          type="String"
+			          default=""
+			          description="Used for custom styling."/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

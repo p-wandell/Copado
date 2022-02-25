@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Le type de taxe à utiliser pour les produits vendus par cette société. Par exemple, la TPS, le SUT ou la TVA.</help>
+    <label><!-- Tax Type --></label>
+    <name>fferpcore__TaxType__c</name>
+    <picklistValues>
+        <masterLabel>GST</masterLabel>
+        <translation>TPS</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SUT</masterLabel>
+        <translation>SUT</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>VAT</masterLabel>
+        <translation>T.V.A.</translation>
+    </picklistValues>
+</CustomFieldTranslation>

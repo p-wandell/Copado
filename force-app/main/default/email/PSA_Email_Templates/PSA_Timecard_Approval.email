@@ -1,0 +1,29 @@
+A Timecard is awaiting your approval. Please click the link below to view the timecard in PSA and approve/reject. 
+
+
+{!pse__Timecard_Header__c.Link} 
+
+Details 
+- Project:{!pse__Timecard_Header__c.pse__Project__c} 
+- Resource:{!pse__Timecard_Header__c.pse__Resource__c} 
+- Week:{!pse__Timecard_Header__c.pse__Start_Date__c}-{!pse__Timecard_Header__c.pse__End_Date__c} 
+- Milestone: {!pse__Timecard_Header__c.pse__Milestone__c} 
+- Assignment: {!pse__Timecard_Header__c.pse__Assignment__c} 
+- Total Hours for the Week: {!pse__Timecard_Header__c.pse__Total_Hours__c} 
+- Total Billable Amount {!pse__Timecard_Header__c.pse__Total_Billable_Amount__c} 
+
+-Sunday Hours: {!pse__Timecard_Header__c.pse__Sunday_Hours__c} 
+-Monday Hours: {!pse__Timecard_Header__c.pse__Monday_Hours__c} 
+-Tuesday Hours: {!pse__Timecard_Header__c.pse__Tuesday_Hours__c} 
+-Wednesday Hours: {!pse__Timecard_Header__c.pse__Wednesday_Hours__c} 
+-Thursday Hours: {!pse__Timecard_Header__c.pse__Thursday_Hours__c} 
+-Friday Hours: {!pse__Timecard_Header__c.pse__Friday_Hours__c} 
+-Saturday Hours: {!pse__Timecard_Header__c.pse__Saturday_Hours__c} 
+
+-Sunday Notes: {!pse__Timecard_Header__c.pse__Sunday_Notes__c} 
+-Monday Notes: {!pse__Timecard_Header__c.pse__Monday_Notes__c} 
+-Tuesday Notes: {!pse__Timecard_Header__c.pse__Tuesday_Notes__c} 
+-Wednesday Notes: {!pse__Timecard_Header__c.pse__Wednesday_Notes__c} 
+-Thursday Notes: {!pse__Timecard_Header__c.pse__Thursday_Notes__c} 
+-Friday Notes: {!pse__Timecard_Header__c.pse__Friday_Notes__c} 
+-Saturday Notes: {!pse__Timecard_Header__c.pse__Saturday_Notes__c}

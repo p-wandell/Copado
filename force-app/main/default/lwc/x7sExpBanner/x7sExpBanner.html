@@ -1,0 +1,76 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- x7S Exp Banner -->
+<template>
+    <section class={sectionClasses}>
+        <div class={paddingClasses} style={outerDivStyles}>
+            <div class="x7s-banner-overlay" style={overlayStyles}></div>
+            <div class={containerClasses}>
+                <lightning-layout multiple-rows="true" pull-to-boundary="small" vertical-align={verticalAlignmentType}>
+
+                    <!-- Single Column Template -->
+                    <template if:true={is1Column}>
+                        <lightning-layout-item padding="horizontal-small" size="12">
+                            <c-x7s-exp-content-tile headline={headline} sub-headline={subHeadline} paragraph={paragraph} button-text={buttonText}
+                                                button-url={buttonUrl} button-text2={button2Text} button-url2={button2Url} dark-text={darkText}
+                                                align={align} headline-size={headlineSize} sub-headline-size={subHeadlineSize}
+                                                headline-tag={headlineTag} sub-headline-tag={subHeadlineTag}>
+                            </c-x7s-exp-content-tile>
+                        </lightning-layout-item>
+                    </template>
+                    <!-- End Single Column Template -->
+
+                    <!-- Two Column Template -->
+                    <template if:true={is2Column}>
+                        <lightning-layout-item padding="horizontal-small" size="12" medium-device-size="8">
+                            <c-x7s-exp-content-tile headline={headline} sub-headline={subHeadline} paragraph={paragraph} button-text={buttonText}
+                                                button-url={buttonUrl} button-text2={button2Text} button-url2={button2Url} dark-text={darkText}
+                                                align={align} headline-size={headlineSize} sub-headline-size={subHeadlineSize}
+                                                headline-tag={headlineTag} sub-headline-tag={subHeadlineTag}>
+                            </c-x7s-exp-content-tile>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="horizontal-small" size="12" medium-device-size="4">
+                            <c-x7s-exp-content-tile headline={headline2} sub-headline={subHeadline2} paragraph={paragraph2} button-text={buttonText2}
+                                                button-url={buttonUrl2} button-text2={button2Text} button-url2={button2Url} dark-text={darkText}
+                                                align={align} headline-size={headlineSize} sub-headline-size={subHeadlineSize}
+                                                headline-tag={headlineTag} sub-headline-tag={subHeadlineTag}>
+                            </c-x7s-exp-content-tile>
+                        </lightning-layout-item>
+                    </template>
+                    <!-- End Two Column Template -->
+
+                    <!-- Three Column Template -->
+                    <template if:true={is3Column}>
+                        <lightning-layout-item padding="horizontal-small" size="12" medium-device-size="4">
+                            <c-x7s-exp-content-tile headline={headline} sub-headline={subHeadline} paragraph={paragraph} button-text={buttonText}
+                                                button-url={buttonUrl} button-text2={button2Text} button-url2={button2Url} dark-text={darkText}
+                                                align={align} headline-size={headlineSize} sub-headline-size={subHeadlineSize}
+                                                headline-tag={headlineTag} sub-headline-tag={subHeadlineTag}>
+
+                            </c-x7s-exp-content-tile>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="horizontal-small" size="12" medium-device-size="4">
+                            <c-x7s-exp-content-tile headline={headline2} sub-headline={subHeadline2} paragraph={paragraph2} button-text={buttonText2}
+                                                button-url={buttonUrl2} button-text2={button2Text2} button-url2={button2Url2} dark-text={darkText}
+                                                align={align} headline-size={headlineSize} sub-headline-size={subHeadlineSize}
+                                                headline-tag={headlineTag} sub-headline-tag={subHeadlineTag}>
+
+                            </c-x7s-exp-content-tile>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="horizontal-small" size="12" medium-device-size="4">
+                            <c-x7s-exp-content-tile headline={headline3} sub-headline={subHeadline3} paragraph={paragraph3} button-text={buttonText3}
+                                                button-url={buttonUrl3} button-text2={button2Text3} button-url2={button2Url3} dark-text={darkText}
+                                                align={align} headline-size={headlineSize} sub-headline-size={subHeadlineSize}
+                                                headline-tag={headlineTag} sub-headline-tag={subHeadlineTag}>
+                            </c-x7s-exp-content-tile>
+                        </lightning-layout-item>
+                    </template>
+                    <!-- End Three Column Template -->
+
+                </lightning-layout>
+            </div>
+        </div>
+    </section>
+</template>

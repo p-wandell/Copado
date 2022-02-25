@@ -1,0 +1,96 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+
+<design:component label="7S Events List">
+	<design:attribute name="debugMode"
+	                  label="Debug Mode"
+	                  description="Enable/disable debug mode"/>
+	<design:attribute name="displayMode"
+	                  datasource="3-Col,2-Col,Compact"
+	                  label="List Display Mode"
+	                  description="Select full to display all information or compact to minimize the amount of information displayed (great for sidebars)"/>
+	<design:attribute name="titletext"
+	                  label="Compact Title Text"
+	                  description="Assigning title"/>
+	<design:attribute name="numberofresults"
+	                  label="Number of results"
+	                  description="Enter number of records needs to be displayed on calendar mode."/>
+	<design:attribute name="listSize"
+	                  label="Number of events Per Page"
+	                  description="Number of events to show in list"/>
+	<design:attribute name="showEventType"
+	                  label="Show event type"
+	                  description="Check to show the event type on the tile"/>
+	<design:attribute name="filterOn"
+	                  datasource="None, Search Term, Topic Value, My Events, Group"
+	                  label="Filter On"
+	                  description="Filter On"/>
+	<design:attribute name="filterEventsByTopic"
+	                  label="Filter Events List by Topic"
+	                  description="Filter the Events List by topic - enter the exact topic name (or comma separated list of names) to filter on"/>
+
+	<design:attribute name="limitToSpecificGroups"
+	                  label="Limit to Specific Groups?"
+	                  description="Check to limit to specified groups only"/>
+
+	<!-- CUSTOM FIELDS -->
+	<design:attribute name="customLabel1"
+	                  label="Custom label 1"
+	                  description="Define a label for custom field 1"/>
+	<design:attribute name="customField1"
+	                  label="Custom field 1"
+	                  description="Custom field 1 to display on the tile (ex: MyField__c)"/>
+	<design:attribute name="customLabel2"
+	                  label="Custom label 2"
+	                  description="Define a label for custom field 2"/>
+	<design:attribute name="customField2"
+	                  label="Custom field 2"
+	                  description="Custom field 2 to display on the tile"/>
+	<design:attribute name="customLabel3"
+	                  label="Custom label 3"
+	                  description="Define a label for custom field 3"/>
+	<design:attribute name="customField3"
+	                  label="Custom field 3"
+	                  description="Custom field 3 to display on the tile"/>
+
+	<!-- HIDDEN FILTERS -->
+	<design:attribute name="hiddenFilter1"
+	                  label="Hidden filter field 1"
+	                  description="Define a field for hidden filter 1"/>
+	<design:attribute name="hiddenValue1"
+	                  label="Hidden filter 1 value"
+	                  description="Limit the list for hidden filter field 1 to this value"/>
+
+	<design:attribute name="hiddenFilter2"
+	                  label="Hidden filter field 2"
+	                  description="Define a field for hidden filter 2"/>
+	<design:attribute name="hiddenValue2"
+	                  label="Hidden filter 2 value"
+	                  description="Limit the list for hidden filter field 2 to this value"/>
+
+	<design:attribute name="hiddenFilter3"
+	                  label="Hidden filter field 3"
+	                  description="Define a field for hidden filter 3"/>
+	<design:attribute name="hiddenValue3"
+	                  label="Hidden filter 3 value"
+	                  description="Limit the list for hidden filter field 3 to this value"/>
+
+	<design:attribute name="eventDetailURL"
+	                  label="Event Detail URL"
+	                  description="URL for event detail page"/>
+	<design:attribute name="listViewPageUrl"
+	                  label="List View Page URL"
+	                  description="URL to redirect to List View Page"/>
+
+	<design:attribute name="showPaginationTop"
+	                  label="Show pagination at the Top"
+	                  description="Show the prev/next buttons at the top of the list"
+	                  default="false"/>
+	<design:attribute name="showPaginationBottom"
+	                  label="Show pagination at the Bottom"
+	                  description="Show the prev/next buttons at the bottom of the list"
+	                  default="false"/>
+
+	<design:attribute name="showAllEvents"
+	                  label="Show all events button in compact view"
+	                  description="Enable to show the All Events button when in compact view - the button text is a custom label"/>
+</design:component>

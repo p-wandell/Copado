@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Network xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInternalUserLogin>true</allowInternalUserLogin>
+    <allowMembersToFlag>true</allowMembersToFlag>
+    <changePasswordTemplate>Communities/CommunityChangePasswordEmailTemplate</changePasswordTemplate>
+    <communityRoles>
+        <customerUserRole>Client</customerUserRole>
+        <employeeUserRole>Sherpa</employeeUserRole>
+        <partnerUserRole>Partner</partnerUserRole>
+    </communityRoles>
+    <disableReputationRecordConversations>false</disableReputationRecordConversations>
+    <emailFooterText>THE HIVE - 7Summits, Inc</emailFooterText>
+    <emailSenderAddress>hive@7summitsinc.com</emailSenderAddress>
+    <emailSenderName>Hive 2.0</emailSenderName>
+    <enableCustomVFErrorPageOverrides>false</enableCustomVFErrorPageOverrides>
+    <enableDirectMessages>false</enableDirectMessages>
+    <enableExperienceBundleBasedSnaOverrideEnabled>true</enableExperienceBundleBasedSnaOverrideEnabled>
+    <enableGuestChatter>true</enableGuestChatter>
+    <enableGuestFileAccess>true</enableGuestFileAccess>
+    <enableGuestMemberVisibility>false</enableGuestMemberVisibility>
+    <enableInvitation>false</enableInvitation>
+    <enableKnowledgeable>true</enableKnowledgeable>
+    <enableMemberVisibility>true</enableMemberVisibility>
+    <enableNicknameDisplay>false</enableNicknameDisplay>
+    <enablePrivateMessages>true</enablePrivateMessages>
+    <enableReputation>true</enableReputation>
+    <enableShowAllNetworkSettings>true</enableShowAllNetworkSettings>
+    <enableSiteAsContainer>true</enableSiteAsContainer>
+    <enableTalkingAboutStats>true</enableTalkingAboutStats>
+    <enableTopicAssignmentRules>true</enableTopicAssignmentRules>
+    <enableTopicSuggestions>true</enableTopicSuggestions>
+    <enableUpDownVote>true</enableUpDownVote>
+    <forgotPasswordTemplate>Communities/CommunityForgotPasswordEmailTemplate</forgotPasswordTemplate>
+    <gatherCustomerSentimentData>true</gatherCustomerSentimentData>
+    <networkMemberGroups>
+        <permissionSet>Hive_2_0</permissionSet>
+        <permissionSet>PSA_Full_User</permissionSet>
+        <permissionSet>PSA_Field_User</permissionSet>
+        <permissionSet>PSA_Time_and_Expense_User</permissionSet>
+        <permissionSet>Platform_License_PSA_Community_Users</permissionSet>
+        <permissionSet>Community_Login_Allowed</permissionSet>
+        <permissionSet>Create_and_Own_Community_Chatter_Groups</permissionSet>
+        <profile>force.com - app subscription user</profile>
+        <profile>admin</profile>
+        <profile>7s custom system administrator</profile>
+        <profile>7s general profile</profile>
+        <profile>7s sales team profile</profile>
+        <profile>7s contractor platform user</profile>
+        <profile>7s principal consultant &amp; solutions architect</profile>
+        <profile>7s standard platform user</profile>
+        <profile>7s custom exec user</profile>
+        <profile>marketingprofile</profile>
+        <profile>7s sdr sales admin</profile>
+        <profile>7s system admin</profile>
+    </networkMemberGroups>
+    <networkPageOverrides>
+        <changePasswordPageOverrideSetting>Standard</changePasswordPageOverrideSetting>
+        <forgotPasswordPageOverrideSetting>Designer</forgotPasswordPageOverrideSetting>
+        <homePageOverrideSetting>Designer</homePageOverrideSetting>
+        <loginPageOverrideSetting>Designer</loginPageOverrideSetting>
+        <selfRegProfilePageOverrideSetting>Designer</selfRegProfilePageOverrideSetting>
+    </networkPageOverrides>
+    <picassoSite>Hive_2_01</picassoSite>
+    <reputationLevels>
+        <level>
+            <branding/>
+            <label>Level 1</label>
+            <lowerThreshold>0.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 2</label>
+            <lowerThreshold>51.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 3</label>
+            <lowerThreshold>151.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 4</label>
+            <lowerThreshold>501.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 5</label>
+            <lowerThreshold>801.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 6</label>
+            <lowerThreshold>1201.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 7</label>
+            <lowerThreshold>2001.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 8</label>
+            <lowerThreshold>4001.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 9</label>
+            <lowerThreshold>6001.0</lowerThreshold>
+        </level>
+        <level>
+            <branding/>
+            <label>Level 10</label>
+            <lowerThreshold>10001.0</lowerThreshold>
+        </level>
+    </reputationLevels>
+    <reputationPointsRules>
+        <pointsRule>
+            <eventType>EndorseSomeoneForKnowledgeOnATopic</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemAnswerAQuestion</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemWriteAPost</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemWriteAComment</eventType>
+            <points>3</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemSomeoneSharesYourPost</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemMarkAnswerAsBest</eventType>
+            <points>2</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemYourAnswerMarkedBest</eventType>
+            <points>20</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>EndorsedForKnowledgeOnATopic</eventType>
+            <points>10</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemReceiveALike</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemShareAPost</eventType>
+            <points>2</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemLikeSomething</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemReceiveAMention</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemMentionSomeone</eventType>
+            <points>2</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemReceiveAComment</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemPostQuestion</eventType>
+            <points>10</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemReceiveAnAnswer</eventType>
+            <points>2</points>
+        </pointsRule>
+    </reputationPointsRules>
+    <selfRegistration>false</selfRegistration>
+    <sendWelcomeEmail>true</sendWelcomeEmail>
+    <site>Hive_2_0</site>
+    <status>Live</status>
+    <tabs>
+        <customTab>News__c</customTab>
+        <customTab>Community_Asset__c</customTab>
+        <customTab>CoveoV2__Search</customTab>
+        <customTab>pse__Grp__c</customTab>
+        <defaultTab>Chatter</defaultTab>
+        <standardTab>Chatter</standardTab>
+    </tabs>
+    <urlPathPrefix>hive</urlPathPrefix>
+    <welcomeTemplate>Communities/The_Hive_Welcome_Email</welcomeTemplate>
+</Network>

@@ -1,0 +1,94 @@
+<apex:page standardController="ffct__Bundle__c" extensions="ffct.BundlerExportController" action="{!isToolMustBeActivated}">
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-load.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-deflate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-inflate.js')}"/>
+    <apex:form id="form" >
+        <apex:sectionHeader title="Export Bundle" help="helploader?topicid=1018"/>
+        <apex:pageMessages escape="false" id="messagesDiv"/>
+        <apex:actionStatus id="eventStatus">
+			<apex:facet name="start">
+          		<apex:outputPanel >
+	                <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+	                    <div style="position:absolute;top:50%;left:50%">
+	                        <apex:image value="/img/loading32.gif"></apex:image>
+	                    </div>
+	                </div>
+           </apex:outputPanel>
+        	</apex:facet>   
+    	</apex:actionStatus>
+        <apex:outputPanel id="progressDiv" layout="block" >
+            <apex:outputPanel layout="block" rendered="{!ShowProgress}">
+                <img src="{!URLFOR($Resource.progressGIF)}" />
+            </apex:outputPanel>
+            <apex:outputLink style="padding-top:50px;padding-left:50px;color: #015BA7;" value="{!URLFOR($Action.ffct__Bundle__c.View,ffct__Bundle__c.Id)}" rendered="{!ProcessCompleted}">
+                 Go To Bundle
+            </apex:outputLink>
+        </apex:outputPanel>
+        <apex:outputPanel id="exportPanel" rendered="{!!GoForBundle && !UploadBundle && !ProcessCompleted && !ShowConfirmPanel && !BundleGenerated}">
+            <apex:actionPoller action="{!isAllBundleAttachmentCreated}" interval="5" rerender="form"/>              
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="savePanel" >
+        	<apex:pageBlock title="{!$Label.ffct__saveas}" rendered="{!BundleGenerated}">
+        		<apex:pageBlockbuttons location="bottom">
+        			<apex:commandbutton value="{!$Label.ffct__saveasattachment}" action="{!saveAsAttachment}" />
+        			<apex:commandbutton value="{!$Label.ffct__uploadtodrive}" action="{!enableUploadToDrive}" status="eventStatus" rerender="form,savePanel"/>
+        			<apex:commandbutton value="{!$Label.ffct__localpush}" action="{!localPush}" rerender="form,savePanel"/>
+        		</apex:pageBlockbuttons>
+        	</apex:pageBlock>
+        </apex:outputPanel> 
+        
+        <apex:pageBlock title="{!$Label.ffct__uploadtodrive}" id="uploadBundlePanel"   rendered="{!ShowUploadPanel}">
+        	<apex:pageBlockSection >
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel >{!$Label.ffct__subfolder}</apex:outputLabel>
+					<apex:selectList value="{!SubFolder}" size="1" multiselect="false" >
+                		<apex:selectOptions value="{!SubFolders}"/>  
+					</apex:selectList>
+         		</apex:pageBlockSectionItem>
+       		</apex:pageBlockSection>
+       		<apex:pageBlockbuttons location="bottom" >
+        			<apex:commandbutton value="{!$Label.ffct__upload}" action="{!startUploadToDrive}" status="eventStatus" rerender="form,savePanel"/>
+        	</apex:pageBlockbuttons>
+        </apex:pageBlock>
+        
+        <apex:outputPanel id="uploadBundleToDrive" rendered="{!showProgress && UploadBundle}" >
+             <apex:actionFunction name="uploadBndle" action="{!uploadToDrive}" rerender="form"/>
+            <script>
+                uploadBndle();
+            </script>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="confirmPanel" rendered="{!ShowConfirmPanel}">
+        	<apex:pageBlock title="{!$Label.ffct__confirmexport}">
+        		<apex:pageBlockbuttons location="bottom">
+        			<apex:commandbutton value="{!$Label.ffct__confirm}" action="{!export}" />
+        			<apex:commandbutton value="{!$Label.ffct__cancel}" action="{!cancelExport}"/>
+        		</apex:pageBlockbuttons>
+        	</apex:pageBlock>
+        </apex:outputPanel> 
+        
+    </apex:form>
+
+    <apex:form id="coForm">
+        <apex:outputPanel id="bundlePanel" rendered="{!GoForBundle}">
+             <apex:actionFunction name="receiveZip" action="{!receiveZipFile}" rerender="savePanel,messagesDiv,progressDiv">
+                <apex:param name="zipdata" assignTo="{!ZipFileData}" value="0"/>
+            </apex:actionFunction>
+           <c:zipfile name="bundle" state="{!ffct__Bundle__c.Id}" oncomplete="receiveZip(data);"
+                getzipfileentry="{!RemoteActionName}">
+                <apex:repeat value="{!Paths}" var="path">
+                    <c:zipentryimport path="{!path}" base64="true"/>
+                </apex:repeat>
+            </c:zipfile>
+            <script>
+                // Start zip file generation
+                bundleGenerate();
+            </script>
+        </apex:outputPanel>
+        <apex:actionFunction name="showException" action="{!showException}" oncomplete="" rerender="form">     
+             <apex:param id="errorMessage" name="errorMessage"  value="" />             
+      </apex:actionFunction>
+    </apex:form>
+</apex:page>

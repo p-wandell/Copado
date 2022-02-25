@@ -1,0 +1,142 @@
+<apex:page standardController="fferpcore__MessagingPublication__c" extensions="fferpcore.PublicationDescriptionController,fferpcore.EndPointController" lightningStylesheets="true">
+    <c:extjs_bootstrap applicationName="PublicationDescription" staticResource="{!$Resource.fferpcore__PublicationDescription}" developmentPrefix="{!$Setup.fferpcore__ErpProtectedSettings__c.fferpcore__LocalServer__c}" disableSLDS="true">
+        <script type="text/javascript">
+
+        window['$RemoteAction'] = window['$RemoteAction'] || {};
+        window['$Params'] = window['$Params'] || {};
+        window['$Label'] = window['$Label'] || {};
+
+        $Params.PublicationId = '{!JSENCODE(publicationId)}';
+        $Params.DescriptionData = JSON.parse('{!JSENCODE(description)}');
+        $Params.Error = '{!JSENCODE(error)}' || null;
+        $Params.UnmergedDPNodeDeclarations = JSON.parse('{!JSENCODE(unmergedDPNodeDeclarations)}');
+        $Params.UnmergedNodes = JSON.parse('{!JSENCODE(unmergedNodes)}');
+        $Params.ObjectTypes = JSON.parse('{!JSENCODE(serializedObjectTypes)}');
+        $Params.Custom = {!custom};
+        $Params.SourceObject = '{!JSENCODE(sourceObject)}' || null;
+        $Params.CorrelationField = '{!JSENCODE(correlationField)}' || null;
+        $Params.LinkControlDeveloperName = '{!JSENCODE(linkControlDeveloperName)}' || null;
+        $Params.CanEdit = {!canEdit};
+
+        $RemoteAction.PublicationDescriptionController = $RemoteAction.PublicationDescriptionController || {};
+        $RemoteAction.EndPointController = $RemoteAction.EndPointController || {};
+        $RemoteAction.PublicationDescriptionController.save = '{!$RemoteAction.PublicationDescriptionController.save}';
+        $RemoteAction.PublicationDescriptionController.describeContext = '{!$RemoteAction.PublicationDescriptionController.describeContext}';
+        $RemoteAction.PublicationDescriptionController.getEmptyRootNode = '{!$RemoteAction.PublicationDescriptionController.getEmptyRootNode}';
+        $RemoteAction.EndPointController.getFieldsForObjectType = '{!$RemoteAction.EndPointController.getFieldsForObjectType}';
+        $RemoteAction.EndPointController.getObjectTypes = '{!$RemoteAction.EndPointController.getObjectTypes}';
+
+        $Label.ErpPublicationDescriptionNodeKeyColumn = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnodekeycolumn)}';
+        $Label.ErpPublicationDescriptionSectionTitle = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsectiontitle)}';
+        $Label.ErpPublicationDescriptionNodeValueColumn = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnodevaluecolumn)}';
+        $Label.ErpPublicationDescriptionNodeManagedColumn = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnodemanagedcolumn)}';
+        $Label.ErpPublicationDescriptionPropertyKeyColumn = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionpropertykeycolumn)}';
+        $Label.ErpPublicationDescriptionPropertyValueColumn = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionpropertyvaluecolumn)}';
+        $Label.ErpPublicationDescriptionActionsColumn = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionactionscolumn)}';
+        $Label.ErpPublicationDescriptionDescriberNotSpecified = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiondescribernotspecified)}';
+        $Label.ErpPublicationDescriptionDescriberNotFound = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiondescribernotfound)}';
+        $Label.ErpPublicationDescriptionDescriberNotValid = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiondescribernotvalid)}';
+        $Label.ErpPublicationDescriptionCorrelationKey = '{!JSENCODE($Label.fferpcore__erppublicationdescriptioncorrelationkey)}';
+        $Label.ErpPublicationDescriptionBodyKey = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionbodykey)}';
+        $Label.ErpPublicationDescriptionArrayElement = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionarrayelement)}';
+        $Label.ErpPublicationDescriptionAPINameProperty = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionapinameproperty)}';
+        $Label.ErpPublicationDescriptionLabelProperty = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionlabelproperty)}';
+        $Label.ErpPublicationDescriptionNoFieldSelected = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnofieldselected)}';
+        $Label.ErpPublicationDescriptionNoProperties = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnoproperties)}';
+        $Label.ErpPublicationDescriptionFieldsTitle = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionfieldstitle)}';
+        $Label.ErpPublicationDescriptionFieldPropertiesTitle = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionfieldpropertiestitle)}';
+        $Label.ErpPublicationDescriptionHelp = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionhelp)}';
+        $Label.ErpPublicationDescriptionPropertiesTooltip = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionpropertiestooltip)}';
+        $Label.ErpPublicationDescriptionAddTooltip = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddtooltip)}';
+        $Label.ErpPublicationDescriptionEditTooltip = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionedittooltip)}';
+        $Label.ErpPublicationDescriptionDeleteTooltip = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiondeletetooltip)}';
+        $Label.ErpPublicationDescriptionAddTitle = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddtitle)}';
+        $Label.ErpPublicationDescriptionAddButton = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddbutton)}';
+        $Label.ErpPublicationDescriptionCancelButton = '{!JSENCODE($Label.fferpcore__erppublicationdescriptioncancelbutton)}';
+        $Label.ErpPublicationDescriptionUpdateButton = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionupdatebutton)}';
+        $Label.ErpPublicationDescriptionAddKeyLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddkeylabel)}';
+        $Label.ErpPublicationDescriptionAddTypeLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddtypelabel)}';
+        $Label.ErpPublicationDescriptionAddSourceLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddsourcelabel)}';
+        $Label.ErpPublicationDescriptionAddDescriptionLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionadddescriptionlabel)}';
+        $Label.ErpPublicationDescriptionAddDataLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionadddatalabel)}';
+        $Label.ErpPublicationDescriptionAddContextLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddcontextlabel)}';
+        $Label.ErpPublicationDescriptionAddFieldLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddfieldlabel)}';
+        $Label.ErpPublicationDescriptionAddAPINameLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddapinamelabel)}';
+        $Label.ErpPublicationDescriptionAddDataTypeLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionadddatatypelabel)}';
+        $Label.ErpPublicationDescriptionAddFieldEmpty = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionaddfieldempty)}';
+        $Label.ErpPublictionDescriptionDeleteFieldConfirmTitle = '{!JSENCODE($Label.fferpcore__erppublictiondescriptiondeletefieldconfirmtitle)}';
+        $Label.ErpPublictionDescriptionDeleteFieldConfirmText = '{!JSENCODE($Label.fferpcore__erppublictiondescriptiondeletefieldconfirmtext)}';
+        $Label.ErpPublictionDescriptionDeleteFieldConfirmTextWithChild = '{!JSENCODE($Label.fferpcore__erppublictiondescriptiondeletefieldconfirmtextwithchild)}';
+        $Label.ErpPublictionDescriptionAddFieldDuplicateKeyText = '{!JSENCODE($Label.fferpcore__erppublictiondescriptionaddfieldduplicatekeytext)}';
+        $Label.ErpPublictionDescriptionAddFieldDuplicateKeyTitle = '{!JSENCODE($Label.fferpcore__erppublictiondescriptionaddfieldduplicatekeytitle)}';
+        $Label.ErpAdminUnloadConfirmation = '{!JSENCODE($Label.fferpcore__erpadminunloadconfirmation)}';
+        $Label.ErpPublicationDescriptionEditTitle = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionedittitle)}';
+        $Label.ErpPublicationDescriptionFieldPropertiesContextLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionfieldpropertiescontextlabel)}';
+        $Label.ErpPublicationDescriptionFieldPropertiesAPINameLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionfieldpropertiesapinamelabel)}';
+        $Label.ErpPublicationDescriptionFieldPropertiesLabelLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionfieldpropertieslabellabel)}';
+        $Label.ErpPublicationDescriptionFieldPropertiesNoFieldSelected = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionfieldpropertiesnofieldselected)}';
+        $Label.ErpPublicationDescriptionNodeTypeScalar = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnodetypescalar)}';
+        $Label.ErpPublicationDescriptionNodeTypeMap = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnodetypemap)}';
+        $Label.ErpPublicationDescriptionNodeTypeList = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnodetypelist)}';
+        $Label.ErpPublicationDescriptionSourceTypeStatic = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourcetypestatic)}';
+        $Label.ErpPublicationDescriptionSourceTypeSObject = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourcetypesobject)}';
+        $Label.ErpPublicationDescriptionMapSourceInherit = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionmapsourceinherit)}';
+        $Label.ErpPublicationDescriptionMapSourceRelationship = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionmapsourcerelationship)}';
+        $Label.ErpPublicationDescriptionScalarSourceLiteral = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionscalarsourceliteral)}';
+        $Label.ErpPublicationDescriptionScalarSourceObject = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionscalarsourceobject)}';
+        $Label.ErpPublicationDescriptionContextLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptioncontextlabel)}';
+        $Label.ErpPublicationDescriptionFieldLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionfieldlabel)}';
+        $Label.ErpPublicationDescriptionOutputContextLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionoutputcontextlabel)}';
+        $Label.PublicationDescriptionLiteralSourceDescriptionLabel ='{!JSENCODE($Label.fferpcore__publicationdescriptionliteralsourcedescriptionlabel)}';
+        $Label.PublicationDescriptionLiteralSourceDataLabel = '{!JSENCODE($Label.fferpcore__publicationdescriptionliteralsourcedatalabel)}';
+        $Label.ErpPublicationDescriptionPassthroughNameLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionpassthroughnamelabel)}';
+        $Label.ErpPublicationDescriptionPassthroughSourceLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionpassthroughsourcelabel)}';
+        $Label.ErpSavingLabel = '{!JSENCODE($Label.fferpcore__erpsavinglabel)}';
+        $Label.ErpPublicationDescriptionFixedDataTooltip = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionfixeddatatooltip)}';
+        $Label.ERPVisualForceSaveButton = '{!JSENCODE($Label.fferpcore__erpvisualforcesavebutton)}';
+        $Label.ErpPublicationDescriptionCompositeFirstPlaceholder = '{!JSENCODE($Label.fferpcore__erppublicationdescriptioncompositefirstplaceholder)}';
+        $Label.ErpPublicationDescriptionCompositeOtherPlaceholder = '{!JSENCODE($Label.fferpcore__erppublicationdescriptioncompositeotherplaceholder)}';
+        $Label.ErpPublicationDescriptionPropertiesHideButton = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionpropertieshidebutton)}';
+        $Label.ErpPublicationDescriptionPropertiesShowButton = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionpropertiesshowbutton)}';
+        $Label.ErpPublicationDescriptionTypeLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiontypelabel)}';
+        $Label.ErpPublicationDescriptionTypeFixedLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiontypefixedlabel)}';
+        $Label.ErpPublicationDescriptionTypeObjectLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiontypeobjectlabel)}';
+        $Label.ErpPublicationDescriptionTypeRelationshipLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiontyperelationshiplabel)}';
+        $Label.ErpPublicationDescriptionRelationshipObjectEmptyText = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionrelationshipobjectemptytext)}';
+        $Label.ErpPublicationDescriptionRelationshipTypeLookup = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionrelationshiptypelookup)}';
+        $Label.ErpPublicationDescriptionRelationshipTypeRelatedList = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionrelationshiptyperelatedlist)}';
+        $Label.ERPVisualForceCancelButton = '{!JSENCODE($Label.fferpcore__erpvisualforcecancelbutton)}';
+        $Label.ErpPublicationDescriptionNodeSaveAndNew = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnodesaveandnew)}';
+        $Label.ErpPublicationDescriptionNodeSave = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionnodesave)}';
+        $Label.ErpPublicationDescriptionPassthroughIdentifier = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionpassthroughidentifier)}';
+        $Label.ErpPublicationDescriptionDeleteConfirm = '{!JSENCODE($Label.fferpcore__erppublicationdescriptiondeleteconfirm)}';
+        $Label.ErpVisualForceConfirmButton = '{!JSENCODE($Label.fferpcore__erpvisualforceconfirmbutton)}';
+
+        //Unmerged Nodes
+        $Label.ERPPublicationDescriptionUnmergedErrorMessage = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionunmergederrormessage)}';
+        $Label.ERPPublicationDescriptionUnmergedHeader = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionunmergedheader)}';
+        $Label.ERPPublicationDescriptionUnmergedJsonPath = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionunmergedjsonpath)}';
+        $Label.ERPPublicationDescriptionUnmergedName = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionunmergedname)}';
+        $Label.ERPPublicationDescriptionUnmergedNodeType = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionunmergednodetype)}';
+        $Label.ERPPublicationDescriptionUnmergedSourceKey = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionunmergedsourcekey)}';
+        $Label.ERPPublicationDescriptionUnmergedSourceType = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionunmergedsourcetype)}';
+
+        $Label.ErpPublicationDescriptionSourceObjectWindowTitle = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourceobjectwindowtitle)}';
+        $Label.ErpPublicationDescriptionSourceObjectLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourceobjectlabel)}';
+        $Label.ErpPublicationDescriptionCorrelationFieldLabel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptioncorrelationfieldlabel)}';
+        $Label.ErpPublicationDescriptionSourceObjectMessage = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourceobjectmessage)}';
+        $Label.ErpPublicationDescriptionSourceObjectWindowCancel = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourceobjectwindowcancel)}';
+        $Label.ErpPublicationDescriptionSourceObjectWindowConfirm = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourceobjectwindowconfirm)}';
+        $Label.ErpPublicationDescriptionSourceObjectButton = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourceobjectbutton)}';
+        $Label.ErpPublicationDescriptionSourceObjectButtonHelp = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourceobjectbuttonhelp)}';
+        $Label.ErpPublicationDescriptionSourceObjectText = '{!JSENCODE($Label.fferpcore__erppublicationdescriptionsourceobjecttext)}';
+
+        document.addEventListener('DOMContentLoaded', function (e) {
+            var el = document.getElementsByClassName('pbBottomButtons')[0];
+            if (el) {
+                el.hidden = true;
+            }
+        });
+        </script>
+    </c:extjs_bootstrap>
+</apex:page>

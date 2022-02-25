@@ -1,0 +1,68 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<template if:true={showBanner}>
+		<c-x7s-shr-component-wrapper
+				custom-class={sectionClass}
+				variant={displayVariant}
+				aria-label={labels.labelAriaWrapper}>
+
+			<c-x7s-shr-record-banner 
+				title={title}
+				subtitle={subTitle}
+				description={description}
+				topics={topicList}>
+				
+				<div slot="actions">
+					<template if:true={displayCloneButton}>
+						<c-x7s-adventure-full-clone 
+							record-id={recordId}
+							clone-button-label={cloneButtonLabel}>
+						</c-x7s-adventure-full-clone>&nbsp;
+					</template>
+					<template if:true={showViewOtherAdventures}>
+						<lightning-button-icon 
+								alternative-text={labels.labelExploreOtherAdventures}
+								icon-name="utility:list"
+								name="list"
+								onclick={navigateToListView}>
+						</lightning-button-icon>
+					</template>
+				</div>
+				<template if:true={showMetaSlot}>
+					<div slot="meta">
+						<lightning-layout horizontal-align="spread" pull-to-boundary="small" multiple-rows>
+							<lightning-layout-item class="slds-p-around_xx-small">
+								<ul class="slds-list_horizontal slds-has-dividers_right slds-has-block-links slds-wrap">
+									<template if:true={displaySource}>
+										<li class="slds-item">
+											{labels.labelSource}&nbsp;{sourceAdventure}
+										</li>
+									</template>
+									<template if:true={showOwner}>
+										<li class="slds-item">
+											{labels.labelOwner}&nbsp;
+											<lightning-formatted-text value={owner} onclick={navigateToProfile} linkify class='slds-text-link'>
+											</lightning-formatted-text>
+										</li>
+									</template>
+									<template if:true={showTaskRemaining}>
+										<li class="slds-item">
+											{tasksRemaining}
+										</li>
+									</template>
+									<template if:true={showPercentComplete}>
+										<li class="slds-item">
+											{taskCompletedPercentage}{labels.labelTaskCompleted}
+										</li>
+									</template>
+								</ul>
+							</lightning-layout-item>
+						</lightning-layout>
+					</div>
+				</template>
+			</c-x7s-shr-record-banner>
+		</c-x7s-shr-component-wrapper>
+	</template>
+</template>

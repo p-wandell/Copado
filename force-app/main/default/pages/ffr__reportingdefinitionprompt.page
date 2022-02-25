@@ -1,0 +1,35 @@
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingDefinitionController" lightningStylesheets="true">
+
+    <!-- Demand fields to be loaded -->
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ExcelTemplate__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+    
+    <apex:form > 
+        <apex:pageBlock title="{!ffr__ReportingDefinition__c.Name}" mode="edit">
+            <apex:PageMessages />
+            <apex:pageBlockSection title="{!$Label.ffr__reportingdefinitionpromptpagereportoptions}" collapsible="false" columns="1">
+               <apex:outputText value="{!messagePromptsPage}"/>
+                <apex:repeat value="{!reportingPromptList}" var="prompt" rendered="{!displayPrompts}">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!prompt.dto.Name}" />
+                        <apex:outputPanel styleClass="{!if(prompt.dto.ffr__Required__c,'requiredInput','')}">
+	                        <div class="{!if(prompt.dto.Required__c,'requiredBlock','')}" ></div>
+	                        <apex:inputText label="{!prompt.dto.Name}" id="showText" value="{!prompt.value}" rendered="{!!prompt.isPicklist}" required="{!prompt.dto.ffr__Required__c}" disabled="{!prompt.isCompany || hasError}"/>
+	                        <apex:selectList id="showPicklist" value="{!prompt.value}" rendered="{!prompt.isPicklist}" multiselect="false" size="1" required="{!prompt.dto.ffr__Required__c}" disabled="{!hasError}">
+	                            <apex:selectOptions value="{!prompt.selectOptionValues}"/>
+	                        </apex:selectList>
+                        </apex:outputPanel> 
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >  
+                <apex:commandButton action="{!runReport}" value="{!$Label.ffr__reportingdefinitionpromptpagebuttonrunreport}" disabled="{!hasError}"/>
+                <apex:commandButton action="{!printPDF}" rendered="{!!isEnhancedEngine}" value="{!$Label.ffr__reportingdefinitionpromptpagebuttonprintpdf}" disabled="{!hasError}"/>
+                <apex:commandButton action="{!saveFile}" value="{!$Label.ffr__reportingdefinitionpromptpagebuttonsave}" disabled="{!hasError}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.ffr__reportingdefinitionpromptpagebuttoncancel}"/>
+            </apex:pageBlockButtons> 
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

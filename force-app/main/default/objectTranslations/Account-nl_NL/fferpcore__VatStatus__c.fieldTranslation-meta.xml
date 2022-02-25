@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>De belastingstatus voor dit account voor BTW / GST-accounts.</help>
+    <label><!-- Tax Status --></label>
+    <name>fferpcore__VatStatus__c</name>
+    <picklistValues>
+        <masterLabel>EC Non-registered</masterLabel>
+        <translation>EC Niet geregistreerd</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>EC Registered</masterLabel>
+        <translation>EC geregistreerd</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Export</masterLabel>
+        <translation>Exporteren</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Home</masterLabel>
+        <translation>Huis</translation>
+    </picklistValues>
+</CustomFieldTranslation>

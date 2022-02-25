@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Progress Circle -->
+<template>
+	<div class={componentClass} style={sizeWidthHeight}>
+		<svg viewBox={viewBox} class="x7s-progress-circle_svg">
+			<circle
+					class={remainingColorClass}
+					cx={radius}
+					cy={radius}
+					r={radius}
+					fill={_innerCircleColor}
+					stroke={remainingColor}
+					stroke-width={strokeWidthMod}>
+			</circle>
+			<circle
+					class={progressColorClass}
+					transform={transform}
+					cx={radius}
+					cy={radius}
+					r={radius}
+					stroke={progressColorValue}
+					stroke-width={strokeWidthMod}
+					stroke-dasharray={circumference}
+					stroke-dashoffset={dashOffset}
+					stroke-linecap={strokeLineCap}>
+			</circle>
+			<text if:true={isFormatPercentage}
+					class="x7s-progress-circle_svg-text"
+					x="50%"
+					y="54%"
+					dominant-baseline="middle"
+					text-anchor="middle">
+				{progressPercent}
+				<tspan dx="1%" dy="-8%" class="x7s-progress-circle_svg-percent-text">%</tspan>
+			</text>
+			<text if:true={isFormatActualNumber}
+					class="x7s-progress-circle_svg-text"
+					x="50%"
+					y="54%"
+					dominant-baseline="middle"
+					text-anchor="middle">
+				{actualProgress}
+			</text>
+			<text if:true={isFormatMix}
+					class="x7s-progress-circle_svg-text"
+					x="50%"
+					y="54%"
+					dominant-baseline="middle"
+					text-anchor="middle">
+				{actualProgress}/{totalProgress}
+			</text>
+			<text if:true={isFormatPercentageMix}
+					class="x7s-progress-circle_svg-text"
+					x="50%"
+					y="50%"
+					dominant-baseline="middle"
+					text-anchor="middle">
+				{progressPercent}
+				<tspan dx="1%" dy="-8%" class="x7s-progress-circle_svg-percent-text">%</tspan>
+				<tspan x="50%" dy="25" class="x7s-progress-circle_svg-mix-subtext">{actualProgress} of {totalProgress}</tspan>
+			</text>
+		</svg>
+	</div>
+</template>

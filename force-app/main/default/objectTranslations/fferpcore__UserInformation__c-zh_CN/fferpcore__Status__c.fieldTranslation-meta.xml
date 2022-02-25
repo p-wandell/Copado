@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>要应用于Salesforce用户的信息的状态。</help>
+    <label><!-- Status --></label>
+    <name>fferpcore__Status__c</name>
+    <picklistValues>
+        <masterLabel>Activating</masterLabel>
+        <translation>激活</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Active</masterLabel>
+        <translation>活性</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Deactivated</masterLabel>
+        <translation>停用</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Deactivating</masterLabel>
+        <translation>停用</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Activate</masterLabel>
+        <translation>无法激活</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Create</masterLabel>
+        <translation>创建失败</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Deactivate</masterLabel>
+        <translation>无法停用</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Update</masterLabel>
+        <translation>无法更新</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Activation</masterLabel>
+        <translation>待激活</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Create</masterLabel>
+        <translation>等待创建</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Deactivation</masterLabel>
+        <translation>待停用</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Update</masterLabel>
+        <translation>待更新</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Updating</masterLabel>
+        <translation>更新</translation>
+    </picklistValues>
+</CustomFieldTranslation>

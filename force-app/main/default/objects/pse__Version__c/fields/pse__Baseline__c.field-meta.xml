@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Baseline__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>When selected, indicates the version is the baseline for the project.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select to define the project version as the project baseline. A baseline is a project version identified as the agreed plan for the project. A project can only have one project baseline. You can set a new baseline to remove the previous one.</inlineHelpText>
+    <label>Baseline</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,22 @@
+<apex:page Controller="ffr.ReportingGeneratorSaveController" tabStyle="ReportingGenerator__tab" lightningStylesheets="true">
+	<apex:sectionHeader title="{!$Label.ffr__reportinglistviewwizardpagesubtitle}" subtitle="{!$Label.ffr__reportingdefinitionsaveconfirmation}" help="{!helpLink}"/>
+	<apex:form >
+		<apex:pageBlock title="{!$Label.ffr__reportinggeneratepagetitle}" mode="edit">
+			<apex:PageMessages />
+			<apex:pageBlockSection title="{!$Label.ffr__reportinggeneratepagesubtitle}" collapsible="false">
+            	<apex:pageBlockSectionItem >
+                	<apex:outputLabel for="ReportingDefinitionName" value="{!$ObjectType.ffr__ReportingDefinition__c.fields.Name.label}"></apex:outputLabel>
+               		<apex:outputPanel styleClass="requiredInput">
+						<div class="requiredBlock"></div>
+						<apex:inputText id="ReportingDefinitionName" value="{!NewReportingDefinitionName}"/>
+					</apex:outputPanel>
+                </apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!save}" value="{!$Label.ffr__reportinggeneratepagesavebutton}"/>
+				<apex:commandButton action="{!cancel}" value="{!$Label.ffr__reportinggeneratepagecancelbutton}"/>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

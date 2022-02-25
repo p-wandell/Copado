@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Jive_Status__c</fullName>
+    <externalId>false</externalId>
+    <label>Jive Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Jive Target</fullName>
+                <default>false</default>
+                <label>Jive Target</label>
+            </value>
+            <value>
+                <fullName>Jive Customer</fullName>
+                <default>false</default>
+                <label>Jive Customer</label>
+            </value>
+            <value>
+                <fullName>Jive Recent Win</fullName>
+                <default>false</default>
+                <label>Jive Recent Win</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

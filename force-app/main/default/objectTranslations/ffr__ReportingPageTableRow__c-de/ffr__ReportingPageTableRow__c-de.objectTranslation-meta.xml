@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>false</plural>
+        <value>Berichterstellungsseite Tabellenzeile</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>true</plural>
+        <value>Berichterstellungsseite Tabellenzeilen</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>false</plural>
+        <value><!-- Berichterstellungsseite Tabellenzeile --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>true</plural>
+        <value><!-- Berichterstellungsseite Tabellenzeilen --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>false</plural>
+        <value><!-- Berichterstellungsseite Tabellenzeile --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>true</plural>
+        <value><!-- Berichterstellungsseite Tabellenzeilen --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>false</plural>
+        <value><!-- Berichterstellungsseite Tabellenzeile --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>true</plural>
+        <value><!-- Berichterstellungsseite Tabellenzeilen --></value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Name der Berichtseitentabelle Zeile</nameFieldLabel>
+    <recordTypes>
+        <description><!-- Use this record type to add a data range total to your reporting table. --></description>
+        <label><!-- Data Range Total --></label>
+        <name>ffr__DataRangeTotal</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add a row calculation to your reporting table. --></description>
+        <label><!-- Row Calculation --></label>
+        <name>ffr__RowCalculation</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add a row filter to your reporting table. The default row filter is NONE. --></description>
+        <label><!-- Row Filter --></label>
+        <name>ffr__RowFilter</name>
+    </recordTypes>
+</CustomObjectTranslation>

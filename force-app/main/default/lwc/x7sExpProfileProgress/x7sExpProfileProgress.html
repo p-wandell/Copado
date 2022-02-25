@@ -1,0 +1,40 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Profile Progress -->
+<template>
+	<section class={customClass}>
+		<div class="progressWrapper slds-grid slds-wrap slds-is-relative">
+			<div class={progressCircleClasses}>
+				<div class="progress-circle-text-container" lwc:dom="manual"></div>
+				<template if:true={haveUserData}>
+					<c-x7s-exp-progress-circle
+						progress-color={progressColor}
+						remaining-color={remainingColor}
+						size={size}
+						total-progress={totalFieldsCount}
+						actual-progress={completedFieldsCount}
+						stroke-width={strokeWidth}
+						stroke-line-cap={strokeLineCap}
+						threshold-percent={thresholdPercent}
+						threshold-color={thresholdColor}
+						result-format={resultFormat}
+						inner-circle-color={innerCircleColor}
+					></c-x7s-exp-progress-circle>
+				</template>
+				<template if:false={haveUserData}>
+					<c-x7s-exp-spinner></c-x7s-exp-spinner>
+				</template>
+			</div>
+			<div if:true={includeText} class="slds-size_1-of-1 slds-large-size_1-of-2">
+				<h3 if:true={header} class="slds-p-bottom_xx-small">{header}</h3>
+				<div>
+					<h5 if:true={subHeader}>{subHeader}</h5>
+					<p if:true={description}>{description}</p>
+					<a if:true={linkText} href="#" data-link={linkUrl} onclick={linkClick}>{linkText}</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</template>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>YTD_Attained__c</fullName>
+    <description>Sums the attained amounts through the current month. Ex. if today&apos;s date is 7/6/19, this field would sum amounts attained for January through July of the quota year.</description>
+    <externalId>false</externalId>
+    <formula>IF(
+MONTH(TODAY())=1,January_Attained__c,
+IF(MONTH(TODAY())=2,(January_Attained__c+February_Attained__c),
+IF(MONTH(TODAY())=3,(January_Attained__c+February_Attained__c+March_Attained__c),
+IF(MONTH(TODAY())=4,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c),
+IF(MONTH(TODAY())=5,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c+May_Attained__c),
+IF(MONTH(TODAY())=6,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c+May_Attained__c+June_Attained__c),
+IF(MONTH(TODAY())=7,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c+May_Attained__c+June_Attained__c+July_Attained__c),
+IF(MONTH(TODAY())=8,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c+May_Attained__c+June_Attained__c+July_Attained__c+August_Attained__c),
+IF(MONTH(TODAY())=9,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c+May_Attained__c+June_Attained__c+July_Attained__c+August_Attained__c+September_Attained__c),
+IF(MONTH(TODAY())=10,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c+May_Attained__c+June_Attained__c+July_Attained__c+August_Attained__c+September_Attained__c+October_Attained__c),
+IF(MONTH(TODAY())=11,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c+May_Attained__c+June_Attained__c+July_Attained__c+August_Attained__c+September_Attained__c+October_Attained__c+November_Attained__c),
+IF(MONTH(TODAY())=12,(January_Attained__c+February_Attained__c+March_Attained__c+April_Attained__c+May_Attained__c+June_Attained__c+July_Attained__c+August_Attained__c+September_Attained__c+October_Attained__c+November_Attained__c+December_Attained__c)
+,0))))))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Sums the attained amounts through the current month. Ex. if today&apos;s date is 7/6/19, this field would sum amounts attained for January through July of the quota year.</inlineHelpText>
+    <label>YTD Attained</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

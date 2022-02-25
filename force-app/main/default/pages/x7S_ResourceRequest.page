@@ -1,0 +1,70 @@
+<apex:page standardController="Opportunity" showHeader="false" applyHtmlTag="true" applyBodyTag="false" lightningstylesheets="true" extensions="ResourceRequestExtension">
+    <head>
+        <apex:slds />
+        <style type="text/css">
+            td.input { vertical-align: top; }
+            td.description { width: 40%; }
+            td.impact { width: 10%; }
+            td.mitigation { width: 50%; }
+            td.typeHeader { font-weight: bold; font-size: large; background-color: lightgray; }
+        </style>
+    </head>
+    <body class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <apex:messages ></apex:messages>
+        <apex:form >
+            <apex:pageBlock >
+                <apex:pageBlockSection columns="2" collapsible="false" >
+                    <apex:pageBlockSectionItem ><b>Opportunity: </b>{!opp.Name}</apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:pageblock >
+                <apex:pageBlockButtons >
+                    <apex:commandButton value="Save" action="{!save}"/>
+                    <apex:commandButton value="Cancel" action="{!cancel}"/>
+                </apex:pageBlockButtons>
+                <table>
+                    <tr>
+                        <td style="text-align: center;">
+                            <table width="80%">
+                                <tr>
+                                    <td>Company:</td>
+                                    <td><apex:inputField id="company" value="{!resourceRequests[0].pse__Notes__c}" required="true" style="height: 35px; width: 400px; overflow: hidden;"/></td>
+                                    <td>Start Date:</td>
+                                    <td><apex:inputField id="startDate" value="{!resourceRequests[0].pse__Start_Date__c}" required="true"/></td>
+                                    <td>End Date:</td>
+                                    <td><apex:inputField id="endDate" value="{!resourceRequests[0].pse__End_Date__c}" required="true"/></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;</td>
+                    </tr>
+                    <tr style="vertical-align: text-top">
+                        <td>
+                            <table width="100%">
+                                <tr>
+                                    <td>Resource Role</td>
+                                    <td>Requested Hours</td>
+                                    <td>Comments</td>
+                                </tr>
+                                <apex:repeat var="r" value="{!resourceRequests}">
+                                    <tr style="vertical-align: text-top">
+                                        <td><apex:inputField id="resourceRole" value="{!r.pse__Resource_Role__c}"/></td>
+                                        <td><apex:inputField id="hoursPerWeek" value="{!r.Hours_Per_Week__c}"/></td>
+                                        <td><apex:inputTextarea id="dealComments" value="{!r.Deal_Comments__c}" rows="3" cols="100" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">&nbsp;&nbsp;</td>
+                                    </tr>
+                                </apex:repeat>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </apex:pageblock>
+        </apex:form>
+        
+    </body>
+    
+</apex:page>

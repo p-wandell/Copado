@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Gruppe</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Grupper</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+    </caseValues>
+    <gender>Feminine</gender>
+    <nameFieldLabel>Gruppe navn</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- A Group&apos;s Currency field value may not be updated once set. --></errorMessage>
+        <name>pse__Group_Currency_is_Constant</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Calculate_Backlog --></label>
+        <name>pse__Calculate_Backlog</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Backlog_old --></label>
+        <name>pse__Calculate_Backlog_old</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Forecast --></label>
+        <name>pse__Calculate_Forecast</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Missing_Timecard --></label>
+        <name>pse__Calculate_Missing_Timecard</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Time_Variance --></label>
+        <name>pse__Calculate_Time_Variance</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Utilization --></label>
+        <name>pse__Calculate_Utilization</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Update_Utilization --></label>
+        <name>pse__Update_Utilization</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- View_Hierarchy --></label>
+        <name>pse__View_Hierarchy</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- View_Transactions --></label>
+        <name>pse__View_Transactions</name>
+    </webLinks>
+</CustomObjectTranslation>

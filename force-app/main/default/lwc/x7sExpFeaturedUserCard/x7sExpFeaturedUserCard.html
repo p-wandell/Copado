@@ -1,0 +1,29 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Featured User Card -->
+<template>
+    <article if:true={name} class={displayTypeStyle}>
+        <div class="slds-card__header slds-text-align_center">
+            <header class="slds-p-vertical_medium slds-is-relative">
+                <div if:true={isBanner}>
+                    <div style={bannerStyle}></div>
+                </div>
+                <span class="slds-avatar slds-avatar_circle slds-is-relative">
+                    <img src={mediumPhotoUrl} data-id={recordId} onclick={handleProfileClick} alt={name} />
+                </span>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner slds-text-align_center">
+            <h5 class="slds-truncate"><em>{name}</em></h5>
+            <p if:true={userTitle}>{userTitle}</p>
+            <hr>
+            <p if:true={intro} class="slds-m-bottom_small">{intro}</p>
+        </div>
+        <footer class="slds-card__footer slds-text-align_center">
+            <lightning-button if:true={ctaText} class="slds-card__footer-action slds-m-bottom_small" variant="neutral" value={ctaLink} label={ctaText} onclick={handleCtaClick}></lightning-button>
+            <a class="slds-card__footer-action" href="javascript:void(0);" data-id={recordId} onclick={handleProfileClick}>{viewProfileLabel}</a>
+        </footer>
+    </article>
+</template>

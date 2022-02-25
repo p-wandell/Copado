@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionNumber>1</activeVersionNumber>
+    <description>Checks whether a Quota Detail record User AND Quota Year have the same values as Opportunity Owner AND Quota Year on any Opportunities. If a match is found, the Quota Detail Name is populated on the Opportunity in field Quota Detail.</description>
+    <masterLabel>Quota Matches Opp Owner</masterLabel>
+</FlowDefinition>

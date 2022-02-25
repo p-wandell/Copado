@@ -1,0 +1,218 @@
+<apex:page controller="CoveoV2.EditingBoxInterface" cache="false" showheader="false" sidebar="false" standardstylesheets="false" extensions="CoveoV2.DynamicResourceUtils" docType="html-5.0">
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'css/InterfaceEditor.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__assets, 'css/interfaceEditor.style.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.CoveoV2__assets, 'css/interfaceEditor_InsightPanel.style.css')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__jquery, 'jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR(dynamicResourcePaths['searchUi'], 'js/CoveoJsSearch.js')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/InterfaceEditor.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/cultures/en.js')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.CoveoV2__assets, 'js/interfaceEditor_InsightPanel.bundle.js')}" />
+    <style>
+        /* No support for NoResult in the Classic Insight Panel SFINT-2066 */ 
+        div[class*="NoResultsPageToggle"] {
+          display: none;
+        }
+    </style>
+    <apex:outputPanel rendered="{!errorTitle != null && errorMessage != null}">
+        {!JSENCODE(errorTitle)}<br />{!JSENCODE(errorMessage)}
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!errorTitle == null && errorMessage == null}">
+        <apex:form >
+            <apex:inputHidden value="{!loader.content}" id="content" />
+            <apex:actionFunction name="saveApex" action="{!save}" rerender="saveCallBack" />
+            <apex:actionFunction name="delApex" action="{!del}" />
+        </apex:form>
+        <apex:outputPanel id="saveCallBack">
+            <script>
+          if(window['saveDeferred'] != null) {
+            var message = '{!JSENCODE(saveError)}'
+            if(message != '') {
+              saveDeferred.reject(message);
+            } else {
+              saveDeferred.resolve();
+            }
+          }
+        </script>
+        </apex:outputPanel>
+        <script>
+      var coveoRenewAccessTokenDeferred;
+      function coveoRenewAccessToken() {
+        coveoDoRenewAccessToken();
+        coveoRenewAccessTokenDeferred = Coveo.$.Deferred();
+        return coveoRenewAccessTokenDeferred;
+      }
+
+      function coveoDoneRenewingAccessToken() {
+        if (coveoRenewAccessTokenDeferred) {
+          coveoRenewAccessTokenDeferred.resolve(coveoGetCurrentAccessToken());
+          coveoRenewAccessTokenDeferred = undefined;
+        }
+      }
+
+      function coveoGetCurrentAccessToken() {
+        return Coveo.$("[id$='coveoAccessToken']").attr('value');
+      }
+
+      var head =      '<script src="{!URLFOR($Resource.CoveoV2__jquery, 'jquery.min.js')}"><\/script>' +
+                      '<script src="{!URLFOR(dynamicResourcePaths['searchUi'], 'js/CoveoJsSearch.js')}"><\/script>' +
+                      '<script src="{!URLFOR($Resource.CoveoV2__InterfaceEditor, 'js/InterfaceEditor.js')}"><\/script>' +
+                      '<script src="{!URLFOR($Resource.CoveoV2__assets, 'js/interfaceEditor_InsightPanel.bundle.js')}"><\/script>' +
+                      '<script src="{!URLFOR(dynamicResourcePaths['searchUi'], 'js/cultures/en.js')}"><\/script>' +
+                      '<link href="{!URLFOR($Resource.assets, 'css/insightPanel.style.css')}" rel="stylesheet" />' +
+                      '<script>' +
+                        'document.addEventListener("DOMContentLoaded", function(){' +
+                            'String["locale"] = "en";' +
+                            'if(Coveo && Coveo.setLanguageAfterPageLoaded) {' +
+                              'Coveo.setLanguageAfterPageLoaded()' +
+                            '}' +
+                            'if (Coveo) {' +
+                              'Coveo.Dom.useNativeJavaScriptEvents = true;'+
+                            '}' +
+                            'if (Coveo.SearchEndpoint.endpoints["default"] === undefined) {' +
+                                'Coveo.SearchEndpoint.endpoints["default"] = new Coveo.SearchEndpoint({'+
+                                    'restUri: "{!JSENCODE(restSearchUri)}",' +
+                                    'accessToken: "{!JSENCODE(searchToken.token)}",' +
+                                    'renewAccessToken: window.parent.coveoRenewAccessToken' +
+                                '});' +
+                            '}' +
+                            'Coveo.context = {!JSENCODE(searchContextJson)};' +
+                            'window["SalesforceContext"] = {};' +
+                            'SalesforceContext.record = {! JSENCODE(RecordJson)};' +
+                            'SalesforceContext.fieldLabels = {! JSENCODE(recordLabels)};' +
+                            'SalesforceContext.fullPageUri = "{!JSENCODE(searchPageUri)}";' +
+                            'SalesforceContext.type = "{!JSENCODE(ObjectType)}";' +
+                            'SalesforceContext.knowledgeArticleInfos = {' +
+                              'types: JSON.parse(\'{!JSENCODE(articleTypes)}\'),' +
+                              'isKnowledgeEnabled: {!isKnowledgeUser}' +
+                            '};' +
+                            'Coveo.$(".CoveoBox").coveo("initInsightPanel", { ' +
+                              'BoxExpandLink: { ' +
+                                'uri: SalesforceContext.fullPageUri '+
+                              '}, ' +
+                              'Analytics : { ' +
+                                'searchHub: "{!JSENCODE(searchHubAttr)}"||"{!JSENCODE(pageName)}", ' +
+                                'endpoint: "{!JSENCODE(analyticsUri)}" ' +
+                              '}' +
+                            '})' +
+                        '});'+
+                        'Coveo.context = {!JSENCODE(searchContextJson) };' +
+                      '<\/script>';
+
+      var body = "{!JSENCODE(loader.content)}";
+      var lastModified = {! loader.lastModified };
+
+      var SalesforceContext = {};
+      SalesforceContext.knowledgeArticleInfos = {
+        types: JSON.parse('{!JSENCODE(articleTypes)}'),
+        isKnowledgeEnabled: {!isKnowledgeUser}
+      };
+
+      $(function() {
+        var load = function() {
+          var d = jQuery.Deferred();
+            setTimeout(function() {
+              d.resolve({
+                root: '{!URLFOR($Resource.InterfaceEditor)}',
+                body:body,
+                head:head,
+                lastPublished:lastModified
+              });
+            });
+            return d;
+        }
+
+        var save = function(contentToSave) {
+            $('[id*=content]').val(contentToSave);
+            saveApex(contentToSave);
+
+            return saveDeferred =
+              $.Deferred().fail(function(reason) {
+                  Coveo.ModalBox.open($('<p>').text(reason).get(0), {
+                      title : 'An error occured',
+                      overlayClose : true,
+                      buttons: Coveo.ModalBox.BUTTON.OK
+                  });
+              });
+        }
+
+        var close = function() {
+          window.location.href = '{!JSENCODE(returnUrl)}';
+        }
+
+        var repositories = JSON.parse('{! JSENCODE(repositoriesJson) }');
+
+        Coveo.InterfaceEditor.InterfaceEditorUsage.additionalMetadata = JSON.parse('{! JSENCODE(currentUserTraitsJson) }');
+
+        var del = function (id) {
+            delApex();
+        };
+
+        // Sarissa is an object that is included by Salesforce when loading a page with IE.
+        // It's not working well, and no queries made to the coveo platform works.
+        // For that reason, we let the original XMLHttpRequest object that points to Sarissa and
+        // that Action Function needs, but redefine Coveo's usage with the
+        // original XMLHttpRequest contained in the Sarissa framework.
+        var xmlHttpRequest = XMLHttpRequest;
+        if(window['Sarissa'] && Sarissa.originalXMLHttpRequest) {
+          xmlHttpRequest = Sarissa.originalXMLHttpRequest;
+
+          // Temporary fix for IE11 that will allow the search-ui to always use the original XmlHttpRequest instead.
+          Coveo.EndpointCaller.prototype.getXmlHttpRequest = function() { return new xmlHttpRequest(); }
+        }
+
+
+        var editor = new Coveo.InterfaceEditor.Editor('#editor', {
+          requireConfig : {
+            url : '{!URLFOR($Resource.InterfaceEditor, 'js/vs/loader.js')}',
+            paths: {
+                'vs' : '{!URLFOR($Resource.InterfaceEditor, 'js/vs')}'
+            }
+          },
+          innerHTML: true,
+          basicMode: true,
+          mobile: false,
+          load: load,
+          save: save,
+          close: close,
+          delete: del,
+          repositories: repositories,
+          environment: '{!IEditorEnv}',
+          iconsUrl: '{!URLFOR(dynamicResourcePaths['searchUi'], 'image/icon-list.json')}',
+          additionalVisibleComponents : [
+            {
+                'id' : Coveo.BoxQuerySome.ID,
+                'creator' : Coveo.BoxQuerySomeNode.draggable
+            },
+            {
+                'id': Coveo.BoxQueryGeneric.ID,
+                'creator': Coveo.BoxQueryGenericNode.draggable
+            },
+            {
+                'id': Coveo.BoxQueryExtensions.ID,
+                'creator': Coveo.BoxQueryExtensionsNode.draggable
+            },
+            {
+                'id': Coveo.BoxPipelineContext.ID,
+                'creator': Coveo.BoxPipelineContextNode.draggable
+            }
+          ],
+          namespace: '{! JSENCODE(loader.id)}',
+          resultCss: '{!URLFOR($Resource.assets, 'css/insightPanel.style.css')}',
+          iframeCss: ['{!URLFOR($Resource.assets, 'css/insightPanel.style.css')}', '{!URLFOR($Resource.InterfaceEditor, 'css/InterfaceEditorIFrame.css')}', '{!URLFOR($Resource.CoveoV2__assets, 'css/interfaceEditor_InsightPanel.style.css')}'],
+          rootSelector: '.CoveoBox',
+          containerClasses: {
+            facetsContainer: 'coveo-box-facet-column',
+            foldingsContainer: 'CoveoBox',
+            sortsContainer: 'coveo-sort-section',
+            templatesContainer: 'CoveoBoxBody'
+          }
+        });
+      })
+    </script>
+        <div id="editor"></div>
+    </apex:outputPanel>
+</apex:page>

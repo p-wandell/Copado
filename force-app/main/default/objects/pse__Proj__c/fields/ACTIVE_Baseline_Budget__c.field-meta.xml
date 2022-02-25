@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ACTIVE_Baseline_Budget__c</fullName>
+    <description>Sum of all assignment&apos;s planned hours multiplied by assignment&apos;s bill rate (active projects).</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Sum of all assignment&apos;s planned hours multiplied by assignment&apos;s bill rate (active projects).</inlineHelpText>
+    <label>ACTIVE_Baseline Budget T&amp;M ($)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

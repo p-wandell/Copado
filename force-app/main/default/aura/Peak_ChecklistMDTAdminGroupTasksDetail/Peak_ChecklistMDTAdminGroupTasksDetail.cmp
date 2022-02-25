@@ -1,0 +1,37 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" controller="Peak_ChecklistMDTGroupTasksController" access="global" extends="c:Peak_ChecklistBase" >
+    <aura:attribute name="selectedTaskGroup" type="String" />
+    <aura:attribute name="listOfTasks" type="Peak_CommunityTaskMDTWrapper[]"/>
+    <aura:attribute name="listOfTaskGroups" type="Peak_CommunityTaskGroupMDTWrapper[]"/>
+    <aura:attribute name="listOfTaskGroupAssignments" type="Community_Task_Group_Assignment__mdt[]"/>
+    
+	<aura:attribute name="listTaskOptions" type="List" default="[]"/>
+    <aura:attribute name="selectedTaskOptions" type="List" default="[]"/>
+
+    <aura:handler name="change" value="{!v.listOfTasks}" action="{!c.createTaskBox}" />
+    <!--<aura:handler name="change" value="{!v.listOfTaskGroups}" action="{!c.setDefaultGroup}" />-->
+    <aura:handler name="change" value="{!v.selectedTaskGroup}" action="{!c.handleGroupChange}" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="c:Peak_CheckListRefreshEvent" action="{!c.handleRefreshEvent}"/>
+
+    <aura:if isTrue="{!v.isLoading}">
+        <c:Peak_LoadingGif />
+    </aura:if>
+    
+    <Br/>
+    <ui:inputSelect aura:id="Groups" label="Select a Task Group" value="{!v.selectedTaskGroup}" class="slds-size_1-of-2" >
+		<ui:inputSelectOption text="" label="--None--"/>
+        <aura:iteration items="{!v.listOfTaskGroups}" var="taskGroup">
+             <ui:inputSelectOption text="{!taskGroup.name}" label="{!taskGroup.label}"/>
+        </aura:iteration>
+    </ui:inputSelect>
+    <Br/> 
+    <lightning:dualListbox aura:id="taskOptions" name="Select Tasks"  label="Select Tasks" 
+                           sourceLabel="Available Options" 
+                           selectedLabel="Selected Options" 
+                           options="{! v.listTaskOptions }"
+                           value="{! v.selectedTaskOptions }" />
+    <Br/>
+    <ui:button aura:id="button" class="slds-button" label="Save" press="{!c.saveTaskGroupAssignment}" />
+    
+</aura:component>

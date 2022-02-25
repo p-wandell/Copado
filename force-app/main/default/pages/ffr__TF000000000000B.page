@@ -1,0 +1,887 @@
+<!-- User Note: TF000000000000B Reporting Data Capture Template. Use This Template To Ensure You Capture All Of The Data Required When Building A New Report Definition. -->
+<!-- User Note: The Template Is Designed To Display All The Data In A Report Definition To A User To Ensure The Correct Information Is Being Queried -->
+<!-- User Note: This Template Should Be Used By Default On Any New Reports Being Created And For Any Tests Being Performed Against Existing Report Definitions That Have Detail Data Ranges -->
+<!-- User Note: Special Features: Labels Are Not Shown On This Template. -->
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}" contenttype="{!SaveReportAS}">
+<!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+<!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+<!-- User Note: You Can Create Your Own Stylesheet In The Static Resources And Apply It To Your Reports -->
+<!-- User Note: The Style Has Been Designed To Allow Variations Within Different Types Of Reports -->
+<!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:stylesheet value="{!StyleSheetName}"/>
+<!-- Variable to represent boolean true/false when needing to set other variables to these states -->
+<apex:variable var="true" value="{!1=1}"/>
+<apex:variable var="false" value="{!1=0}"/>
+<!-- User Note: I Want To Format Values On A Report In Different Ways -->
+<!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+<!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brackets/Minus 3CharacterInternationalCurrencyCode/None-->
+<!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+<!-- User Note: You Can Add Your Own Formats To The List Below. Try To Keep A Good Coding Structure-->
+<apex:variable var="dateFormat" value="{0, date, MM/dd/yyyy}"/>
+<apex:variable var="V2NCB" value="{0, number, #,###,###,##0.00;(#,###,###,##0.00)}"/>
+<apex:variable var="P2NCB" value="{0, number, #,###,###,##0.00%;(#,###,###,##0.00%)}"/>
+<apex:variable var="V0NCB" value="{0, number, #,###,###,##0;(#,###,###,##0)}"/>
+<apex:variable var="P0NCB" value="{0, number, #,###,###,##0%;(#,###,###,##0%)}"/>
+<apex:variable var="V2RCB" value="{0, number, (#,###,###,##0.00);#,###,###,##0.00}"/>
+<apex:variable var="P2RCB" value="{0, number, (#,###,###,##0.00%);#,###,###,##0.00%}"/>
+<apex:variable var="V0RCB" value="{0, number, (#,###,###,##0);#,###,###,##0}"/>
+<apex:variable var="P0RCB" value="{0, number, (#,###,###,##0%);#,###,###,##0%}"/>
+<apex:variable var="V2NCBUSD" value="{0, number, $#,###,###,##0.00;$(#,###,###,##0.00)}"/>
+<apex:variable var="V2RCBUSD" value="{0, number, $(#,###,###,##0.00);$#,###,###,##0.00}"/>
+<apex:variable var="VZ" value="0.00"/>
+<apex:variable var="PZ" value="0.00%"/>
+<apex:variable var="VZUSD" value="$0.00"/>
+<!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+<!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+<!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+<!-- User Note: It Is Possible To Use Individual Variables Against A Line. This Method Allows You To Make A Single Change To All Related Formats  -->
+<apex:variable var="VN" value="{!V2NCB}"/>
+<apex:variable var="PN" value="{!P2NCB}"/>
+<apex:variable var="VR" value="{!V2RCB}"/>
+<apex:variable var="PR" value="{!P2RCB}"/>
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- REGION 02: REPORT HEADER START -->
+<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+<!-- User Note: Show The Error Messages From The Reporting Engine -->
+<apex:PageMessages />
+<div class="chatterPosition"></div>
+<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+<!-- User Note: When Creating New Templates, This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+<table class="ffrgridd">
+	<tr>
+		<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+	</tr>
+	<tr>
+		<td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+		<td align="right">{!NOW()}</td>
+	</tr>
+	<tr><td class="ffrgridspacer2"></td></tr>
+	<tr>
+		<td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+		<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+	</tr>
+	<tr><td class="ffrgridspacer2"></td></tr>
+	<tr>
+		<td align="left"><apex:outputField value="{!ffr__ReportingDefinition__c.ffr__Description__c}"/></td>
+		<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+	</tr>
+</table>
+<!-- User Note: Create a new table to display the prompt information -->
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridspacer2"></td></tr>
+	<tr>
+		<td align="left">
+			<table class="ffrgrid">
+			<apex:repeat value="{!promptList}" var="prompt" >
+			<tr>
+				<td align="left">{!prompt.label}</td>
+				<td align="left" class="ffrgridspacer"></td>
+				<td align="left"><strong>{!prompt.value}</strong></td>
+			</tr>
+			</apex:repeat>
+			</table>
+		</td>
+	</tr>
+</table>
+<!-- User Note: Insert a space after the header -->
+<table class="ffrgrid">
+<tr><td class="ffrgridspacer"></td></tr>
+</table>
+<!-- REGION 02: REPORT HEADER END -->
+<!-- REGION 03: REPORT BODY-->
+<!-- User Note: Iterate Over All Of The Data Ranges, Groups And Rows And Return The Data -->
+<!-- User Note: Display The Report Definition > Data Range > Name Label-->
+<apex:outputpanel rendered="{!!hasMessages}">
+	<apex:repeat value="{!reportingDataKeyList}" var="reportingDataKey">
+		<apex:variable var="dataRange" value="{!reportingData[reportingDataKey]}"/>
+
+	<!-- User Note: This variables control whether a column is being used by the Report Definition or not -->
+		<apex:variable var="RenderReportingValue01" value="{!false}"/>
+		<apex:variable var="RenderReportingValue02" value="{!false}"/>
+		<apex:variable var="RenderReportingValue03" value="{!false}"/>
+		<apex:variable var="RenderReportingValue04" value="{!false}"/>
+		<apex:variable var="RenderReportingValue05" value="{!false}"/>
+		<apex:variable var="RenderReportingValue06" value="{!false}"/>
+		<apex:variable var="RenderReportingValue07" value="{!false}"/>
+		<apex:variable var="RenderReportingValue08" value="{!false}"/>
+		<apex:variable var="RenderReportingValue09" value="{!false}"/>
+		<apex:variable var="RenderReportingValue10" value="{!false}"/>
+		<apex:variable var="RenderReportingValue11" value="{!false}"/>
+		<apex:variable var="RenderReportingValue12" value="{!false}"/>
+		<apex:variable var="RenderReportingValue13" value="{!false}"/>
+		<apex:variable var="RenderReportingValue14" value="{!false}"/>
+		<apex:variable var="RenderReportingValue15" value="{!false}"/>
+		<apex:variable var="RenderReportingValue16" value="{!false}"/>
+		<apex:variable var="RenderReportingValue17" value="{!false}"/>
+		<apex:variable var="RenderReportingValue18" value="{!false}"/>
+		<apex:variable var="RenderReportingValue19" value="{!false}"/>
+		<apex:variable var="RenderReportingValue20" value="{!false}"/>
+		<apex:variable var="RenderReportingValue21" value="{!false}"/>
+		<apex:variable var="RenderReportingValue22" value="{!false}"/>
+		<apex:variable var="RenderReportingValue23" value="{!false}"/>
+		<apex:variable var="RenderReportingValue24" value="{!false}"/>
+		<apex:variable var="RenderReportingValue25" value="{!false}"/>
+		<apex:variable var="RenderReportingValue26" value="{!false}"/>
+		<apex:variable var="RenderReportingValue27" value="{!false}"/>
+		<apex:variable var="RenderReportingValue28" value="{!false}"/>
+		<apex:variable var="RenderReportingValue29" value="{!false}"/>
+		<apex:variable var="RenderReportingValue30" value="{!false}"/>
+		<apex:variable var="displaySubtotals" value="{!false}"/>
+
+		<apex:repeat var="reportingValue" value="{!dataRange.reportingValueList}">
+			<apex:variable var="displaySubtotals" value="{!true}" rendered="{!reportingValue.isSum}"/>
+			<apex:variable var="RenderReportingValue01" value="{!true}" rendered="{!reportingValue.key=='01'}" />
+			<apex:variable var="RenderReportingValue02" value="{!true}" rendered="{!reportingValue.key=='02'}" />
+			<apex:variable var="RenderReportingValue03" value="{!true}" rendered="{!reportingValue.key=='03'}" />
+			<apex:variable var="RenderReportingValue04" value="{!true}" rendered="{!reportingValue.key=='04'}" />
+			<apex:variable var="RenderReportingValue05" value="{!true}" rendered="{!reportingValue.key=='05'}" />
+			<apex:variable var="RenderReportingValue06" value="{!true}" rendered="{!reportingValue.key=='06'}" />
+			<apex:variable var="RenderReportingValue07" value="{!true}" rendered="{!reportingValue.key=='07'}" />
+			<apex:variable var="RenderReportingValue08" value="{!true}" rendered="{!reportingValue.key=='08'}" />
+			<apex:variable var="RenderReportingValue09" value="{!true}" rendered="{!reportingValue.key=='09'}" />
+			<apex:variable var="RenderReportingValue10" value="{!true}" rendered="{!reportingValue.key=='10'}" />
+			<apex:variable var="RenderReportingValue11" value="{!true}" rendered="{!reportingValue.key=='11'}" />
+			<apex:variable var="RenderReportingValue12" value="{!true}" rendered="{!reportingValue.key=='12'}" />
+			<apex:variable var="RenderReportingValue13" value="{!true}" rendered="{!reportingValue.key=='13'}" />
+			<apex:variable var="RenderReportingValue14" value="{!true}" rendered="{!reportingValue.key=='14'}" />
+			<apex:variable var="RenderReportingValue15" value="{!true}" rendered="{!reportingValue.key=='15'}" />
+			<apex:variable var="RenderReportingValue16" value="{!true}" rendered="{!reportingValue.key=='16'}" />
+			<apex:variable var="RenderReportingValue17" value="{!true}" rendered="{!reportingValue.key=='17'}" />
+			<apex:variable var="RenderReportingValue18" value="{!true}" rendered="{!reportingValue.key=='18'}" />
+			<apex:variable var="RenderReportingValue19" value="{!true}" rendered="{!reportingValue.key=='19'}" />
+			<apex:variable var="RenderReportingValue20" value="{!true}" rendered="{!reportingValue.key=='20'}" />
+			<apex:variable var="RenderReportingValue21" value="{!true}" rendered="{!reportingValue.key=='21'}" />
+			<apex:variable var="RenderReportingValue22" value="{!true}" rendered="{!reportingValue.key=='22'}" />
+			<apex:variable var="RenderReportingValue23" value="{!true}" rendered="{!reportingValue.key=='23'}" />
+			<apex:variable var="RenderReportingValue24" value="{!true}" rendered="{!reportingValue.key=='24'}" />
+			<apex:variable var="RenderReportingValue25" value="{!true}" rendered="{!reportingValue.key=='25'}" />
+			<apex:variable var="RenderReportingValue26" value="{!true}" rendered="{!reportingValue.key=='26'}" />
+			<apex:variable var="RenderReportingValue27" value="{!true}" rendered="{!reportingValue.key=='27'}" />
+			<apex:variable var="RenderReportingValue28" value="{!true}" rendered="{!reportingValue.key=='28'}" />
+			<apex:variable var="RenderReportingValue29" value="{!true}" rendered="{!reportingValue.key=='29'}" />
+			<apex:variable var="RenderReportingValue30" value="{!true}" rendered="{!reportingValue.key=='30'}" />
+		</apex:repeat>
+
+		<!-- GRANDTOTALS -->
+		<apex:variable value="{!0}" var="grandTotalReportingValue21" rendered="{!RenderReportingValue21}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue22" rendered="{!RenderReportingValue22}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue23" rendered="{!RenderReportingValue23}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue24" rendered="{!RenderReportingValue24}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue25" rendered="{!RenderReportingValue25}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue26" rendered="{!RenderReportingValue26}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue27" rendered="{!RenderReportingValue27}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue28" rendered="{!RenderReportingValue28}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue29" rendered="{!RenderReportingValue29}"/>
+		<apex:variable value="{!0}" var="grandTotalReportingValue30" rendered="{!RenderReportingValue30}"/>
+
+		<h2 class="ffrtitle">{!reportingDataRanges[reportingDataKey].Name}</h2>
+		<table class="ffrgrid">
+			<apex:repeat value="{!dataRange.rowList}" var="row" >
+			<apex:variable value="{!NULLVALUE(row.Count,0) > 0}" var="notEmptyRow" />
+
+				<!-- ROW SUBTOTALS -->
+				<apex:variable value="{!0}" var="rowTotalReportingValue21" rendered="{!RenderReportingValue21}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue22" rendered="{!RenderReportingValue22}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue23" rendered="{!RenderReportingValue23}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue24" rendered="{!RenderReportingValue24}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue25" rendered="{!RenderReportingValue25}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue26" rendered="{!RenderReportingValue26}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue27" rendered="{!RenderReportingValue27}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue28" rendered="{!RenderReportingValue28}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue29" rendered="{!RenderReportingValue29}"/>
+				<apex:variable value="{!0}" var="rowTotalReportingValue30" rendered="{!RenderReportingValue30}"/>
+
+				<apex:variable value="{!true}" var="firstReportingValueRendered"/>
+				<tr>
+					<th class="ffrgridspacer"></th>
+					<apex:repeat value="{!dataRange.reportingValueList}" var="reportingValue">
+						<th class="{!IF(firstReportingValueRendered,'ffrgridtitleleftd','ffrgridtitlecenterd')}">{!reportingValue.Label}</th>
+						<apex:variable value="{!false}" var="firstReportingValueRendered"/>
+					</apex:repeat>
+				</tr>
+
+				<!-- Initialize variables with any value, as long as it is the same type as column type and the row is not empty-->
+			<apex:variable var="previousLineReportingValue01" value="{!row.lines['0'].Values['01']}" rendered="{!RenderReportingValue01 && notEmptyRow}"/>
+			<apex:variable var="previousLineReportingValue02" value="{!row.lines['0'].Values['02']}" rendered="{!RenderReportingValue02 && notEmptyRow}"/>
+			<apex:variable var="previousLineReportingValue03" value="{!row.lines['0'].Values['03']}" rendered="{!RenderReportingValue03 && notEmptyRow}"/>
+			<apex:variable var="currentLineReportingValue01" value="{!row.lines['0'].Values['01']}" rendered="{!RenderReportingValue01 && notEmptyRow}"/>
+			<apex:variable var="currentLineReportingValue02" value="{!row.lines['0'].Values['02']}" rendered="{!RenderReportingValue02 && notEmptyRow}"/>
+			<apex:variable var="currentLineReportingValue03" value="{!row.lines['0'].Values['03']}" rendered="{!RenderReportingValue03 && notEmptyRow}"/>
+
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue21" rendered="{!RenderReportingValue21}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue22" rendered="{!RenderReportingValue22}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue23" rendered="{!RenderReportingValue23}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue24" rendered="{!RenderReportingValue24}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue25" rendered="{!RenderReportingValue25}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue26" rendered="{!RenderReportingValue26}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue27" rendered="{!RenderReportingValue27}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue28" rendered="{!RenderReportingValue28}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue29" rendered="{!RenderReportingValue29}"/>
+				<apex:variable value="{!0}" var="subtotalGroup1ReportingValue30" rendered="{!RenderReportingValue30}"/>
+
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue21" rendered="{!RenderReportingValue21}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue22" rendered="{!RenderReportingValue22}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue23" rendered="{!RenderReportingValue23}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue24" rendered="{!RenderReportingValue24}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue25" rendered="{!RenderReportingValue25}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue26" rendered="{!RenderReportingValue26}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue27" rendered="{!RenderReportingValue27}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue28" rendered="{!RenderReportingValue28}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue29" rendered="{!RenderReportingValue29}"/>
+				<apex:variable value="{!0}" var="subtotalGroup2ReportingValue30" rendered="{!RenderReportingValue30}"/>
+
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue21" rendered="{!RenderReportingValue21}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue22" rendered="{!RenderReportingValue22}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue23" rendered="{!RenderReportingValue23}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue24" rendered="{!RenderReportingValue24}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue25" rendered="{!RenderReportingValue25}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue26" rendered="{!RenderReportingValue26}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue27" rendered="{!RenderReportingValue27}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue28" rendered="{!RenderReportingValue28}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue29" rendered="{!RenderReportingValue29}"/>
+				<apex:variable value="{!0}" var="subtotalGroup3ReportingValue30" rendered="{!RenderReportingValue30}"/>
+
+	<!-- This variable is used to determine whether the line is the first line in the row - to prevent a subtotal being printed before the first line -->
+				<apex:variable var="firstLine" value="{!true}"/>
+
+	<!-- User Note: Following Variables Control Whether A Subtotal Line Should Be Rendered -->
+				<apex:variable var="doSubtotal01" value="{!false}"/>
+				<apex:variable var="doSubtotal02" value="{!false}"/>
+				<apex:variable var="doSubtotal03" value="{!false}"/>
+
+				<apex:repeat value="{!row.lineList}" var="line" >
+					<apex:variable var="currentLineReportingValue01" value="{!line.Values['01']}" rendered="{!RenderReportingValue01 && dataRange.reportingValues['01'].isGroup}"/>
+					<apex:variable var="currentLineReportingValue02" value="{!line.Values['02']}" rendered="{!RenderReportingValue02 && dataRange.reportingValues['02'].isGroup}"/>
+					<apex:variable var="currentLineReportingValue03" value="{!line.Values['03']}" rendered="{!RenderReportingValue03 && dataRange.reportingValues['03'].isGroup}"/>
+
+					<apex:variable var="doSubtotal01" value="{!(currentLineReportingValue01!=previousLineReportingValue01) && dataRange.reportingValues['01'].isGroup}" rendered="{!RenderReportingValue01}"/>
+					<apex:variable var="doSubtotal02" value="{!(currentLineReportingValue02!=previousLineReportingValue02) && dataRange.reportingValues['02'].isGroup}" rendered="{!RenderReportingValue02}"/>
+					<apex:variable var="doSubtotal03" value="{!(currentLineReportingValue03!=previousLineReportingValue03) && dataRange.reportingValues['03'].isGroup}" rendered="{!RenderReportingValue03}"/>
+
+					<!-- Process Group 3 subtotal line -->
+				<apex:variable var="createSubtotalLine" value="{!(!firstLine) && RenderReportingValue03 && (doSubtotal03 || doSubtotal02 || doSubtotal01) && displaySubtotals && notEmptyRow}"/>
+					<tr>
+						<td class="{!if(createSubtotalLine,'ffrgridspacerd','ffrhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue01,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue02,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue03,'ffrsubtotallabeld','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue03 && dataRange.reportingValues['03'].isGroup,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!previousLineReportingValue03}" type="{!dataRange.reportingValues['03'].Type}" rendered="{!RenderReportingValue03}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue04,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue05,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue06,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue07,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue08,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue09,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue10,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue11,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue12,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue13,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue14,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue15,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue16,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue17,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue18,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue19,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue20,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue21,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue21 && dataRange.reportingValues['21'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue21}" type="{!IF(subtotalGroup3ReportingValue21==0, TypeZero, dataRange.reportingValues['21'].Type)}" rendered="{!RenderReportingValue21}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue22,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue22 && dataRange.reportingValues['22'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue22}" type="{!IF(subtotalGroup3ReportingValue22==0, TypeZero, dataRange.reportingValues['22'].Type)}" rendered="{!RenderReportingValue22}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue23,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue23 && dataRange.reportingValues['23'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue23}" type="{!IF(subtotalGroup3ReportingValue23==0, TypeZero, dataRange.reportingValues['23'].Type)}" rendered="{!RenderReportingValue23}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue24,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue24 && dataRange.reportingValues['24'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue24}" type="{!IF(subtotalGroup3ReportingValue24==0, TypeZero, dataRange.reportingValues['24'].Type)}" rendered="{!RenderReportingValue24}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue25,'ffrsubtotald','ffrsubtotalhidden')}"  >
+							<span class="{!if(createSubtotalLine && RenderReportingValue25 && dataRange.reportingValues['25'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue25}" type="{!IF(subtotalGroup3ReportingValue25==0, TypeZero, dataRange.reportingValues['25'].Type)}" rendered="{!RenderReportingValue25}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue26,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue26 && dataRange.reportingValues['26'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue26}" type="{!IF(subtotalGroup3ReportingValue26==0, TypeZero, dataRange.reportingValues['26'].Type)}" rendered="{!RenderReportingValue26}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue27,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue27 && dataRange.reportingValues['27'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue27}" type="{!IF(subtotalGroup3ReportingValue27==0, TypeZero, dataRange.reportingValues['27'].Type)}" rendered="{!RenderReportingValue27}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue28,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue28 && dataRange.reportingValues['28'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue28}" type="{!IF(subtotalGroup3ReportingValue28==0, TypeZero, dataRange.reportingValues['28'].Type)}" rendered="{!RenderReportingValue28}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue29,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue29 && dataRange.reportingValues['29'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue29}" type="{!IF(subtotalGroup3ReportingValue29==0, TypeZero, dataRange.reportingValues['29'].Type)}" rendered="{!RenderReportingValue29}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue30,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue30 && dataRange.reportingValues['30'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue30}" type="{!IF(subtotalGroup3ReportingValue30==0, TypeZero, dataRange.reportingValues['30'].Type)}" rendered="{!RenderReportingValue30}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue21" rendered="{!RenderReportingValue21 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue22" rendered="{!RenderReportingValue22 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue23" rendered="{!RenderReportingValue23 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue24" rendered="{!RenderReportingValue24 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue25" rendered="{!RenderReportingValue25 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue26" rendered="{!RenderReportingValue26 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue27" rendered="{!RenderReportingValue27 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue28" rendered="{!RenderReportingValue28 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue29" rendered="{!RenderReportingValue29 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup3ReportingValue30" rendered="{!RenderReportingValue30 && createSubtotalLine}"/>
+					</tr>
+
+					<!-- Process Group 2 subtotal line -->
+				<apex:variable var="createSubtotalLine" value="{!(!firstLine) && RenderReportingValue02 && (doSubtotal02 || doSubtotal01) && displaySubtotals && notEmptyRow}"/>
+					<tr>
+						<td class="{!if(createSubtotalLine,'ffrgridspacerd','ffrhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue01,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue02,'ffrsubtotallabeld','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue02 && dataRange.reportingValues['02'].isGroup,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!previousLineReportingValue02}" type="{!dataRange.reportingValues['02'].Type}" rendered="{!RenderReportingValue02}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue03,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue04,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue05,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue06,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue07,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue08,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue09,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue10,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue11,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue12,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue13,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue14,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue15,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue16,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue17,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue18,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue19,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue20,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue21,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue21 && dataRange.reportingValues['21'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue21}" type="{!IF(subtotalGroup2ReportingValue21==0, TypeZero, dataRange.reportingValues['21'].Type)}" rendered="{!RenderReportingValue21}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue22,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue22 && dataRange.reportingValues['22'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue22}" type="{!IF(subtotalGroup2ReportingValue22==0, TypeZero, dataRange.reportingValues['22'].Type)}" rendered="{!RenderReportingValue22}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue23,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue23 && dataRange.reportingValues['23'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue23}" type="{!IF(subtotalGroup2ReportingValue23==0, TypeZero, dataRange.reportingValues['23'].Type)}" rendered="{!RenderReportingValue23}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue24,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue24 && dataRange.reportingValues['24'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue24}" type="{!IF(subtotalGroup2ReportingValue24==0, TypeZero, dataRange.reportingValues['24'].Type)}" rendered="{!RenderReportingValue24}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue25,'ffrsubtotald','ffrsubtotalhidden')}"  >
+							<span class="{!if(createSubtotalLine && RenderReportingValue25 && dataRange.reportingValues['25'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue25}" type="{!IF(subtotalGroup2ReportingValue25==0, TypeZero, dataRange.reportingValues['25'].Type)}" rendered="{!RenderReportingValue25}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue26,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue26 && dataRange.reportingValues['26'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue26}" type="{!IF(subtotalGroup2ReportingValue26==0, TypeZero, dataRange.reportingValues['26'].Type)}" rendered="{!RenderReportingValue26}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue27,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue27 && dataRange.reportingValues['27'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue27}" type="{!IF(subtotalGroup2ReportingValue27==0, TypeZero, dataRange.reportingValues['27'].Type)}" rendered="{!RenderReportingValue27}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue28,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue28 && dataRange.reportingValues['28'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue28}" type="{!IF(subtotalGroup2ReportingValue28==0, TypeZero, dataRange.reportingValues['28'].Type)}" rendered="{!RenderReportingValue28}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue29,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue29 && dataRange.reportingValues['29'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue29}" type="{!IF(subtotalGroup2ReportingValue29==0, TypeZero, dataRange.reportingValues['29'].Type)}" rendered="{!RenderReportingValue29}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue30,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue30 && dataRange.reportingValues['30'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue30}" type="{!IF(subtotalGroup2ReportingValue30==0, TypeZero, dataRange.reportingValues['30'].Type)}" rendered="{!RenderReportingValue30}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue21" rendered="{!RenderReportingValue21 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue22" rendered="{!RenderReportingValue22 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue23" rendered="{!RenderReportingValue23 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue24" rendered="{!RenderReportingValue24 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue25" rendered="{!RenderReportingValue25 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue26" rendered="{!RenderReportingValue26 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue27" rendered="{!RenderReportingValue27 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue28" rendered="{!RenderReportingValue28 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue29" rendered="{!RenderReportingValue29 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup2ReportingValue30" rendered="{!RenderReportingValue30 && createSubtotalLine}"/>
+					</tr>
+
+					<!-- Process Group 1 subtotal line -->
+				<apex:variable var="createSubtotalLine" value="{!(!firstLine) && RenderReportingValue01 && doSubtotal01 && displaySubtotals && notEmptyRow}"/>
+					<tr>
+						<td class="{!if(createSubtotalLine,'ffrgridspacerd','ffrhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue01,'ffrsubtotallabeld','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue01 && dataRange.reportingValues['01'].isGroup,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!previousLineReportingValue01}" type="{!dataRange.reportingValues['01'].Type}" rendered="{!RenderReportingValue01}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue02,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue03,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue04,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue05,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue06,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue07,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue08,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue09,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue10,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue11,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue12,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue13,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue14,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue15,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue16,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue17,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue18,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue19,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue20,'ffrsubtotald','ffrsubtotalhidden')}"/>
+						<td class="{!if(createSubtotalLine && RenderReportingValue21,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue21 && dataRange.reportingValues['21'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue21}" type="{!IF(subtotalGroup1ReportingValue21==0, TypeZero, dataRange.reportingValues['21'].Type)}" rendered="{!RenderReportingValue21}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue22,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue22 && dataRange.reportingValues['22'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue22}" type="{!IF(subtotalGroup1ReportingValue22==0, TypeZero, dataRange.reportingValues['22'].Type)}" rendered="{!RenderReportingValue22}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue23,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue23 && dataRange.reportingValues['23'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue23}" type="{!IF(subtotalGroup1ReportingValue23==0, TypeZero, dataRange.reportingValues['23'].Type)}" rendered="{!RenderReportingValue23}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue24,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue24 && dataRange.reportingValues['24'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue24}" type="{!IF(subtotalGroup1ReportingValue24==0, TypeZero, dataRange.reportingValues['24'].Type)}" rendered="{!RenderReportingValue24}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue25,'ffrsubtotald','ffrsubtotalhidden')}"  >
+							<span class="{!if(createSubtotalLine && RenderReportingValue25 && dataRange.reportingValues['25'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue25}" type="{!IF(subtotalGroup1ReportingValue25==0, TypeZero, dataRange.reportingValues['25'].Type)}" rendered="{!RenderReportingValue25}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue26,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue26 && dataRange.reportingValues['26'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue26}" type="{!IF(subtotalGroup1ReportingValue26==0, TypeZero, dataRange.reportingValues['26'].Type)}" rendered="{!RenderReportingValue26}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue27,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue27 && dataRange.reportingValues['27'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue27}" type="{!IF(subtotalGroup1ReportingValue27==0, TypeZero, dataRange.reportingValues['27'].Type)}" rendered="{!RenderReportingValue27}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue28,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue28 && dataRange.reportingValues['28'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue28}" type="{!IF(subtotalGroup1ReportingValue28==0, TypeZero, dataRange.reportingValues['28'].Type)}" rendered="{!RenderReportingValue28}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue29,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue29 && dataRange.reportingValues['29'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue29}" type="{!IF(subtotalGroup1ReportingValue29==0, TypeZero, dataRange.reportingValues['29'].Type)}" rendered="{!RenderReportingValue29}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+						<td class="{!if(createSubtotalLine && RenderReportingValue30,'ffrsubtotald','ffrsubtotalhidden')}">
+							<span class="{!if(createSubtotalLine && RenderReportingValue30 && dataRange.reportingValues['30'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue30}" type="{!IF(subtotalGroup1ReportingValue30==0, TypeZero, dataRange.reportingValues['30'].Type)}" rendered="{!RenderReportingValue30}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+						</td>
+
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue21" rendered="{!RenderReportingValue21 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue22" rendered="{!RenderReportingValue22 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue23" rendered="{!RenderReportingValue23 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue24" rendered="{!RenderReportingValue24 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue25" rendered="{!RenderReportingValue25 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue26" rendered="{!RenderReportingValue26 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue27" rendered="{!RenderReportingValue27 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue28" rendered="{!RenderReportingValue28 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue29" rendered="{!RenderReportingValue29 && createSubtotalLine}"/>
+						<apex:variable value="{!0}" var="subtotalGroup1ReportingValue30" rendered="{!RenderReportingValue30 && createSubtotalLine}"/>
+					</tr>
+					<tr>
+						<td class="ffrsubtotalhidden">
+							<!-- Accumulate values -->
+							<apex:outputPanel rendered="{!RenderReportingValue21 && dataRange.reportingValues['21'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue21 + line.Values['21']}" var="subtotalGroup1ReportingValue21" />
+								<apex:variable value="{!subtotalGroup2ReportingValue21 + line.Values['21']}" var="subtotalGroup2ReportingValue21" />
+								<apex:variable value="{!subtotalGroup3ReportingValue21 + line.Values['21']}" var="subtotalGroup3ReportingValue21" />
+								<apex:variable value="{!rowTotalReportingValue21 + line.Values['21']}" var="rowTotalReportingValue21" />
+								<apex:variable value="{!grandTotalReportingValue21 + line.Values['21']}" var="grandTotalReportingValue21" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue22 && dataRange.reportingValues['22'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue22 + line.Values['22']}" var="subtotalGroup1ReportingValue22" />
+								<apex:variable value="{!subtotalGroup2ReportingValue22 + line.Values['22']}" var="subtotalGroup2ReportingValue22" />
+								<apex:variable value="{!subtotalGroup3ReportingValue22 + line.Values['22']}" var="subtotalGroup3ReportingValue22" />
+								<apex:variable value="{!rowTotalReportingValue22 + line.Values['22']}" var="rowTotalReportingValue22" />
+								<apex:variable value="{!grandTotalReportingValue22 + line.Values['22']}" var="grandTotalReportingValue22" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue23 && dataRange.reportingValues['23'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue23 + line.Values['23']}" var="subtotalGroup1ReportingValue23" />
+								<apex:variable value="{!subtotalGroup2ReportingValue23 + line.Values['23']}" var="subtotalGroup2ReportingValue23" />
+								<apex:variable value="{!subtotalGroup3ReportingValue23 + line.Values['23']}" var="subtotalGroup3ReportingValue23" />
+								<apex:variable value="{!rowTotalReportingValue23 + line.Values['23']}" var="rowTotalReportingValue23" />
+								<apex:variable value="{!grandTotalReportingValue23 + line.Values['23']}" var="grandTotalReportingValue23" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue24 && dataRange.reportingValues['24'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue24 + line.Values['24']}" var="subtotalGroup1ReportingValue24" />
+								<apex:variable value="{!subtotalGroup2ReportingValue24 + line.Values['24']}" var="subtotalGroup2ReportingValue24" />
+								<apex:variable value="{!subtotalGroup3ReportingValue24 + line.Values['24']}" var="subtotalGroup3ReportingValue24" />
+								<apex:variable value="{!rowTotalReportingValue24 + line.Values['24']}" var="rowTotalReportingValue24" />
+								<apex:variable value="{!grandTotalReportingValue24 + line.Values['24']}" var="grandTotalReportingValue24" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue25 && dataRange.reportingValues['25'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue25 + line.Values['25']}" var="subtotalGroup1ReportingValue25" />
+								<apex:variable value="{!subtotalGroup2ReportingValue25 + line.Values['25']}" var="subtotalGroup2ReportingValue25" />
+								<apex:variable value="{!subtotalGroup3ReportingValue25 + line.Values['25']}" var="subtotalGroup3ReportingValue25" />
+								<apex:variable value="{!rowTotalReportingValue25 + line.Values['25']}" var="rowTotalReportingValue25" />
+								<apex:variable value="{!grandTotalReportingValue25 + line.Values['25']}" var="grandTotalReportingValue25" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue26 && dataRange.reportingValues['26'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue26 + line.Values['26']}" var="subtotalGroup1ReportingValue26" />
+								<apex:variable value="{!subtotalGroup2ReportingValue26 + line.Values['26']}" var="subtotalGroup2ReportingValue26" />
+								<apex:variable value="{!subtotalGroup3ReportingValue26 + line.Values['26']}" var="subtotalGroup3ReportingValue26" />
+								<apex:variable value="{!rowTotalReportingValue26 + line.Values['26']}" var="rowTotalReportingValue26" />
+								<apex:variable value="{!grandTotalReportingValue26 + line.Values['26']}" var="grandTotalReportingValue26" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue27 && dataRange.reportingValues['27'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue27 + line.Values['27']}" var="subtotalGroup1ReportingValue27" />
+								<apex:variable value="{!subtotalGroup2ReportingValue27 + line.Values['27']}" var="subtotalGroup2ReportingValue27" />
+								<apex:variable value="{!subtotalGroup3ReportingValue27 + line.Values['27']}" var="subtotalGroup3ReportingValue27" />
+								<apex:variable value="{!rowTotalReportingValue27 + line.Values['27']}" var="rowTotalReportingValue27" />
+								<apex:variable value="{!grandTotalReportingValue27 + line.Values['27']}" var="grandTotalReportingValue27" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue28 && dataRange.reportingValues['28'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue28 + line.Values['28']}" var="subtotalGroup1ReportingValue28" />
+								<apex:variable value="{!subtotalGroup2ReportingValue28 + line.Values['28']}" var="subtotalGroup2ReportingValue28" />
+								<apex:variable value="{!subtotalGroup3ReportingValue28 + line.Values['28']}" var="subtotalGroup3ReportingValue28" />
+								<apex:variable value="{!rowTotalReportingValue28 + line.Values['28']}" var="rowTotalReportingValue28" />
+								<apex:variable value="{!grandTotalReportingValue28 + line.Values['28']}" var="grandTotalReportingValue28" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue29 && dataRange.reportingValues['29'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue29 + line.Values['29']}" var="subtotalGroup1ReportingValue29" />
+								<apex:variable value="{!subtotalGroup2ReportingValue29 + line.Values['29']}" var="subtotalGroup2ReportingValue29" />
+								<apex:variable value="{!subtotalGroup3ReportingValue29 + line.Values['29']}" var="subtotalGroup3ReportingValue29" />
+								<apex:variable value="{!rowTotalReportingValue29 + line.Values['29']}" var="rowTotalReportingValue29" />
+								<apex:variable value="{!grandTotalReportingValue29 + line.Values['29']}" var="grandTotalReportingValue29" />
+							</apex:outputPanel>
+							<apex:outputPanel rendered="{!RenderReportingValue30 && dataRange.reportingValues['30'].isSum}">
+								<apex:variable value="{!subtotalGroup1ReportingValue30 + line.Values['30']}" var="subtotalGroup1ReportingValue30" />
+								<apex:variable value="{!subtotalGroup2ReportingValue30 + line.Values['30']}" var="subtotalGroup2ReportingValue30" />
+								<apex:variable value="{!subtotalGroup3ReportingValue30 + line.Values['30']}" var="subtotalGroup3ReportingValue30" />
+								<apex:variable value="{!rowTotalReportingValue30 + line.Values['30']}" var="rowTotalReportingValue30" />
+								<apex:variable value="{!grandTotalReportingValue30 + line.Values['30']}" var="grandTotalReportingValue30" />
+							</apex:outputPanel>
+						</td>
+						<!-- Display line values, but for group Reporting Values -->
+						<td class="ffrgridspacerd"/>
+						<apex:repeat value="{!dataRange.reportingValueList}" var="reportingValue">
+							<td class="{!IF(reportingValue.Type == TypeInteger || reportingValue.Type == TypeDouble,'ffrgridrowd','ffrgridrowlabeld')}">
+								<c:Formatter value="{!line.Values[reportingValue.key]}" type="{!IF(line.Values[reportingValue.key]==0, TypeZero, reportingValue.Type)}" rendered="{!!reportingValue.isGroup}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/>
+							</td>
+						</apex:repeat>
+					</tr>
+
+					<!-- Set currentLine as previousLine -->
+					<apex:variable var="previousLineReportingValue01" value="{!currentLineReportingValue01}" rendered="{!RenderReportingValue01 && doSubtotal01}"/>
+					<apex:variable var="previousLineReportingValue02" value="{!currentLineReportingValue02}" rendered="{!RenderReportingValue02 && doSubtotal02}"/>
+					<apex:variable var="previousLineReportingValue03" value="{!currentLineReportingValue03}" rendered="{!RenderReportingValue03 && doSubtotal03}"/>
+
+					<!-- If this was the first line, it was completed, so set first line to false -->
+					<apex:variable var="firstLine" value="{!false}" rendered="{!firstLine}"/>
+
+				<!-- NEXT LINE -->
+				</apex:repeat>
+
+				<!-- Once finished all row lines, check whether a last subtotal line should be rendered -->
+				<apex:variable var="renderLastSubtotal" value="{!false}"/>
+				<apex:variable var="renderLastSubtotal" value="{!IF(RenderReportingValue03 && dataRange.reportingValues['03'].isGroup && notEmptyRow,true,false)}"/>
+				<!-- Process a subtotal line for last column value, Group 3 -->
+				<tr class="{!if(renderLastSubtotal && displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}">
+					<td class="ffrgridspacerd"/>
+					<td class="{!if(RenderReportingValue01,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue02,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue03,'ffrsubtotallabeld','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue03 && dataRange.reportingValues['03'].isGroup,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!previousLineReportingValue03}" type="{!dataRange.reportingValues['03'].Type}" rendered="{!RenderReportingValue03}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue04,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue05,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue06,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue07,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue08,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue09,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue10,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue11,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue12,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue13,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue14,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue15,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue16,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue17,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue18,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue19,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue20,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue21,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue21 && dataRange.reportingValues['21'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue21}" type="{!IF(subtotalGroup3ReportingValue21==0, TypeZero, dataRange.reportingValues['21'].Type)}" rendered="{!RenderReportingValue21}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue22,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue22 && dataRange.reportingValues['22'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue22}" type="{!IF(subtotalGroup3ReportingValue22==0, TypeZero, dataRange.reportingValues['22'].Type)}" rendered="{!RenderReportingValue22}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue23,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue23 && dataRange.reportingValues['23'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue23}" type="{!IF(subtotalGroup3ReportingValue23==0, TypeZero, dataRange.reportingValues['23'].Type)}" rendered="{!RenderReportingValue23}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue24,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue24 && dataRange.reportingValues['24'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue24}" type="{!IF(subtotalGroup3ReportingValue24==0, TypeZero, dataRange.reportingValues['24'].Type)}" rendered="{!RenderReportingValue24}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue25,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue25 && dataRange.reportingValues['25'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue25}" type="{!IF(subtotalGroup3ReportingValue25==0, TypeZero, dataRange.reportingValues['25'].Type)}" rendered="{!RenderReportingValue25}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue26,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue26 && dataRange.reportingValues['26'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue26}" type="{!IF(subtotalGroup3ReportingValue26==0, TypeZero, dataRange.reportingValues['26'].Type)}" rendered="{!RenderReportingValue26}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue27,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue27 && dataRange.reportingValues['27'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue27}" type="{!IF(subtotalGroup3ReportingValue27==0, TypeZero, dataRange.reportingValues['27'].Type)}" rendered="{!RenderReportingValue27}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue28,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue28 && dataRange.reportingValues['28'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue28}" type="{!IF(subtotalGroup3ReportingValue28==0, TypeZero, dataRange.reportingValues['28'].Type)}" rendered="{!RenderReportingValue28}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue29,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue29 && dataRange.reportingValues['29'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue29}" type="{!IF(subtotalGroup3ReportingValue29==0, TypeZero, dataRange.reportingValues['29'].Type)}" rendered="{!RenderReportingValue29}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue30,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue30 && dataRange.reportingValues['30'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup3ReportingValue30}" type="{!IF(subtotalGroup3ReportingValue30==0, TypeZero, dataRange.reportingValues['30'].Type)}" rendered="{!RenderReportingValue30}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+				</tr>
+				<tr class="{!if(renderLastSubtotal && displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}"></tr>
+
+			<apex:variable var="renderLastSubtotal" value="{!IF(RenderReportingValue02 && dataRange.reportingValues['02'].isGroup && notEmptyRow,true,false)}"/>
+				<!-- Process a subtotal line for last column value, Group 2 -->
+				<tr class="{!if(renderLastSubtotal && displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}">
+					<td class="ffrgridspacerd"/>
+					<td class="{!if(RenderReportingValue01,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue02,'ffrsubtotallabeld','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue02 && dataRange.reportingValues['02'].isGroup,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!previousLineReportingValue02}" type="{!dataRange.reportingValues['02'].Type}" rendered="{!RenderReportingValue02}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue03,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue04,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue05,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue06,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue07,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue08,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue09,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue10,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue11,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue12,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue13,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue14,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue15,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue16,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue17,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue18,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue19,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue20,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue21,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue21 && dataRange.reportingValues['21'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue21}" type="{!IF(subtotalGroup2ReportingValue21==0, TypeZero, dataRange.reportingValues['21'].Type)}" rendered="{!RenderReportingValue21}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue22,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue22 && dataRange.reportingValues['22'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue22}" type="{!IF(subtotalGroup2ReportingValue22==0, TypeZero, dataRange.reportingValues['22'].Type)}" rendered="{!RenderReportingValue22}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue23,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue23 && dataRange.reportingValues['23'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue23}" type="{!IF(subtotalGroup2ReportingValue23==0, TypeZero, dataRange.reportingValues['23'].Type)}" rendered="{!RenderReportingValue23}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue24,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue24 && dataRange.reportingValues['24'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue24}" type="{!IF(subtotalGroup2ReportingValue24==0, TypeZero, dataRange.reportingValues['24'].Type)}" rendered="{!RenderReportingValue24}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue25,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue25 && dataRange.reportingValues['25'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue25}" type="{!IF(subtotalGroup2ReportingValue25==0, TypeZero, dataRange.reportingValues['25'].Type)}" rendered="{!RenderReportingValue25}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue26,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue26 && dataRange.reportingValues['26'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue26}" type="{!IF(subtotalGroup2ReportingValue26==0, TypeZero, dataRange.reportingValues['26'].Type)}" rendered="{!RenderReportingValue26}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue27,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue27 && dataRange.reportingValues['27'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue27}" type="{!IF(subtotalGroup2ReportingValue27==0, TypeZero, dataRange.reportingValues['27'].Type)}" rendered="{!RenderReportingValue27}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue28,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue28 && dataRange.reportingValues['28'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue28}" type="{!IF(subtotalGroup2ReportingValue28==0, TypeZero, dataRange.reportingValues['28'].Type)}" rendered="{!RenderReportingValue28}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue29,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue29 && dataRange.reportingValues['29'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue29}" type="{!IF(subtotalGroup2ReportingValue29==0, TypeZero, dataRange.reportingValues['29'].Type)}" rendered="{!RenderReportingValue29}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue30,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue30 && dataRange.reportingValues['30'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup2ReportingValue30}" type="{!IF(subtotalGroup2ReportingValue30==0, TypeZero, dataRange.reportingValues['30'].Type)}" rendered="{!RenderReportingValue30}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+				</tr>
+				<tr class="{!if(renderLastSubtotal && displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}"></tr>
+
+			<apex:variable var="renderLastSubtotal" value="{!IF(RenderReportingValue01 && dataRange.reportingValues['01'].isGroup && notEmptyRow,true,false)}"/>
+				<!-- Process a subtotal line for last column value, Group 1 -->
+				<tr class="{!if(renderLastSubtotal && displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}">
+					<td class="ffrgridspacerd"/>
+					<td class="{!if(RenderReportingValue01,'ffrsubtotallabeld','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue01 && dataRange.reportingValues['01'].isGroup,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!previousLineReportingValue01}" type="{!dataRange.reportingValues['01'].Type}" rendered="{!RenderReportingValue01}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue02,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue03,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue04,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue05,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue06,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue07,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue08,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue09,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue10,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue11,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue12,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue13,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue14,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue15,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue16,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue17,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue18,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue19,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue20,'ffrsubtotald','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue21,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue21 && dataRange.reportingValues['21'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue21}" type="{!IF(subtotalGroup1ReportingValue21==0, TypeZero, dataRange.reportingValues['21'].Type)}" rendered="{!RenderReportingValue21}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue22,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue22 && dataRange.reportingValues['22'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue22}" type="{!IF(subtotalGroup1ReportingValue22==0, TypeZero, dataRange.reportingValues['22'].Type)}" rendered="{!RenderReportingValue22}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue23,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue23 && dataRange.reportingValues['23'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue23}" type="{!IF(subtotalGroup1ReportingValue23==0, TypeZero, dataRange.reportingValues['23'].Type)}" rendered="{!RenderReportingValue23}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue24,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue24 && dataRange.reportingValues['24'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue24}" type="{!IF(subtotalGroup1ReportingValue24==0, TypeZero, dataRange.reportingValues['24'].Type)}" rendered="{!RenderReportingValue24}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue25,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue25 && dataRange.reportingValues['25'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue25}" type="{!IF(subtotalGroup1ReportingValue25==0, TypeZero, dataRange.reportingValues['25'].Type)}" rendered="{!RenderReportingValue25}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue26,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue26 && dataRange.reportingValues['26'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue26}" type="{!IF(subtotalGroup1ReportingValue26==0, TypeZero, dataRange.reportingValues['26'].Type)}" rendered="{!RenderReportingValue26}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue27,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue27 && dataRange.reportingValues['27'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue27}" type="{!IF(subtotalGroup1ReportingValue27==0, TypeZero, dataRange.reportingValues['27'].Type)}" rendered="{!RenderReportingValue27}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue28,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue28 && dataRange.reportingValues['28'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue28}" type="{!IF(subtotalGroup1ReportingValue28==0, TypeZero, dataRange.reportingValues['28'].Type)}" rendered="{!RenderReportingValue28}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue29,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue29 && dataRange.reportingValues['29'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue29}" type="{!IF(subtotalGroup1ReportingValue29==0, TypeZero, dataRange.reportingValues['29'].Type)}" rendered="{!RenderReportingValue29}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue30,'ffrsubtotald','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue30 && dataRange.reportingValues['30'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!subtotalGroup1ReportingValue30}" type="{!IF(subtotalGroup1ReportingValue30==0, TypeZero, dataRange.reportingValues['30'].Type)}" rendered="{!RenderReportingValue30}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+				</tr>
+				<tr class="{!if(renderLastSubtotal && displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}"></tr>
+
+				<!-- ROW SUBTOTAL -->
+				<tr class="{!if(dataRange.rowsNumber > 1 && displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}">
+					<td class="ffrgridspacerd"/>
+					<td class="ffrgridsumlabeld"><span>{!row.label}</span></td>
+					<td class="{!if(RenderReportingValue02,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue03,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue04,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue05,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue06,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue07,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue08,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue09,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue10,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue11,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue12,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue13,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue14,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue15,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue16,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue17,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue18,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue19,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue20,'ffrgridsumd','ffrsubtotalhidden')}"/>
+					<td class="{!if(RenderReportingValue21,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue21 && dataRange.reportingValues['21'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue21}" type="{!IF(rowTotalReportingValue21==0, TypeZero, dataRange.reportingValues['21'].Type)}" rendered="{!RenderReportingValue21}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue22,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue22 && dataRange.reportingValues['22'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue22}" type="{!IF(rowTotalReportingValue22==0, TypeZero, dataRange.reportingValues['22'].Type)}" rendered="{!RenderReportingValue22}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue23,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue23 && dataRange.reportingValues['23'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue23}" type="{!IF(rowTotalReportingValue23==0, TypeZero, dataRange.reportingValues['23'].Type)}" rendered="{!RenderReportingValue23}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue24,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue24 && dataRange.reportingValues['24'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue24}" type="{!IF(rowTotalReportingValue24==0, TypeZero, dataRange.reportingValues['24'].Type)}" rendered="{!RenderReportingValue24}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue25,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue25 && dataRange.reportingValues['25'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue25}" type="{!IF(rowTotalReportingValue25==0, TypeZero, dataRange.reportingValues['25'].Type)}" rendered="{!RenderReportingValue25}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue26,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue26 && dataRange.reportingValues['26'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue26}" type="{!IF(rowTotalReportingValue26==0, TypeZero, dataRange.reportingValues['26'].Type)}" rendered="{!RenderReportingValue26}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue27,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue27 && dataRange.reportingValues['27'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue27}" type="{!IF(rowTotalReportingValue27==0, TypeZero, dataRange.reportingValues['27'].Type)}" rendered="{!RenderReportingValue27}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue28,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue28 && dataRange.reportingValues['28'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue28}" type="{!IF(rowTotalReportingValue28==0, TypeZero, dataRange.reportingValues['28'].Type)}" rendered="{!RenderReportingValue28}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue29,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue29 && dataRange.reportingValues['29'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue29}" type="{!IF(rowTotalReportingValue29==0, TypeZero, dataRange.reportingValues['29'].Type)}" rendered="{!RenderReportingValue29}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+					<td class="{!if(RenderReportingValue30,'ffrgridsumd','ffrsubtotalhidden')}">
+						<span class="{!if(RenderReportingValue30 && dataRange.reportingValues['30'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!rowTotalReportingValue30}" type="{!IF(rowTotalReportingValue30==0, TypeZero, dataRange.reportingValues['30'].Type)}" rendered="{!RenderReportingValue30}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+					</td>
+				</tr>
+				<tr class="{!if(dataRange.rowsNumber > 1 && displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}"></tr>
+
+			<!-- NEXT ROW -->
+			</apex:repeat>
+
+			<!-- DATA RANGE TOTALS ROW -->
+			<tr class="{!if(displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}">
+				<td class="ffrgridspacerd"/>
+				<td class="ffrgridsumlabeld"><span>{!label['L01']}</span></td>
+				<td class="{!if(RenderReportingValue02,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue03,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue04,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue05,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue06,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue07,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue08,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue09,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue10,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue11,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue12,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue13,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue14,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue15,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue16,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue17,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue18,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue19,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue20,'ffrgridsumd','ffrsubtotalhidden')}"/>
+				<td class="{!if(RenderReportingValue21,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue21 && dataRange.reportingValues['21'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue21}" type="{!IF(grandTotalReportingValue21==0, TypeZero, dataRange.reportingValues['21'].Type)}" rendered="{!RenderReportingValue21}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue22,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue22 && dataRange.reportingValues['22'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue22}" type="{!IF(grandTotalReportingValue22==0, TypeZero, dataRange.reportingValues['22'].Type)}" rendered="{!RenderReportingValue22}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue23,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue23 && dataRange.reportingValues['23'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue23}" type="{!IF(grandTotalReportingValue23==0, TypeZero, dataRange.reportingValues['23'].Type)}" rendered="{!RenderReportingValue23}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue24,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue24 && dataRange.reportingValues['24'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue24}" type="{!IF(grandTotalReportingValue24==0, TypeZero, dataRange.reportingValues['24'].Type)}" rendered="{!RenderReportingValue24}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue25,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue25 && dataRange.reportingValues['25'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue25}" type="{!IF(grandTotalReportingValue25==0, TypeZero, dataRange.reportingValues['25'].Type)}" rendered="{!RenderReportingValue25}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue26,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue26 && dataRange.reportingValues['26'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue26}" type="{!IF(grandTotalReportingValue26==0, TypeZero, dataRange.reportingValues['26'].Type)}" rendered="{!RenderReportingValue26}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue27,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue27 && dataRange.reportingValues['27'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue27}" type="{!IF(grandTotalReportingValue27==0, TypeZero, dataRange.reportingValues['27'].Type)}" rendered="{!RenderReportingValue27}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue28,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue28 && dataRange.reportingValues['28'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue28}" type="{!IF(grandTotalReportingValue28==0, TypeZero, dataRange.reportingValues['28'].Type)}" rendered="{!RenderReportingValue28}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue29,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue29 && dataRange.reportingValues['29'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue29}" type="{!IF(grandTotalReportingValue29==0, TypeZero, dataRange.reportingValues['29'].Type)}" rendered="{!RenderReportingValue29}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+				<td class="{!if(RenderReportingValue30,'ffrgridsumd','ffrsubtotalhidden')}">
+					<span class="{!if(RenderReportingValue30 && dataRange.reportingValues['30'].isSum,'ffrsubtotals','ffrsubtotalhidden')}"><c:Formatter value="{!grandTotalReportingValue30}" type="{!IF(grandTotalReportingValue30==0, TypeZero, dataRange.reportingValues['30'].Type)}" rendered="{!RenderReportingValue30}" numberPattern="{!VN}" zeroPattern="{!VZ}" datePattern="{!dateFormat}"/></span>
+				</td>
+			</tr>
+			<tr class="{!if(displaySubtotals,'ffrsubtotald','ffrsubtotalhidden')}"><td class="ffrgridspacerd"></td></tr>
+		</table>
+	<!-- NEXT DATA RANGE -->
+	</apex:repeat>
+	<!-- User Note: Display Row Records Count and Data Range Records Count -->
+	<p><h2 class="ffrtitle">{!label['L80']}</h2></p>
+	<apex:repeat value="{!reportingDataKeyList}" var="reportingDataKey">
+		<apex:variable var="dataRange" value="{!reportingData[reportingDataKey]}"/>
+		<apex:outputpanel rendered="{!dataRange.TypeName == DetailType}">
+			<table>
+				<apex:repeat value="{!dataRange.rowList}" var="row" >
+					<tr><td>{!label['L81']} {!row.label} = {!row.Count}</td></tr>
+				</apex:repeat>
+			</table>
+			{!label['L82']} {!ReportingDataRangeLabels[reportingDataKey]} = {!dataRange.Count}<br/><br/>
+		</apex:outputpanel>
+	</apex:repeat>
+</apex:outputpanel>
+<!-- REGION 03: REPORT BODY END -->
+<!-- REGION 06: REPORT CHATTER START -->
+<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

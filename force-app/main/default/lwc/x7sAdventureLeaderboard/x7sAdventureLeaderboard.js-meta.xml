@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Adventure Leaderboard</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="titletext" label="Leaderboard Title" type="String" description="Title text to display for this Leaderboard.   If empty, title will not display."/>
+            <property name="subtitletext" label="Leaderboard Subtitle" type="String" description="Subtitle text to display for this Leaderboard.  If empty, subtitle will not display."/>
+            <property name="headeralign" label="Title Alignment"  type="String" description="Alignment for the Title and Subtitle text.  Options:  Left, Right, Center." datasource="Left,Right,Center"/>
+            <property name="sourceAdventureId" label="Filter By Source Adventure" type="String" description="The ID of the source adventure to be displayed.  If blank, all adventures will display."/>
+            <property name="showInactiveAdventures" label="Include Inactive Adventures" type="Boolean" description="Include adventures that are marked as inactive in the leaderboard."/>
+
+            <property name="defaultSort" label="Default Sort" type="String" description="Default sort for the list.  Options are:  Task Percent Complete Descending, Module Percent Complete Descending." datasource="Task Percent Complete Descending,Module Percent Complete Descending"/>
+            <property name="ownerNameLabel" label="Owner Name Column Label" type="String" description="Label for owner name column. Leave blank to remove column."/>
+            <property name="ownerImageLabel" label="Owner Image Column Label" type="String" description="Label for owner Image column. Leave blank to remove column and image."/>
+            <property name="ownerIconShape" label="Owner Icon Shape" type="String" description="Choose the shape of the owner icon/image.  Options: Circle or Square"  datasource="Circle,Square"/>
+            <property name="ownerIconSize" label="Owner Icon Size" type="String" description="The size of the owner icon (XS, S, M, L)" datasource="X-small,Small,Medium,Large"/>
+            <property name="adventureNameLabel" label="Adventure Name Column Label"  type="String" description="Enter a label to display the Adventure name column."/>
+            <property name="showAdventuresNameLink" label="Show Adventure Name Link" type="Boolean" description="If checked, Adventure Name will display as a link to allow navigate to the detail page."/>
+            <property name="adventureTitleLabel" label="Adventure Title Column Label"  type="String" description="Enter a label to display the Adventure title column."/>
+            <property name="showAdventuresTitleLink" label="Show Adventure Title Link" type="Boolean" description="If checked, Adventure Title will display as a link to allow navigate to the detail page."/>
+            <property name="adventureDetailPageURL" label="Adventure Detail Page URL"  type="String" description="Enter adventure detail page URL."/>
+            <property name="activeFlagLabel" label="Active Flag Column Label"  type="String" description="Enter a label to display the Active flag in the list."/>
+            <property name="taskPercentCompletedLabel" label="Percent Completed Tasks Column Label"  type="String" description="Enter a label to display the percent of completed tasks column."/>
+            <property name="completedTaskNumLabel" label="Number Completed Tasks Column Label"  type="String" description="Enter a label to display the number of completed tasks column."/>
+            <property name="modulePercentCompletedLabel" label="Percent Completed Modules Column Label"  type="String" description="Enter a label to display the percent of completed modules column."/>
+            <property name="completedModulesNumLabel" label="Number Completed Modules Column Label"  type="String" description="Enter a label to display the number of completed modules column."/>
+            <property name="lastActivityLabel" label="Last Activity Column Label"  type="String" description="Enter a label to display the last activity column.  This column displays the last updated date for the Adventure."/>
+
+            <property name="numberOfRecords" label="Number of Records"  type="Integer" description="Number of adventures to include in the list."/>
+            <property name="height" label="Leaderboard Height"  type="String" description="Height of the leaderboard component in pixels.  For example, 400px."/>
+            <property name="customClass" label="Custom Class Name" type="String" description="Custom CSS class name. Usually remains blank." />
+        </targetConfig>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage">
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="titletext" label="Leaderboard Title" type="String" description="Title text to display for this Leaderboard.   If empty, title will not display."/>
+            <property name="subtitletext" label="Leaderboard Subtitle" type="String" description="Subtitle text to display for this Leaderboard.  If empty, subtitle will not display."/>
+            <property name="headeralign" label="Title Alignment"  type="String" description="Alignment for the Title and Subtitle text.  Options:  Left, Right, Center." datasource="Left,Right,Center"/>
+            <property name="sourceAdventureId" label="Filter By Source Adventure" type="String" description="The ID of the source adventure to be displayed.  If blank, all adventures will display."/>
+            <property name="showInactiveAdventures" label="Include Inactive Adventures" type="Boolean" description="Include adventures that are marked as inactive in the leaderboard."/>
+
+            <property name="defaultSort" label="Default Sort" type="String" description="Default sort for the list.  Options are:  Task Percent Complete Descending, Module Percent Complete Descending." datasource="Task Percent Complete Descending,Module Percent Complete Descending"/>
+            <property name="ownerNameLabel" label="Owner Name Column Label" type="String" description="Label for owner name column. Leave blank to remove column."/>
+            <property name="ownerImageLabel" label="Owner Image Column Label" type="String" description="Label for owner Image column. Leave blank to remove column and image."/>
+            <property name="ownerIconShape" label="Owner Icon Shape" type="String" description="Choose the shape of the owner icon/image.  Options: Circle or Square"  datasource="Circle,Square"/>
+            <property name="ownerIconSize" label="Owner Icon Size" type="String" description="The size of the owner icon (XS, S, M, L)" datasource="X-small,Small,Medium,Large"/>
+            <property name="adventureNameLabel" label="Adventure Name Column Label"  type="String" description="Enter a label to display the Adventure name column."/>
+            <property name="showAdventuresNameLink" label="Show Adventure Name Link" type="Boolean" description="If checked, Adventure Name will display as a link to allow navigate to the detail page."/>
+            <property name="adventureTitleLabel" label="Adventure Title Column Label"  type="String" description="Enter a label to display the Adventure title column."/>
+            <property name="showAdventuresTitleLink" label="Show Adventure Title Link" type="Boolean" description="If checked, Adventure Title will display as a link to allow navigate to the detail page."/>
+            <property name="activeFlagLabel" label="Active Flag Column Label"  type="String" description="Enter a label to display the Active flag in the list."/>
+            <property name="taskPercentCompletedLabel" label="Percent Completed Tasks Column Label"  type="String" description="Enter a label to display the percent of completed tasks column."/>
+            <property name="completedTaskNumLabel" label="Number Completed Tasks Column Label"  type="String" description="Enter a label to display the number of completed tasks column."/>
+            <property name="modulePercentCompletedLabel" label="Percent Completed Modules Column Label"  type="String" description="Enter a label to display the percent of completed modules column."/>
+            <property name="completedModulesNumLabel" label="Number Completed Modules Column Label"  type="String" description="Enter a label to display the number of completed modules column."/>
+            <property name="lastActivityLabel" label="Last Activity Column Label"  type="String" description="Enter a label to display the last activity column.  This column displays the last updated date for the Adventure."/>
+
+            <property name="numberOfRecords" label="Number of Records"  type="Integer" description="Number of adventures to include in the list."/>
+            <property name="height" label="Leaderboard Height"  type="String" description="Height of the leaderboard component in pixels.  For example, 400px."/>
+            <property name="customClass" label="Custom Class Name" type="String" description="Custom CSS class name. Usually remains blank." />
+        </targetConfig>
+    </targetConfigs>        
+</LightningComponentBundle>

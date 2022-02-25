@@ -1,0 +1,7 @@
+<apex:page showHeader="false" sidebar="false" standardController="ffct__MigrationSet__c" extensions="ffct.MigrationSetControllerExtension">
+    <apex:repeat value="{!FilterUserNames}" var="user">
+        <apex:outputPanel layout="block">
+            <apex:outputText value="{!user}"></apex:outputText>
+        </apex:outputPanel>
+    </apex:repeat>
+</apex:page>

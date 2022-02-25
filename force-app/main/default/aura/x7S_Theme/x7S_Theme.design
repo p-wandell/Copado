@@ -1,0 +1,13 @@
+<!--
+ - Copyright (c) 2019. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 2019-05-03.
+-->
+<design:component label="7S Theme">
+    <design:attribute name="homeLink" label="Logo Link" description="Link address where the logo should redirect to when clicked" />
+    <design:attribute name="communityTitle" label="Community Title" description="Title of the community that will show up in the header" />
+    <design:attribute name="termsFileId" label="Terms and Conditions File Id"
+                      description="This is the id of file you would like to use for the community terms and conditions" />
+    <design:attribute name="twoBar" label="Two Bar Theme"
+                      description="If checked the theme will display the search below the navigation" />
+    <design:attribute name="wide" label="Full Width" description="If checked this will allow page layouts to go full screen width" />
+</design:component>

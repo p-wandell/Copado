@@ -1,0 +1,97 @@
+<!--
+ - Created by brianpoulsen on 7/20/18.
+ -->
+
+<aura:component description="Peak_FeaturedContent"
+                controller="Peak_TopicsController"
+                extends="c:Peak_Base"
+                extensible="true"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+                access="global">
+
+    <aura:attribute name="layoutType" type="String" default="Calls to Action" />
+
+    <aura:attribute name="cardColor1" type="String" default="Brand Blue" />
+    <aura:attribute name="cardColor2" type="String" default="Brand Blue" />
+    <aura:attribute name="cardColor3" type="String" default="Brand Blue" />
+    <aura:attribute name="cardColor4" type="String" default="Brand Blue" />
+
+    <aura:attribute name="cardColorClass1" type="String" default="" />
+    <aura:attribute name="cardColorClass2" type="String" default="" />
+    <aura:attribute name="cardColorClass3" type="String" default="" />
+    <aura:attribute name="cardColorClass4" type="String" default="" />
+
+    <aura:attribute name="cardTopicList" type="List" access="global" />
+    <aura:attribute name="cardTopic1" type="String" default="" access="global" />
+    <aura:attribute name="cardTopic2" type="String" default="" access="global" />
+    <aura:attribute name="cardTopic3" type="String" default="" access="global" />
+    <aura:attribute name="cardTopic4" type="String" default="" access="global" />
+
+    <aura:attribute name="cardImage1" type="String" default="" />
+    <aura:attribute name="cardImage2" type="String" default="" />
+    <aura:attribute name="cardImage3" type="String" default="" />
+    <aura:attribute name="cardImage4" type="String" default="" />
+
+    <aura:attribute name="cardIcon1" type="String" default="" />
+    <aura:attribute name="cardIcon2" type="String" default="" />
+    <aura:attribute name="cardIcon3" type="String" default="" />
+    <aura:attribute name="cardIcon4" type="String" default="" />
+
+    <aura:attribute name="cardTitle1" type="String" default="" />
+    <aura:attribute name="cardTitle2" type="String" default="" />
+    <aura:attribute name="cardTitle3" type="String" default="" />
+    <aura:attribute name="cardTitle4" type="String" default="" />
+
+    <aura:attribute name="cardDescription1" type="String" default="" />
+    <aura:attribute name="cardDescription2" type="String" default="" />
+    <aura:attribute name="cardDescription3" type="String" default="" />
+    <aura:attribute name="cardDescription4" type="String" default="" />
+
+    <aura:attribute name="cardLink1" type="String" default="" />
+    <aura:attribute name="cardLink2" type="String" default="" />
+    <aura:attribute name="cardLink3" type="String" default="" />
+    <aura:attribute name="cardLink4" type="String" default="" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <section>
+
+        <!--Calls to Action and Horizontal Layouts-->
+        <aura:if isTrue="{!v.layoutType != 'Vertical'}">
+
+            <!--HORIZONTAL layout-->
+            <lightning:layout multipleRows="true" verticalAlign="stretch">
+
+                <lightning:layoutItem size="{!v.layoutType == 'Horizontal' ? 12 : 6}" mediumDeviceSize="3" class="slds-p-around_xx-small">
+                    <c:Peak_FeaturedContent_Card layoutType="{!v.layoutType}" color="{!v.cardColorClass1}" topic="{!v.cardTopic1}" topicLabel="{!v.cardTopicList[0]}" image="{!v.cardImage1}" icon="{!v.cardIcon1}" title="{!v.cardTitle1}" description="{!v.cardDescription1}" link="{!v.cardLink1}" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="{!v.layoutType == 'Horizontal' ? 12 : 6}" mediumDeviceSize="3" class="slds-p-around_xx-small">
+                    <c:Peak_FeaturedContent_Card layoutType="{!v.layoutType}" color="{!v.cardColorClass2}" topic="{!v.cardTopic2}" topicLabel="{!v.cardTopicList[1]}" image="{!v.cardImage2}" icon="{!v.cardIcon2}" title="{!v.cardTitle2}" description="{!v.cardDescription2}" link="{!v.cardLink2}" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="{!v.layoutType == 'Horizontal' ? 12 : 6}" mediumDeviceSize="3" class="slds-p-around_xx-small">
+                    <c:Peak_FeaturedContent_Card layoutType="{!v.layoutType}" color="{!v.cardColorClass3}" topic="{!v.cardTopic3}" topicLabel="{!v.cardTopicList[2]}" image="{!v.cardImage3}" icon="{!v.cardIcon3}" title="{!v.cardTitle3}" description="{!v.cardDescription3}" link="{!v.cardLink3}" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="{!v.layoutType == 'Horizontal' ? 12 : 6}" mediumDeviceSize="3" class="slds-p-around_xx-small">
+                    <c:Peak_FeaturedContent_Card layoutType="{!v.layoutType}" color="{!v.cardColorClass4}" topic="{!v.cardTopic4}" topicLabel="{!v.cardTopicList[3]}" image="{!v.cardImage4}" icon="{!v.cardIcon4}" title="{!v.cardTitle4}" description="{!v.cardDescription4}" link="{!v.cardLink4}" />
+                </lightning:layoutItem>
+            </lightning:layout>
+
+            <!--VERTICAL Layout-->
+            <aura:set attribute="else">
+                <aura:if isTrue="{!or(v.cardLink1, v.cardTitle1)}">
+                    <c:Peak_FeaturedContent_Card layoutType="{!v.layoutType}" color="{!v.cardColorClass1}" topic="{!v.cardTopic1}" topicLabel="{!v.cardTopicList[0]}" image="{!v.cardImage1}" icon="{!v.cardIcon1}" title="{!v.cardTitle1}" description="{!v.cardDescription1}" link="{!v.cardLink1}" />
+                </aura:if>
+                <aura:if isTrue="{!or(v.cardLink2, v.cardTitle2)}">
+                    <c:Peak_FeaturedContent_Card layoutType="{!v.layoutType}" color="{!v.cardColorClass2}" topic="{!v.cardTopic2}" topicLabel="{!v.cardTopicList[1]}" image="{!v.cardImage2}" icon="{!v.cardIcon2}" title="{!v.cardTitle2}" description="{!v.cardDescription2}" link="{!v.cardLink2}" />
+                </aura:if>
+                <aura:if isTrue="{!or(v.cardLink3, v.cardTitle3)}">
+                    <c:Peak_FeaturedContent_Card layoutType="{!v.layoutType}" color="{!v.cardColorClass3}" topic="{!v.cardTopic3}" topicLabel="{!v.cardTopicList[2]}" image="{!v.cardImage3}" icon="{!v.cardIcon3}" title="{!v.cardTitle3}" description="{!v.cardDescription3}" link="{!v.cardLink3}" />
+                </aura:if>
+                <aura:if isTrue="{!or(v.cardLink4, v.cardTitle4)}">
+                    <c:Peak_FeaturedContent_Card layoutType="{!v.layoutType}" color="{!v.cardColorClass4}" topic="{!v.cardTopic4}" topicLabel="{!v.cardTopicList[3]}" image="{!v.cardImage4}" icon="{!v.cardIcon4}" title="{!v.cardTitle4}" description="{!v.cardDescription4}" link="{!v.cardLink4}" />
+                </aura:if>
+            </aura:set>
+        </aura:if>
+    </section>
+
+</aura:component>

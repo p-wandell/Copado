@@ -1,0 +1,12 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 11/22/17.
+ -->
+
+<aura:event type="APPLICATION"
+            description="ss_product_filter_update_event">
+	<aura:attribute name="searchProductFamily" type="String"/>
+</aura:event>

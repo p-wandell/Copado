@@ -1,0 +1,160 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 9/29/17.
+ -->
+
+<aura:component description="ss_cart_list"
+                extends="c:ss_product_base"
+                access="global">
+
+	<aura:attribute name="usePoints"        type="Boolean" default="false" access="public"/>
+	<aura:attribute name="showImage"        type="Boolean" default="true"  access="public"/>
+	<aura:attribute name="showFamily"       type="Boolean" default="true"  access="public"/>
+	<aura:attribute name="showCode"         type="Boolean" default="true"  access="public"/>
+	<aura:attribute name="showPrice"        type="Boolean" default="true"  access="public"/>
+	<aura:attribute name="showQuantity"     type="Boolean" default="true"  access="public"/>
+	<aura:attribute name="optionsQuantity"  type="String[]"                access="public"/>
+
+	<aura:attribute name="model"            type="Map" access="public"/>
+	<aura:attribute name="cartItems"        type="Map" access="public"/>
+
+	<aura:attribute name="headingClass" type="String" default="slds-text-title slds-text-color_weak"/>
+	<aura:attribute name="flexValue"    type="String" default="no-grow"/>
+
+	<lightning:layout multipleRows="true"
+	                  horizontalAlign="spread">
+
+		<!-- List header-->
+		<lightning:layoutItem size="12"
+		                      class="slds-border--bottom cartHeading">
+			<lightning:layout multipleRows="true"
+			                  verticalAlign="center"
+			                  horizontalAlign="spread">
+
+				<!-- Image -->
+				<aura:if isTrue="{!v.showImage}">
+					<lightning:layoutItem size="1"
+					                      largeDeviceSize="1"
+					                      mediumDeviceSize="2"
+					                      smallDeviceSize="1"
+					                      flexibility="{!v.flexValue}"
+					                      class="{!v.headingClass}">
+						<span class="slds-align--absolute-center">
+							{!$Label.c.ss_pc_cart_listHeader_image}
+						</span>
+					</lightning:layoutItem>
+				</aura:if>
+
+				<!--Item -->
+				<lightning:layoutItem size="1"
+				                      largeDeviceSize="6"
+				                      mediumDeviceSize="6"
+				                      smallDeviceSize="1"
+				                      flexibility="{!v.flexValue}"
+				                      class="{!v.headingClass}">
+						{!$Label.c.ss_pc_cart_listHeader_item}
+				</lightning:layoutItem>
+
+				<!-- product code -->
+				<aura:if isTrue="{!v.showCode}">
+					<lightning:layoutItem size="1"
+					                      largeDeviceSize="1"
+					                      mediumDeviceSize="6"
+					                      smallDeviceSize="1"
+					                      flexibility="{!v.flexValue}"
+					                      class="{!v.headingClass}">
+							{!$Label.c.ss_pc_cart_listHeader_code}
+					</lightning:layoutItem>
+				</aura:if>
+
+				<!--Unit price -->
+				<aura:if isTrue="{!v.showPrice}">
+					<lightning:layoutItem size="1"
+					                      largeDeviceSize="1"
+					                      mediumDeviceSize="2"
+					                      smallDeviceSize="1"
+					                      flexibility="{!v.flexValue}"
+					                      class="{!v.headingClass}">
+						<lightning:layout horizontalAlign="end">
+							<lightning:layoutItem >
+									{! if(v.usePoints,
+										$Label.c.ss_pc_cart_listHeader_points,
+										$Label.c.ss_pc_cart_listHeader_unitPrice)}
+							</lightning:layoutItem>
+						</lightning:layout>
+					</lightning:layoutItem>
+				</aura:if>
+
+				<!-- quantity-->
+				<aura:if isTrue="{!v.showQuantity}">
+					<lightning:layoutItem size="1"
+					                      largeDeviceSize="1"
+					                      mediumDeviceSize="2"
+					                      smallDeviceSize="1"
+					                      flexibility="{!v.flexValue}"
+					                      class="{!v.headingClass}">
+						<lightning:layout horizontalAlign="end">
+							<lightning:layoutItem >
+									{!$Label.c.ss_pc_cart_listHeader_quantity}
+							</lightning:layoutItem>
+						</lightning:layout>
+					</lightning:layoutItem>
+				</aura:if>
+
+				<!-- unit total-->
+				<aura:if isTrue="{! and(v.showQuantity, v.showPrice)}">
+					<lightning:layoutItem size="1"
+					                      largeDeviceSize="1"
+					                      mediumDeviceSize="2"
+					                      smallDeviceSize="1"
+					                      flexibility="{!v.flexValue}"
+					                      class="{!v.headingClass}">
+						<lightning:layout horizontalAlign="end">
+							<lightning:layoutItem >
+									{! if(v.usePoints,
+											$Label.c.ss_pc_cart_listHeader_totalPoints,
+											$Label.c.ss_pc_cart_listHeader_totalPrice)}
+							</lightning:layoutItem>
+						</lightning:layout>
+					</lightning:layoutItem>
+				</aura:if>
+
+				<!-- Delete button -->
+				<lightning:layoutItem size="1"
+				                      largeDeviceSize="1"
+				                      mediumDeviceSize="2"
+				                      smallDeviceSize="1"
+				                      padding="around-small"
+				                      flexibility="{!v.flexValue}"
+				                      class="slds-align_absolute-center">
+					<lightning:buttonIcon iconName="utility:close"
+					                      alternativeText="clear cart"
+					                      onclick="{!c.onClearCart}"
+					                      title="{!$Label.c.ss_pc_cart_tooltip_removeAll}"/>
+				</lightning:layoutItem>
+			</lightning:layout>
+		</lightning:layoutItem>
+
+		<!-- List body -->
+		<lightning:layoutItem size="12"
+		                      largeDeviceSize="12"
+		                      mediumDeviceSize="12"
+		                      smallDeviceSize="12">
+			<!-- iteration-->
+			<aura:iteration items="{!v.cartItems}" var="cartItem">
+				<c:ss_cart_tile cartItem="{!cartItem}"
+				                usePoints="{!v.usePoints}"
+				                showImage="{!v.showImage}"
+				                showCode="{!v.showCode}"
+				                showFamily="{!v.showFamily}"
+				                showPrice="{!v.showPrice}"
+				                showQuantity="{!v.showQuantity}"
+				                optionsQuantity="{!v.optionsQuantity}"/>
+			</aura:iteration>
+
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

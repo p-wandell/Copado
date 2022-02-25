@@ -1,0 +1,61 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<template>
+    <div class="slds-float_right">
+        <template if:true={isVoting}>
+            <lightning-button disabled
+                                label={labelVoting}
+                                variant="brand"
+            ></lightning-button>
+    </template>
+    <template if:false={isVoting}>
+        <template if:true={userHasVoted}>
+            <!-- If user has voted -->
+            <lightning-button disabled
+                                icon-name={userHasVotedIconName}
+                                label={userHasVotedLabel}
+                                variant="brand"
+            ></lightning-button>
+        </template>
+        <template if:false={userHasVoted}>
+            <template if:true={reduceButtonLabels}>
+                <!-- if we're displaying a condensed view with no labels -->
+                <lightning-button-icon icon-name="utility:like"
+                                        alternative-text={labelVote}
+                                        onclick={handleVote}
+                                        variant="border-filled"
+                                        disabled={disableButtonIcon}
+                ></lightning-button-icon>
+            </template>
+            <template if:false={reduceButtonLabels}>
+                <!-- Standard full View -->
+                <lightning-button icon-name="utility:like"
+                                    label={labelVote}
+                                    onclick={handleVote}
+                                    variant="neutral"
+                                    disabled={disableButtonIcon}
+                ></lightning-button>
+            </template>
+            <template if:true={getDisableDownVoting}>
+                <lightning-button-icon icon-name="utility:dislike"
+                                        alternative-text={labelDownVote}
+                                        onclick={handleDownVote}
+                                        variant="border-filled"
+                                        class="slds-m-left_xx-small"
+                                        disabled={disableButtonIcon}
+                ></lightning-button-icon>
+            </template>
+        </template>
+    </template>
+    <template if:true={displayRemoveVoteButton}>
+        <lightning-button-icon icon-name="utility:close"
+                                alternative-text={labelVoteClear}
+                                onclick={handleRemoveVote}
+                                variant="border-filled"
+                                class="slds-m-left_xx-small"
+        ></lightning-button-icon>
+    </template>
+    </div>
+</template>

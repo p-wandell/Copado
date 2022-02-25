@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>球队</value>
+    </caseValues>
+    <nameFieldLabel>队名</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- A project must be active to associate it with a team. --></errorMessage>
+        <name>pse__Active_Project</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- One or both of the email address fields do not contain a value. --></errorMessage>
+        <name>pse__Other_Email_Address_Fields_are_Blank</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- One or both of the email address fields contains one or more invalid email addresses. --></errorMessage>
+        <name>pse__Validate_Other_Email_Address_Fields</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Manage_Team --></label>
+        <name>pse__Manage_Team</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Open_Team_Scheduler --></label>
+        <name>pse__Open_Team_Scheduler</name>
+    </webLinks>
+</CustomObjectTranslation>

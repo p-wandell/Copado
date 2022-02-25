@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Metrics Report</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightningCommunity__Default,lightning__HomePage">
+            <property name="titleAlignment" type="String" label="Metric Title Alignment" datasource="Left,Center,Right" default="Left" description="Select the alignment for the metric title text. This setting applies to all metrics displayed in the component."/>
+            <property name="noOfMetricsToDisplay" type="String" label="Total Metrics" datasource="1,2,3,4" default="1" description="Select the total number of metrics to display with this component."/>
+            <property name="isBold" type="Boolean" label="Bold Values" description="If checked, numeric values will appear bold for all metrics in this component."/>
+            <!-- Metric-1  -->
+            <property name="title1" type="String" label="Metric 1 Title" description="Title displayed at the top of the metric. If empty, no title will be displayed."/>
+            <property name="reportAPIName1" type="String" label="Metric 1 Report API Name" description="API Name for the report containing the metric data"/>
+            <property name="useFieldAPI1" type="Boolean" label="Metric 1 Use Field API Name" default="false" description="Enable to interpret the field name as an API. If empty, the field label will be used"/>
+            <property name="fieldName1" type="String" label="Metric 1 Field Name" description="API name or label for the field containing data to be displayed"/>
+            <property name="metricLabel1" type="String" label="Metric 1 Label" description="Label displayed beneath the metric value."/>
+            <property name="iconName1" type="String" label="Metric 1 Icon" default="action:check" description="SLDS Icon to display to the right of the metric value."/>
+            <property name="iconHoverText1" type="String" label="Metric 1 Icon Tooltip" description="Text to display when a user hovers over the metric icon."/>
+            <property name="iconColor1" type="String" label="Metric 1 Icon Color 1" description="Hex color for the icon."/>
+            <property name="showLeftButton1" type="Boolean" label="Show Metric 1 Link 1" description="Select to display link 1."/>
+            <property name="labelForLeftButton1" type="String" label="Metric 1 Link 1 Label" description="Label displayed for  link 1."/>
+            <property name="urlForLeftButton1" type="String" label="Metric 1 Link 1 URL" description="URL to access when link 1 is clicked."/>
+            <property name="showRightButton1" type="Boolean" label="Show Metric 1 Link 2" description="Select to display link 2."/>
+            <property name="labelForRightButton1" type="String" label="Metric 1 Link 2 Label" description="Label displayed for link 2."/>
+            <property name="urlForRightButton1" type="String" label="Metric 1 Link 2 URL" description="URL to access when link 2 is clicked."/>
+
+            <!--  Metric-2  -->
+            <property name="title2" type="String" label="Metric 2 Title" description="Title displayed at the top of the metric. If empty, no title will be displayed."/>
+            <property name="reportAPIName2" type="String" label="Metric 2 Report API Name" description="API Name for the report containing the metric data"/>
+            <property name="useFieldAPI2" type="Boolean" label="Metric 2 Use Field API Name" default="false" description="Enable to interpret the field name as an API. If empty, the field label will be used"/>
+            <property name="fieldName2" type="String" label="Metric 2 Field Name" description="API name or label for the field containing data to be displayed"/>
+            <property name="metricLabel2" type="String" label="Metric 2 Label" description="Label displayed beneath the metric value."/>
+            <property name="iconName2" type="String" label="Metric 2 Icon" default="action:check" description="SLDS Icon to display to the right of the metric value."/>
+            <property name="iconHoverText2" type="String" label="Metric 2 Icon Tooltip" description="Text to display when a user hovers over the metric icon."/>
+            <property name="iconColor2" type="String" label="Metric 2 Icon Color 1" description="Hex color for the icon."/>
+            <property name="showLeftButton2" type="Boolean" label="Show Metric 2 Link 1" description="Select to display link 1."/>
+            <property name="labelForLeftButton2" type="String" label="Metric 2 Link 1 Label" description="Label displayed for  link 1."/>
+            <property name="urlForLeftButton2" type="String" label="Metric 2 Link 1 URL" description="URL to access when link 1 is clicked."/>
+            <property name="showRightButton2" type="Boolean" label="Show Metric 2 Link 2" description="Select to display link 2."/>
+            <property name="labelForRightButton2" type="String" label="Metric 2 Link 2 Label" description="Label displayed for link 2."/>
+            <property name="urlForRightButton2" type="String" label="Metric 2 Link 2 URL" description="URL to access when link 2 is clicked."/>
+            <!--  Metric-3  -->
+            <property name="title3" label="Metric 3 Title" type="String" description="Title displayed at the top of the metric. If empty, no title will be displayed."/>
+            <property name="reportAPIName3" type="String" label="Metric 3 Report API Name" description="API Name for the report containing the metric data"/>
+            <property name="useFieldAPI3" type="Boolean" label="Metric 3 Use Field API Name" default="false" description="Enable to interpret the field name as an API. If empty, the field label will be used"/>
+            <property name="fieldName3" type="String" label="Metric 3 Field Name" description="API name or label for the field containing data to be displayed"/>
+            <property name="metricLabel3" label="Metric 3 Label" type="String" description="Label displayed beneath the metric value."/>
+            <property name="iconName3" label="Metric 3 Icon" type="String" default="action:check" description="SLDS Icon to display to the right of the metric value."/>
+            <property name="iconHoverText3" label="Metric 3 Icon Tooltip" type="String" description="Text to display when a user hovers over the metric icon."/>
+            <property name="iconColor3" label="Metric 3 Icon Color 1" type="String" description="Hex color for the icon."/>
+            <property name="showLeftButton3" label="Show Metric 3 Link 1" type="Boolean" description="Select to display link 1."/>
+            <property name="labelForLeftButton3" label="Metric 3 Link 1 Label" type="String" description="Label displayed for  link 1."/>
+            <property name="urlForLeftButton3" label="Metric 3 Link 1 URL" type="String" description="URL to access when link 1 is clicked."/>
+            <property name="showRightButton3" label="Show Metric 3 Link 2" type="Boolean" description="Select to display link 2."/>
+            <property name="labelForRightButton3" label="Metric 3 Link 2 Label" type="String" description="Label displayed for link 2."/>
+            <property name="urlForRightButton3" label="Metric 3 Link 2 URL" type="String" description="URL to access when link 2 is clicked."/>
+            <!--  Metric-4  -->
+            <property name="title4" label="Metric 4 Title" type="String" description="Title displayed at the top of the metric. If empty, no title will be displayed."/>
+            <property name="reportAPIName4" type="String" label="Metric 4 Report API Name" description="API Name for the report containing the metric data"/>
+            <property name="useFieldAPI4" type="Boolean" label="Metric 4 Use Field API Name" default="false" description="Enable to interpret the field name as an API. If empty, the field label will be used"/>
+            <property name="fieldName4" type="String" label="Metric 4 Field Name" description="API name or label for the field containing data to be displayed"/>
+            <property name="metricLabel4" label="Metric 4 Label" type="String" description="Label displayed beneath the metric value."/>
+            <property name="iconName4" label="Metric 4 Icon" type="String" default="action:check" description="SLDS Icon to display to the right of the metric value."/>
+            <property name="iconHoverText4" label="Metric 4 Icon Tooltip" type="String" description="Text to display when a user hovers over the metric icon."/>
+            <property name="iconColor4" label="Metric 4 Icon Color 1" type="String" description="Hex color for the icon."/>
+            <property name="showLeftButton4" label="Show Metric 4 Link 1" type="Boolean" description="Select to display link 1."/>
+            <property name="labelForLeftButton4" label="Metric 4 Link 1 Label" type="String" description="Label displayed for  link 1."/>
+            <property name="urlForLeftButton4" label="Metric 4 Link 1 URL" type="String" description="URL to access when link 1 is clicked."/>
+            <property name="showRightButton4" label="Show Metric 4 Link 2" type="Boolean" description="Select to display link 2."/>
+            <property name="labelForRightButton4" label="Metric 4 Link 2 Label" type="String" description="Label displayed for link 2."/>
+            <property name="urlForRightButton4" label="Metric 4 Link 2 URL" type="String" description="URL to access when link 2 is clicked."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,40 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+
+<!--
+ - Created by francoiskorb on 9/17/18.
+ -->
+
+<aura:component description="ss_product_action_menu"
+                extends="c:ss_product_base"
+                implements="force:hasRecordId">
+
+	<aura:attribute name="recId"        type="String"   access="public"/>
+	<aura:attribute name="product"      type="Map"      access="public"/>
+	<aura:attribute name="actionItems"  type="Map"      access="public"/>
+	<aura:attribute name="pricebookId"  type="String"   access="public"/>
+
+	<lightning:flow aura:id="actionFlow" class="slds-hidden" onstatuschange="{!c.flowStatusChange}"/>
+	<lightning:notificationsLibrary aura:id="flowToast"/>
+
+	<aura:handler name="init"   value="{!this}"     action="{!c.init}"/>
+
+	<aura:if isTrue="{! and(notequals(v.actionItems.items, null), v.actionItems.items.length)}">
+		<lightning:layout multipleRows="false">
+			<lightning:layoutItem>
+				<lightning:buttonMenu name="actionMenu"
+				                      alternativeText="{!v.actionItems.label}"
+				                      iconName="{!v.actionItems.iconName}"
+				                      onselect="{!c.handleMenuSelect}"
+				                      variant="brand">
+					<aura:iteration items="{!v.actionItems.items}" var="item">
+						<lightning:menuItem value="{! item.name}"
+						                    label="{!item.label}"
+											title="{!item.title}"/>
+					</aura:iteration>
+				</lightning:buttonMenu>
+			</lightning:layoutItem>
+		</lightning:layout>
+	</aura:if>
+</aura:component>

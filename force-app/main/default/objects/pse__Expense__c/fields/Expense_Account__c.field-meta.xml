@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Expense_Account__c</fullName>
+    <description>Expense Account based on the Type field.</description>
+    <externalId>false</externalId>
+    <formula>CASE ( pse__Type__c ,
+&apos;Airfare&apos;, &apos;Travel : Airfare&apos;,
+&apos;Airline Baggage Fee&apos;, &apos;Travel : Airfare&apos;, 
+&apos;Airline Change Fee&apos;, &apos;Travel : Airfare&apos;,
+&apos;Breakfast, employee only&apos;, &apos;Travel : Meals and Entertainment&apos;,
+&apos;Business Meals , employees&apos;, &apos;Travel : Meals and Entertainment&apos;,
+&apos;Business Meals, non-employees&apos;, &apos;Travel : Meals and Entertainment&apos;,
+&apos;Car Rental&apos;, &apos;Travel : Transportation&apos;,
+&apos;Courier/Shipping/Freight&apos;, &apos;Administration : Office Supplies&apos;, 
+&apos;Dinner, employee only&apos;, &apos;Travel : Meals and Entertainment&apos;,
+&apos;Dreamforce Meals &amp; Ent Expense&apos;, &apos;Sales and Marketing : Dreamforce : Dreamforce Meals &amp; Ent&apos;,
+&apos;Dreamforce Non-Meals/Ent Expense&apos;, &apos;Sales and Marketing : Dreamforce : Dreamforce Non-Meals/Ent&apos;,
+&apos;Entertainment, Client&apos;, &apos;Travel : Meals and Entertainment&apos;,
+&apos;Entertainment, Staff&apos;,&apos;Travel : Meals and Entertainment&apos;,
+&apos;Fuel, for rental cars only&apos;,&apos;Travel : Transportation&apos;,
+&apos;Gifts to Client&apos;, &apos;Sales and Marketing : Other Marketing Costs&apos;,
+&apos;Gifts to Staff&apos;, &apos;Administration : Office Expense&apos;, 
+&apos;Hotel&apos;, &apos;Travel : Lodging&apos;,
+&apos;Internet/Online Fees&apos;, &apos;Technology : Telephone and Internet&apos;,
+&apos;Lunch, employee only&apos;, &apos;Travel : Meals and Entertainment&apos;,
+&apos;Marketing/Promotional Costs&apos;, &apos;Sales and Marketing : Other Marketing Costs&apos;,
+&apos;Miscellaneous Expense, please explain in comment section&apos;, &apos;Administration : Office Expense&apos;,
+&apos;Mobile Phone, prior approval required&apos;, &apos;Technology : Telephone and Internet&apos;, 
+&apos;Office Supplies/Software&apos;, &apos;Administration : Office Supplies&apos;,
+&apos;Parking&apos;, &apos;Travel : Transportation&apos;,
+&apos;Personal Car Mileage, deduct 30 mi/day&apos;, &apos;Travel : Transportation&apos;,
+&apos;Printing/Copying/Stationary&apos;,&apos;Administration : Office Supplies&apos;,
+&apos;Taxi&apos;,&apos;Travel : Transportation&apos;, 
+&apos;Train&apos;,&apos;Travel : Transportation&apos;,
+&apos;Recruiting Meals/Ent&apos;,&apos;Recruiting : Recruiting Meals/Ent&apos;,
+&apos;Recruiting Travel&apos;,&apos;Recruiting : Recruiting Travel&apos;,
+&apos;Seminar/Course Fees&apos;,&apos;Administration : Training&apos;,
+&apos;Toll Charges&apos;,&apos;Travel : Transportation&apos;,
+&apos;Travel Booking Fee&apos;,&apos;Travel : Airfare&apos;,
+&apos;Channel Advocacy Hospitality&apos;,&apos;Sales and Marketing : Channel Advocacy : Channel Advocacy Hospitality&apos;,
+&quot;&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Expense Account based on the Type field.</inlineHelpText>
+    <label>Expense Account</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

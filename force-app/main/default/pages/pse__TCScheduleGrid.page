@@ -1,0 +1,467 @@
+<apex:page controller="pse.TCScheduleGridController" showHeader="false" sidebar="false" tabStyle="pse__Timecard_Header__c">
+<script type="text/javascript">
+//Added as fix for agile task: 000010865 (Ref. Task ID: 000009297), Dated: Dec 15 2010, Added By: Nitin Jain
+//var _DEC_SEP = '.';
+var _DEC_SEP = '{!GBL_DEC_SEP}';
+</script>
+<apex:includeScript value="{!$Resource.pse__YUI3MinCombo}"/>
+
+<apex:stylesheet value="{!URLFOR($Resource.pse__timecard2, 'YUI_TC_CSS.css')}" />
+<style type="text/css">
+	.projAssigNameDiv{white-space:nowrap;overflow:hidden; width:{!config.ProjAssignDropDownWidth}px;text-align:left;}
+	.selfAssignmentDiv {
+		padding-bottom:4px;
+		padding-top:6px;
+	}
+	.selfAssignmentDiv a { 
+		color:#B5A9B4;
+		font-size:smaller;
+		text-transform:uppercase;
+	}
+</style> 
+<c:WaitComponent />
+    <apex:form id="scheduleForm" >
+    <input type="hidden" value="" id="selectedAssignmentIDs" />
+    
+    <apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" /> 
+    <apex:pageBlock id="schedulePB">
+    	<apex:pageMessage summary="{!$Label.pse__timecard_entry_message_no_sch}" severity="info" 
+    				strength="1" rendered="{!NOT(formBean.hasScheduleSummaries)}"/>
+        <apex:pageMessages id="schMessageSection" />
+            
+            <table width="100%" >
+            	<TR>
+            		<TD>            		
+            		<apex:outputPanel id="scheduleDatePickerPanel" layout="block" >
+                    <table>
+                        <tr>
+                            <TD>
+                                <a href="#" onclick="onSchPreviousWeekClick()"><apex:image height="32" width="32" style="margin-top:-3px;" 
+                                    value="{!URLFOR($Resource.pse__timecard2, 'left.png')}" /></a>
+                            </TD>
+                            <td>
+                                <apex:outputText value="{!$Label.pse__timecard_entry_label_week_ending_date}:" 
+                                    style="margin-right:10px;line-height:28px;vertical-align:middle;" />
+                            </td>
+                            <td style="padding-top: 5px;">
+                                <apex:inputField value="{!formBean.scheduleDateHolderObject.pse__Start_Date__c}" onchange="onScheduleWeekPicked(this.value);" id="scheduleDateField"/>
+                            </td>
+                            <TD>
+                                <a href="#" onclick="onSchNextWeekClick()"><apex:image height="32" width="32" style="margin-top:-3px;"
+                                    value="{!URLFOR($Resource.pse__timecard2, 'right.png')}" /></a>
+                            </TD>
+                            <td >&nbsp;&nbsp;&nbsp;</td>
+                         </tr>
+                    </table>                	
+             		</apex:outputPanel>  
+             		</TD>
+             		
+             		<TD>
+             			<!--  Added Color code legend for weekend -->
+		                <apex:outputPanel id="weekendLegendOP" >
+			                <div style="float:right;">
+			                	<span style="padding-right: 14px;background-color:{!formBean.holidayColorCode}" ></span>&nbsp;= {!$Label.timecard_entry_label_color_legend_holiday}
+			                	<span style="padding-right: 14px;background-color:{!formBean.weekendColorCodeValue}" ></span>&nbsp;= {!$Label.timecard_entry_label_color_legend_weekend}
+			                </div>
+			            </apex:outputPanel>
+             		</TD>
+            	</TR>
+            </table>
+                 <!-- Changes done as fix for agile task: 000005920   Dated: 05/12/2010   By:Ashok -->
+                <apex:actionFunction name="jsGotoSchWeek" reRender="schedulePB"
+                        action="{!gotoScheduleDate}" status="ajaxStatus" immediate="true" oncomplete="javascript:onGotoSchWeekDone();">
+                        <apex:param name="param1" value="" assignTo="{!formBean.scheduleWeekEndingDateStrForUI}" />
+                 </apex:actionFunction>  
+            
+                <apex:actionFunction name="jsSchPreviousWeek" reRender="schedulePB"
+                        action="{!gotoSchPreviousWeek}" status="ajaxStatus" immediate="true" oncomplete="javascript:onSchPreviousWeekDone();"/>
+            
+                <apex:actionFunction name="jsSchNextWeek" reRender="schedulePB"
+                        action="{!gotoSchNextWeek}" status="ajaxStatus" immediate="true" oncomplete="javascript:onNextWeekDone();"/> 
+
+
+<apex:pageBlockSection collapsible="false" id="schPBSection" >              
+<apex:outputPanel id="schedulePanel" >
+	<apex:variable var="holidayStyle" value="padding-bottom:6px;background-color:{!formBean.holidayColorCode}" />
+	<apex:variable var="weekendStyle" value="padding-bottom:6px;background-color:{!formBean.weekendColorCodeValue}" />
+	
+	<!--  Added below variables as fix for agile task: AT21105 -->
+     <apex:variable var="holidayTableHeaderStyle" value="
+    	-webkit-border-left:1px solid Silver;
+    	-webkit-border-top:1px solid Silver;
+   		-webkit-border-right:1px solid Silver !important;
+   		-moz-border-left:1px solid Silver;
+   		-moz-border-top:1px solid Silver;
+   		-moz-border-right:1px solid Silver !important;
+   		border-left:1px solid Silver;
+   		border-top:1px solid Silver;
+   		border-right:1px solid Silver !important;
+   		background-color:{!formBean.holidayColorCode}" />
+   		
+	<apex:variable var="weekendTableHeaderStyle" value="
+   		-webkit-border-left:1px solid Silver;
+   		-webkit-border-top:1px solid Silver;
+   		-webkit-border-right:1px solid Silver !important;
+   		-moz-border-left:1px solid Silver;
+   		-moz-border-top:1px solid Silver;
+   		-moz-border-right:1px solid Silver !important;
+   		border-left:1px solid Silver;
+   		border-top:1px solid Silver;
+   		border-right:1px solid Silver !important;
+   		background-color:{!formBean.weekendColorCodeValue}" />
+    	
+   	<apex:variable var="holidayInputStyle" value="
+   		-webkit-border-left:1px solid Silver;
+   		-webkit-border-right:1px solid Silver !important;
+   		-moz-border-left:1px solid Silver;
+   		-moz-border-right:1px solid Silver !important;
+   		border-left:1px solid Silver;
+   		border-right:1px solid Silver !important;
+   		background-color:{!formBean.holidayColorCode};" />
+    		
+	<apex:variable var="weekendInputStyle" value="
+   		-webkit-border-left:1px solid Silver;
+   		-webkit-border-right:1px solid Silver !important;
+   		-moz-border-left:1px solid Silver;
+   		-moz-border-right:1px solid Silver !important;
+   		border-left:1px solid Silver;
+   		border-right:1px solid Silver !important;
+   		background-color:{!formBean.weekendColorCodeValue};" />
+    		
+	<apex:variable var="weekdayInputStyle" value="" />
+	<!-- variable to hold holiday constant. This must be same as TCPageBean.DAY_TYPE_HOLIDAY -->
+    <apex:variable var="holiday" value="h" />
+    <!-- variable to hold weekend constant. This must be same as TCPageBean.DAY_TYPE_WEEKEND -->
+    <apex:variable var="weekend" value="w" />
+    
+	<table border="0" cellspacing="0" id="scheduleTable" class="list">
+		<thead id="SGThead">
+			<tr id="SGHeaderRow" class="headerRow dataRow">
+				<!-- Added as fix for Agile task: AT1612 	    Dated: 31 May, 2012 -->
+				<th class="headerRow"><input type="checkbox" checked="{!scheduleSelectionCheckboxDefVal}" id="selectAllAssignSchCheckbox" onclick="selectAllAssignmentSchedule(this, 'assignSchSelector')" /></th>
+				
+				<th>{!$Label.timecard_schedule_label_assign}
+					<apex:outputPanel rendered="{!isLogInUserResource}" layout="block" styleClass="selfAssignmentDiv">
+						<apex:outputLink value="{!$Page.pse__SelfAssignment}" target="_blank">
+		           			{!$Label.pse__assignment_label_self_assignment}
+		           		</apex:outputLink>
+					</apex:outputPanel>
+				</th>
+				<th><!-- For tooltip image --></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD1W1 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD1W1 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD1W1}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD2W1 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD2W1 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD2W1}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD3W1 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD3W1 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD3W1}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD4W1 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD4W1 == weekend,weekendTableHeaderStyle,''))}"><div >{!formBean.scheduleLabelD4W1}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD5W1 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD5W1 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD5W1}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD6W1 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD6W1 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD6W1}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD7W1 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD7W1 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD7W1}</div></th>
+				<th> <div align="center" style="width: 10px;"></div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD1W2 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD1W2 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD1W2}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD2W2 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD2W2 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD2W2}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD3W2 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD3W2 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD3W2}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD4W2 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD4W2 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD4W2}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD5W2 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD5W2 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD5W2}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD6W2 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD6W2 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD6W2}</div></th>
+				<th class="schHrInputTextTH" style="{!IF(formBean.scheduleDayTypeD7W2 == holiday,holidayTableHeaderStyle,IF(formBean.scheduleDayTypeD7W2 == weekend,weekendTableHeaderStyle,''))}"><div>{!formBean.scheduleLabelD7W2}</div></th>
+				<th class="schHrInputTextTH" >{!$Label.timecard_entry_label_sum}</th>
+			</tr>
+		</thead>
+	<apex:outputPanel layout="none" rendered="{!formBean.hasScheduleSummaries}">
+		<tbody id="SGTbody">
+		<apex:variable value="{!0}" var="rowNum"/>
+		<apex:repeat value="{!formBean.scheduleSummaryList}" var="sch">
+		<tr class="dataRow fakeSelectorClassForSGRow" id="tcScheduleRow{!rowNum}"> 
+			<td>
+				<input type="checkbox" value="{!sch.assignmentId}" checked="{!scheduleSelectionCheckboxDefVal}" id="assignSchSelector" class="fakeClassForYUISelection" onclick="checkIsAllSelected('assignSchSelector');"  />
+            </td>
+			<td>
+				<div align="left" class="projAssigNameDiv">
+					<apex:outputlink value="/{!sch.assignmentId}" rendered="{!NOT(isLiteMode)}" target="_top">{!sch.assignmentName}</apex:outputlink>
+					<apex:outputText rendered="{!isLiteMode}">{!sch.assignmentName}</apex:outputText>
+				</div>
+			</td>
+			 <!-- Added as fix for agile task: AT2131 -->
+            <td>
+                <div style="white-space:nowrap;" align="center">
+                    <apex:image id="infoImage" rendered="{!config.showScheduleTooltips}"
+                        value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" styleClass="infoImage" 
+                        alt="{!sch.tooltip}" />
+                </div>
+            </td>
+			<td style="{!CASE(formBean.scheduleDayTypeD1W1, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+				<apex:inputField id="scheduleD1W1" value="{!sch.scheduleHoursD1W1.pse__Exception_Hours__c}" required="false"                              
+			        rendered="{!NOT(sch.scheduleD1W1Disabled)}"  styleClass="schHrInputText sgScheduleHoursD1W1" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD1W1}');" />
+				<apex:outputField value="{!sch.scheduleHoursD1W1.pse__Exception_Hours__c}" rendered="{!sch.scheduleD1W1Disabled}" />                            
+			</td>
+			<td style="{!CASE(formBean.scheduleDayTypeD2W1, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}"> 
+				<apex:inputField id="scheduleD2W1" value="{!sch.scheduleHoursD2W1.pse__Exception_Hours__c}" required="false"                              
+					rendered="{!NOT(sch.scheduleD2W1Disabled)}"  styleClass="schHrInputText sgScheduleHoursD2W1" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD2W1}');" />
+				<apex:outputField value="{!sch.scheduleHoursD2W1.pse__Exception_Hours__c}" rendered="{!sch.scheduleD2W1Disabled}" />                            
+			</td>                    
+			<td style="{!CASE(formBean.scheduleDayTypeD3W1, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+				<apex:inputField id="scheduleD3W1" value="{!sch.scheduleHoursD3W1.pse__Exception_Hours__c}" required="false"                            
+					rendered="{!NOT(sch.scheduleD3W1Disabled)}"  styleClass="schHrInputText sgScheduleHoursD3W1" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD3W1}');" />
+				<apex:outputField value="{!sch.scheduleHoursD3W1.pse__Exception_Hours__c}" rendered="{!sch.scheduleD3W1Disabled}" />                            
+			</td>
+			<td style="{!CASE(formBean.scheduleDayTypeD4W1, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+				<apex:inputField id="scheduleD4W1" value="{!sch.scheduleHoursD4W1.pse__Exception_Hours__c}" required="false"                           
+					rendered="{!NOT(sch.scheduleD4W1Disabled)}"  styleClass="schHrInputText sgScheduleHoursD4W1" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD4W1}');" />
+				<apex:outputField value="{!sch.scheduleHoursD4W1.pse__Exception_Hours__c}" rendered="{!sch.scheduleD4W1Disabled}" />                            
+			</td>        
+			<td style="{!CASE(formBean.scheduleDayTypeD5W1, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+				<apex:inputField id="scheduleD5W1" value="{!sch.scheduleHoursD5W1.pse__Exception_Hours__c}" required="false"                             
+					rendered="{!NOT(sch.scheduleD5W1Disabled)}"  styleClass="schHrInputText sgScheduleHoursD5W1" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD5W1}');" />
+				<apex:outputField value="{!sch.scheduleHoursD5W1.pse__Exception_Hours__c}" rendered="{!sch.scheduleD5W1Disabled}" />                            
+			</td>
+			<td style="{!CASE(formBean.scheduleDayTypeD6W1, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+				<apex:inputField id="scheduleD6W1" value="{!sch.scheduleHoursD6W1.pse__Exception_Hours__c}" required="false"                             
+					rendered="{!NOT(sch.scheduleD6W1Disabled)}"  styleClass="schHrInputText sgScheduleHoursD6W1" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD6W1}');" />
+				<apex:outputField value="{!sch.scheduleHoursD6W1.pse__Exception_Hours__c}" rendered="{!sch.scheduleD6W1Disabled}" />                            
+			</td>        
+			<td style="{!CASE(formBean.scheduleDayTypeD7W1, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}"> 
+				<apex:inputField id="scheduleD7W1" value="{!sch.scheduleHoursD7W1.pse__Exception_Hours__c}" required="false"                            
+					rendered="{!NOT(sch.scheduleD7W1Disabled)}"  styleClass="schHrInputText sgScheduleHoursD7W1" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD7W1}');" />
+				<apex:outputField value="{!sch.scheduleHoursD7W1.pse__Exception_Hours__c}" rendered="{!sch.scheduleD7W1Disabled}" />                            
+			</td>        
+			<td> 
+				<div align="center" style="width: 10px;"></div>
+			</td>
+			
+			<!-- For  second week -->
+			<td style="{!CASE(formBean.scheduleDayTypeD1W2, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}"> 
+				<apex:inputField id="scheduleD1W2" value="{!sch.scheduleHoursD1W2.pse__Exception_Hours__c}" required="false"                            
+					rendered="{!NOT(sch.scheduleD1W2Disabled)}"  styleClass="schHrInputText sgScheduleHoursD1W2" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD1W2}');" />
+				<apex:outputField value="{!sch.scheduleHoursD1W2.pse__Exception_Hours__c}" rendered="{!sch.scheduleD1W2Disabled}" />                            
+			</td>        
+			<td style="{!CASE(formBean.scheduleDayTypeD2W2, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}"> 
+				<apex:inputField id="scheduleD2W2" value="{!sch.scheduleHoursD2W2.pse__Exception_Hours__c}" required="false"                            
+					rendered="{!NOT(sch.scheduleD2W2Disabled)}"  styleClass="schHrInputText sgScheduleHoursD2W2" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD2W2}');" />
+				<apex:outputField value="{!sch.scheduleHoursD2W2.pse__Exception_Hours__c}" rendered="{!sch.scheduleD2W2Disabled}" />                            
+			</td>        
+			<td style="{!CASE(formBean.scheduleDayTypeD3W2, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+				<apex:inputField id="scheduleD3W2" value="{!sch.scheduleHoursD3W2.pse__Exception_Hours__c}" required="false"                           
+					rendered="{!NOT(sch.scheduleD3W2Disabled)}"  styleClass="schHrInputText sgScheduleHoursD3W2" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD3W2}');" />
+				<apex:outputField value="{!sch.scheduleHoursD3W2.pse__Exception_Hours__c}" rendered="{!sch.scheduleD3W2Disabled}" />                            
+			</td>        
+			<td style="{!CASE(formBean.scheduleDayTypeD4W2, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}"> 
+				<apex:inputField id="scheduleD4W2" value="{!sch.scheduleHoursD4W2.pse__Exception_Hours__c}" required="false"                           
+					rendered="{!NOT(sch.scheduleD4W2Disabled)}"  styleClass="schHrInputText sgScheduleHoursD4W2" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD4W2}');" />
+				<apex:outputField value="{!sch.scheduleHoursD4W2.pse__Exception_Hours__c}" rendered="{!sch.scheduleD4W2Disabled}" />                            
+			</td>        
+			<td style="{!CASE(formBean.scheduleDayTypeD5W2, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+				<apex:inputField id="scheduleD5W2" value="{!sch.scheduleHoursD5W2.pse__Exception_Hours__c}" required="false"                          
+					rendered="{!NOT(sch.scheduleD5W2Disabled)}"  styleClass="schHrInputText sgScheduleHoursD5W2" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD5W2}');" />
+				<apex:outputField value="{!sch.scheduleHoursD5W2.pse__Exception_Hours__c}" rendered="{!sch.scheduleD5W2Disabled}" />                            
+			</td>        
+			<td style="{!CASE(formBean.scheduleDayTypeD6W2, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+				<apex:inputField id="scheduleD6W2" value="{!sch.scheduleHoursD6W2.pse__Exception_Hours__c}" required="false"                            
+					rendered="{!NOT(sch.scheduleD6W2Disabled)}"  styleClass="schHrInputText sgScheduleHoursD6W2" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD6W2}');" />
+				<apex:outputField value="{!sch.scheduleHoursD6W2.pse__Exception_Hours__c}" rendered="{!sch.scheduleD6W2Disabled}" />                            
+			</td>        
+			
+			<td style="{!CASE(formBean.scheduleDayTypeD7W2, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}"> 
+				<apex:inputField id="scheduleD7W2" value="{!sch.scheduleHoursD7W2.pse__Exception_Hours__c}" required="false"                          
+					rendered="{!NOT(sch.scheduleD7W2Disabled)}"  styleClass="schHrInputText sgScheduleHoursD7W2" onblur="javascript:onSchHrTextBlur(this,'{!formBean.scheduleDayTypeD7W2}');" />
+				<apex:outputField value="{!sch.scheduleHoursD7W2.pse__Exception_Hours__c}" rendered="{!sch.scheduleD7W2Disabled}" />                            
+			</td>        
+			
+			<td>
+				<!-- Modified as fix for agile task: 000010865 (Ref. Task ID: 000009297), Dated: Dec 16 2010, Added By: Nitin Jain -->
+				<!--<div align="center" style="width: 36px;"><apex:outputText value="{!sch.totalScheduleHours}" /></div>-->
+				<div align="center" style="width: 36px;"><apex:outputField value="{!sch.mockedTotalScheduleHours.pse__Monday_Hours__c}" /></div>
+			</td>
+		</tr>
+		<!--Assignment's daily note row -->
+		<tr class="SGNotesRow" id="tcScheduleGridNotesRow{!rowNum}" >
+			<td colspan="17">
+				<div class="SGNotesDiv">
+					<table width="90%">
+						<tbody>
+						<tr><th colspan="7" style="text-align: left; font-size: 13px; color: gray;">{!$Label.timecard_entry_schedule_message_week_one_daily_note}</th></tr>
+						<tr>
+							<!-- Changes done as fix for agile task: 000007438 added Style attribute Dated: 05/31/2010  By:Ashok -->
+							<td align="center">
+								<b>{!formBean.scheduleLabelD1W1}</b><br/>
+								<apex:inputTextarea value="{!sch.assignmentDailyNoteD1W1.pse__Note__c}" disabled="{!sch.scheduleD1W1Disabled}" style="{!IF(sch.scheduleD1W1Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD1W1" /> 
+							</td>
+							<td align="center">	
+								<b>{!formBean.scheduleLabelD2W1}</b><br/>
+								<apex:inputTextarea value="{!sch.assignmentDailyNoteD2W1.pse__Note__c}" disabled="{!sch.scheduleD2W1Disabled}" style="{!IF(sch.scheduleD2W1Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD2W1" />
+							</td>
+							<td align="center">
+								<b>{!formBean.scheduleLabelD3W1}</b><br/>
+								<apex:inputTextarea value="{!sch.assignmentDailyNoteD3W1.pse__Note__c}" disabled="{!sch.scheduleD3W1Disabled}" style="{!IF(sch.scheduleD3W1Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD3W1" />
+							</td>
+							<td align="center">
+								<b>{!formBean.scheduleLabelD4W1}</b><br/>
+								<apex:inputTextarea value="{!sch.assignmentDailyNoteD4W1.pse__Note__c}" disabled="{!sch.scheduleD4W1Disabled}" style="{!IF(sch.scheduleD4W1Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD4W1" />
+							</td>
+							<td align="center">
+								<b>{!formBean.scheduleLabelD5W1}</b><br/>
+								<apex:inputTextarea value="{!sch.assignmentDailyNoteD5W1.pse__Note__c}" disabled="{!sch.scheduleD5W1Disabled}" style="{!IF(sch.scheduleD5W1Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD5W1"  />
+							</td>
+							<td align="center">
+								<b>{!formBean.scheduleLabelD6W1}</b><br/>
+								<apex:inputTextarea value="{!sch.assignmentDailyNoteD6W1.pse__Note__c}" disabled="{!sch.scheduleD6W1Disabled}" style="{!IF(sch.scheduleD6W1Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD6W1"  />
+							</td>
+							<td align="center">
+								<b>{!formBean.scheduleLabelD7W1}</b><br/>
+								<apex:inputTextarea value="{!sch.assignmentDailyNoteD7W1.pse__Note__c}"  disabled="{!sch.scheduleD7W1Disabled}" style="{!IF(sch.scheduleD7W1Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD7W1" />
+							</td>
+						</tr>
+						
+						<tr><th colspan="7" style="text-align: left; font-size: 13px; color: gray;">{!$Label.pse__timecard_entry_schedule_message_week_two_daily_note}</th></tr>
+						<tr>
+							<td align="center">
+								<b>{!formBean.scheduleLabelD1W2}</b><br/>
+								<apex:inputTextarea value="{!sch.assignmentDailyNoteD1W2.pse__Note__c}" disabled="{!sch.scheduleD1W2Disabled}" style="{!IF(sch.scheduleD1W2Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD1W2" />
+							</td>
+						
+						<td align="center">
+							<b>{!formBean.scheduleLabelD2W2}</b><br/>
+							<apex:inputTextarea value="{!sch.assignmentDailyNoteD2W2.pse__Note__c}" disabled="{!sch.scheduleD2W2Disabled}" style="{!IF(sch.scheduleD2W2Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD2W2" />
+						</td>
+						<td align="center">
+							<b>{!formBean.scheduleLabelD3W2}</b><br/>
+							<apex:inputTextarea value="{!sch.assignmentDailyNoteD3W2.pse__Note__c}" disabled="{!sch.scheduleD3W2Disabled}" style="{!IF(sch.scheduleD3W2Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD3W2" />
+						</td>
+						<td align="center">
+							<b>{!formBean.scheduleLabelD4W2}</b><br/>
+							<apex:inputTextarea value="{!sch.assignmentDailyNoteD4W2.pse__Note__c}" disabled="{!sch.scheduleD4W2Disabled}" style="{!IF(sch.scheduleD4W2Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD4W2" />
+						</td>
+						<td align="center">
+							<b>{!formBean.scheduleLabelD5W2}</b><br/>
+							<apex:inputTextarea value="{!sch.assignmentDailyNoteD5W2.pse__Note__c}" disabled="{!sch.scheduleD5W2Disabled}" style="{!IF(sch.scheduleD5W2Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD5W2" />
+						</td>
+						<td align="center">
+							<b>{!formBean.scheduleLabelD6W2}</b><br/>
+							<apex:inputTextarea value="{!sch.assignmentDailyNoteD6W2.pse__Note__c}" disabled="{!sch.scheduleD6W2Disabled}" style="{!IF(sch.scheduleD6W2Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD6W2" />
+						</td>
+						<td align="center">
+							<b>{!formBean.scheduleLabelD7W2}</b><br/>
+							<apex:inputTextarea value="{!sch.assignmentDailyNoteD7W2.pse__Note__c}" disabled="{!sch.scheduleD7W2Disabled}" style="{!IF(sch.scheduleD7W2Disabled, 'background-color:#ddd;','')}" styleClass="assigDailyNotesTextArea sgWeeklyNotesD7W2" />
+						</td>
+						</tr>
+						<tr>
+				            <td colspan="7" style="text-align: center;">
+				                <button type="button" class="btn" onclick="javascript:_SGNotesHandler.hideNotes(false);">{!$Label.common_label_done}</button>
+				            </td>
+				        </tr>
+						</tbody>
+					</table> 
+				</div>
+			</td>
+		</tr>
+        <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+		</apex:repeat>
+		</tbody>
+		<tfoot>
+		<tr class="SGtotalRow">
+			<!-- Modified as fix for agile task: 000010865 (Ref. Task ID: 000009297), Dated: Dec 15 2010, Added By: Nitin Jain -->
+			<!--
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D1W1Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D2W1Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D3W1Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D4W1Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D5W1Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D6W1Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D7W1Sum}</th>
+			<th><div align="center" style="width: 10px;"></div></th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D1W2Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D2W2Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D3W2Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D4W2Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D5W2Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D6W2Sum}</th>
+			<th class="schHrSummaryTH">{!formBean.dailySummary.D7W2Sum}</th>
+			-->
+			<th><apex:outputText value=""/></th>
+			<!-- Added as fix for agile task: AT6123 , Dated: Sep 13 2011, Added By: Shankar Sharma -->
+            <th><apex:outputText value=""/></th>
+			<th class="hrSummaryTH"><apex:outputText style="text-align:left;display:block;" value="{!$Label.pse__timecard_entry_label_total}:"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.FirstWeekTotalHours.pse__Monday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.FirstWeekTotalHours.pse__Tuesday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.FirstWeekTotalHours.pse__Wednesday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.FirstWeekTotalHours.pse__Thursday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.FirstWeekTotalHours.pse__Friday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.FirstWeekTotalHours.pse__Saturday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.FirstWeekTotalHours.pse__Sunday_Hours__c}"/></th>
+			<th><div align="center" style="width: 10px;"></div></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.SecondWeekTotalHours.pse__Monday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.SecondWeekTotalHours.pse__Tuesday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.SecondWeekTotalHours.pse__Wednesday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.SecondWeekTotalHours.pse__Thursday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.SecondWeekTotalHours.pse__Friday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.SecondWeekTotalHours.pse__Saturday_Hours__c}"/></th>
+			<th class="schHrSummaryTH"><apex:outputField value="{!formBean.dailySummary.SecondWeekTotalHours.pse__Sunday_Hours__c}"/></th>
+			<th></th>
+		</tr>
+		</tfoot>
+	</apex:outputPanel>
+	</table>
+	
+	<apex:outputpanel rendered="{!formBean.isScheduleSummaryListEditable}">
+	    <div align="center">
+	        <apex:commandButton value="{!$Label.pse__timecard_entry_button_label_save}" reRender="schedulePB" status="ajaxStatus"
+	                action="{!saveSchedule}" oncomplete="javascript:onSaveDone();"/>
+	                                     
+	   </div>
+	</apex:outputpanel>
+</apex:outputPanel>
+</apex:pageBlockSection>
+</apex:pageblock>
+
+</apex:form>  
+<!-- Edit assignment notes link -->
+<div id="notesLinkDiv" class="notesLinkOverlay">
+   	<div></div>
+</div>
+ 
+   
+<script type="text/javascript">
+var _yui;
+var _Config = {
+    // Added as fix for agile task: 000011136    By: Ashok   Dated: 13 Sep, 2011
+    showAlertForNonZeroHolidayHours : {!formBean.showAlertForNonZeroHolidayHours},
+    showAlertForNonZeroWeekendHours : {!formBean.showAlertForNonZeroWeekendHours},
+    showScheduleTooltips : {!config.showScheduleTooltips}
+}
+
+var _Label = {
+	editDetails : "{!JSINHTMLENCODE($Label.common_label_edit_details)}",
+	// Changes done as fix for agile task:000003571    By:Ashok   Dated:04/23/2010  
+	dailyNotesAlertMsg : "{!JSINHTMLENCODE($Label.timecard_entry_message_notes_length_can_not_be_greater_than_255_chars)}",
+	nonzeroHoursHolidayWarningMsg : "{!JSINHTMLENCODE($Label.timecard_entry_warning_entering_nonzero_hours_for_holiday)}",
+	nonzeroHoursWeekendWarningMsg : "{!JSINHTMLENCODE($Label.schedule_warning_entering_nonzero_hours_for_weekend)}"
+}
+</script>
+<script type='text/javascript' src="{!$Resource.timecard2sgjs}"></script>   
+<script>
+var yuiControlledOnDomReady = function () {
+
+	 if(_Config.showScheduleTooltips){
+		_SGTooltipHandler.prepare();
+		_SGTooltipHandler.bindTooltip();
+	 }
+    _SGNotesHandler.reset();
+    _SGRowsHandler.prepare();
+    _ColumnTotalHandler.prepare();
+	
+    _yui.all("#SGTbody .fakeSelectorClassForSGRow").each(_SGRowsHandler.onRendering); 
+    _yui.on("keypress", checkNotesLength, ".assigDailyNotesTextArea"); 
+    
+   	resizeIframe();
+   	
+   	// Added as fix for Agile task: AT1612      Dated: 31 May, 2012
+	if({!scheduleSelectionCheckboxDefVal})   {
+	    checkIsAllSelected('assignSchSelector');
+	}
+}
+
+
+YUI({combine: false, fetchCSS : false, timeout: 10000}).use("node", "NodeList","overlay", "anim", function(Y) {
+    _yui = Y;
+    _yui.on('domready', yuiControlledOnDomReady, _yui);
+}); 
+</script>
+</apex:page>

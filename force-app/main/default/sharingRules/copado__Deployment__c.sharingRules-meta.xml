@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>All_Copado_Deployments</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>All Copado Deployments</label>
+        <sharedTo>
+            <group>Copado_View_All</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>copado__Status__c</field>
+            <operation>equals</operation>
+            <value>Draft,Scheduled,In progress,Completed Successfully,Cancelled,Completed with Errors,Merge Conflict</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>false</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+</SharingRules>

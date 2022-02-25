@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SOW_Project_Margin__c</fullName>
+    <description>Opportunity&apos;s Booked Project Margin</description>
+    <externalId>false</externalId>
+    <formula>pse__Opportunity__r.Booked_Project_Margin__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Opportunity&apos;s Booked Project Margin</inlineHelpText>
+    <label>SOW Project Margin (%)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>1</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Percent</type>
+</CustomField>

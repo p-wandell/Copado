@@ -1,0 +1,459 @@
+<apex:page standardController="pse__Assignment__c" title="{!$Label.pse__schedule_editor_page_title}" extensions="pse.ScheduleEditorController" tabStyle="pse__Schedule__c" lightningStylesheets="true">
+	<apex:variable var="isLightning" value="{!$User.UIThemeDisplayed!='Theme3'}" />
+   <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<style>
+		.schEditorText {
+			min-width: 60px!important;
+			width: 60px;
+		}
+		.schDataTableCell {
+			width: auto!important;
+			min-width: auto!important;
+		}
+		.schIconCls {
+			width:20px;
+			height:20px;
+		}
+
+		.infoIcon { 
+		    vertical-align: middle;
+		    margin: 5px 10px 5px 10px !important; 
+	    }
+	    .info-block {    
+	   		display: inline-flex;
+		    border: 1px solid;
+		    border-color: #dddbda;
+		    border-radius: .25rem;
+		    margin: 5px;
+		    padding: 5px;
+   		 }
+	</style>
+	
+	<apex:outputPanel rendered="{!isLightning}" layout="none">
+		<style>
+			.infoIcon {
+				width: 23px !important;
+			    color: #706e6b;
+			    height: 23px !important;
+			}
+			.info-block {    
+		    	background-color: #f4f6f9;
+    			padding: 0.75rem 1rem;
+    			border: none;
+	   		 }
+	   		 .rightAlignCls {
+	   		 	margin-right: 5px;
+	   		 }
+	   		 .leftAlignCls {
+	   		 	margin-left: 5px;
+	   		 }
+		</style>
+	</apex:outputPanel>
+	
+	<script>
+		 function setFocusOnLoad() {}
+	</script>
+
+   <apex:sectionHeader title="{!$Label.pse__schedule_editor_page_title}" help="{!$Page.pse__EditingSchedulesHelp}" />
+   <c:WaitComponent />
+   <apex:form >
+      <apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+      <apex:actionRegion >
+      	 <apex:pageMessages id="messages" rendered="{!NOT(zeroScheduleStrategyOption)}"/>
+         <apex:actionFunction name="jsUpdate" status="ajaxStatus" action="{!doUpdate}" rerender="messages,infoBlock,scheduleEditorScheduleExceptions" />
+         <apex:actionFunction name="jsToggleExceptions" action="{!toggleExceptions}" oncomplete="wait(false);" immediate="true" rerender="infoBlock"/>
+         <apex:actionFunction name="jsDeleteException" action="{!deleteException}" oncomplete="wait(false);" immediate="true" rerender="infoBlock,messages">
+            <apex:param name="p1" assignTo="{!deleteExceptionId}" value="" />
+         </apex:actionFunction>
+         <apex:actionFunction name="jsDeleteAllExceptions" action="{!deleteAllExceptions}" oncomplete="wait(false);" immediate="true" rerender="infoBlock,messages"/>
+         <apex:pageBlock mode="edit" id="infoBlock">
+            <apex:pageBlockButtons >
+               <apex:commandButton value="{!$Label.pse__common_label_update}" onclick="onUpdateClick({!NOT(retainSchedulingExceptionPreference)});return false;" />
+               <apex:commandButton action="{!doSave}" value="{!$Label.pse__common_label_save}" onclick="wait(true);" oncomplete="wait(false);"
+                  rerender="messages,infoBlock" disabled="{!NOT(saveEnabled)}" styleClass="btn"/>
+               <apex:commandButton action="{!cancel}" rendered="{!saveExceptionEnabled || saveEnabled || saveRescheduleEnabled}" value="{!$Label.pse__common_label_cancel}" immediate="true"/>
+               <apex:commandButton action="{!cancel}" rendered="{!NOT(saveExceptionEnabled || saveEnabled || saveRescheduleEnabled)}" value="{!$Label.pse__common_label_done}" immediate="true"/>
+            </apex:pageBlockButtons>
+            
+            
+            <apex:pageBlockSection title="{!$Label.pse__schedule_editor_information}" columns="2">
+               <apex:outputField value="{!pse__Assignment__c.Name}"/>
+               <apex:outputField value="{!pse__Assignment__c.pse__Schedule__c}"/>
+               <apex:inputField value="{!schedule.pse__Start_Date__c}" style="width:75px;" required="true"/>
+               <apex:inputField value="{!schedule.pse__End_Date__c}" style="width:75px;" required="true"/>
+               <apex:outputField value="{!pse__Assignment__c.pse__Planned_Hours__c}"/>
+               <apex:pageBlockSectionItem >
+                  {!$Label.pse__schedule_editor_actual_timecard_hours}
+                  <apex:outputText value="{!actualTimecardHoursString}"/>
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                  {!$Label.pse__schedule_editor_future_scheduled_hours}
+                  <apex:outputText value="{!futureScheduledHoursString}"/>
+               </apex:pageBlockSectionItem>
+               <apex:outputField value="{!schedule.pse__Scheduled_Hours__c}"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="1" showHeader="false" >
+            	<apex:pageBlockSectionItem dataStyleClass="schDataTableCell">
+                  {!$Label.pse__schedule_editor_pattern}
+                  <apex:pageBlockTable value="{!scheduleCol}" var="s">
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_sunday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!s.pse__Sunday_Hours__c}" styleClass="schEditorText"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_monday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!s.pse__Monday_Hours__c}" styleClass="schEditorText"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_tuesday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!s.pse__Tuesday_Hours__c}" styleClass="schEditorText"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_wednesday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!s.pse__Wednesday_Hours__c}" styleClass="schEditorText"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_thursday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!s.pse__Thursday_Hours__c}" styleClass="schEditorText"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_friday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!s.pse__Friday_Hours__c}" styleClass="schEditorText"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_saturday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!s.pse__Saturday_Hours__c}" styleClass="schEditorText"/>
+                     </apex:column>
+                  </apex:pageBlockTable>
+               </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            
+            
+            
+            <apex:pageBlockSection title="{!$Label.pse__schedule_editor_proposed_changes}" rendered="{!saveEnabled}">
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel >{!$Label.pse__schedule_editor_original_scheduled_hours}</apex:outputLabel>
+                  <apex:outputField value="{!originalSchedule.pse__Scheduled_Hours__c}"/>
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel >{!$Label.pse__schedule_editor_new_scheduled_hours}</apex:outputLabel>
+                  <apex:outputText value="{!newScheduledHoursString}" style="color:red;"/>
+               </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            
+            
+            
+            
+            <apex:pageBlockSection title="{!$Label.pse__schedule_editor_schedule_exceptions}" id="scheduleEditorScheduleExceptions" columns="1">
+            
+               <apex:facet name="header">
+                  <img title="{!$Label.pse__schedule_editor_schedule_exceptions}" style="margin-bottom:4px; cursor: pointer;" onclick="wait(true);jsToggleExceptions();"
+                     class="{!IF(renderExceptions,'hideListButton','showListButton')}" src="/s.gif"/>
+                  <h3>{!$Label.pse__schedule_editor_schedule_exceptions}</h3>
+               </apex:facet>
+               
+               <apex:pageBlockTable value="{!scheduleExceptions}" var="se" rendered="{!AND(renderExceptions,hasExceptions)}">
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_name}"><span style="white-space:nowrap;padding-right:2px;"><a href="/{!se.Id}" target="_blank">{!se.Name}</a> | <a href="javascript:onDeleteExcClick('{!se.Id}');">Del</a></span></apex:column>
+                  <apex:column value="{!se.pse__Date__c}"/>
+                  <apex:column value="{!se.pse__End_Date__c}"/>
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_default_hours}" value="{!se.pse__Exception_Hours__c}"/>
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_sunday}" value="{!se.pse__Sunday_Hours__c}"/>
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_monday}" value="{!se.pse__Monday_Hours__c}"/>
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_tuesday}" value="{!se.pse__Tuesday_Hours__c}"/>
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_wednesday}" value="{!se.pse__Wednesday_Hours__c}"/>
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_thursday}" value="{!se.pse__Thursday_Hours__c}"/>
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_friday}" value="{!se.pse__Friday_Hours__c}"/>
+                  <apex:column headerValue="{!$Label.pse__schedule_editor_saturday}" value="{!se.pse__Saturday_Hours__c}"/>
+               </apex:pageBlockTable>
+               
+               <apex:outputPanel rendered="{!AND(renderExceptions,hasExceptions)}" style="display:inline;">
+                  <input type="button" class="btn" onclick="onDeleteAllExcClick()" value="{!$Label.schedule_editor_btn_delete_all_exceptions}"/>
+               </apex:outputPanel>
+               
+               <apex:outputText value="{!$Label.pse__common_label_none}" rendered="{!AND(renderExceptions,NOT(hasExceptions))}"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="{!$Label.pse__schedule_editor_schedule_section_title}" columns="1" />
+            <apex:outputPanel id="schedulePanel">
+               <apex:actionRegion >
+                  <apex:actionFunction name="jsOnCurrentWeekEndChange" action="{!onCurrentWeekEndChange}" rerender="messages,schedulePanel" oncomplete="wait(false);"/>
+                  <table style="margin-left:10px;" class='slds-table'>
+                     <tbody>
+                        <tr>
+                           <td>
+                              <apex:commandLink onclick="wait(true);" oncomplete="wait(false);" action="{!gotoPreviousWeek}" rerender="messages,schedulePanel">
+                                 <apex:image height="32" width="32" styleClass="schIconCls rightAlignCls"
+                                    value="{!URLFOR($Resource.pse__sldsAssets, '/icons/back_60.png')}" />
+                              </apex:commandLink>
+                           </td>
+                           <td style="vertical-align:middle;">
+                              <apex:outputLabel for="scheWeekEnding" value="{!$Label.pse__schedule_editor_week_ending}" style="margin-right:10px;"/>
+                              <apex:inputField required="false" value="{!scheduleWeekEnding.pse__End_Date__c}" onchange="wait(true);jsOnCurrentWeekEndChange();"/>
+                              <apex:actionFunction name="jsOnCurrentWeekEndChange" action="{!onCurrentWeekEndChange}" rerender="messages,schedulePanel" oncomplete="wait(false);"/>
+                           </td>
+                           <td>
+                              <apex:commandLink onclick="wait(true);" oncomplete="wait(false);" action="{!gotoNextWeek}" rerender="messages,schedulePanel">
+                                 <apex:image height="32" width="32" styleClass="schIconCls leftAlignCls"
+                                    value="{!URLFOR($Resource.pse__sldsAssets, '/icons/forward_60.png')}" />
+                              </apex:commandLink>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </apex:actionRegion>
+               <!-- NOTE - could not get pageblocktable to work with an expression for header label -->
+               <div class="pbSubsection" style="margin-top:0px;">
+                  <table class="detailList" cellspacing="0" cellpadding="0" border="0">
+                     <tbody>
+                        <tr>
+                           <td>
+                              <table class="list" cellpadding="0" cellspacing="0" border="0">
+                                 <thead class="dr-table-thead">
+                                    <tr class="headerRow">
+                                       <apex:repeat value="{!scheduleDays}" var="wd">
+                                          <th class="headerRow" scope="col" style="text-align:center;white-space:normal;">{!wd.dayLabel}</th>
+                                       </apex:repeat>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    <tr class="dataRow">
+                                       <apex:repeat value="{!scheduleDays}" var="wd">
+                                          <td class="dataCell" style="font-style:{!IF(wd.isException, 'italic', 'normal')};">
+                                             <apex:outputText value="{!wd.hoursString}"/>
+                                          </td>
+                                       </apex:repeat>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <apex:outputText style="margin-left:10px;" value="{!$Label.pse__schedule_editor_italic_schedule_exception}"/>
+               </div>
+            </apex:outputPanel>
+         </apex:pageBlock>
+      </apex:actionRegion>
+      <script>
+         function removeHoursInput() {
+         
+         	var selectList = document.getElementById('{!$Component.rescheduleBlock.rescheduleSection.rescheduleItem3.strategySelectList}');
+         	
+         	if ( selectList != null && selectList.selectedIndex != -1){
+         		if (selectList.options[selectList.selectedIndex].value == 'PercentAllocation') {
+         			var hoursField = document.getElementById('{!$Component.rescheduleBlock.rescheduleSection.rescheduleItem2.rescheduleHrs.requiredInputTextComp.requiredInputText}');
+         			hoursField.style.display = 'none';
+         			var hoursLabel = document.getElementById('{!$Component.rescheduleBlock.rescheduleSection.rescheduleItem2.hoursLabel}');
+         			hoursLabel.style.display = 'none';
+         		} 
+         		else {
+         			var hoursField = document.getElementById('{!$Component.rescheduleBlock.rescheduleSection.rescheduleItem2.rescheduleHrs.requiredInputTextComp.requiredInputText}');
+         			hoursField.style.display = 'inline';
+         			var hoursLabel = document.getElementById('{!$Component.rescheduleBlock.rescheduleSection.rescheduleItem2.hoursLabel}');
+         			hoursLabel.style.display = 'inline';
+         		}
+         	}
+         }
+      </script>
+      <apex:actionRegion >
+         <apex:pageMessages id="rescheduleMessages" rendered="{!NOT(zeroScheduleStrategyOption)}"/>
+         <apex:pageMessages id="zeroScheduleStartegyOptions" rendered="{!zeroScheduleStrategyOption}"/>
+         <apex:pageBlock mode="edit" title="{!$Label.pse__schedule_editor_reschedule}" id="rescheduleBlock">
+            <apex:pageBlockButtons >
+               <!-- Updated as a fix for agile task : AT16817     Dated : 9 July, 2013 -->
+               <apex:commandButton value="{!$Label.pse__common_label_update}" action="{!updateReschedule}" onclick="wait(true);" oncomplete="wait(false);" disabled="{!zeroScheduleStrategyOption}" rerender="rescheduleMessages,rescheduleBlock,infoBlock" styleClass="btn"/>
+               <apex:commandButton value="{!$Label.pse__common_label_save}" disabled="{!NOT(saveRescheduleEnabled)}" action="{!saveReschedule}" onclick="wait(true);" oncomplete="wait(false);" rerender="rescheduleMessages,rescheduleBlock,infoBlock" styleClass="btn"/>
+            </apex:pageBlockButtons>
+            
+            <apex:outputPanel layout="block" styleClass="info-block" >
+            	<apex:outputPanel layout="block">
+					<apex:image value="/s.gif" styleClass="infoIcon"/>
+				</apex:outputPanel>
+				<apex:outputPanel layout="block">
+					<apex:outputPanel layout="block" >
+						{!$Label.pse__schedule_editor_reschedule_info_para1}
+					</apex:outputPanel>
+					<p/>
+					<apex:outputPanel layout="block" >
+						{!$Label.pse__schedule_editor_reschedule_info_para2}
+					</apex:outputPanel>
+				</apex:outputPanel>
+			</apex:outputPanel>
+            
+            <apex:pageBlockSection id="rescheduleSection">
+               <apex:pageBlockSectionItem id="rescheduleItem1">
+                  <apex:outputLabel for="rescheduleStart" value="{!$Label.pse__schedule_editor_reschedule_section_from_date}"/>
+                  <apex:inputField id="rescheduleStart" required="true" value="{!rescheduleException.pse__Date__c}"/>
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem id="rescheduleItem2">
+                  <apex:outputLabel id="hoursLabel" for="rescheduleHrs" value="{!$Label.pse__schedule_editor_reschedule_section_number_of_hours}"/>
+                  <c:RequiredInputText id="rescheduleHrs" value="{!rescheduleHours}"/>
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem id="rescheduleItem3">
+                  <apex:outputLabel for="rescheduleStrategy" value="{!$Label.pse__schedule_editor_reschedule_section_schedule_strategy}"/>
+                  <apex:selectList id="strategySelectList" value="{!rescheduleStrategy}" size="1" multiselect="false" onchange="removeHoursInput(); return false;" >
+                     <apex:selectOptions value="{!strategyOptions}"/>
+                  </apex:selectList>
+               </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <script>
+               removeHoursInput();
+            </script>
+            <apex:outputpanel rendered="{!NOT(isPercentAllcoationStrategySelected)}">
+               <apex:pageBlockSection columns="2" title="{!$Label.pse__schedule_editor_proposed_changes}" rendered="{!saveRescheduleEnabled}">
+                  <!--
+                     <apex:pageBlockSectionItem ><apex:outputLabel >Original Scheduled Hours</apex:outputLabel><apex:outputField value="{!originalSchedule.pse__Scheduled_Hours__c}"/></apex:pageBlockSectionItem>
+                     <apex:pageBlockSectionItem ><apex:outputLabel >New Scheduled Hours</apex:outputLabel><apex:outputText value="{!newScheduledHours}" style="color:red;"/></apex:pageBlockSectionItem> 
+                     -->
+                  <apex:pageBlockSectionItem >
+                     <apex:outputLabel >{!$Label.pse__schedule_editor_original_end_date}</apex:outputLabel>
+                     <apex:outputField value="{!originalSchedule.pse__End_Date__c}"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                     <apex:outputLabel >{!$Label.pse__schedule_editor_new_end_date}</apex:outputLabel>
+                     <apex:outputText value="{!newEndDateString}" style="color:red;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                     {!$Label.pse__schedule_editor_pattern}
+                     <apex:pageBlockTable value="{!rescheduleExceptionCol}" var="s">
+                        <apex:column headerValue="{!$Label.pse__schedule_editor_sunday}" value="{!s.pse__Sunday_Hours__c}"/>
+                        <apex:column headerValue="{!$Label.pse__schedule_editor_monday}" value="{!s.pse__Monday_Hours__c}"/>
+                        <apex:column headerValue="{!$Label.pse__schedule_editor_tuesday}" value="{!s.pse__Tuesday_Hours__c}"/>
+                        <apex:column headerValue="{!$Label.pse__schedule_editor_wednesday}" value="{!s.pse__Wednesday_Hours__c}"/>
+                        <apex:column headerValue="{!$Label.pse__schedule_editor_thursday}" value="{!s.pse__Thursday_Hours__c}"/>
+                        <apex:column headerValue="{!$Label.pse__schedule_editor_friday}" value="{!s.pse__Friday_Hours__c}"/>
+                        <apex:column headerValue="{!$Label.pse__schedule_editor_saturday}" value="{!s.pse__Saturday_Hours__c}"/>
+                     </apex:pageBlockTable>
+                  </apex:pageBlockSectionItem>
+               </apex:pageBlockSection>
+            </apex:outputpanel>
+            <apex:outputPanel rendered="{!isPercentAllcoationStrategySelected}">
+               <c:SchedulePercentAllocation resourceIdAttribute="{!assignment.pse__Resource__c}" ProposedStartDateAttribute="{!rescheduleException.pse__Date__c}" ProposedEndDateAttribute="{!schedule.pse__End_Date__c}" 
+                  scheduleWrapper="{!resourceSch}"  resourceWorkCalendar="{!resWorkCalendar}"/>
+            </apex:outputPanel>
+         </apex:pageBlock>
+      </apex:actionRegion>
+      <apex:actionRegion >
+         <apex:pageMessages id="expMessages" rendered="{!NOT(zeroScheduleStrategyOption)}"/>
+         
+         <apex:pageBlock mode="edit" title="{!$Label.pse__schedule_editor_insert_schedule_exception}" id="exceptionBlock">
+            <apex:pageBlockButtons >
+               <apex:commandButton value="{!$Label.pse__common_label_update}" rerender="expMessages,exceptionBlock,infoBlock" styleClass="btn"
+                  onclick="wait(true);" oncomplete="wait(false);" action="{!updateException}"/>
+               <apex:commandButton value="{!$Label.pse__common_label_save}" disabled="{!NOT(saveExceptionEnabled)}" rerender="expMessages,infoBlock,exceptionBlock"
+                  onclick="wait(true);" oncomplete="wait(false);" action="{!saveException}" styleClass="btn"/>
+            </apex:pageBlockButtons>
+            
+            <apex:outputPanel layout="block" styleClass="info-block" >
+            	<apex:outputPanel layout="block">
+					<apex:image value="/s.gif" styleClass="infoIcon"/>
+				</apex:outputPanel>
+				<apex:outputPanel layout="block">
+					<apex:outputPanel layout="block" >
+						 {!$Label.pse__schedule_editor_insert_schedule_exception_info_para}
+					</apex:outputPanel>
+				</apex:outputPanel>
+			</apex:outputPanel>
+             
+            <apex:pageBlockSection columns="2" id="exceptionSection">
+               <apex:inputField value="{!newException.pse__Date__c}"/>
+               <apex:inputField value="{!newException.pse__End_Date__c}" required="true"/>
+               <apex:pageBlockSectionItem >
+                  <c:helpLabel labelText="{!$Label.pse__schedule_editor_insert_schedule_exception_section_move_end_date}" labelFor="{!$Component.moveEndChk}" spanId="moveEndDateHelp" helpText="{!$Label.pse__schedule_editor_insert_schedule_exception_section_move_end_date_help_text}"/>
+                  <apex:inputCheckbox id="moveEndChk" value="{!moveEndDate}"/>
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem id="moveItem">
+                  <c:helpLabel labelText="{!$Label.pse__schedule_editor_auto_adjust_overlapping_exception}" spanId="autoAdjustHelp" helpText="{!$Label.pse__schedule_editor_auto_adjust_exception_help_text}" labelFor="{!$Component.moveExpChk}"/>
+                  <apex:inputCheckbox id="moveExpChk" value="{!moveExceptions}" />
+               </apex:pageBlockSectionItem>
+              </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" showHeader="false" > 
+            	 <apex:pageBlockSectionItem dataStyleClass="schDataTableCell">
+                  {!$Label.pse__schedule_editor_pattern}
+                  <apex:pageBlockTable value="{!exceptionCol}" var="ex" >
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_sunday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!ex.pse__Sunday_Hours__c}" styleClass="schEditorText" required="true"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_monday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!ex.pse__Monday_Hours__c}" styleClass="schEditorText" required="true"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_tuesday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!ex.pse__Tuesday_Hours__c}" styleClass="schEditorText" required="true"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_wednesday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!ex.pse__Wednesday_Hours__c}" styleClass="schEditorText" required="true"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_thursday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!ex.pse__Thursday_Hours__c}" styleClass="schEditorText" required="true"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_friday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!ex.pse__Friday_Hours__c}" styleClass="schEditorText" required="true"/>
+                     </apex:column>
+                     <apex:column headerValue="{!$Label.pse__schedule_editor_saturday}" headerClass="tblHeaderCls">
+                        <apex:inputField value="{!ex.pse__Saturday_Hours__c}" styleClass="schEditorText" required="true"/>
+                     </apex:column>
+                  </apex:pageBlockTable>
+               </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" title="{!$Label.pse__schedule_editor_proposed_changes}" rendered="{!saveExceptionEnabled}">
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel >{!$Label.pse__schedule_editor_original_scheduled_hours}</apex:outputLabel>
+                  <apex:outputField value="{!schedule.pse__Scheduled_Hours__c}"/>
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel >{!$Label.pse__schedule_editor_new_scheduled_hours}</apex:outputLabel>
+                  <apex:outputText value="{!newScheduledHoursString}" style="color:red;"/>
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel >{!$Label.pse__schedule_editor_original_end_date}</apex:outputLabel>
+                  <apex:outputField value="{!originalSchedule.pse__End_Date__c}"/>
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel >{!$Label.pse__schedule_editor_new_end_date}</apex:outputLabel>
+                  <apex:outputText value="{!newEndDateString}" style="color:red;"/>
+               </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+         </apex:pageBlock>
+      </apex:actionRegion>
+   </apex:form>
+   <script type="text/javascript">
+      /*
+      function toggleMoveEndDate(moveEndCheckbox, moveExpCheckbox)
+      {
+          moveExpCheckbox.disabled = !moveEndCheckbox.checked;
+          if (!moveEndCheckbox.checked)
+              moveExpCheckbox.checked = false;
+      }*/
+      
+      function onDeleteExcClick(exId)
+      {
+          if (confirm('{!JSINHTMLENCODE($Label.schedule_editor_confirm_msg_delete_schedule_exception)}'))
+          {
+              wait(true);
+              jsDeleteException(exId);
+          }
+      }
+      
+      function onUpdateClick(retainSchExpRef)
+      {	
+      	if(retainSchExpRef) 
+      	{
+      		if (confirm('{!JSINHTMLENCODE($Label.Delete_schedule_exception_confirmation)}'))
+      	    {	
+      	    	jsUpdate();
+      	   	}
+         	} 
+         	else 
+         	{
+          	jsUpdate();
+      	}
+      }
+      
+      function onDeleteAllExcClick()
+      {
+          if (confirm('{!JSINHTMLENCODE($Label.schedule_editor_confirm_msg_delete_all_schedule_exception)}'))
+          {
+              wait(true);
+              jsDeleteAllExceptions();
+          }
+      }
+      
+   </script>
+</apex:page>

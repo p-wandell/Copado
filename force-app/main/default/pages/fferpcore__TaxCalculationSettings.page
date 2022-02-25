@@ -1,0 +1,33 @@
+<apex:page controller="fferpcore.TaxCalculationSettingsController" tabStyle="TaxCalculationSettings__tab" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+    <apex:form >
+        <apex:sectionHeader title="{!$Label.fferpcore__taxcalculationsettingspagesectionheader}" help="{!helpUrl}"/>
+    	<apex:pageMessages />
+        <apex:pageBlock title="{!$Label.fferpcore__taxcalculationsettingspagegeneralsettings}" mode="edit">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!save}" value="{!$Label.fferpcore__erpvisualforcesavebutton}"/>
+                <apex:commandButton action="{!refresh}"  value="{!$Label.fferpcore__taxcalculationsettingspagerefreshbuttonlabel}"/>
+            </apex:pageBlockButtons>
+         	<apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem helpText="{!$Label.fferpcore__taxcalculationsettingspageenabledtooltip}">
+                    <apex:outputLabel value="{!$Label.fferpcore__taxcalculationsettingspageenabledlabel}"/>
+    		        <apex:inputCheckbox value="{!settings.Enabled}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="{!$Label.fferpcore__taxcalculationsettingspagedisablecommittooltip}">
+                    <apex:outputLabel value="{!$Label.fferpcore__taxcalculationsettingspagedisablecommitlabel}"/>
+                    <apex:inputCheckbox value="{!settings.DisableCommit}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="{!$Label.fferpcore__taxcalculationsettingspageconnectionsettings}" mode="edit">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!testConnection}"  value="{!$Label.fferpcore__taxcalculationsettingspagetestconnectionbuttonlabel}"/>
+            </apex:pageBlockButtons>
+         	<apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:dynamicComponent componentValue="{!providerUI}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
