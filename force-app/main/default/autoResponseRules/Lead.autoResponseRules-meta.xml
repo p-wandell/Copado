@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AutoResponseRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <autoResponseRule>
+        <fullName>7Summits Lead Auto-Response Rules</fullName>
+        <active>true</active>
+        <ruleEntry>
+            <criteriaItems>
+                <field>Lead.LeadSource</field>
+                <operation>contains</operation>
+                <value>(Bolt Solution / Community Template)</value>
+            </criteriaItems>
+            <senderEmail>contact7s@7summitsinc.com</senderEmail>
+            <senderName>K.Andersen</senderName>
+            <template>unfiled$public/Appexchange_Response_v2_for_Bolts</template>
+        </ruleEntry>
+        <ruleEntry>
+            <criteriaItems>
+                <field>Lead.LeadSource</field>
+                <operation>startsWith</operation>
+                <value>SFDC-IN,SFDC-DM</value>
+            </criteriaItems>
+            <senderEmail>contact7s@7summitsinc.com</senderEmail>
+            <senderName>K. Andersen</senderName>
+            <template>unfiled$public/Appexchange_Response_v2</template>
+        </ruleEntry>
+    </autoResponseRule>
+</AutoResponseRules>

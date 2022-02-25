@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Salesforce 사용자에게 적용될 정보의 상태입니다.</help>
+    <label><!-- Status --></label>
+    <name>fferpcore__Status__c</name>
+    <picklistValues>
+        <masterLabel>Assigned</masterLabel>
+        <translation>배정 된</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Assigning</masterLabel>
+        <translation>배정</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Assign</masterLabel>
+        <translation>할당 실패</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Remove</masterLabel>
+        <translation>제거하지 못했습니다.</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Assignment</masterLabel>
+        <translation>보류중인 과제</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Removal</masterLabel>
+        <translation>대기중인 제거</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Removed</masterLabel>
+        <translation>제거됨</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Removing</masterLabel>
+        <translation>풀이</translation>
+    </picklistValues>
+</CustomFieldTranslation>

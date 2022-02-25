@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>pse__ERPMessagingService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__ERPMessagingSubscriptionSelector</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__HandleMessagesRequestImpl</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__ResourceAccountUpdateHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__ResourceAccountUpdateSubsDescriber</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__ResourceDeliveredMessage</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__ResourceMessage</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__ResourceResource</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__ResourceService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>pse__ResourceServiceImpl</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Allows access to create and update person accounts using the PSA Resource API.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>PSA Resource API - Person Account</label>
+</PermissionSet>

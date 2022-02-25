@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>SUT 회사에 대한이 제품의 세금 상태.</help>
+    <label><!-- Sales Tax Status --></label>
+    <name>fferpcore__SalesTaxStatus__c</name>
+    <picklistValues>
+        <masterLabel>Exempt</masterLabel>
+        <translation>면제</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Exempt for Qualifying Accounts</masterLabel>
+        <translation>자격을 갖춘 계정 면제</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Taxable</masterLabel>
+        <translation>과세 대상</translation>
+    </picklistValues>
+</CustomFieldTranslation>

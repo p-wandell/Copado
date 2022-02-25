@@ -1,0 +1,16 @@
+<apex:page showHeader="true" sidebar="false" standardStylesheets="true" controller="SS_CommunitySiteGroupsController" action="{!forwardToGroupPage}">
+    <c:SSTab_CommunitySiteIncludes />
+
+    <title>No Group Found</title>
+    <div id="content">
+        <c:SS_PageHeader title="My Group" subtitle="This is a place to privately collaborate with your colleagues and 7Summits representatives."/>
+        <div class="row">
+            <p>
+                Unfortunately you are not currently part of a group. Please file a case by clicking the button below so the administrator can grant you access.
+            </p>
+            <div>
+                <a href="/Cases?create=1" class="btn ss-button">Create a Case</a>
+            </div>
+        </div>
+    </div>
+</apex:page>

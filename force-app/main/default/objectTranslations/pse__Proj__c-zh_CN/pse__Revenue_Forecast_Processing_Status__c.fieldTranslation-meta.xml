@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>此收入预测的处理状态。</help>
+    <label><!-- Revenue Forecast Processing Status --></label>
+    <name>pse__Revenue_Forecast_Processing_Status__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>完成</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Error</masterLabel>
+        <translation>错误</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Started</masterLabel>
+        <translation>没有开始</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending</masterLabel>
+        <translation>有待</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Processing</masterLabel>
+        <translation>处理</translation>
+    </picklistValues>
+</CustomFieldTranslation>

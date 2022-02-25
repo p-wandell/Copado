@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Promotions</fullName>
+    <columns>NAME</columns>
+    <columns>copado__Project__c</columns>
+    <columns>copado__Release__c</columns>
+    <columns>copado__Connection_Behavior__c</columns>
+    <columns>copado__Source_Environment__c</columns>
+    <columns>copado__Destination_Environment__c</columns>
+    <columns>copado__Status__c</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>copado__Status__c</field>
+        <operation>notEqual</operation>
+        <value>Completed</value>
+    </filters>
+    <label>Active Promotions</label>
+</ListView>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__TrialBalance2__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Trial Balance 2</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>ffr__TrialBalance1__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Gross Profit</fullName>
+                <default>false</default>
+                <label>Gross Profit</label>
+            </value>
+            <value>
+                <fullName>Operating Expenses</fullName>
+                <default>false</default>
+                <label>Operating Expenses</label>
+            </value>
+            <value>
+                <fullName>Interest and Taxation</fullName>
+                <default>false</default>
+                <label>Interest and Taxation</label>
+            </value>
+            <value>
+                <fullName>EBITDA</fullName>
+                <default>false</default>
+                <label>EBITDA</label>
+            </value>
+            <value>
+                <fullName>Depreciation and Amortization</fullName>
+                <default>false</default>
+                <label>Depreciation and Amortization</label>
+            </value>
+            <value>
+                <fullName>Interest</fullName>
+                <default>false</default>
+                <label>Interest</label>
+            </value>
+            <value>
+                <fullName>Taxation</fullName>
+                <default>false</default>
+                <label>Taxation</label>
+            </value>
+            <value>
+                <fullName>Current Assets</fullName>
+                <default>false</default>
+                <label>Current Assets</label>
+            </value>
+            <value>
+                <fullName>Fixed Assets</fullName>
+                <default>false</default>
+                <label>Fixed Assets</label>
+            </value>
+            <value>
+                <fullName>Intangible Assets</fullName>
+                <default>false</default>
+                <label>Intangible Assets</label>
+            </value>
+            <value>
+                <fullName>Current Liabilities</fullName>
+                <default>false</default>
+                <label>Current Liabilities</label>
+            </value>
+            <value>
+                <fullName>Long Term Liabilities</fullName>
+                <default>false</default>
+                <label>Long Term Liabilities</label>
+            </value>
+            <value>
+                <fullName>Shareholders Funds</fullName>
+                <default>false</default>
+                <label>Shareholders Funds</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Profit and Loss</controllingFieldValue>
+            <controllingFieldValue>Income Statement</controllingFieldValue>
+            <valueName>Gross Profit</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Profit and Loss</controllingFieldValue>
+            <controllingFieldValue>Income Statement</controllingFieldValue>
+            <valueName>Operating Expenses</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Profit and Loss</controllingFieldValue>
+            <controllingFieldValue>Income Statement</controllingFieldValue>
+            <valueName>Interest and Taxation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Profit and Loss</controllingFieldValue>
+            <controllingFieldValue>Income Statement</controllingFieldValue>
+            <valueName>EBITDA</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Profit and Loss</controllingFieldValue>
+            <controllingFieldValue>Income Statement</controllingFieldValue>
+            <valueName>Depreciation and Amortization</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Profit and Loss</controllingFieldValue>
+            <controllingFieldValue>Income Statement</controllingFieldValue>
+            <valueName>Interest</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Profit and Loss</controllingFieldValue>
+            <controllingFieldValue>Income Statement</controllingFieldValue>
+            <valueName>Taxation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Current Assets</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Fixed Assets</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Intangible Assets</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Current Liabilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Long Term Liabilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Shareholders Funds</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

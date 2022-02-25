@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Members Filters</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightningCommunity__Default,lightning__HomePage">
+            <property name="compactView" type="Boolean" label="Compact view" description="Select this option to place the filter in a sidebar layout"/>
+            <property name="showClearAll" type="Boolean" label="Show Clear all button" description="Check to show the Clear All button that will clear all filters"/>
+            <property name="labelMembersFollow" label="Members I Follow Label" type="String" description="Label for members I follow check box"/>
+            <property name="enableLastNameSearch" label="Enable last name search option" type="Boolean" description="Check to enable search by last name, first option"/>
+            <property name="searchThreshold" type="Integer" label="Search threshold" description="Number of characters needed to initiate the search"/>
+            <property name="searchFields" label="Additional search fields" type="String" description="Specify additional member fields to include in the search"/>
+            <property name="useContact" label="Use Contact instead of User Object" type="Boolean" description="Country, State and City filters will reference the selected object"/>
+            <property name="showPicklists" label="Show pick lists for All Filters" type="Boolean" description="Enable pick lists for filter - this may impact performance and will not work for large communities"/>
+            <!-- Contact record fields -->
+            <property name="showTitleFilter" label="Show Title filter" type="Boolean" description="Check to enable search by member title"/>
+            <property name="showCountryFilter" label="Show country filter" type="Boolean" description="Check to enable filter by contact mailing country"/>
+            <property name="showStateFilter" label="Show state filter" type="Boolean" description="Check to enable filter by contact mailing state"/>
+            <property name="showCityFilter" label="Show city filter" type="Boolean" description="Check to enable filter by contact mailing city"/>
+            <property name="showAccountFilter" label="Show account filter" type="Boolean" description="Check to enable filter by contact account"/>
+            <property name="showTopicFilter" label="Filter Knowledgeable members by topic" type="Boolean" description="Check to enable filter by knowledgeable members for the selected topic"/>
+            <!-- Custom Field1-->
+            <property name="customField1" label="Custom Field 1 API name" type="String" description="Enter the exact API name for the custom field1 related to the NetworkMember sObject."/>
+            <property name="labelCustomField1" label="Field 1 label" type="String" description="Enter a label for custom field 1"/>
+            <property name="placeHolderCustomField1" label="Field 1 placeholder" type="String" description="Enter a placeholder for custom field 1"/>
+            <property name="pickListLabelField1" label="Pick list label for custom field 1" type="String" description="Enter a label for the custom field 1 pick list"/>
+            <!-- Custom Field2-->
+            <property name="customField2" label="Custom Field 2 API name" type="String" description="Enter the exact API name for the custom field 2 related to the NetworkMember sObject."/>
+            <property name="labelCustomField2" label="Field 2 label" type="String" description="Enter a label for custom field 2"/>
+            <property name="placeHolderCustomField2" label="Field 2 placeholder" type="String" description="Enter a placeholder for custom field 2"/>
+            <property name="pickListLabelField2" label="Pick list label for custom field 2" type="String" description="Enter a label for the custom field 2 pick list"/>
+            <!-- Custom Field3-->
+            <property name="customField3" label="Custom Field 3 API name" type="String" description="Enter the exact API name for the custom field 3 related to the NetworkMember sObject."/>
+            <property name="labelCustomField3" label="Field 3 label" type="String" description="Enter a label for custom field 3"/>
+            <property name="placeHolderCustomField3" label="Field 3 placeholder" type="String" description="Enter a placeholder for custom field 3"/>
+            <property name="pickListLabelField3" label="Pick list label for custom field 3" type="String" description="Enter a label for the custom field 3 pick list"/>
+            <!-- Custom Field4-->
+            <property name="customField4" label="Custom Field 4 API name" type="String" description="Enter the exact API name for the custom field 4 related to the NetworkMember sObject."/>
+            <property name="labelCustomField4" label="Field 4 label" type="String"  description="Enter a label for custom field 4"/>
+            <property name="placeHolderCustomField4" label="Field 4 placeholder" type="String"  description="Enter a placeholder for custom field 4"/>
+            <property name="pickListLabelField4" label="Pick list label for custom field 4" type="String" description="Enter a label for the custom field 4 pick list"/>
+            <!-- Custom Field5-->
+            <property name="customField5" label="Custom Field 5 API name" type="String"  description="Enter the exact API name for the custom field 5 related to the NetworkMember sObject."/>
+            <property name="labelCustomField5" label="Field 5 label" type="String"  description="Enter a label for custom field 5"/>
+            <property name="placeHolderCustomField5" label="Field 5 placeholder" type="String"  description="Enter a placeholder for custom field 5"/>
+            <property name="pickListLabelField5" label="Pick list label for custom field 5" type="String"  description="Enter a label for the custom field 5 pick list"/>
+            <!-- Custom Field6-->
+            <property name="customField6" label="Custom Field 6 API name" type="String"  description="Enter the exact API name for the custom field 6 related to the NetworkMember sObject."/>
+            <property name="labelCustomField6" label="Field 6 label" type="String"  description="Enter a label for custom field 6"/>
+            <property name="placeHolderCustomField6" label="Field 6 placeholder" type="String"  description="Enter a placeholder for custom field 6"/>
+            <property name="pickListLabelField6" label="Pick list label for custom field 6" type="String"  description="Enter a label for the custom field 6 pick list"/>
+            <property name="customClass" label="Custom Class" type="String"  description="Used for custom styling."/>
+            <property name="listId" label="List Id" type="String" default="ID_1" description="Id of specific List"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

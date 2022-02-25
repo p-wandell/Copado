@@ -1,0 +1,33 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Events Banner">
+	<design:attribute name="debugMode"
+	                  label="Debug Mode"
+	                  description="Enable/disable debug mode"/>
+	<design:attribute name="titleText"
+	                  label="Title"
+	                  description=""/>
+	<design:attribute name="createButtonURL"
+	                  label="Create New Event Button url"
+	                  description="if value is set, show button, if it's not set do not show button"/>
+	<design:attribute name="createButtonText"
+	                  label="Create New Event Button text"
+	                  description=""/>
+	<design:attribute name="defaultView"
+	                  datasource="List, Calendar"
+	                  label="Default View"/>
+	<design:attribute name="sortBy"
+	                  datasource="Upcoming, Top Attendance"
+	                  label="Default sorting"
+	                  description="Sort By"/>
+	<design:attribute name="showSort"
+	                  label="Show sort options"
+	                  description="Enable to show the sort drop down"/>
+	<design:attribute name="hideViewOptions"
+	                  label="Hide View Options"
+	                  description=""/>
+
+	<!--<design:attribute name="iconName" label="Icon Name" description="SVG Icon Name" default="event"/> -->
+	<design:attribute name="showCountBeforeTitle"
+	                  label="show count before title"/>
+
+</design:component>

@@ -1,0 +1,21 @@
+<apex:page standardController="ffct__RecordMigration__c" extensions="ffct.RecordMigrationController" recordSetVar="recordsList" action="{!isToolMustBeActivated}">
+    <script>
+    	var isLightningEnabled = {!$User.UIThemeDisplayed == 'Theme4d'};
+        if (isLightningEnabled)
+        {
+            sforce.one.navigateToURL("#/sObject/{!ReportId}/view?fv0={!$CurrentPage.parameters.Id}", true);
+        }
+        else
+        {
+            window.location.href="/{!ReportId}?pv0={!$CurrentPage.parameters.Id}";
+        }
+
+    </script>
+    <apex:form >
+    	<apex:pageBlock rendered="{!HasError}">
+		    <apex:sectionheader title="{!$Label.ffct__recordmigration}" help="helploader?topicid=1050" />
+		    <apex:pagemessages id="pgMsg"/>
+		    <apex:outputLink value="/{!$CurrentPage.parameters.Id}">{!$Label.ffct__back}</apex:outputLink>
+	    </apex:pageBlock>
+    </apex:form>
+</apex:page>

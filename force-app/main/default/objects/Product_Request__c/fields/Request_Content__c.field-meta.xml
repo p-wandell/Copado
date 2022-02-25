@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Request_Content__c</fullName>
+    <externalId>false</externalId>
+    <label>Request Content</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>7S Theme</fullName>
+                <default>false</default>
+                <label>7S Theme</label>
+            </value>
+            <value>
+                <fullName>Announcements</fullName>
+                <default>false</default>
+                <label>Announcements</label>
+            </value>
+            <value>
+                <fullName>Ask a Question</fullName>
+                <default>false</default>
+                <label>Ask a Question</label>
+            </value>
+            <value>
+                <fullName>Bolt - Alumni Careers</fullName>
+                <default>false</default>
+                <label>Bolt - Alumni Careers</label>
+            </value>
+            <value>
+                <fullName>Bolt - Alumni Engagement</fullName>
+                <default>false</default>
+                <label>Bolt - Alumni Engagement</label>
+            </value>
+            <value>
+                <fullName>Bolt - Customer</fullName>
+                <default>false</default>
+                <label>Bolt - Customer</label>
+            </value>
+            <value>
+                <fullName>Employee Bolt</fullName>
+                <default>false</default>
+                <label>Bolt - Employee</label>
+            </value>
+            <value>
+                <fullName>Bolt - Manufacturing</fullName>
+                <default>false</default>
+                <label>Bolt - Manufacturing</label>
+            </value>
+            <value>
+                <fullName>Partner Bolt</fullName>
+                <default>false</default>
+                <label>Bolt - PartnerFirst</label>
+            </value>
+            <value>
+                <fullName>Bolt - Product Enablement</fullName>
+                <default>false</default>
+                <label>Bolt - Product Enablement</label>
+            </value>
+            <value>
+                <fullName>Bolt - Student Success</fullName>
+                <default>false</default>
+                <label>Bolt - Student Success</label>
+            </value>
+            <value>
+                <fullName>Community Member Onboarding</fullName>
+                <default>false</default>
+                <label>Community Member Onboarding</label>
+            </value>
+            <value>
+                <fullName>Contact Us</fullName>
+                <default>false</default>
+                <label>Contact Us</label>
+            </value>
+            <value>
+                <fullName>Current Weather</fullName>
+                <default>false</default>
+                <label>Current Weather</label>
+            </value>
+            <value>
+                <fullName>Events</fullName>
+                <default>false</default>
+                <label>Events</label>
+            </value>
+            <value>
+                <fullName>Expedition Pack</fullName>
+                <default>false</default>
+                <label>Expedition Pack</label>
+            </value>
+            <value>
+                <fullName>Facebook (Featured)</fullName>
+                <default>false</default>
+                <label>Facebook (Featured)</label>
+            </value>
+            <value>
+                <fullName>Facebook (Feed)</fullName>
+                <default>false</default>
+                <label>Facebook (Feed)</label>
+            </value>
+            <value>
+                <fullName>Google Maps</fullName>
+                <default>false</default>
+                <label>Google Maps</label>
+            </value>
+            <value>
+                <fullName>Groups</fullName>
+                <default>false</default>
+                <label>Groups</label>
+            </value>
+            <value>
+                <fullName>Group SMS</fullName>
+                <default>false</default>
+                <label>Group SMS</label>
+            </value>
+            <value>
+                <fullName>Guide Me</fullName>
+                <default>false</default>
+                <label>Guide Me</label>
+            </value>
+            <value>
+                <fullName>Ideas</fullName>
+                <default>false</default>
+                <label>Ideas</label>
+            </value>
+            <value>
+                <fullName>Instagram</fullName>
+                <default>false</default>
+                <label>Instagram</label>
+            </value>
+            <value>
+                <fullName>Job Board</fullName>
+                <default>false</default>
+                <label>Job Board</label>
+            </value>
+            <value>
+                <fullName>Knowledge Base Filter</fullName>
+                <default>false</default>
+                <label>Knowledge Base Filter</label>
+            </value>
+            <value>
+                <fullName>Leaderboard</fullName>
+                <default>false</default>
+                <label>Leaderboard</label>
+            </value>
+            <value>
+                <fullName>Learning Adventure</fullName>
+                <default>false</default>
+                <label>Learning Adventure</label>
+            </value>
+            <value>
+                <fullName>LinkedIn</fullName>
+                <default>false</default>
+                <label>LinkedIn</label>
+            </value>
+            <value>
+                <fullName>Media Player</fullName>
+                <default>false</default>
+                <label>Media Player</label>
+            </value>
+            <value>
+                <fullName>Members</fullName>
+                <default>false</default>
+                <label>Members</label>
+            </value>
+            <value>
+                <fullName>Metrics</fullName>
+                <default>false</default>
+                <label>Metrics</label>
+            </value>
+            <value>
+                <fullName>News</fullName>
+                <default>false</default>
+                <label>News</label>
+            </value>
+            <value>
+                <fullName>Page Info</fullName>
+                <default>false</default>
+                <label>Page Info</label>
+            </value>
+            <value>
+                <fullName>Partner Registration</fullName>
+                <default>false</default>
+                <label>Partner Registration</label>
+            </value>
+            <value>
+                <fullName>Product Catalog (B2B)</fullName>
+                <default>false</default>
+                <label>Product Catalog (B2B)</label>
+            </value>
+            <value>
+                <fullName>Product Catalog</fullName>
+                <default>false</default>
+                <label>Product Catalog (Standard)</label>
+            </value>
+            <value>
+                <fullName>Profile Wizard</fullName>
+                <default>false</default>
+                <label>Profile Wizard</label>
+            </value>
+            <value>
+                <fullName>Questionnaire</fullName>
+                <default>false</default>
+                <label>Questionnaire</label>
+            </value>
+            <value>
+                <fullName>Sitemap</fullName>
+                <default>false</default>
+                <label>Sitemap</label>
+            </value>
+            <value>
+                <fullName>SmartMatch</fullName>
+                <default>false</default>
+                <label>SmartMatch</label>
+            </value>
+            <value>
+                <fullName>Social Engagement Flow</fullName>
+                <default>false</default>
+                <label>Social Engagement Flow</label>
+            </value>
+            <value>
+                <fullName>Social Share</fullName>
+                <default>false</default>
+                <label>Social Share</label>
+            </value>
+            <value>
+                <fullName>SoundCloud</fullName>
+                <default>false</default>
+                <label>SoundCloud</label>
+            </value>
+            <value>
+                <fullName>Twitter Feed</fullName>
+                <default>false</default>
+                <label>Twitter Feed</label>
+            </value>
+            <value>
+                <fullName>Video Gallery</fullName>
+                <default>false</default>
+                <label>Video Gallery</label>
+            </value>
+            <value>
+                <fullName>Video Gallery Plus</fullName>
+                <default>false</default>
+                <label>Video Gallery Plus</label>
+            </value>
+            <value>
+                <fullName>All IP</fullName>
+                <default>false</default>
+                <label>All IP</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>10</visibleLines>
+</CustomField>

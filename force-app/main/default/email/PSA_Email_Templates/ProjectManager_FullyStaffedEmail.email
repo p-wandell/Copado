@@ -1,0 +1,58 @@
+<messaging:emailTemplate subject="{!relatedTo.Name}: Fully Staffed Notification" recipientType="Contact" relatedToType="pse__Proj__c">
+    <messaging:htmlEmailBody >
+        <html>
+            <body>
+                <p>Team,</p>
+                
+                <p>Operations has committed the following Core Team members to be staffed on the upcoming Project:</p>
+                
+                <p style="font-weight: bold;text-decoration: underline;">Project Details:</p>
+                
+                <p style="font-weight: bold;">Project Name: <a href="{!LEFT($Api.Partner_Server_URL_140,FIND('.com',$Api.Partner_Server_URL_140)+4)+relatedTo.Id}">{!relatedTo.Name}</a></p>
+                <p style="font-weight: bold;">Start Date: <apex:outputText value="{0, date, MMMM d','  yyyy}"><apex:param value="{!relatedTo.pse__Start_Date__c}" /></apex:outputText></p>
+                <p style="font-weight: bold;">Statement of Work: <a href="{!relatedTo.Statement_of_Work__c}">(document link)</a></p>                
+                
+                <p style="font-weight: bold;text-decoration: underline;">Opportunity Details:</p>
+                
+                <p style="font-weight: bold;">Owner: {!relatedTo.pse__Opportunity__r.Owner.Name}</p>
+                <p style="font-weight: bold;">Pursuit Lead: {!relatedTo.pse__Opportunity__r.Pursuit_Lead__c}</p>
+                <p style="font-weight: bold;">Close Date: <apex:outputText value="{0, date, MMMM d','  yyyy}"><apex:param value="{!relatedTo.pse__Opportunity__r.CloseDate}" /></apex:outputText></p>
+                <p style="font-weight: bold;">Description: {!relatedTo.pse__Opportunity__r.Description}</p>                
+                
+                <p style="font-weight: bold;text-decoration: underline;">Assignment Details:</p>
+                <table width="75%" border="1" cellspacing="0" cellpadding="0">
+                    <tr style="background-color: lightgray;">
+                        <th>Resource</th>                
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Planned Hrs</th>
+                        <th>Role</th>
+                    </tr>
+                    
+                    <apex:repeat value="{!relatedTo.pse__Assignments__r}" var="g">
+                        <tr>
+                            <td>{!g.pse__Resource__r.Name}</td>
+                            <td style="text-align: center;"><apex:outputText value="{0, date, MMMM d','  yyyy}"><apex:param value="{!g.pse__Start_Date__c}" /></apex:outputText></td>
+                            <td style="text-align: center;"><apex:outputText value="{0, date, MMMM d','  yyyy}"><apex:param value="{!g.pse__End_Date__c}" /></apex:outputText></td>
+                            <td style="text-align: right;"><apex:outputText value="{0, number, ###,##0}"><apex:param value="{!g.pse__Planned_Hours__c}" /></apex:outputText></td>
+                            <td>{!g.pse__Role__c}</td>
+                        </tr>
+                    </apex:repeat>
+                    
+                </table>               
+                
+                <p style="font-weight: bold;text-decoration: underline;">Next Steps:</p>
+                
+                <ul>
+                  <li>Please review the SOW and look for the PM to schedule an Internal Kick-off meeting</li>
+                  <li>Operations is actively working on getting the rest of the Project team staffed</li>
+                  <li>Please review any Risk &amp; Issues identified in the Pre-Flight Risk Assessment (found in PSA Risk &amp; Issues related list)</li>
+                  <li>Please communicate any planned time off to your PM during this project effort</li>
+                </ul>                
+                
+                <p>Thanks,</p>
+                <p>Operations</p>                
+            </body>
+        </html>
+    </messaging:htmlEmailBody>
+</messaging:emailTemplate>

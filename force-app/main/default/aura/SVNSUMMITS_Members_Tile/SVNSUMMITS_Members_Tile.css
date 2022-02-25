@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2018. 7Summits Inc.
+ */
+
+.THIS {
+    display: flex;
+}
+.THIS .noFollowButton {
+    line-height: 1.6;
+}
+.THIS .member-tile {
+    display: flex;
+    flex-flow: column nowrap; /* https://wpbeaches.com/aligning-last-item-bottom-container-flexbox/ */
+    width: 100%;
+}
+.THIS .member-tile_meta {
+    margin-top: auto; /* https://wpbeaches.com/aligning-last-item-bottom-container-flexbox/ */
+}

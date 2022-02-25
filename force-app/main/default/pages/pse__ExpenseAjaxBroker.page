@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apex:page contentType="text/xml" controller="pse.ExpenseAjaxBrokerController" showHeader="false" sidebar="false" action="{!init}">
+    <response>
+        <apex:outputPanel rendered="{!onError}">
+            <error>
+                <apex:pageMessages id="msgs"/>
+            </error>
+        </apex:outputPanel>
+        <apex:outputText rendered="{!!onError && isAssignmentsLoadRequest}">
+            <projAssignHome>
+                <apex:outputText rendered="{!isSOSLLimitMessageToBeDisplayed}">
+                    <encryption-info/>
+                </apex:outputText>
+                <assignments>
+                    <apex:repeat value="{!assignments}" var="assignmentDetail">
+                        <assignmentDetail>
+                            <id>{!JSENCODE(assignmentDetail.id)}</id>
+                            <name><![CDATA[{!assignmentDetail.name}]]></name> <!-- Do not HTMLENCODE name. will be handle by js file -->
+                            <acountName><![CDATA[{!JSENCODE(assignmentDetail.accountName)}]]></acountName>
+                            <nickName><![CDATA[{!assignmentDetail.nickName}]]></nickName> <!-- Do not HTMLENCODE nick name. will be handle by js file -->
+                            <isAssignment><![CDATA[{!assignmentDetail.isAssignment}]]></isAssignment>
+                            <billable>{!assignmentDetail.isBillable}</billable>
+                            <currencyIsoCode>{!JSENCODE(assignmentDetail.currencyIsoCode)}</currencyIsoCode>
+                            <projectId>{!JSENCODE(assignmentDetail.projectId)}</projectId>
+                            <selectedMilestoneID><![CDATA[{!JSENCODE(assignmentDetail.selectedMilestoneID)}]]></selectedMilestoneID>
+                            <tooltip><![CDATA[{!assignmentDetail.tooltip}]]></tooltip> <!-- Do not HTMLENCODE tooltip. will be handle by js file -->
+                        </assignmentDetail>
+                        
+                        <apex:outputText rendered="{!assignmentDetail.isAssignment}">
+                            <assignment>
+                                <id>{!assignmentDetail.assignment.id}</id>
+                                <name><![CDATA[{!assignmentDetail.assignment.name}]]></name> 
+                                <apex:repeat value="{!assignmentLookupFieldsToDisplay}" var="fieldToDisplay">
+                                    <field><![CDATA[{!IF(assignmentBooleanFieldTypeMap[fieldToDisplay], '--', IF(assignmentfieldsToEscapeOutput[fieldToDisplay], HTMLENCODE(assignmentDetail.assignment[fieldToDisplay]), assignmentDetail.assignment[fieldToDisplay]))}]]></field>
+                                </apex:repeat>
+                            </assignment>
+                        </apex:outputText>
+                        
+                        <apex:outputText rendered="{!NOT(assignmentDetail.isAssignment)}">
+                            <project>
+                                <id>{!assignmentDetail.project.id}</id>
+                                <name><![CDATA[{!assignmentDetail.project.name}]]></name> <!-- Do not HTMLENCODE project name. will be handle by js file -->
+                                <apex:repeat value="{!projectLookupFieldsToDisplay}" var="fieldToDisplay">
+									<field><![CDATA[{!IF(projectBooleanFieldTypeMap[fieldToDisplay], '--', IF(projectfieldsToEscapeOutput[fieldToDisplay], HTMLENCODE(assignmentDetail.project[fieldToDisplay]), assignmentDetail.project[fieldToDisplay]))}]]></field>
+								</apex:repeat>
+                            </project>
+                        </apex:outputText>
+                    </apex:repeat>
+                    
+                    <assignmentMapping>
+                        <apex:repeat value="{!assignmentLookupFieldLabels}" var="assignmentLookupFieldLabel" >
+                            <label><![CDATA[{!assignmentLookupFieldLabel}]]></label>
+                        </apex:repeat>
+                    </assignmentMapping>
+                    
+                    <projectMapping>
+                        <apex:repeat value="{!projectLookupFieldLabels}" var="projectLookupFieldLabel" >
+                            <label><![CDATA[{!projectLookupFieldLabel}]]></label>
+                        </apex:repeat>
+                    </projectMapping>
+                </assignments>
+            </projAssignHome>
+        </apex:outputText>
+        
+        <apex:outputPanel rendered="{!!onError && isResourceLoadRequest}">
+            <apex:outputText rendered="{!isSOSLLimitMessageToBeDisplayed}">
+                <encryption-info/>
+            </apex:outputText>
+            <resources>
+                <apex:repeat value="{!resources}" var="resourceList">
+                    <apex:repeat value="{!resourceList}" var="resource">
+                        <resource>
+                            <id>{!JSENCODE(resource.id)}</id>
+                            <name><![CDATA[{!HTMLENCODE(resource.name)}]]></name>
+                            <apex:repeat value="{!resourceLookupFieldsToDisplay}" var="fieldToDisplay">
+                                <field><![CDATA[{!resource[fieldToDisplay]}]]></field>
+                            </apex:repeat>
+                        </resource>
+                    </apex:repeat>
+                </apex:repeat>
+                
+                <mapping>
+                    <apex:repeat value="{!resourceLookupFieldLabels}" var="resourceLookupFieldLabel" >
+                        <label><![CDATA[{!JSENCODE(resourceLookupFieldLabel)}]]></label>
+                    </apex:repeat>
+                </mapping>
+            </resources>
+        </apex:outputPanel>
+        <!-- This is for new ExpenseEntryUI--> 
+        <apex:outputText rendered="{!isAssignmentChangeRequest}"> 
+            <assigChangeResult>
+                <milestones>
+                    <milestone>
+                        <id><![CDATA[]]></id>
+                        <name><![CDATA[]]></name>
+                    </milestone>
+                    <apex:repeat value="{!milestones}" var="ms">
+                        <!-- Changes done as fix for agile task: 000011099   Dated: 23 August, 2011  -->
+                        <milestone>
+                            <id>{!ms.id}</id>
+							<name><![CDATA[{!IF(ISNULL(showMilestoneDisplayField),ms.Name,IF(ISNULL(ms[showMilestoneDisplayField]),ms.Name,ms[showMilestoneDisplayField]))}]]></name>
+						</milestone>
+                    </apex:repeat>
+                </milestones>
+                <expenseRates>
+                    <apex:repeat value="{!expenseRates}" var="er">
+                        <expenseRate>
+                            <type><![CDATA[{!JSENCODE(er.pse__Type__c)}]]></type>
+                            <unit><![CDATA[{!JSENCODE(er.pse__Rate_Unit__c)}]]></unit>
+                            <rateAmount><![CDATA[{!er.pse__Amount__c}]]></rateAmount> 
+                            <currencyIsoCode><![CDATA[{!JSENCODE(er.currencyIsoCode)}]]></currencyIsoCode> 
+                            <Id>{!JSENCODE(er.Id)}</Id>
+                        </expenseRate>
+                    </apex:repeat>
+                </expenseRates>
+                
+                <expLimitCurrencyRates>
+                    <apex:repeat value="{!expLimitCurrencyRateList}" var="ecr">
+                        <expLimitCurrencyRate>
+                            <type><![CDATA[{!JSENCODE(ecr.expType)}]]></type>
+                            <unit><![CDATA[{!JSENCODE(ecr.unitType)}]]></unit>
+                            <apex:repeat value="{!ecr.conversionRatesByCode}" var="cr">
+                                <currencyRatePair>
+                                    <currencyIsoCode><![CDATA[{!JSENCODE(cr.currencyIsoCode)}]]></currencyIsoCode>
+                                    <rateAmount><![CDATA[{!cr.ratesByCurrencyCode}]]></rateAmount>
+                                </currencyRatePair>
+                            </apex:repeat>
+                        </expLimitCurrencyRate>
+                    </apex:repeat>
+                </expLimitCurrencyRates>
+                <!-- Code below for story 5210--> 
+                <apex:outputText rendered="{!displayMethodology}">
+                    <methodologies>
+                        <methodology>
+                            <id><![CDATA[]]></id>
+                            <name><![CDATA[]]></name>
+                        </methodology>
+                        <apex:repeat value="{!methodologies}" var="ms">
+                            <methodology>
+                                <id>{!ms.id}</id>
+								<name><![CDATA[{!IF(ISNULL(showMethodologyDisplayField),ms.Name,IF(ISNULL(ms[showMethodologyDisplayField]),ms.Name,ms[showMethodologyDisplayField]))}]]></name>
+							</methodology>
+                        </apex:repeat>
+                    </methodologies>
+                </apex:outputText>
+                
+                <apex:outputText rendered="{!displayPhase}">
+                    <phases>
+                        <phase>
+                            <id><![CDATA[]]></id>
+                            <name><![CDATA[]]></name>
+                        </phase>
+                        <apex:repeat value="{!phases}" var="ps">
+                            <phase>
+                                <id>{!ps.id}</id>
+								<name><![CDATA[{!IF(ISNULL(showPhaseDisplayField),ps.Name,IF(ISNULL(ps[showPhaseDisplayField]),ps.Name,ps[showPhaseDisplayField]))}]]></name>
+							</phase>
+                        </apex:repeat>
+                    </phases>
+                </apex:outputText>
+            </assigChangeResult>
+        </apex:outputText>
+    </response>
+</apex:page>

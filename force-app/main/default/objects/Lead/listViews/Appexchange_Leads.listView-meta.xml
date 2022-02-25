@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Appexchange_Leads</fullName>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.FIRST_NAME</columns>
+    <columns>AppX_Type__c</columns>
+    <columns>LEAD.COMPANY</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>CORE.USERS.LAST_NAME</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>AppX_Lead_Type__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>startsWith</operation>
+        <value>SFDC-</value>
+    </filters>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>notContain</operation>
+        <value>Connect</value>
+    </filters>
+    <label>Appexchange Leads</label>
+</ListView>

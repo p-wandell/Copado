@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Notification for tollgate deliverable creation or update</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Letterhead_with_Logo</letterhead>
+    <name>Tollgate Notification</name>
+    <style>freeForm</style>
+    <subject>***** Tollgate Update ***** ({!pse__Assignment__c.Name})</subject>
+    <textOnly>Hi,
+
+The tollgate for {!Deliverable__c.ProjectId__c} has been created or updated.
+
+Status: {!Deliverable__c.Status__c}
+Tollgate Date: {!Deliverable__c.Due_Date__c}</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

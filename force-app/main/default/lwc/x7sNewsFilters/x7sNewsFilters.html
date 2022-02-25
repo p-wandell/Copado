@@ -1,0 +1,76 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc. All rights reserved.
+  -->
+<template>
+    <form role="search" aria-label={ariaLabelForNewsCreateLandmark}>
+        <c-x7s-shr-component-wrapper auto-slds-card>
+            <lightning-layout multiple-rows="false"
+                              vertical-align="center"
+                              class={componentClass}>
+                <template if:true={showTopic}>
+                    <lightning-layout-item  size="12"
+                                            large-device-size="3"
+                                            medium-device-size="6"
+                                            small-device-size="12">
+                            <div if:true={newsTopic.length} class="topicDiv">
+                                <c-x7s-news-multi-select    items={newsTopic}
+                                                            selected-item-ids={selectedItemIds}
+                                                            onitemchangeevent={handleTopicChangeEvent}
+                                                            label-name={addTopics}
+                                                            itemlabel={labels.x7s_News_Filters_Topics}
+                                                            aria-selected-items-label={selectedTopicsLabel}>
+                               </c-x7s-news-multi-select>
+                            </div>
+                        </lightning-layout-item>
+                </template>
+
+                <template if:true={showAuthor}>
+                    <lightning-layout-item size="12"
+                                            large-device-size="3"
+                                            medium-device-size="6"
+                                            small-device-size="12">
+                        <div if:true={newsAuthor.length} class="slds-p-left_x-small slds-p-right_large topicDiv">
+                            <c-x7s-news-multi-select    items={newsAuthor}
+                                                        selected-item-ids={selectedAuthorItemIds}
+                                                        onitemchangeevent={handleAuthorChangeEvent}
+                                                        label-name={addAuthor}
+                                                        itemlabel={labels.x7s_News_Filters_Author}
+                                                        aria-selected-items-label={selectedAuthorsLabel}>
+                            </c-x7s-news-multi-select>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+                <template if:true={showDate}>
+                    <lightning-layout-item class="slds-m-right_xx-small">
+                        <lightning-input type="date"
+                                        name="startDate"
+                                        value={startDate}
+                                        onchange={startDateChange}
+                                        label={labels.labelStartDate}>
+                        </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item>
+                        <lightning-input type="date"
+                                        name="endDate"
+                                        value={endDate}
+                                        onchange={endDateChange}
+                                        label={labels.labelEndDate}>
+                        </lightning-input>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item class="slds-m-top_large">
+                        <lightning-button-icon alternative-text={labels.labelButtonClear}
+                                            icon-name="utility:close"
+                                            onclick={clearDates}
+                                            variant="container"
+                                            disabled
+                                            tooltip={labels.labelButtonClear}
+                                            size="medium">
+                        </lightning-button-icon>
+                    </lightning-layout-item>
+                </template>
+
+            </lightning-layout>
+        </c-x7s-shr-component-wrapper>
+    </form>
+</template>

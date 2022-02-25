@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>New_PSA_Contact</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>New PSA Contact</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>{!REQUIRESCRIPT(&quot;/soap/ajax/42.0/connection.js&quot;)} 
+
+
+var cont = new sforce.SObject( &quot;Contact&quot; ); 
+cont.RecordTypeId = &quot;01280000000BqvV&quot;; 
+cont.FirstName = &quot;{!Operations_Requests__c.First_Name__c}&quot;;
+cont.LastName = &quot;{!Operations_Requests__c.Last_Name__c}&quot;; 
+cont.pse__Start_Date__c = new Date (&quot;{!Operations_Requests__c.Start_Date__c}&quot;); 
+cont.Milwaukee_Based__c = &quot;{!Operations_Requests__c.Milwaukee_Based__c}&quot;;
+cont.pse__Resource_Role__c = &quot;{!Operations_Requests__c.Role__c}&quot;; 
+cont.Title = &quot;{!Operations_Requests__c.Title__c}&quot;;
+cont.Resource_Type__c = &quot;{!Operations_Requests__c.Resource_Type__c}&quot;; 
+cont.pse__Default_Cost_Rate__c = {!VALUE(TEXT(Operations_Requests__c.Cost_Rate__c))};
+cont.pse__Utilization_Target__c = &quot;{!Operations_Requests__c.Target_Utilization__c}&quot;;
+cont.pse__Work_Calendar__c = &quot;{!Operations_Requests__c.Work_CalendarId__c}&quot;;
+cont.Include_in_Utilization_Reporting__c = &quot;{!Operations_Requests__c.Include_in_Utilization_Reporting__c}&quot;;
+cont.pse__Is_Resource__c = 1; 
+cont.pse__Is_Resource_Active__c = 1;
+cont.pse__Region__c = &quot;a4o80000000eWqU&quot;;
+cont.AccountId = &quot;{!Operations_Requests__c.AccountId__c}&quot;;
+cont.Email = &quot;{!Operations_Requests__c.First_Name__c}&quot;+&quot;.&quot;+&quot;{!Operations_Requests__c.Last_Name__c}&quot;+&quot;@7summitsinc.com&quot;;
+
+if(&quot;{!Operations_Requests__c.Resource_Type__c}&quot;== &quot;External&quot;)
+{
+cont.pse__External_Resource__c = 1
+}
+else if (&quot;{!Operations_Requests__c.Resource_Type__c}&quot;==&quot;Generic&quot;)
+{
+cont.Generic_Resource__c = 1
+}
+var result = sforce.connection.create( [ cont ] );  
+
+if( result[0].getBoolean( &quot;success&quot; ) ) { 
+alert( &quot;A new PSA Contact record was created successfully.&quot; ); 
+
+location.reload(); 
+} 
+else { 
+alert( &quot;An Error has Occurred. Error:&quot; + result[0] ); 
+}</url>
+</WebLink>

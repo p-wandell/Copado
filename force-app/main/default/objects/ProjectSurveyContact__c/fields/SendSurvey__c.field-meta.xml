@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SendSurvey__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Send Survey flag - indicates that the contact is to receive a survey for the project</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Checked: Send a survey for the project to the contact   Unchecked: Do not send a survey for the project to the contact</inlineHelpText>
+    <label>Send Survey</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,30 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+  -->
+<template>
+	<div class={componentClass}>
+		<div class={bottomBorder}>
+			<c-x7s-shr-object-banner title={bannerTitle}
+			                         icon-name={iconName}
+			                         hide-icon={hideIcon}
+			                         hide-title={hideTitle}
+			                         hide-search={hideSearch}
+			                         list-id={listId}
+			                         search-place-holder={searchPlaceHolder}
+			                         search-string={searchString}
+									 variant={variant}
+			                         aria-label={label.bannerAriaLabel}
+			>
+				<template if:true={searchContent}>
+					<div slot="search">
+						<lightning-input type="checkbox"
+						                 label="Search File Content"
+						                 onchange={handleStateChange}
+						                 checked>
+						</lightning-input>
+					</div>
+				</template>
+			</c-x7s-shr-object-banner>
+		</div>
+	</div>
+</template>

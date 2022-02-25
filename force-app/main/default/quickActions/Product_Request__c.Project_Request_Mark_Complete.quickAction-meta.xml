@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldOverrides>
+        <field>Status__c</field>
+        <literalValue>Completed</literalValue>
+    </fieldOverrides>
+    <icon>SE_Request_Icon</icon>
+    <label>Mark Complete</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <quickActionLayout>
+        <layoutSectionStyle>TwoColumnsLeftToRight</layoutSectionStyle>
+        <quickActionLayoutColumns/>
+        <quickActionLayoutColumns/>
+    </quickActionLayout>
+    <successMessage>Success! This request has been marked as completed and the requestor will be notified.</successMessage>
+    <type>Update</type>
+</QuickAction>

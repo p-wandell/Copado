@@ -1,0 +1,19 @@
+<!--
+  - Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<aura:component description="x7sIdeas_FeedItem"
+                implements="force:hasRecordId"
+                access="global">
+
+	<!--Internal Attributes-->
+	<aura:attribute name="recordId" type="String" access="global"/>
+	<aura:attribute name="idea" type="Map" access="global"/>
+
+	<!--BODY-->
+	<aura:if isTrue="{!not(empty(v.idea.extension))}">
+		<div role="region">
+			<forceChatter:feed feedDesign="DEFAULT" type="Record" subjectId="{!v.idea.extension}"/>
+		</div>
+	</aura:if>
+</aura:component>

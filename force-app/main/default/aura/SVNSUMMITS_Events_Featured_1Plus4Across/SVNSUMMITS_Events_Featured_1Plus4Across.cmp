@@ -1,0 +1,53 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventListController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:hasRecordId,force:hasSObjectName">
+
+	<!-- Base model -->
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.getFeaturedFourEvents}"/>
+
+	<aura:attribute name="title" type="String" access="global" default="Featured Events 1+4Across"/>
+	<aura:attribute name="recordId1" type="String" access="global"/>
+	<aura:attribute name="recordId2" type="String" access="global"/>
+	<aura:attribute name="recordId3" type="String" access="global"/>
+	<aura:attribute name="recordId4" type="String" access="global"/>
+	<aura:attribute name="recordId5" type="String" access="global"/>
+	<aura:attribute name="allEventsUrl" type="String" default="/event-list-view-page/" access="global"/>
+	<aura:attribute name="allEventsButtonText" type="String" default="{!$Label.c.ss_evt_label_AllEvents}" access="global"/>
+	<aura:attribute name="addNewButtontext" type="String" default="{!$Label.c.ss_evt_label_AddNew}" access="global"/>
+	<aura:attribute name="sitePath" type="String" access="global"/>
+	<aura:attribute name="sitePrefix" type="String" access="global"/>
+	<aura:attribute name="eventURL" type="String" access="global" default="/event/"/>
+	<aura:attribute name="badgeLabel" type="String" default="Popular Events" access="global"/>
+	<aura:attribute name="createEventURL" type="String" default="/create-event/" access="global"/>
+	<aura:attribute name="isObjectCreatable" type="Boolean" access="global"/>
+	<aura:attribute name="debugMode" type="Boolean" default="false" access="global"/>
+
+	<div class="slds-text-heading--large slds-m-bottom--large ">
+		<div class="setTitleFeatured">{!v.title}</div>
+	</div>
+	<div id="tab-default-1" class="slds-tabs--default__content slds-show" role="tabpanel"
+	     aria-labelledby="tab-default-1__item">
+		<div class="slds-col slds-has-flexi-truncate slds-p-around--medium">
+			<c:SVNSUMMITS_Events_Tile displayMode="Full"
+			                          debugMode="true"
+			                          wrappedEventsObj="{!v.wrappedEventsObj}"/>
+		</div>
+	</div>
+	<div class="slds-grid slds-grid--align-center">
+		<div class="slds-button-group" role="group">
+			<ui:outputURL label="{!v.allEventsButtonText}"
+			              class="slds-button slds-button--neutral slds-not-selected buttonText"
+			              value="{!v.sitePath + v.allEventsUrl}"/>
+		</div>
+		<div class="slds-button-group" role="group">
+			<aura:if isTrue="{!v.isObjectCreatable}">
+				<ui:outputURL class="slds-button slds-button slds-button--brand buttonlabel"
+				              value="{!v.sitePath + v.createEventURL}" label="{!v.addNewButtontext}"/>
+			</aura:if>
+		</div>
+	</div>
+
+</aura:component>

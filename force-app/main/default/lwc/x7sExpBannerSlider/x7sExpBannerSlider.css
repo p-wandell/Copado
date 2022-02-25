@@ -1,0 +1,105 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.slider {
+  position: relative;
+  color: var(--lwc-colorTextInverse);
+}
+.slider h1 {
+  font-size: 1.75rem;
+}
+@media (min-width: 48em) {
+  .slider h1 {
+    font-size: 3.75rem;
+  }
+}
+.slider h2 {
+  font-size: 1.2rem;
+}
+@media (min-width: 48em) {
+  .slider h2 {
+    font-size: 2.75rem;
+  }
+}
+.slider .x7s-banner-overlay {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  content: ' ';
+}
+.slider .slds-grid {
+  position: relative;
+  z-index: 1;
+}
+.slider .slide {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  background-position: center center;
+  background-size: cover;
+}
+.slider .slide .x7s-component {
+  width: 100%;
+}
+.slider .slick-prev {
+  z-index: 100;
+  left: 20px;
+}
+.slider .slick-next {
+  z-index: 100;
+  right: 20px;
+}
+.slider .slick-dots {
+  bottom: 0;
+  margin-left: 0;
+  /* Fixes the visible horizontal scroll bar */
+}
+.slider .content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+.slider .darktext h1,
+.slider .darktext h2,
+.slider .darktext p {
+  color: var(--lwc-colorTextDefault);
+}
+.slider .slds-button {
+  margin-right: var(--lwc-spacingLarge);
+}
+.slider .slds-wrap {
+  height: 100%;
+}
+.slider.slick-dotted.slick-slider {
+  margin: 0;
+}
+/* Fixes FOUC (Flash Of Unstyled Content) */
+/* Source: https://github.com/kenwheeler/slick/issues/1741#issuecomment-292218446 */
+.slider {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 500ms;
+}
+.slider.slick-initialized {
+  visibility: visible;
+  opacity: 1;
+}
+.slider .slide {
+  display: none;
+}
+.slider .slide:first-child {
+  display: block;
+  visibility: hidden;
+}
+.slider.slick-initialized .slide {
+  display: block;
+  visibility: visible !important;
+}

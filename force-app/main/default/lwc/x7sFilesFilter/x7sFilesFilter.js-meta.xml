@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Files Filter</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default,lightning__RecordPage,lightning__AppPage,lightning__HomePage">
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card. Options are None (flat), Featured (drop shadow), and Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="showFileType" label="Show Filter for File Type" type="boolean" description="Select to display the File Type filter." default="true"/>
+            <property name="showFileSize" label="Show Filter for File Size" type="boolean" description="Select to display the File Size filter." default="true"/>
+            <property name="showOwner" label="Show Filter for Created By" type="boolean" description="Select to display the Created By filter." default="true"/>
+            <property name="showModifier" label="Show Filter for Last Modified By" type="boolean" description="Select to display the Last Modified By filter." default="true"/>
+            <property name="showCreatedDate" label="Show Filter for Created Date" type="boolean" description="Select to display the Created Date filter." default="true"/>
+            <property name="showModifiedDate" label="Show Filter for Last Modified Date" type="boolean" description="Select to display the Last Modified Date filter." default="true"/>
+            <property name="showClear" label="Show Clear Button" type="boolean" description="Select to display the Clear All button." default="true"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates this component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

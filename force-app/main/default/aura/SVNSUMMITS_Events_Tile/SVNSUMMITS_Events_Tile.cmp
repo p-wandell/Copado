@@ -1,0 +1,169 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global"
+                extends="c:SVNSUMMITS_Events_Base">
+
+	<aura:attribute name="debugMode" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="baseModel" type="String" access="global"/>
+
+	<aura:attribute name="displayMode" type="String" default="3-Col" required="true" access="global"/>
+	<aura:attribute name="wrappedEventsObj" type="SVNSUMMITS_EventListWrapper" access="global"/>
+	<aura:attribute name="filterOn" default="None" type="String" access="global"/>
+	<aura:attribute name="isFeatured" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="numberofresults" type="Integer" description="" access="global"/>
+	<aura:attribute name="isOdd" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="isTotalOdd" type="Boolean" access="global"/>
+	<aura:attribute name="listSize" type="Integer" default="50" access="global"/>
+	<aura:attribute name="totalEvents" type="Integer" default="0" access="global"/>
+	<aura:attribute name="isAddCol" type="Boolean" default="False" access="global"/>
+	<aura:attribute name="limitToSpecificGroups" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="showEventType" type="Boolean" default="false" access="public"/>
+
+	<aura:attribute name="sitePrefix"   type="String" access="global"/>
+
+	<aura:attribute name="customField1" type="String" default="" access="public"/>
+	<aura:attribute name="customLabel1" type="String" default="" access="public"/>
+
+	<aura:attribute name="customField2" type="String" default="" access="public"/>
+	<aura:attribute name="customLabel2" type="String" default="" access="public"/>
+
+	<aura:attribute name="customField3" type="String" default="" access="public"/>
+	<aura:attribute name="customLabel3" type="String" default="" access="public"/>
+
+	<div class="slds-grid slds-wrap slds-grid--vertical-stretch">
+		<aura:iteration items="{!v.wrappedEventsObj.objEventList}" var="event">
+			<!--Section For Featured Events Start-->
+			<div class="{!v.displayMode == '3-Col' ?
+					'slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-3 eventContainer' :
+						v.displayMode == '2-Col' ?
+								'slds-col--padded slds-size--1-of-1 slds-small-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 eventContainer' :
+								'slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1 eventContainer compact'}">
+				<div class="featuredEvent">
+					<aura:renderIf isTrue="{!v.displayMode != 'Compact'}">
+						<aura:if isTrue="{!event.Attachments.length > 0}">
+							<div class="featuredImage">
+								<div class="image"
+								     style="{!'background-image:url(' + v.sitePrefix + '/servlet/servlet.FileDownload?file='+ event.Attachments[0].Id +')'}">
+									<a class="eventImageLink"
+									   href="javascript:void(0);"
+									   onclick="{!c.goToRecord}"
+									   data-id="{!event.Id}">
+									</a>
+								</div>
+							</div>
+							<aura:set attribute="else">
+								<div class="featuredImage">
+									<lightning:icon iconName="utility:event"
+									                size="large"
+									                alternativeText="Event"
+									                class="slds-input__icon slds-icon-text-default slds-p-top--x-large"/>
+								</div>
+							</aura:set>
+						</aura:if>
+					</aura:renderIf>
+
+					<div class="content">
+						<aura:if isTrue="{!event.topics.length > 0}">
+							<div class="topics">
+								<aura:iteration var="topics" items="{!event.topics}">
+									<div class="slds-text-heading--label topic">
+										<c:SVNSUMMITS_Events_TopicURL topicName="{!topics.Topic.Name}"
+										                              topicNameToId="{!v.wrappedEventsObj.topicNameToId}"
+										                              debugMode="{!v.debugMode}"/>
+									</div>
+								</aura:iteration>
+							</div>
+						</aura:if>
+
+						<div class="slds-text-heading--small name">
+							<a href="javascript:void(0);"
+							   onclick="{!c.goToRecord}"
+							   data-id="{!event.Id}">
+								{!event.Name}
+							</a>
+						</div>
+
+						<div class="slds-text-heading--label-normal date">
+						{!event.strMonth + ' '}{!event.intDate}
+							<aura:if isTrue="{!event.showEndDate}">
+								-&nbsp;{!event.endMonth + ' '}{!event.endDay + ', '}{!event.endYear}
+								<aura:set attribute="else">,&nbsp;{!event.strYear}
+								</aura:set>
+							</aura:if>
+						</div>
+
+						<aura:if isTrue="{!event.All_Day_Event__c == false}">
+							<div class="slds-text-heading--label-normal time">
+								<ui:outputDateTime value="{!event.strMinute}"
+								                   timezone="{!v.wrappedEventsObj.strTimeZone}"
+								                   format="hh:mm a"/>
+								<aura:if isTrue="{!event.End_DateTime__c != undefined}">
+									&nbsp;{!$Label.c.ss_evt_label_To}&nbsp;
+									<ui:outputDateTime value="{!event.endMinute}"
+									                   timezone="{!v.wrappedEventsObj.strTimeZone}"
+									                   format="hh:mm a"/>
+								</aura:if>
+							</div>
+						</aura:if>
+
+						<aura:if isTrue="{!v.showEventType}">
+							<div class="slds-text-heading--label-normal">
+								<aura:if isTrue="{!event.Event_Type__c}">
+									{!event.Event_Type__c}
+									<aura:set attribute="else">
+										&nbsp;
+									</aura:set>
+								</aura:if>
+							</div>
+						</aura:if>
+
+						<aura:if isTrue="{!event.Location_Name__c != undefined}">
+							<div class="slds-text-heading--label-normal location">
+									{!event.Location_Name__c}
+							</div>
+						</aura:if>
+
+						<aura:if isTrue="{! greaterthan(v.customField1.length, 0)}">
+							<aura:if isTrue="{!event.customField1}">
+								<c:SVNSUMMITS_Events_CustomField customLabel="{!v.customLabel1}"
+								                                 customField="{!event.customField1}"/>
+							</aura:if>
+						</aura:if>
+						<aura:if isTrue="{! greaterthan(v.customField2.length, 0)}">
+							<aura:if isTrue="{!event.customField2}">
+								<c:SVNSUMMITS_Events_CustomField customLabel="{!v.customLabel2}"
+								                                 customField="{!event.customField2}"/>
+							</aura:if>
+						</aura:if>
+						<aura:if isTrue="{! greaterthan(v.customField3.length, 0)}">
+							<aura:if isTrue="{!event.customField3}">
+								<c:SVNSUMMITS_Events_CustomField customLabel="{!v.customLabel3}"
+								                                 customField="{!event.customField3}"/>
+							</aura:if>
+						</aura:if>
+
+
+						<aura:renderIf isTrue="{!and(event.Enable_RSVP__c , event.Number_of_Attendees__c >= event.RSVP_Count_Threshold__c)}">
+							<div class="slds-text-heading--label-normal attending">
+								<lightning:icon iconName="utility:people" size="x-small" alternativeText="people"
+								                title="people"/>
+									{!event.Number_of_Attendees__c}
+							</div> 
+						</aura:renderIf>
+
+						<aura:if isTrue="{!v.limitToSpecificGroups}">
+							<aura:if isTrue="{!event.groupName}">
+								<div class="slds-text-heading--label group-name">
+								{!$Label.c.ss_evt_label_Group}: <a href="javascript:void(0);"
+								                               onclick="{!c.goToRecord}"
+								                               data-id="{!event.GroupId__c}">{!event.groupName}</a>
+								</div>
+							</aura:if>
+						</aura:if>
+
+					</div>
+				</div>
+			</div>
+		</aura:iteration>
+		<!--Section For Featured Events End-->
+	</div>
+</aura:component>

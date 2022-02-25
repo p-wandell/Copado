@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Default_Project_Curve__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The forecast curve applied when there is no curve set on a project. An error message is displayed if no curve is set on a project and no default project curve is defined.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The default curve record used for Project forecasting.</inlineHelpText>
+    <label>Default Project Curve</label>
+    <length>80</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

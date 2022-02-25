@@ -1,0 +1,48 @@
+<apex:page standardController="pse__Proj__c" extensions="pse.CreateProjectVersionController" lightningStylesheets="true">
+    <apex:outputPanel rendered="{!!isAccessible}">
+        <style>
+            .pbBottomButtons {display:none;}
+        </style>
+    </apex:outputPanel>
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+    <apex:outputPanel layout="none" id="outputPanel">
+        <apex:sectionHeader title="{!$Label.pse__create_version}" help="{!$Page.pse__CreateProjectVersionHelp}" id="sectionHeader" subtitle="{!project.name}"/>
+        <apex:form >
+            <apex:pageBlock id="pageBlock">
+                <apex:pageMessages id="errMsgs"/>
+                <apex:pageBlockButtons location="bottom" id="blockButtons">
+                    <apex:actionStatus id="CreateButtonStatus">
+                    <apex:facet name="stop">
+                        <apex:outputPanel >
+                            <apex:actionSupport event="onclick" action="{!disableUserInput}" reRender="versionName, notes, isBaseLine">
+                            <apex:commandButton action="{!save}" value="{!$Label.pse__common_label_create}" status="CreateButtonStatus" rerender="errMsgs"/>
+                            </apex:actionSupport>
+                            <apex:commandButton action="{!cancel}" value="{!$Label.pse__common_label_cancel}" immediate="true"/>
+                        </apex:outputPanel>
+                    </apex:facet>
+                    <apex:facet name="start">
+                        <apex:outputPanel >
+                            <apex:commandButton value="{!$Label.pse__common_label_create}" disabled="true"/>
+                            <apex:commandButton value="{!$Label.pse__common_label_cancel}" disabled="true"/>
+                        </apex:outputPanel>
+                    </apex:facet>
+                </apex:actionStatus>
+                </apex:pageBlockButtons>
+
+                <apex:pageBlockSection rendered="{!isAccessible}" id="blockSection" title="{!$Label.pse__common_label_details}" columns="2" collapsible="false">
+                    <apex:inputText id="versionName" value="{!versionName}" label="{!$Label.pse__name_of_version}" required="true" disabled="{!disableInput}"/>
+                    <apex:outputText id="projectLabel" label="{!$Label.pse__originating_project}" value="{!project.name}" />
+                    <apex:inputTextarea id="notes" value="{!notes}" label="{!$Label.pse__common_label_optional_notes}" disabled="{!disableInput}"/>
+
+                    <apex:pageBlockSectionItem id="baselineHelpSection" helpText="{!$ObjectType.pse__Version__c.fields.pse__Baseline__c.InlineHelpText}">
+                        <apex:outputLabel value="{!$Label.pse__set_as_baseline}"
+                                          for="isBaseLine"/>
+                        <apex:inputCheckbox id="isBaseLine" value="{!isBaseline}" label="{!$Label.pse__set_as_baseline}" disabled="{!disableInput}"/>
+                    </apex:pageBlockSectionItem>
+
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+    </apex:outputPanel>
+
+</apex:page>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Der Verarbeitungsstatus dieser Umsatzprognose.</help>
+    <label><!-- Revenue Forecast Processing Status --></label>
+    <name>pse__Revenue_Forecast_Processing_Status__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>Komplett</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Error</masterLabel>
+        <translation>Error</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Started</masterLabel>
+        <translation>Nicht angefangen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending</masterLabel>
+        <translation>steht aus</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Processing</masterLabel>
+        <translation>wird bearbeitet</translation>
+    </picklistValues>
+</CustomFieldTranslation>

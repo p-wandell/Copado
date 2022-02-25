@@ -1,0 +1,118 @@
+<apex:page standardcontroller="ffct__Bundle__c" extensions="ffct.BundlerImportController" recordsetvar="bundles" action="{!isToolMustBeActivated}"> 
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-load.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-deflate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-inflate.js')}"/>
+    <script>
+	     function getResultByPath(path, data, state)
+	     {
+	     	var result = state;
+	     	if(path=='bundle.json')
+            {
+                result = data;
+            }
+            return result;
+	     }
+    </script>
+    <apex:form id="form">
+    <apex:actionStatus id="eventStatus"  >
+         <apex:facet name="start">
+          <apex:outputPanel >
+                        <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                            <div style="position:absolute;top:50%;left:50%">
+                                <apex:image value="/img/loading32.gif"></apex:image>
+                            </div>
+                        </div>
+           </apex:outputPanel>
+        </apex:facet>   
+	</apex:actionStatus>
+	<apex:outputPanel id="progressPanel">
+	<div id="progressImg" style="display:none;width:100%;height:100%;position:absolute;top:0;left:0;">
+		<div style="position:absolute;top:50%;left:50%">
+			<apex:image value="/img/loading32.gif"></apex:image>
+		</div>
+	</div>
+	</apex:outputPanel>
+        <apex:sectionheader title="Import Bundle" help="helploader?topicid=1020"/>
+        <apex:pageMessages escape="false" id="messagesDiv"/>
+        <apex:outputPanel id="progressDiv" layout="block" >
+            <apex:outputPanel layout="block" rendered="{!StartImport}">
+                <img src="{!URLFOR($Resource.progressGIF)}" />
+            </apex:outputPanel>
+            <apex:outputLink style="padding-top:50px;padding-left:50px;color: #015BA7;" value="{!URLFOR($Action.ffct__Bundle__c.View,BundleId)}" rendered="{!DeploymentCompleted}">
+                 Go To Bundle
+            </apex:outputLink>
+        </apex:outputPanel>
+        <apex:actionFunction name="unzipped" action="{!unzipped}" rerender="form">
+            <apex:param name="state" assignTo="{!BundleId}" value=""/>
+        </apex:actionFunction>
+        <apex:outputPanel rendered="{!!StartImport}">
+         
+        <apex:pageBlock >
+        <apex:pageblocksection title="{!$Label.ffct__selectsourcetoimportbundle}" columns="1" collapsible="false">
+        	<apex:selectRadio value="{!BundleSource}" layout="pageDirection">
+				<apex:selectOption itemValue="computer" itemlabel="{!$Label.ffct__selectfilefromcomputer}"/>
+    			<apex:selectOption itemValue="gdrive" itemlabel="{!$Label.ffct__selectfilefromgoogledrive}" itemDisabled="{!!DriveConfigured}"/>
+    				<apex:actionSupport event="onchange" action="{!resetBundleDetailInfo}" reRender="form, bundleInfoPanel" status="eventStatus"></apex:actionSupport>
+			</apex:selectradio>
+        </apex:pageblocksection>
+        	<apex:pageblocksection title="{!$Label.ffct__selectfilefromcomputer}" columns="1" rendered="{!BundleSource!=null && BundleSource=='computer'}" collapsible="false">
+		        <c:unzipfile name="bundle" oncomplete="displaySourceBundleInfo(state)" resultByPath="getResultByPath" />
+					<apex:actionFunction name="displaySourceBundleInfo" action="{!retrieveSourceBundleInfo}" rerender="progressPanel, bundleInfoPanel, messagesDiv" >
+						<apex:param name="state" assignTo="{!bundleJSONFile}" value=""/>
+		            </apex:actionFunction>
+         	</apex:pageblocksection>  
+         	
+	        <apex:pageblocksection title="{!$Label.ffct__selectfilefromgoogledrive}" columns="1" rendered="{!BundleSource!=null && BundleSource=='gdrive'}" collapsible="false">
+	        	<apex:outputpanel id="tags" rendered="{!TagsForBundle.size >0}">
+		        	<apex:pageBlockSectionItem rendered="{!TagsForBundle.size >0}">
+		        		<apex:selectList value="{!TagSelected}" size="1" multiselect="false"  >
+		            			<apex:selectOptions value="{!TagsForBundle}"/>
+		            			<apex:actionSupport event="onchange" action="{!populateFilesFromGDrive}" status="eventStatus"  rerender="form, gDriveFiles" />       
+		            	</apex:selectList>
+		        	</apex:pageBlockSectionItem>
+	        	</apex:outputpanel>
+	        	
+	        	<apex:outputpanel id="gDriveFiles" rendered="{! GdriveFiles.size >0}">
+		        	<apex:pageBlockSectionItem rendered="{! GdriveFiles.size >0}">
+		        		<apex:selectList value="{!SelectedGDriveFile}" size="1" multiselect="false"  ><!-- onchange="importFromGDrive(this.value)" -->
+		            			<apex:selectOptions value="{!GdriveFiles}"/>
+		            			<apex:actionSupport event="onchange" action="{!retrieveSourceBundleInfo}" status="eventStatus"  rerender="form" />       
+		            	</apex:selectList>
+		            	<apex:commandlink action="{!listFilesFromGDrive}" value="{!$Label.ffct__reloadbundles}" rerender="gDriveFiles,form" status="eventStatus" style="padding-left : 10px;"/>
+		        	</apex:pageBlockSectionItem>
+	        	</apex:outputpanel>
+	        </apex:pageblocksection>
+	        
+	        <apex:pageblocksection columns="1" collapsible="false" id="bundleInfoPanel">
+	        	<apex:outputPanel >
+		        	<apex:outputlabel value="{!$Label.ffct__bundledetails}" rendered="{!BundleInfo!=null &&  (BundleInfo.ErrorMessage==null || Len(BundleInfo.ErrorMessage)==0)}"  />
+         			<c:displaybundledetail bundle="{!BundleInfo.ImportBundleinfoRec}" BundleComponentDetail="{!BundleInfo.BundleComponentDetailList}" rendered="{!BundleInfo!=null && (BundleInfo.ErrorMessage==null || Len(BundleInfo.ErrorMessage)==0)}" />
+         		</apex:outputPanel>
+         		<apex:inputCheckbox label="{!$Label.ffct__skipinstalledpackagecomponent}" value="{!SkipInstallPackageComponents}" title="{!$Label.ffct__skipinstalledpackagecomponent}" rendered="{!BundleInfo!=null &&  BundleInfo.InstalledPackageComponentPresent!=null && BundleInfo.InstalledPackageComponentPresent}" />
+         		 <apex:commandButton action="{!importBundleFile}" value="{!$Label.ffct__importbundle}" rerender="importBundlePanel" disabled="{!BundleInfo==null || (BundleInfo.ErrorMessage!=null && Len(BundleInfo.ErrorMessage)>0)}" status="eventStatus" rendered="{!BundleSource=='computer'}"/> 
+         		  <apex:commandButton action="{!importBundleFile}" value="{!$Label.ffct__importbundle}" rerender="importBundlePanel, form" disabled="{!BundleInfo==null || (BundleInfo.ErrorMessage!=null && Len(BundleInfo.ErrorMessage)>0)}" status="eventStatus" rendered="{!BundleSource=='gdrive'}"/> 
+	        </apex:pageblocksection>
+        </apex:pageBlock>
+        
+        </apex:outputPanel>
+        <apex:outputPanel id="importPanel" rendered="{!StartImport}">
+            <apex:actionPoller action="{!isAllBundleComponentsProcessed}" interval="5" rerender="importPanel,progressDiv,messagesDiv"/>              
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="importBundlePanel" >
+        	<apex:outputPanel id="impFile" rendered="{!ImportBundle}">
+    			<c:unzipselectedfile name="bundle" oncomplete="unzipped(state)"/>
+    		</apex:outputPanel>
+    	</apex:outputPanel>
+    </apex:form>
+    
+    <apex:form id="coForm">
+        <apex:actionFunction name="receiveZip" action="{!receiveZipFile}" oncomplete="unzipbundleNext('{!ZipFileEntryResult}','{!ComponentMapping}')">     
+             <apex:param id="afilename" name="filename"  value="" />
+             <apex:param id="apath" name="path"  value="" />
+             <apex:param id="adata" name="data"  value="" />
+             <apex:param id="astate" name="state"  value="" /> 
+        </apex:actionFunction> 
+	</apex:form>		
+</apex:page>

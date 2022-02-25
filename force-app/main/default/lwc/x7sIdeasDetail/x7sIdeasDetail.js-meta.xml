@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Ideas Detail</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="zoneName" label="Zone Name" type="String" description="Ideas Zone Name" required="true"/>
+            <property name="layoutVariant" label="Default Display Variant" type="String" description="Select the default layout option." datasource="None,Featured"/>
+            <property name="layout" label="Default Layout" type="String" description="Select the default list layout" datasource="Card,List"/>
+            <property name="imageHeight" label="Image Height" type="String" description="Specify Image height in Pixel (Ex - 300px)."/>
+            <property name="customFieldSetName" label="Custom Field Set Name" type="String" description="Specify the custom metadata field set API name. Leave blank to fall back to the Ideas Settings field set."/>
+            <property name="showCustomFields" label="Show Custom fields" type="Boolean" description="Enable to display all defined custom fields on the detail page"/>
+            <property name="hideEmptyCustomFields" label="Hide Empty Custom Fields" type="Boolean" description="Enable to hide empty custom fields"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+            <property name="recordId" label="Record Id" type="String" default="{!recordId}" description="Set to {!recordId} to pass the page's record Id."/>
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,lightning__RecordPage">
+            <property name="zoneName" label="Zone Name" type="String" description="Ideas Zone Name" required="true"/>
+            <property name="layoutVariant" label="Default Display Variant" type="String" description="Select the default layout option." datasource="None,Featured"/>
+            <property name="layout" label="Default Layout" type="String" description="Select the default list layout" datasource="Card,List"/>
+            <property name="imageHeight" label="Image Height" type="String" description="Specify Image height in Pixel (Ex - 300px)."/>
+            <property name="customFieldSetName" label="Custom Field Set Name" type="String" description="Specify the custom metadata field set API name. Leave blank to fall back to the Ideas Settings field set."/>
+            <property name="showCustomFields" label="Show custom fields?" type="Boolean" description="Enable to display all defined custom fields on the detail page"/>
+            <property name="hideEmptyCustomFields" label="Hide Empty Custom Fields" type="Boolean" description="Enable to hide empty custom fields"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

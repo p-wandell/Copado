@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>Displays a progress circle based on how much of the user’s profile is filled out.</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Profile Progress</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="requiredFields" type="String" label="Required Fields For Progression" default="AboutMe;Email;SmallPhotoUrl" description="Include all the fields that are required to calculate the profile completion percentage. Separate each required field with a as “;”"/>
+            <property name="resultFormat" type="String" label="Result Format" datasource="Percentage,Actual Number,Mix,Percentage Mix" description="This controls what will display in the center of the progress circle. For example, Percentage will display the percentage only."/>
+            <property name="size" type="Integer" label="Size" default="150" description="Sets the width and height. Default 150px."/>
+            <property name="strokeWidth" type="Integer" label="Line Width" description="Controls the width of the line. Default 5."/>
+            <property name="strokeLineCap" type="String" label="Line Ending" datasource="butt,round" description="Controls the shape of the ends of lines."/>
+            <property name="progressColor" type="String" label="Progress Color" description="This is the color of the progress portion of the tracker. The default color is the community's border color."/>
+            <property name="remainingColor" type="String" label="Remaining Color" description="This is the color of the remaining portion of the tracker. The default color is the community's border color."/>
+            <property name="innerCircleColor" type="String" label="Inner Circle Color" description="This will be the background color of inner circle. Default is none."/>
+            <property name="thresholdPercent" type="Integer" label="Threshold Percent" min="0" max="100" description="Optionally set a threshold percentage which can change the color of the progress tracker."/>
+            <property name="thresholdColor" type="String" label="Threshold Color" description="This is the color of the tracker after the threshold percentage."/>
+            <property name="includeText" type="Boolean" label="Include any text?" default="False" description="Check the box if you would like to include text to the right of the progress circle."/>
+            <property name="header" type="String" label="Header Text" description="Optional header text."/>
+            <property name="subHeader" type="String" label="Sub-Header Text" description="Optional sub-header text."/>
+            <property name="description" type="String" label="Description Text" description="Optional description text."/>
+            <property name="linkText" type="String" label="Link Text" description="Optional link text for the Custom Link URL"/>
+            <property name="linkUrl" type="String" label="Link URL" description="Optional navigation url. If no url is provided the link will navigate to the current user’s profile page."/>
+            <property name="customClass" type="string" label="Custom Class Name" description="Custom CSS class name. Usually remains blank."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

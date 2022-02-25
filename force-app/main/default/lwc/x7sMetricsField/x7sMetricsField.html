@@ -1,0 +1,81 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+    <c-x7s-shr-component-wrapper auto-slds-card>
+    <lightning-layout multiple-rows="true" pull-to-boundary="small" vertical-align="stretch">
+        <template if:true={metric1}> 
+            <c-x7s-metrics-layout title-alignment = {titleAlignmentInLower}
+                                title = {title1}
+                                is-bold = {isBold}
+                                metric-value = {metricValue1}
+                                metric-value-type = {metricValueType1}
+                                metric-label = {metricLabel1}
+                                icon-name = {iconName1}
+                                icon-hover-text = {iconHoverText1}
+                                icon-color = {iconColor1}
+                                show-left-button = {showLeftButton1}
+                                label-for-left-button = {labelForLeftButton1}
+                                url-for-left-button = {urlForLeftButton1}
+                                show-right-button = {showRightButton1}
+                                label-for-right-button = {labelForRightButton1}
+                                url-for-right-button = {urlForRightButton1}>
+            </c-x7s-metrics-layout>
+        </template>
+        <template if:true={metric2}>
+            <c-x7s-metrics-layout title-alignment = {titleAlignmentInLower}
+                                    title = {title2}
+                                    is-bold = {isBold}
+                                    metric-value = {metricValue2}
+                                    metric-value-type = {metricValueType2}
+                                    metric-label = {metricLabel2}
+                                    icon-name = {iconName2}
+                                    icon-hover-text = {iconHoverText2}
+                                    icon-color = {iconColor2}
+                                    show-left-button = {showLeftButton2}
+                                    label-for-left-button = {labelForLeftButton2}
+                                    url-for-left-button = {urlForLeftButton2}
+                                    show-right-button = {showRightButton2}
+                                    label-for-right-button = {labelForRightButton2}
+                                    url-for-right-button = {urlForRightButton2}>
+            </c-x7s-metrics-layout>
+        </template>
+        <template if:true={metric3}>
+            <c-x7s-metrics-layout title-alignment = {titleAlignmentInLower}
+                                    title = {title3}
+                                    is-bold = {isBold}
+                                    metric-value = {metricValue3}
+                                    metric-value-type = {metricValueType3}
+                                    metric-label = {metricLabel3}
+                                    icon-name = {iconName3}
+                                    icon-hover-text = {iconHoverText3}
+                                    icon-color = {iconColor3}
+                                    show-left-button = {showLeftButton3}
+                                    label-for-left-button = {labelForLeftButton3}
+                                    url-for-left-button = {urlForLeftButton3}
+                                    show-right-button = {showRightButton3}
+                                    label-for-right-button = {labelForRightButton3}
+                                    url-for-right-button = {urlForRightButton3}>
+            </c-x7s-metrics-layout>
+        </template>
+        <template if:true={metric4}>
+            <c-x7s-metrics-layout title-alignment = {titleAlignmentInLower}
+                                    title = {title4}
+                                    is-bold = {isBold}
+                                    metric-value = {metricValue4}
+                                    metric-value-type = {metricValueType4}
+                                    metric-label = {metricLabel4}
+                                    icon-name = {iconName4}
+                                    icon-hover-text = {iconHoverText4}
+                                    icon-color = {iconColor4}
+                                    show-left-button = {showLeftButton4}
+                                    label-for-left-button = {labelForLeftButton4}
+                                    url-for-left-button = {urlForLeftButton4}
+                                    show-right-button = {showRightButton4}
+                                    label-for-right-button = {labelForRightButton4}
+                                    url-for-right-button = {urlForRightButton4}>
+            </c-x7s-metrics-layout>
+        </template>
+    </lightning-layout> 
+    </c-x7s-shr-component-wrapper>
+</template>

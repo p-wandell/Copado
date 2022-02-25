@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>IP Opportunity Product Created</name>
+    <style>none</style>
+    <subject>IP Added to Open Opp: {!OpportunityLineItem.Product_Name_Formula__c} for {!OpportunityLineItem.Opportunity_Name_Formula__c}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+ */
+
+:host {
+
+}
+ul > * {
+    display: inline-block;
+}
+ul > * + *:before {
+    content: "/";
+}

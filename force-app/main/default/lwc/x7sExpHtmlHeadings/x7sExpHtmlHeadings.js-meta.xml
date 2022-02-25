@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>An HTML heading</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S HTML Headings</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="text" label="Heading Text" type="String" />
+            <property name="tag" label="Heading Level" type="String" datasource="H1 - Page Heading, H2 - Section Heading, H3 - Subsection Heading, H4 - Paragraph Heading, H5 - Small Heading" />
+            <property name="size" label="Heading Size" type="String" datasource="none, small, medium, large" description="Adds slds-text-heading_[size] to heading tag." />
+            <property name="align" label="Heading Alignment" type="String" datasource="left, center, right" />
+            <property name="customClass" label="CSS Class" type="String" description="Apply additional SLDS or custom CSS class" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

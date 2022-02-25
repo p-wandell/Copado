@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_IP_Phil_View</fullName>
+    <columns>PRODUCT2.NAME</columns>
+    <columns>Price_Formula__c</columns>
+    <columns>LEX_Formula__c</columns>
+    <columns>LWC__c</columns>
+    <columns>AppX_Formula__c</columns>
+    <columns>Battle_Card_Formula__c</columns>
+    <columns>Launch_Formula__c</columns>
+    <columns>PRODUCT2.DESCRIPTION</columns>
+    <columns>PRODUCT2.CUSTOMER_PRODUCT_ID</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>PRODUCT2.FAMILY</field>
+        <operation>equals</operation>
+        <value>Product</value>
+    </filters>
+    <filters>
+        <field>PRODUCT2.ACTIVE</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>PRODUCT2.NAME</field>
+        <operation>notContain</operation>
+        <value>Extraction</value>
+    </filters>
+    <label>Active IP: Phil View</label>
+</ListView>

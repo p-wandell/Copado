@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ideas_by_7Summits</fullName>
+    <columns>NAME</columns>
+    <columns>sfLma__Install_Date__c</columns>
+    <columns>sfLma__Account__c</columns>
+    <columns>sfLma__Contact__c</columns>
+    <columns>sfLma__License_Type__c</columns>
+    <columns>sfLma__Package__c</columns>
+    <columns>sfLma__Package_Version__c</columns>
+    <columns>sfLma__Package_Version_Number__c</columns>
+    <columns>sfLma__Lead__c</columns>
+    <columns>sfLma__Org_Edition__c</columns>
+    <columns>sfLma__Org_Instance__c</columns>
+    <columns>sfLma__Subscriber_Org_ID__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>sfLma__Package__c</field>
+        <operation>contains</operation>
+        <value>Ideas</value>
+    </filters>
+    <filters>
+        <field>sfLma__Status__c</field>
+        <operation>equals</operation>
+        <value>Active</value>
+    </filters>
+    <label>Ideas (Active)</label>
+    <language>en_US</language>
+</ListView>

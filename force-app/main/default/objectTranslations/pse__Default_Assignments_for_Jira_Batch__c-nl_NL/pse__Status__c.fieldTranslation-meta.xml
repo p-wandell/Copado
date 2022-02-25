@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>De huidige status van de batchtaak: &quot;Bezig met verwerken&quot;, &quot;Voltooid&quot; of &quot;Fout&quot;.</help>
+    <label><!-- Status --></label>
+    <name>pse__Status__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>Compleet</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Error</masterLabel>
+        <translation>Fout</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Processing</masterLabel>
+        <translation>Verwerken</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldSets>
+        <label><!-- Assign Multiple Resources to Project Filter Options --></label>
+        <name>pse__AssignMultiResourceFilterOptions</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Assign Multiple Resources to Project Search Columns --></label>
+        <name>pse__AssignMultiResourceSearchColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Resource Planner Columns --></label>
+        <name>pse__Resource_Planner_Columns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Resource Planner Enabled Filters --></label>
+        <name>pse__Resource_Planner_Enabled_Filters</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Resource Tooltip Fieldset --></label>
+        <name>pse__Resource_Tooltip_Field_Set</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- SearchResourcesFilterFields --></label>
+        <name>pse__SearchResourcesFilterFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- SearchResourcesResultFields --></label>
+        <name>pse__SearchResourcesResultFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- default --></label>
+        <name>sortablegrid__default</name>
+    </fieldSets>
+    <recordTypes>
+        <label><!-- Contact --></label>
+        <name>Contact</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- PSA Resource --></label>
+        <name>PSA_Resource</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Trailhead --></label>
+        <name>Trailhead</name>
+    </recordTypes>
+    <validationRules>
+        <errorMessage><!-- Account is required --></errorMessage>
+        <name>Account_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Contact Industry Type is a required field --></errorMessage>
+        <name>Industry_Type_Not_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- CompanyId should be a numeric value --></errorMessage>
+        <name>LID__Check_CompanyId_Value</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Lead Source Detail is required. --></errorMessage>
+        <name>Lead_Source_Detail_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Lead Source is required --></errorMessage>
+        <name>Lead_Source_Not_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- This record has been excluded from automated field updates from Data.com Clean jobs. --></errorMessage>
+        <name>jsImpacts__Block_autoupdate_from_Data_com</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Add_to_Pardot_List --></label>
+        <name>Add_to_Pardot_List</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleMaps --></label>
+        <name>GoogleMaps</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleSearch --></label>
+        <name>GoogleSearch</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Log_A_Call --></label>
+        <name>Log_A_Call</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- SendGmail --></label>
+        <name>SendGmail</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- YahooMaps --></label>
+        <name>YahooMaps</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- YahooWeather --></label>
+        <name>YahooWeather</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- dc3Check --></label>
+        <name>dupcheck__dc3Check</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- dc3Merge --></label>
+        <name>dupcheck__dc3Merge</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- ExactTarget_Resubscribe --></label>
+        <name>et4ae5__ExactTarget_Resubscribe</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- ExactTarget_Unsubscribe --></label>
+        <name>et4ae5__ExactTarget_Unsubscribe</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Send_ExactTarget_Email --></label>
+        <name>et4ae5__Send_ExactTarget_Email</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Send_ExactTarget_SMS --></label>
+        <name>et4ae5__Send_ExactTarget_SMS</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- View_ExactTarget_Analytics --></label>
+        <name>et4ae5__View_ExactTarget_Analytics</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Send_Pardot_Email --></label>
+        <name>pi__Send_Pardot_Email</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Send_Pardot_Emails --></label>
+        <name>pi__Send_Pardot_Emails</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Send_Single_Pardot_Email --></label>
+        <name>pi__Send_Single_Pardot_Email</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Send_to_Prospect_Insight --></label>
+        <name>pi__Send_to_Prospect_Insight</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Calculate_Utilization --></label>
+        <name>pse__Calculate_Utilization</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Generate_Schedule_Report --></label>
+        <name>pse__Generate_Schedule_Report</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Resource_Planner --></label>
+        <name>pse__Resource_Planner</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Resource_Planner_Detail --></label>
+        <name>pse__Resource_Planner_Detail</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Resource_Planner_Group --></label>
+        <name>pse__Resource_Planner_Group</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Resource_Planner_Practice --></label>
+        <name>pse__Resource_Planner_Practice</name>
+    </webLinks>
+</CustomObjectTranslation>

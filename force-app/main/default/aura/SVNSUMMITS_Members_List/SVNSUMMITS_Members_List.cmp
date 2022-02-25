@@ -1,0 +1,256 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<aura:component controller="SVNSUMMITS_MembersController"
+                access="global"
+                extends="c:SVNSUMMITS_Members_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+    
+    <!-- EVENTS -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:handler event="c:SVNSUMMITS_Members_SortBy_Event"  action="{!c.setSortBy}"/>
+    <aura:handler event="c:SVNSUMMITS_Members_Filters_Event" action="{!c.setMembersFilters}"/>
+    <aura:handler event="c:SVNSUMMITS_Members_Follow_Event"  action="{!c.handleFollowRecord}"/>
+    
+    <aura:registerEvent name="appEvent" type="c:SVNSUMMITS_Members_Header_Event"/>
+    
+    <!-- Options -->
+    <aura:attribute name="numberOfMembers"      type="Integer" default="12"     access="global"/>
+    <aura:attribute name="numberOfTiles"        type="String"  default="3"      access="global"/>
+    <aura:attribute name="displayTitle"         type="Boolean" default="true"   access="global"/>
+    <aura:attribute name="displayPhone"         type="Boolean" default="true"   access="global"/>
+    <aura:attribute name="clickToCall"          type="Boolean" default="false"  access="global"/>
+    <aura:attribute name="displayEmail"         type="Boolean" default="true"   access="global"/>
+    <aura:attribute name="displayKnowledge"     type="Boolean" default="true"   access="global"/>
+    <aura:attribute name="displayFollowButton"  type="Boolean" default="true"   access="global"/>
+    <aura:attribute name="displayChatterStats"  type="Boolean" default="true"   access="global"/>
+    <aura:attribute name="hideInternal"         type="Boolean" default="false"  access="global"/>
+    <aura:attribute name="excludedMembers"      type="String"  default=""       access="global"/>
+    <aura:attribute name="initialLoad"          type="Boolean" default="true"   access="global"/>
+    <aura:attribute name="showPrevNextTop"      type="Boolean" default="false"  access="global"/>
+    <aura:attribute name="showPrevNextBottom"   type="Boolean" default="true"   access="global"/>
+    <aura:attribute name="showLayoutButton"     type="Boolean" default="true"   access="global"/>
+    
+    <!-- CUSTOM FIELDS -->
+    <aura:attribute name="customLabel1" type="String" default="" access="global"/>
+    <aura:attribute name="customField1" type="String" default="" access="global"/>
+    <aura:attribute name="customLabel2" type="String" default="" access="global"/>
+    <aura:attribute name="customField2" type="String" default="" access="global"/>
+    <aura:attribute name="customLabel3" type="String" default="" access="global"/>
+    <aura:attribute name="customField3" type="String" default="" access="global"/>
+    <aura:attribute name="customLabel4" type="String" default="" access="global"/>
+    <aura:attribute name="customField4" type="String" default="" access="global"/>
+    <aura:attribute name="customLabel5" type="String" default="" access="global"/>
+    <aura:attribute name="customField5" type="String" default="" access="global"/>
+    <aura:attribute name="customLabel6" type="String" default="" access="global"/>
+    <aura:attribute name="customField6" type="String" default="" access="global"/>
+    
+    <!-- DATA -->
+    <aura:attribute name="membersListWrapper" type="SVNSUMMITS_WrapperMembers" access="global"/>
+    
+    <aura:attribute name="tileSize"   type="String"  default="3"        access="public"/>
+    <aura:attribute name="listLayout" type="String"  default="Tile"     access="global"/>
+    <aura:attribute name="layoutTile" type="Boolean" description="true" access="global"/>
+    
+    <aura:attribute name="sortBy"          type="String" default="Sort by First Name" access="global"/>
+    <aura:attribute name="searchMyMembers" type="String" default="" access="global"/>
+    <aura:attribute name="searchString"    type="String" default="" access="global"/>
+    <aura:attribute name="topicString"     type="String" default="" access="global"/>
+    
+    <!-- FILTERS -->
+    <aura:attribute name="titleSearchValue" type="String"   default=""  access="global"/>
+    <aura:attribute name="countryFilter"    type="String"   default=""  access="global"/>
+    <aura:attribute name="stateFilter"      type="String"   default=""  access="global"/>
+    <aura:attribute name="cityFilter"       type="String"   default=""  access="global"/>
+    <aura:attribute name="accountFilter"    type="String"   default=""  access="global"/>
+    <aura:attribute name="topicFilter"      type="String"   default=""  access="global"/>
+    
+    <aura:attribute name="customFilter1"    type="String"   default=""  access="global"/>
+    <aura:attribute name="customValue1"     type="String"   default=""  access="global"/>
+    <aura:attribute name="customFilter2"    type="String"   default=""  access="global"/>
+    <aura:attribute name="customValue2"     type="String"   default=""  access="global"/>
+    <aura:attribute name="customFilter3"    type="String"   default=""  access="global"/>
+    <aura:attribute name="customValue3"     type="String"   default=""  access="global"/>
+    <aura:attribute name="customFilter4"    type="String"   default=""  access="global"/>
+    <aura:attribute name="customValue4"     type="String"   default=""  access="global"/>
+    <aura:attribute name="customFilter5"    type="String"   default=""  access="global"/>
+    <aura:attribute name="customValue5"     type="String"   default=""  access="global"/>
+    <aura:attribute name="customFilter6"    type="String"   default=""  access="global"/>
+    <aura:attribute name="customValue6"     type="String"   default=""  access="global"/>
+    
+    <lightning:layout multipleRows="true">
+        
+        <lightning:layoutItem size="12">
+            <lightning:layout multipleRows="false"
+                              horizontalAlign="end">
+                
+                <!-- Layout buttons -->
+                <aura:if isTrue="{!v.showLayoutButton}">
+                    <lightning:layoutItem>
+                        <lightning:buttonGroup>
+                            <lightning:buttonIcon alternativeText="Tile"
+                                                  aura:id="Tile"
+                                                  disabled="{!v.layoutTile}"
+                                                  title="{!$Label.c.ss_mbr_tooltip_LayoutButtonTile}"
+                                                  iconName="utility:apps"
+                                                  name="layoutTile"
+                                                  size="large"
+                                                  onclick="{!c.handleLayoutButtons}"/>
+                            <lightning:buttonIcon alternativeText="List"
+                                                  aura:id="List"
+                                                  disabled="{! not(v.layoutTile)}"
+                                                  title="{!$Label.c.ss_mbr_tooltip_LayoutButtonList}"
+                                                  iconName="utility:list"
+                                                  name="layoutList"
+                                                  size="large"
+                                                  onclick="{!c.handleLayoutButtons}"/>
+                        </lightning:buttonGroup>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                
+                <!-- Pagination at the top of the control -->
+                <aura:if isTrue="{!v.showPrevNextTop}">
+                    <lightning:layoutItem padding="horizontal-large">
+                        <lightning:layout multipleRows="false"
+                                          verticalAlign="start"
+                                          horizontalAlign="end">
+                            <lightning:layoutItem class="slds-badge slds-theme--default slds-p-around--small">
+                                {!$Label.c.ss_mbr_label_Page}&nbsp;
+                                {!v.membersListWrapper.pageNumber}&nbsp;/&nbsp;{!v.membersListWrapper.totalPages}
+                            </lightning:layoutItem>
+                            
+                            <lightning:layoutItem class="slds-x-small-buttons--horizontal slds-p-bottom--medium">
+                                <lightning:button name="prevPage"
+                                                  variant="brand"
+                                                  label="{!$Label.c.ss_mbr_button_Previous}"
+                                                  disabled="{! !v.membersListWrapper.hasPreviousSet}"
+                                                  onclick="{!c.getPreviousPage}"/>
+                                
+                                <lightning:button name="nextPage"
+                                                  variant="brand"
+                                                  label="{!$Label.c.ss_mbr_button_Next}"
+                                                  disabled="{! !v.membersListWrapper.hasNextSet}"
+                                                  onclick="{!c.getNextPage}"/>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </aura:if>
+            </lightning:layout>
+        </lightning:layoutItem>
+        <lightning:spinner size="small"
+                           class="slds-hide"
+                           aura:id="listSpinner"
+                           alternativeText="Loading..."/>
+        
+        <lightning:layoutItem size="12">
+            <lightning:layout multipleRows="true"
+                              verticalAlign="stretch"
+                              pullToBoundary="small">
+                
+                <aura:if isTrue="{! and(equals(v.searchMyMembers, 'true'), equals(v.membersListWrapper.membersList.length, 0))}">
+                    <lightning:layoutItem class="slds-text-heading_small slds-align--absolute-center">
+                        {!$Label.c.ss_mbr_followListEmpty}
+                    </lightning:layoutItem>
+                </aura:if>
+
+                <aura:if isTrue="{!v.listLayout == 'Tile'}">
+                    <aura:iteration items="{!v.membersListWrapper.membersList}"
+                                    var="member">
+                        <c:SVNSUMMITS_Members_Tile member="{!member}"
+                                                   currentUser="{!v.membersListWrapper.currentUser}"
+                                                   isInternal="{!v.membersListWrapper.isInternalUser}"
+                                                   isExternal="{!v.membersListWrapper.isExternalUser}"
+                                                   isGuest="{!v.membersListWrapper.isGuestUser}"
+                                                   displayTitle="{!v.displayTitle}"
+                                                   displayPhone="{!v.displayPhone}"
+                                                   clickToCall="{!v.clickToCall}"
+                                                   displayEmail="{!v.displayEmail}"
+                                                   displayKnowledge="{!v.displayKnowledge}"
+                                                   displayFollowButton="{!v.displayFollowButton}"
+                                                   displayChatterStats="{!v.displayChatterStats}"
+                                                   customLabel1="{!v.customLabel1}"
+                                                   customField1="{!v.customField1}"
+                                                   customLabel2="{!v.customLabel2}"
+                                                   customField2="{!v.customField2}"
+                                                   customLabel3="{!v.customLabel3}"
+                                                   customField3="{!v.customField3}"
+                                                   customLabel4="{!v.customLabel4}"
+                                                   customField4="{!v.customField4}"
+                                                   customLabel5="{!v.customLabel5}"
+                                                   customField5="{!v.customField5}"
+                                                   customLabel6="{!v.customLabel6}"
+                                                   customField6="{!v.customField6}"
+                                                   tileSize="{!v.tileSize}"/>
+                    </aura:iteration>
+                    <aura:set attribute="else">
+                        <aura:iteration items="{!v.membersListWrapper.membersList}"
+                                        var="member">
+                            <lightning:layoutItem size="12"
+                                                  padding="around-small"
+                                                  largeDeviceSize="12"
+                                                  mediumDeviceSize="12"
+                                                  smallDeviceSize="12">
+                                <c:SVNSUMMITS_Members_Row member="{!member}"
+                                                          currentUser="{!v.membersListWrapper.currentUser}"
+                                                          isInternal="{!v.membersListWrapper.isInternalUser}"
+                                                          isExternal="{!v.membersListWrapper.isExternalUser}"
+                                                          isGuest="{!v.membersListWrapper.isGuestUser}"
+                                                          displayTitle="{!v.displayTitle}"
+                                                          displayPhone="{!v.displayPhone}"
+                                                          clickToCall="{!v.clickToCall}"
+                                                          displayEmail="{!v.displayEmail}"
+                                                          displayKnowledge="{!v.displayKnowledge}"
+                                                          displayFollowButton="{!v.displayFollowButton}"
+                                                          displayChatterStats="{!v.displayChatterStats}"
+                                                          customLabel1="{!v.customLabel1}"
+                                                          customField1="{!v.customField1}"
+                                                          customLabel2="{!v.customLabel2}"
+                                                          customField2="{!v.customField2}"
+                                                          customLabel3="{!v.customLabel3}"
+                                                          customField3="{!v.customField3}"
+                                                          customLabel4="{!v.customLabel4}"
+                                                          customField4="{!v.customField4}"
+                                                          customLabel5="{!v.customLabel5}"
+                                                          customField5="{!v.customField5}"
+                                                          customLabel6="{!v.customLabel6}"
+                                                          customField6="{!v.customField6}"/>
+                            </lightning:layoutItem>
+                        </aura:iteration>
+                    </aura:set>
+                </aura:if>
+
+            </lightning:layout>
+        </lightning:layoutItem>
+        
+        <!-- Pagination -->
+        <aura:if isTrue="{!v.showPrevNextBottom}">
+            <lightning:layoutItem size="12"
+                                  class="slds-p-top--medium">
+                <lightning:layout multipleRows="false"
+                                  verticalAlign="start"
+                                  horizontalAlign="end">
+                    <lightning:layoutItem class="slds-badge slds-theme--default slds-p-around--small">
+                        {!$Label.c.ss_mbr_label_Page}&nbsp;
+                        {!v.membersListWrapper.pageNumber}&nbsp;/&nbsp;{!v.membersListWrapper.totalPages}
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-x-small-buttons--horizontal slds-p-bottom--medium">
+                        <lightning:button name="prevPage"
+                                          variant="brand"
+                                          label="{!$Label.c.ss_mbr_button_Previous}"
+                                          disabled="{! !v.membersListWrapper.hasPreviousSet}"
+                                          onclick="{!c.getPreviousPage}"/>
+                        
+                        <lightning:button name="nextPage"
+                                          variant="brand"
+                                          label="{!$Label.c.ss_mbr_button_Next}"
+                                          disabled="{! !v.membersListWrapper.hasNextSet}"
+                                          onclick="{!c.getNextPage}"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+</aura:component>

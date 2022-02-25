@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) 2020.  7Summits Inc. All rights reserved.
+  -->
+
+<!-- 7S Component Wrapper -->
+<template>
+    <div class={componentClass}>
+        <template if:false={hideHeader}>
+            <slot name="header">
+                <lightning-layout if:true={showHeader} class={headerClass} vertical-align={titleVerticalAlign}>
+                    <template if:true={iconName}>
+                        <lightning-layout-item flexibility="no-shrink" class="x7s-component__icon">
+                            <lightning-icon
+                                    icon-name={iconName}
+                                    alternative-text={title}
+                                    size={iconSize}></lightning-icon>
+                        </lightning-layout-item>
+                    </template>
+                    <lightning-layout-item flexibility="auto, grow">
+                        <template if:true={title}>
+                            <h2 class="x7s-component__title">{title}</h2>
+                        </template>
+                        <template if:true={description}>
+                            <div class="x7s-component__description">
+                                <lightning-formatted-rich-text value={description} ></lightning-formatted-rich-text>
+                            </div>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </slot>
+        </template>
+
+        <div class={bodyClass}>
+            <slot></slot>
+        </div>
+
+        <template if:false={hideFooter}>
+            <div class={footerClass}>
+                <slot name="footer"
+                      onslotchange={handleFooterSlotChange}></slot>
+                <div if:true={showBranding} class="x7s-component__branding">
+                    <a href="http://7summitsinc.com/?utm_campaign=app-exchange-component">Powered by 7Summits</a>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

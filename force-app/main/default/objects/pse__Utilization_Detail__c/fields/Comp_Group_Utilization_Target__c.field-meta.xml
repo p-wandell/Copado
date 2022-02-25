@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Comp_Group_Utilization_Target__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Competency_Group__c = &quot;Delivery Operations&quot;, 0.713,
+IF(Competency_Group__c = &quot;User-Centered Experience Design&quot;, 0.673,
+IF(Competency_Group__c = &quot;Business Consulting&quot;, 0.687,
+IF(Competency_Group__c = &quot;Technology &amp; Accelerators&quot;, 0.724,
+NULL))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Comp Group Utilization Target</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Percent</type>
+</CustomField>

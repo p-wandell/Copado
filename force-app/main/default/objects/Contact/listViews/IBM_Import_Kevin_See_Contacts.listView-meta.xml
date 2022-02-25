@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IBM_Import_Kevin_See_Contacts</fullName>
+    <booleanFilter>(1 AND 2) OR 3</booleanFilter>
+    <columns>FULL_NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>CONTACT.PHONE1</columns>
+    <columns>CONTACT.EMAIL</columns>
+    <columns>CONTACT.TITLE</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>CONTACT.LEAD_SOURCE</columns>
+    <columns>Lead_Source__c</columns>
+    <columns>Lead_Source_Detail__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CONTACT.CREATED_DATE</field>
+        <operation>equals</operation>
+        <value>8/9/2021 12:00 AM</value>
+    </filters>
+    <filters>
+        <field>ACCOUNT.NAME</field>
+        <operation>contains</operation>
+        <value>IBM</value>
+    </filters>
+    <filters>
+        <field>CONTACT.EMAIL</field>
+        <operation>equals</operation>
+        <value>Kent.Luton@ibm.com,Cathy.Rector@ibm.com,Brett.Waltz@ibm.com,Stefanie.Causey@ibm.com</value>
+    </filters>
+    <label>IBM Channel - Kevin See</label>
+</ListView>

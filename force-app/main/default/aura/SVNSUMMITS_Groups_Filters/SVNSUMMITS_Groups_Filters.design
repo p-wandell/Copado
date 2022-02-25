@@ -1,0 +1,13 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Groups Filters">
+	<design:attribute name="showMyGroups"
+	                  label="Show My Groups Filter?"/>
+	<design:attribute name="showSortBy"
+	                  label="Show Sort By?"/>
+	<design:attribute name="defaultSort"
+	                  label="Default Sort By Order" dataSource="Latest Group Activity,Recently Viewed,Most Number Of Members,Least Number Of Members,Date Created : Oldest,Date Created : Newest"/>
+	<design:attribute name="showGroupType"
+	                  label="Show Group Type Filter?"/>
+	<design:attribute name="defaultType"
+	                  label="Default Group Type" dataSource="All Types,Public,Private"/>
+</design:component>

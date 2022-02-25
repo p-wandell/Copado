@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Annual_Maintenance__c</fullName>
+    <description>Calculate the dollar amount for maintenance &amp; indicate in this field.  EXAMPLE:  maintenance is 20% of $100K, then enter $20K here.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Calculate the dollar amount for maintenance &amp; indicate in this field.  EXAMPLE:  maintenance is 20% of $100K, then enter $20K here.</inlineHelpText>
+    <label>Retired 12-31-15 Annual Maintenance</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

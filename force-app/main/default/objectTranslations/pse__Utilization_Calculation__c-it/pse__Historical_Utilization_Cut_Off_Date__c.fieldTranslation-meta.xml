@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Seleziona il valore che descrive quando i calcoli dell&apos;utilizzo storico dovrebbero cessare. Questo è in genere l&apos;ultimo giorno della settimana in cui sono stati immessi tutti i cartellini.</help>
+    <label><!-- Historical Utilization Cut-Off Date --></label>
+    <name>pse__Historical_Utilization_Cut_Off_Date__c</name>
+    <picklistValues>
+        <masterLabel>End of Last Week</masterLabel>
+        <translation>Fine della scorsa settimana</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>End of This Week</masterLabel>
+        <translation>Fine di questa settimana</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Today</masterLabel>
+        <translation>Oggi</translation>
+    </picklistValues>
+</CustomFieldTranslation>

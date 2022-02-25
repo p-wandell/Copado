@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <applicationVisibilities>
+        <application>fferpcore__ERP_Currency_Exchange</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <applicationVisibilities>
+        <application>fferpcore__ERP_Currency_Exchange_Lightning</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <description>Delete exchange rate groups.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>ERP Common Concepts - Exchange Rate Group - Delete</label>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>fferpcore__ExchangeRateGroup__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <pageAccesses>
+        <apexPage>fferpcore__ExchangeRateGroupHelp</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>fferpcore__HelpLoader</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <tabSettings>
+        <tab>fferpcore__ExchangeRateGroup__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

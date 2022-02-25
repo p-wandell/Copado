@@ -1,0 +1,28 @@
+<apex:component layout="none">
+    <apex:attribute required="true" name="title" description="Title of the page" type="String"/>
+    <apex:attribute required="false" name="subtitle" description="Subtitle of the page" type="String"/>
+
+    <div class="row page-header">
+        <div class="col-md-7">
+            <h2>
+                {!title}
+                <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(subtitle))}">
+                    <div class="subheader">
+                        <small>
+                            {!subtitle}
+                        </small>
+                    </div>
+                </apex:outputPanel>
+            </h2>
+        </div>
+        <div class="col-md-4 col-md-offset-1 text-right hidden-xs hidden-sm">
+            <!-- Typically the action is prefixed by the Community Name represented by the base URL -->
+            <form action="/search/SmartSearch" method="get" class="form-inline">
+                <div id="phSearch">
+                    <input id="phSearchInput" placeholder="Search the Community" title="Search the Community" type="text" name="str" class="form-control"/><!--
+                    --><input type="submit" value="Search" class="btn bs-btn-override"></input>
+                </div>
+            </form>
+        </div>
+    </div>
+</apex:component>

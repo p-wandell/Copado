@@ -1,0 +1,117 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Featured Topics -->
+<template>
+	<template if:true={isLoaded}>
+		<template if:true={showTopics}>
+			<c-x7s-shr-component-wrapper title={title} title-align={titleAlign} custom-class={componentClass} aria-label={label.labelAriaWrapper}>
+
+				<!-- Tile View -->
+				<lightning-layout if:true={showTileView} multiple-rows style={gridStyles}>
+					<template for:each={displayedTopics} for:item="topic">
+						<lightning-layout-item
+								key={topic.topic.id}
+								class={itemClass}
+								size={itemSize}
+								small-device-size={itemSizeSmall}
+								medium-device-size={itemSizeMedium}
+								large-device-size={itemSizeLarge}
+								style={itemStyles}>
+							<c-x7s-shr-tile
+									key={topic.topic.id}
+									record-id={topic.topic.id}
+									border-radius={imageBorderRadius}
+									description={topic.topic.description}
+									description-color={descriptionColor}
+									description-color-hover={descriptionColorHover}
+									hide-description={hideDescription}
+									hide-overlay={hideOverlay}
+									horizontal-alignment={horizontalAlignment}
+									image-height={imageHeight}
+									image-src={topic.topic.images.featuredImageUrl}
+									image-width={imageWidth}
+									overlay-color={overlayColor}
+									overlay-color-hover={overlayColorHover}
+									reduce-animation={reduceAnimation}
+									title={topic.topic.name}
+									title-color={titleColor}
+									title-color-hover={titleColorHover}
+									vertical-alignment={verticalAlignment}
+									></c-x7s-shr-tile>
+						</lightning-layout-item>
+					</template>
+				</lightning-layout>
+
+				<!-- Icon View -->
+				<lightning-layout if:true={showIconView} multiple-rows style={gridStyles}>
+					<template for:each={displayedTopics} for:item="topic">
+						<lightning-layout-item
+								key={topic.topic.id}
+								class={itemClass}
+								size={itemSize}
+								small-device-size={itemSizeSmall}
+								medium-device-size={itemSizeMedium}
+								large-device-size={itemSizeLarge}
+								style={itemStyles}>
+							<c-x7s-shr-icon-card
+									key={topic.topic.id}
+									record-id={topic.topic.id}
+									border-radius={imageBorderRadius}
+									description={topic.topic.description}
+									description-color={descriptionColor}
+									description-color-hover={descriptionColorHover}
+									hide-description={hideDescription}
+									hide-overlay={hideOverlay}
+									hide-icon="true"
+									horizontal-alignment={horizontalAlignment}
+									image-height={imageHeight}
+									image-src={topic.topic.images.featuredImageUrl}
+									image-width={imageWidth}
+									overlay-color={overlayColor}
+									overlay-color-hover={overlayColorHover}
+									reduce-animation={reduceAnimation}
+									title={topic.topic.name}
+									title-color={titleColor}
+									title-color-hover={titleColorHover}
+									vertical-alignment={verticalAlignment}
+									></c-x7s-shr-icon-card>
+						</lightning-layout-item>
+					</template>
+				</lightning-layout>
+
+				<!-- List View -->
+				<ul if:true={showListView} style={gridStyles}>
+					<template for:each={displayedTopics} for:item="topic">
+						<li key={topic.topic.id} class={itemClass} style={itemStyles}>
+							<c-x7s-shr-icon-card
+									key={topic.topic.id}
+									record-id={topic.topic.id}
+									border-radius={imageBorderRadius}
+									description={topic.topic.description}
+									description-color={descriptionColor}
+									description-color-hover={descriptionColorHover}
+									hide-description={hideDescription}
+									hide-overlay={hideOverlay}
+									hide-icon="true"
+									horizontal-alignment={horizontalAlignment}
+									image-height={imageHeight}
+									image-src={topic.topic.images.featuredImageUrl}
+									image-width={imageWidth}
+									overlay-color={overlayColor}
+									overlay-color-hover={overlayColorHover}
+									reduce-animation={reduceAnimation}
+									title={topic.topic.name}
+									title-color={titleColor}
+									title-color-hover={titleColorHover}
+									vertical-alignment={verticalAlignment}
+									icon-text-alignment="horizontal"
+									></c-x7s-shr-icon-card>
+						</li>
+					</template>
+				</ul>
+			</c-x7s-shr-component-wrapper>
+		</template>
+	</template>
+</template>

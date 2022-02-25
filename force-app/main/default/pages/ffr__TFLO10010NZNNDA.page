@@ -1,0 +1,230 @@
+<!-- User Note: TFLO10010NZNNDA  Reporting Template For Free Text Label Input -->
+<!-- User Note: This simple template uses only the Labels function on a Report Definition -->
+<!-- User Note: Formatting based on groups of 10 labels -->
+<!-- Always insert the following code which is essential on all templates. It tells Visualforce to use the Reporting Engine and Stylesheets -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}">
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:stylesheet value="{!StyleSheetName}"/>
+<apex:PageMessages />
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+
+<!-- You now create a form where you can display information from the Reporting Engine, this will typically have a header section and a data section -->
+
+
+<!-- All of the reports that you create should contain the following header information. It has been carefully formatted to include the name of the Definition and other properties -->
+<table class="ffrgridd">
+<tr>
+<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+</tr>
+<tr>
+<td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+<td align="right">{!NOW()}</td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">{!ffr__ReportingDefinition__c.ffr__Description__c}</td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+</tr>
+</table>
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">
+<table class="ffrgrid">
+<apex:repeat value="{!promptList}" var="prompt" >
+<tr>
+<td align="left">{!prompt.label}</td>
+<td align="left" class="ffrgridspacer"></td>
+<td align="left"><strong>{!prompt.value}</strong></td>
+</tr>
+</apex:repeat>
+</table>
+</td>
+</tr>
+</table>
+<table class="ffrgrid">
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+</table>
+
+<!--
+Now that the header information is complete, you can begin to display data built using the Report Definition
+In this example we are going to only use the Labels section of the Report Definition
+
+The simplest way of adding a Label to a report is using the following line of Visualforce code (where L01 is the label key on the report definition)
+<tr><td>{!label['L01']}</td></tr>
+
+But you will want to add formatting to the information being displayed, so you reference a style in the CSS static resources by the use of the term class
+<tr><td class="ffrgridrowlabeld">{!label['L01']}</td></tr>
+
+Then you decide that if the label is blank you do not want to show the line at all, so we add a type of if statement called rendered
+and wrap the statement in an output panel. In the case of labels the best way to do this is to check the length of the label returned
+The term rendered="{!len(label['L01'])!=0} evaluates, the length is NOT zero characters, then displays the label if it is not zero.
+<apex:outputPanel layout="none" rendered="{!len(label['L01'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L07']}</td></tr></apex:outputPanel>
+All of this information is now on a single line so that you can easily see the label and properties that you are applying.
+
+You may want to add space between a group of lines or categories, so can add the following class,
+<tr><td class="ffrgridspacer"></td></tr>
+
+But decide that you only want to add a space if there is a new category below and it has been used, so look at that particular label
+you intend to display below and only add a space if it is not blank using the rendered and output properties as before
+<apex:outputPanel layout="none" rendered="{!len(label['L01'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+
+That is the completed code for this visualforce page and it is now only a matter of applying it to lines as we have done below.
+In this way you can make the template flexible. When no datais on a label then the report will compress to show then next label.
+You can build some very flexible templates in this way only using the technique described above.
+
+-->
+<!-- The following template is grouped into regions of approximatly 5 labels.
+Label 1: Header in Bold Blue
+Label 2: Bold Black
+Label 3-5: Normal Text
+2 Spaces between each group if the next group has a label in position 1. Otherwise compress until the next line it finds. -->
+
+<!-- Data Start
+Create a table that will be used to contain your data and in our case we apply a class to the table so that it uses 100% of the page width-->
+<table class="ffrgrid">
+
+	<!-- Within that table, create a set of rows (tr) and cells (td) that show your information, so the code that is described above-->
+	<apex:outputPanel layout="none" rendered="{!len(label['L01'])!=0}"><tr><th><h1 class="ffrname">{!label['L01']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L02'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L02']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L03'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L03']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L04'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L04']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L05'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L05']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L06'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L06']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L07'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L07']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L08'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L08']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L09'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L09']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L10'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L10'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L10'])!=0}"><tr><th><h1 class="ffrname">{!label['L10']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L11'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L11']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L12'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L12']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L13'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L13']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L14'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L14']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L15'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L15']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L16'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L16']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L17'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L17']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L18'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L18']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L19'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L19']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L20'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L20'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L20'])!=0}"><tr><th><h1 class="ffrname">{!label['L20']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L21'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L21']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L22'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L22']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L23'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L23']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L24'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L24']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L25'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L25']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L26'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L26']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L27'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L27']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L28'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L28']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L29'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L29']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L30'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L30'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L30'])!=0}"><tr><th><h1 class="ffrname">{!label['L30']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L31'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L31']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L32'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L32']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L33'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L33']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L34'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L34']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L35'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L35']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L36'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L36']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L37'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L37']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L38'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L38']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L39'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L39']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L40'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L40'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L40'])!=0}"><tr><th><h1 class="ffrname">{!label['L40']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L41'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L41']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L42'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L42']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L43'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L43']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L44'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L44']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L45'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L45']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L46'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L46']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L47'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L47']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L48'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L48']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L49'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L49']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L50'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L50'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L50'])!=0}"><tr><th><h1 class="ffrname">{!label['L50']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L51'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L51']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L52'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L52']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L53'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L53']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L54'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L54']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L55'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L55']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L56'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L56']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L57'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L57']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L58'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L58']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L59'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L59']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L60'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L60'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L60'])!=0}"><tr><th><h1 class="ffrname">{!label['L60']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L61'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L61']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L62'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L62']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L63'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L63']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L64'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L64']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L65'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L65']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L66'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L66']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L67'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L67']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L68'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L68']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L69'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L69']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L70'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L70'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L70'])!=0}"><tr><th><h1 class="ffrname">{!label['L70']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L71'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L71']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L72'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L72']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L73'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L73']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L74'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L74']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L75'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L75']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L76'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L76']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L77'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L77']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L78'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L78']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L79'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L79']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L80'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L80'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L80'])!=0}"><tr><th><h1 class="ffrname">{!label['L80']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L81'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L81']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L82'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L82']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L83'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L83']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L84'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L84']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L85'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L85']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L86'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L86']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L87'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L87']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L88'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L88']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L89'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L89']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L90'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L90'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L90'])!=0}"><tr><th><h1 class="ffrname">{!label['L90']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L91'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L91']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L92'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L92']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L93'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L93']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L94'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L94']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L95'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L95']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L96'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L96']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L97'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L97']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L98'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L98']}</td></tr></apex:outputPanel>
+
+	<!-- Now that you have completed the display of information, close the Table -->
+</table>
+<!-- Now that you have completed your table you can add another here or close the Form -->
+
+<!-- Now that you have completed your report, close the Page, you do not need to create additional forms at any time and only need to do the form and page options at the end of your page -->
+<!-- REGION 06: REPORT CHATTER START -->
+<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

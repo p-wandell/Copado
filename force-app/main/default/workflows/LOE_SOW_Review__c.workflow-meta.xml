@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>LOE_SOW_Approved</fullName>
+        <description>LOE/SOW Approved</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <recipient>andre.joly@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>anna.knyazyan@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>ben.kerford@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>cameron.redden@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>jacob.lappa@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>joe.fortino@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>mort.sayyed@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>nick.ulfers@7summits.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/LOE_SOW_Review_Approved</template>
+    </alerts>
+    <alerts>
+        <fullName>LOE_SOW_Approver_Assigned</fullName>
+        <description>LOE/SOW Approver Assigned</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <field>Approver__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/LOE_SOW_Assigned</template>
+    </alerts>
+    <alerts>
+        <fullName>LOE_SOW_Review_Needs_Work</fullName>
+        <description>LOE/SOW Review Needs Work</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <recipient>andre.joly@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>anna.knyazyan@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>ben.kerford@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>cameron.redden@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>jacob.lappa@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>joe.fortino@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>mort.sayyed@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>nick.ulfers@7summits.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/LOE_SOW_Needs_Work</template>
+    </alerts>
+    <alerts>
+        <fullName>LOE_SOW_Review_Requested</fullName>
+        <description>LOE/SOW Review Requested</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>LOE_SOW_Reviewers</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/LOE_SOW_Review_Requested</template>
+    </alerts>
+    <alerts>
+        <fullName>SOW_Reviewer_Acceptance_Reminder_24_hrs</fullName>
+        <description>SOW Reviewer Acceptance Reminder 24hrs</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <recipient>LOE_SOW_Approvers</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/SOW_Reviewer_Acceptance_Reminder_24_hrs</template>
+    </alerts>
+    <alerts>
+        <fullName>SOW_Reviewer_Acceptance_Reminder_4_hrs</fullName>
+        <description>SOW Reviewer Acceptance Reminder 4hrs</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <recipient>LOE_SOW_Approvers</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/SOW_Reviewer_Acceptance_Reminder_4_hrs</template>
+    </alerts>
+    <alerts>
+        <fullName>SOW_Reviewer_Accepted_Notification</fullName>
+        <description>SOW Reviewer Accepted Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <recipient>LOE_SOW_Approvers</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/SOW_Reviewer_Accepted_Notification</template>
+    </alerts>
+    <alerts>
+        <fullName>SOW_Reviewer_Approved_Notification</fullName>
+        <description>SOW Reviewer Approved Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <recipient>charles.amy@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <field>SOW_Reviewer__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/SOW_Reviewer_Approved_Notification</template>
+    </alerts>
+    <alerts>
+        <fullName>SOW_Reviewer_Rejected_Notification</fullName>
+        <description>SOW Reviewer Rejected Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <recipient>charles.amy@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <field>SOW_Reviewer__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/SOW_Reviewer_Rejected_Notification</template>
+    </alerts>
+    <alerts>
+        <fullName>SOW_Reviewer_Request_Notification</fullName>
+        <description>SOW Reviewer Request Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <recipient>LOE_SOW_Approvers</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/SOW_Reviewer_Request_Notification</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Approved_Date</fullName>
+        <description>Date the request was approved</description>
+        <field>Approved_Date__c</field>
+        <formula>NOW()</formula>
+        <name>Approved Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_LOE_Approved_Date</fullName>
+        <description>Update the LOE approved Date</description>
+        <field>Approved_Date__c</field>
+        <formula>NOW ()</formula>
+        <name>Update LOE Approved Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_LOE_Approver</fullName>
+        <description>Update the LOE Approver to Ben Kerford</description>
+        <field>Approver__c</field>
+        <lookupValue>jacob.lappa@7summitsinc.com</lookupValue>
+        <lookupValueType>User</lookupValueType>
+        <name>Update LOE Approver</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_SOW_Approver</fullName>
+        <description>Update the SOW Approver field to Nick Ulfers on Create of the SOW Review Request</description>
+        <field>Approver__c</field>
+        <lookupValue>nick.ulfers@7summits.com</lookupValue>
+        <lookupValueType>User</lookupValueType>
+        <name>Update SOW Approver</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Status_to_Approved</fullName>
+        <field>SOW_Review_Status__c</field>
+        <literalValue>Approved</literalValue>
+        <name>Update Status to Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Status_to_In_Progress</fullName>
+        <field>SOW_Review_Status__c</field>
+        <literalValue>In Progress</literalValue>
+        <name>Update Status to In Progress</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Status_to_Rejected</fullName>
+        <field>SOW_Review_Status__c</field>
+        <literalValue>Rejected</literalValue>
+        <name>Update Status to Rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>LOE Review Request</fullName>
+        <actions>
+            <name>LOE_SOW_Review_Requested</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Update_LOE_Approver</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>LOE_SOW_Review__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>LOE Review</value>
+        </criteriaItems>
+        <description>When an LOE  review request is created, an email alert is sent to all Approvers.</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>LOE%2FSOW Assigned</fullName>
+        <actions>
+            <name>LOE_SOW_Approver_Assigned</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>LOE_SOW_Review__c.Approver__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <description>An approver has been assigned.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>LOE%2FSOW Review Approved</fullName>
+        <actions>
+            <name>LOE_SOW_Approved</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>LOE_SOW_Review__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </criteriaItems>
+        <description>The approver changes status to &quot;Approved&quot;</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>LOE%2FSOW Review Needs Work</fullName>
+        <actions>
+            <name>LOE_SOW_Review_Needs_Work</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>LOE_SOW_Review__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Needs Minor Work,Needs Major Work</value>
+        </criteriaItems>
+        <description>The approver changes status to &quot;Needs Major Work&quot; or &quot;Needs Minor Work&quot;</description>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>SOW Review Request</fullName>
+        <actions>
+            <name>LOE_SOW_Review_Requested</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Update_SOW_Approver</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>LOE_SOW_Review__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>SOW Review</value>
+        </criteriaItems>
+        <description>When an LOE review request is created, an email alert is sent to all Approvers.</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>SOW Reviewer Acceptance Reminder</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>LOE_SOW_Review__c.SOW_Review_Status__c</field>
+            <operation>equals</operation>
+            <value>Pending Assignment</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>LOE_SOW_Review__c.SOW_Reviewer__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <description>Send reminder emails in the event a SOW Review request is not picked up within 4 hrs and then again after 24 hrs.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>SOW_Reviewer_Acceptance_Reminder_4_hrs</name>
+                <type>Alert</type>
+            </actions>
+            <timeLength>4</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+        <workflowTimeTriggers>
+            <actions>
+                <name>SOW_Reviewer_Acceptance_Reminder_24_hrs</name>
+                <type>Alert</type>
+            </actions>
+            <timeLength>24</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>Update Approved Date</fullName>
+        <actions>
+            <name>Update_LOE_Approved_Date</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>LOE_SOW_Review__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+</Workflow>

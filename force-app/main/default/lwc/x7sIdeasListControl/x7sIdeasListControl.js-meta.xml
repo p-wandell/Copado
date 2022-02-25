@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Ideas List Control</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Ideas List Control</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage, lightningCommunity__Default">
+            <property name="zoneName" label="Zone Name" type="String" description="Enter the zone name"/>
+            <property name="displayVariant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="showViewSelector" label="Show View Selector" default="true" description="Allow users to select between vertical (card) and horizontal (list) view." type="Boolean"/>
+            <property name="showTable" label="Show Table View" description="Allow users to show table view." type="Boolean"/>
+            <property name="showList" label="Show List View" description="Allow users to show list view." type="Boolean"/>
+            <property name="showCard" label="Show Card View" description="Allow users to show card view." type="Boolean"/>
+            <property name="showPagination" label="Show Pagination" type="Boolean"/>
+            <property name="showSort" label="Show Sort By" type="Boolean"/>
+            <property name="defaultSort" type="String" label="Default Sort" description="Select the default sort option." datasource="Popular Ideas,Recent Ideas,Top All-Time,Recent Comments"/>
+            <property name="sortVariant" type="String" label="Sort Label Variant" description="Select the sort option label appearance." datasource="standard, label-hidden"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

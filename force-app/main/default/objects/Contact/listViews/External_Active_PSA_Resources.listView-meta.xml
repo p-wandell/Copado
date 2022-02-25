@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_Active_PSA_Resources</fullName>
+    <columns>CONTACT.FIRST_NAME</columns>
+    <columns>CONTACT.LAST_NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>CONTACT.REPORTS_TO.NAME</columns>
+    <columns>Competency_Group__c</columns>
+    <columns>Include_in_Utilization_Reporting__c</columns>
+    <columns>pse__Resource_Role__c</columns>
+    <columns>pse__Is_Resource_Active__c</columns>
+    <columns>pse__Work_Calendar__c</columns>
+    <columns>Resource_Type__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>pse__External_Resource__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>CONTACT.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Contact.PSA_Resource</value>
+    </filters>
+    <filters>
+        <field>pse__Is_Resource_Active__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>External (Active) PSA Resources</label>
+    <language>en_US</language>
+</ListView>

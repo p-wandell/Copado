@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>pse__Est_Vs_Actuals__c$Name</field>
+    </columns>
+    <columns>
+        <field>pse__Est_Vs_Actuals__c$pse__Scheduled_Bill_Rate__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c$Billable_Baseline_Hours__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c$Nonbill_Baseline_Hours__c</field>
+    </columns>
+    <columns>
+        <field>pse__Est_Vs_Actuals__c$Scheduled_Billable_Hours__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c$Name</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>EVA BA-Siemens Mobility - Customer Success Services-Pr</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c$Name</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>EVA Customer Success-Siemens Mobility - Customer Success</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c$Name</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>EVA SFDC Dev-Siemens Mobility - Customer Success Services-Pr</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c$Name</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>EVA Customer Success-Siemens Mobility - Customer Success</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Phantom CS Hours</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>EvAs__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>pse__Est_Vs_Actuals__c$Billable_Baseline_Hours__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>pse__Est_Vs_Actuals__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

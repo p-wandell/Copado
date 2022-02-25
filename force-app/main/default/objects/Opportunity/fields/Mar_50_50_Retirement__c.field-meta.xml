@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Mar_50_50_Retirement__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF 
+( 
+OR 
+( 
+AND 
+( 
+( Owner.LastName = &quot;Hall&quot;),IsWon = True, Date_Created__c &lt; Date(2018,01,01), CloseDate &gt; Date(2018,02,28), CloseDate &lt;Date (2018,04,01)), 
+AND 
+( 
+(Owner.LastName = &quot;Saracene&quot;), IsWon = True,Date_Created__c &lt; Date(2018,01,01), CloseDate &gt; Date(2018,02,28), CloseDate &lt;Date (2018,04,01)), 
+AND 
+( 
+( Owner.LastName = &quot;Hogervorst&quot;),IsWon = True, Date_Created__c &lt; Date(2018,01,01), CloseDate &gt; Date(2018,02,28), CloseDate &lt;Date (2018,04,01)), 
+AND 
+( 
+( Owner.LastName = &quot;Brown&quot;),IsWon = True, Date_Created__c &lt; Date(2018,01,01), CloseDate &gt; Date(2018,02,28), CloseDate &lt;Date (2018,04,01))),( (Amount / 2) - Amount),0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Mar 50/50 Retirement</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

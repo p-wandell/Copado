@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Default_Opportunity_Curve__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The forecast curve applied when there is no curve set on an opportunity. An error message is displayed if no curve is set on an opportunity and no default opportunity curve is defined.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The default curve record used for Opportunity forecasting.</inlineHelpText>
+    <label>Default Opportunity Curve</label>
+    <length>80</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

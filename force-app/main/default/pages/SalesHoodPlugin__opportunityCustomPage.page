@@ -1,0 +1,241 @@
+<apex:page standardController="Opportunity" extensions="SalesHoodPlugin.ContentController" docType="html-5.0">
+	<style type="text/css">
+        .starmain li.curr { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/stars-2x.png')}") left 25px; background-size: 17px 75px; }
+        .starmain ul.star { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/stars-2x.png')}") repeat-x; background-size: 17px 75px; }
+        .download-btn-off { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/action-icon-sprite.png')}") no-repeat -25px 0px; }
+		.preview-btn-off { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/action-icon-sprite.png')}") no-repeat 0px 0px; }
+		.download-btn-on { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/action-icon-sprite.png')}") no-repeat -25px -25px; }
+		.preview-btn-on { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/action-icon-sprite.png')}") no-repeat 0px -25px; }
+		#myPageBlock .ascending { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/ic-sort-up.png')}") no-repeat; }
+		#myPageBlock .descending { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/ic-sort-down.png')}") no-repeat; }
+		.pin-icon { background: url("{!URLFOR($Resource.SalesHoodPlugin__Assets, 'images/ic_pin.png')}") no-repeat; }
+    </style>
+    <apex:stylesheet value="{!$Resource.SalesHoodPlugin__main_css}" />
+  	
+  	<script src="https://use.fontawesome.com/e0003974c7.js"></script>
+    <apex:includeScript value="{!URLFOR($Resource.SalesHoodPlugin__Assets, 'jquery.min.js')}" />
+    <apex:includeScript value="{!$Resource.SalesHoodPlugin__custom_js}" />
+
+    <apex:form onmouseover="bindHoverDocDetail()">
+        <apex:actionRegion >
+            <apex:actionFunction action="{!retrieveTokens}" name="retrieveTokens_JS" oncomplete="initializeSetting_JS()" />
+            <apex:actionFunction action="{!initializeSetting}" name="initializeSetting_JS" oncomplete="initializeContents_JS()" />
+            <apex:actionFunction action="{!initializeContents}" name="initializeContents_JS" rerender="salesHoodLoginButtonPanel, myPageBlockPanel" />
+        </apex:actionRegion>
+
+        <apex:outputPanel id="salesHoodLoginButtonPanel">
+            <div id="salesHoodLoginButton">
+                <apex:actionRegion rendered="{!displaySalesHoodLoginButton}">
+                    <apex:commandButton action="{!loginSalesHood}" value="{!loginButtonName}" />
+                    <apex:outputPanel id="redirectPanel">
+                        <apex:outputText rendered="{!shouldRedirect}">
+                            <script type="text/javascript">
+                                window.top.location.href = "{!JSENCODE(redirectUrl)}";
+                            </script>
+                        </apex:outputText>
+                    </apex:outputPanel>
+                </apex:actionRegion>
+            </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="myPageBlockPanel">
+            <apex:actionRegion rendered="{!!displaySalesHoodLoginButton}">
+                <div class="search-panel">
+                    <apex:commandButton action="{!searchSHFiles}" styleClass="search-btn" rerender="salesHoodLoginButtonPanel, myPageBlockPanel" />
+                    <i class="search-icon fa fa-search" aria-hidden="true" style="display: {!If(isOnSearchPage, 'none', 'inline-block')}"></i>
+                    <apex:input type="text" styleClass="search-input" value="{!searchTerm}" html-placeholder="Enter text to search by title, description" />
+                    <div style="clear: both"></div>
+                </div>
+            </apex:actionRegion>
+            <apex:actionRegion rendered="{!(!displaySalesHoodLoginButton && isOnSearchPage)}">
+                <div class="search-panel">
+                    <apex:commandButton action="{!initializeContents}" styleClass="exit search-btn" rerender="salesHoodLoginButtonPanel, myPageBlockPanel" />
+                    <i class="exit search-icon" style="display: {!If(isOnSearchPage, 'inline-block', 'none')}">&#x2715;</i>
+                </div>
+            </apex:actionRegion>
+
+            <div id="myPageBlock" style="display:{!If(displaySalesHoodLoginButton, 'none', '')}">
+                <ul id="conditions" style="display:{!If(isOnSearchPage, 'none', 'block')}">
+                    <apex:repeat value="{!QueryFields}" var="fieldName">
+                        <li>
+                            <apex:outputText styleClass="attribute-name" value="{!fieldName}" />:&nbsp;
+                            <apex:outputText styleClass="attribute-value" value="{!QueryFields[fieldName]}" />
+                        </li>
+                    </apex:repeat>
+                </ul>
+
+                <p style="display:{!If(isOnSearchPage, 'block', 'none')}">Search results</p>
+                <div class="clearfix" style="margin-bottom: 20px"></div>
+                <hr></hr>
+                <div class="attribute-container">
+                    <div id="documents-table">
+                        <div id="table">
+                            <div style="display: table-cell; width: 50%">
+                                <apex:actionRegion >
+                                    <apex:outputPanel id="internal-contents-form">
+                                        <div id="internal-documents" class="padding-right">
+                                            <div class="doc-container-header">
+                                                <div class="header-title">
+                                                    Internal Only
+                                                    <span style="display: {!IF(isOnSearchPage && totalInternalItems != null, 'inline', 'none')}">
+                                                        ({!totalInternalItems} results)
+                                                    </span>
+                                                </div>
+                                                <div class="sort-dropdown">
+                                                    Sort by
+                                                    <apex:selectList value="{!internalContentsSortingStrategy}" size="1">
+                                                        <apex:actionSupport event="onchange" action="{!sortInternalContents}" rerender="internal-contents-form"/>
+                                                        <apex:selectOptions value="{!sortCriteria}"/>
+                                                    </apex:selectList>
+                                                    <div class="sort-orders">
+                                                        <apex:commandLink action="{!toggleInternalContentsSortingOrder}" rerender="internal-contents-form" styleClass="sort-button {!InternalContentsSortingOrder}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="doc-container-body">
+                                                <ul style="display: {!IF(internalContents == null || internalContents.size == 0, 'block', 'none')}">
+                                                    <li>
+                                                        <div class="doc-detail error-message">
+                                                            {!internalMessage}
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <apex:dataList styleClass="data-list" value="{!internalContents}" var="content">
+                                                    <div class="doc-detail">
+                                                        <div class="file-type-icon">
+                                                            <img src="{!URLFOR($Resource.Assets, content.IconFileLink)}" />
+                                                        </div>
+                                                        <div class="doc-info">
+                                                            <div class="pin-icon" style="visibility: {!IF(content.isPinned, 'visible', 'hidden')}"></div>
+                                                            <div class="action-buttons">
+                                                                <a class="doc-preview-label" href="{!content.viewUrl}" target="_blank">
+                                                                    <span class="action-btn preview-btn-off"></span>
+                                                                </a>
+                                                                <a class="doc-download-label" href="{!content.downloadUrl}" style="visibility: {!IF(content.contentType != 'HuddleEvent', 'visible', 'hidden')}" target="_blank">
+                                                                    <span class="action-btn download-btn-off"></span>
+                                                                </a>
+                                                            </div>
+                                                            <div class="document-title">
+                                                                <a href="{!content.viewUrl}" target="_blank">{!content.title}</a>
+                                                            </div>
+                                                            <div class="document-details">
+                                                                <span style="display: {!IF(content.contentType != 'HuddleEvent', 'inline', 'none')}">
+                                                                    <span>Rating:</span>
+                                                                    <div class="starmain">
+                                                                        <ul class="star">
+                                                                            <li class="curr" style="width: {!JSENCODE(TEXT(content.RatingPercentage))}%"></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                    <span> ({!content.ratingCount})</span> |
+                                                                </span>
+                                                                <span>Category:</span> <strong>{!content.category}</strong> |
+                                                                <span>Date:</span>
+                                                                <strong>
+                                                                    <apex:outputText value="{0,date, MMMM dd, yyyy}">
+                                                                       <apex:param value="{! content.createdDate }" />
+                                                                   </apex:outputText>
+                                                                </strong>
+                                                            </div>
+                                                            <div class="description">
+                                                                <span>Description:</span>
+                                                                <div class="description-text">{!content.description}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </apex:dataList>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:actionRegion>
+                            </div>
+                            <div style="display: table-cell; width: 50%">
+                                <apex:actionRegion >
+                                    <apex:outputPanel id="external-contents-form">
+                                        <div id="public-documents" class="padding-left">
+                                            <div class="doc-container-header">
+                                                <div class="header-title">
+                                                    Public/Customer-facing
+                                                    <span style="display: {!IF(isOnSearchPage && totalExternalItems != null, 'inline', 'none')}">
+                                                        ({!totalExternalItems} results)
+                                                    </span>
+                                                </div>
+                                                <div class="sort-dropdown">
+                                                    Sort by
+                                                    <apex:selectList value="{!externalContentsSortingStrategy}" size="1">
+                                                        <apex:actionSupport event="onchange" action="{!sortExternalContents}" rerender="external-contents-form"/>
+                                                        <apex:selectOptions value="{!sortCriteria}"/>
+                                                    </apex:selectList>
+                                                    <div class="sort-orders">
+                                                        <apex:commandLink action="{!toggleExternalContentsSortingOrder}" rerender="external-contents-form" styleClass="sort-button {!ExternalContentsSortingOrder}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="doc-container-body">
+                                                <ul style="display: {!IF(externalContents == null || externalContents.size == 0, 'block', 'none')}">
+                                                    <li>
+                                                        <div class="doc-detail error-message">
+                                                            {!externalMessage}
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <apex:dataList styleClass="data-list" value="{!externalContents}" var="content">
+                                                    <div class="doc-detail">
+                                                        <div class="file-type-icon">
+                                                            <img src="{!URLFOR($Resource.Assets, content.IconFileLink)}" />
+                                                        </div>
+                                                        <div class="doc-info">
+                                                            <div class="pin-icon" style="visibility: {!IF(content.isPinned, 'visible', 'hidden')}"></div>
+                                                            <div class="action-buttons">
+                                                                <a class="doc-preview-label" href="{!content.viewUrl}" target="_blank">
+                                                                    <span class="action-btn preview-btn-off"></span>
+                                                                </a>
+                                                                <a class="doc-download-label" href="{!content.downloadUrl}" style="visibility: {!IF(content.contentType != 'HuddleEvent', 'visible', 'hidden')}" target="_blank">
+                                                                    <span class="action-btn download-btn-off"></span>
+                                                                </a>
+                                                            </div>
+                                                            <div class="document-title">
+                                                                <a href="{!content.viewUrl}" target="_blank">{!content.title}</a>
+                                                            </div>
+                                                            <div class="document-details">
+                                                                <span style="display: {!IF(content.contentType != 'HuddleEvent', 'inline', 'none')}">
+                                                                    <span>Rating:</span>
+                                                                    <div class="starmain">
+                                                                        <ul class="star">
+                                                                            <li class="curr" style="width: {!JSENCODE(TEXT(content.RatingPercentage))}%"></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                    <span> ({!content.ratingCount})</span> |
+                                                                </span>
+                                                                <span>Category:</span> <strong>{!content.category}</strong> |
+                                                                <span>Date:</span>
+                                                                <strong>
+                                                                    <apex:outputText value="{0,date, MMMM dd, yyyy}">
+                                                                       <apex:param value="{! content.createdDate }" />
+                                                                   </apex:outputText>
+                                                                </strong>
+                                                            </div>
+                                                            <div class="description">
+                                                                <span>Description:</span>
+                                                                <div class="description-text">{!content.description}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </apex:dataList>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:actionRegion>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+        </apex:outputPanel>
+    </apex:form>
+    
+    <script>
+    	function setFocusOnLoad() {}
+        retrieveTokens_JS();
+        bindHoverDocDetail();
+    </script>
+</apex:page>

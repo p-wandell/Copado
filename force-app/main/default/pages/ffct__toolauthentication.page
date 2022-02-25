@@ -1,0 +1,46 @@
+<!-- SMKeyTool -->
+<apex:page controller="ffct.AuthenticationController" action="{!initiateActivation}">
+    <apex:sectionHeader title="Consultant Tools Activation" subtitle="Consultant Tools Activation" />
+    <apex:form id="form">
+	
+		<apex:actionStatus id="eventStatus"  >
+            <apex:facet name="start">
+                <apex:outputPanel >
+                   <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                      <div style="position:absolute;top:50%;left:50%">
+                        <apex:image value="/img/loading32.gif"></apex:image>
+                      </div>
+                  </div>
+                </apex:outputPanel>
+            </apex:facet>   
+        </apex:actionStatus>
+        
+        <apex:pageMessages escape="false"/>
+        <apex:pageBlock rendered="{!ShowActivationKeyField}">
+            <!-- Buttons -->
+            <apex:pageBlockButtons >            
+                <apex:commandButton value="Resend Activation Email" action="{!resendEmail}" rerender="form" status="eventStatus"/>    
+                <apex:commandButton value="Activate Consultant Tools" action="{!validateActivationKey}" rerender="form" status="eventStatus"/>             
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel id="keyLabel" value="Activation Key" for="actKey" />
+                    <apex:inputText id="actKey" value="{!ActivationKey}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!ShowEmail}">
+            <!-- Buttons -->
+            <apex:pageBlockButtons >            
+                <apex:commandButton value="Get Activation Key" action="{!validateEmail}" rerender="form" status="eventStatus"/>                
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel id="emailLabel" value="Email" for="emailField" />
+                    <apex:inputText id="emailField" value="{!contactView.dto.Email}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>    
+           
+    </apex:form>    
+</apex:page>

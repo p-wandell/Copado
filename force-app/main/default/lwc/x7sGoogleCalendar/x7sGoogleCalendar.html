@@ -1,0 +1,45 @@
+<template>
+        <center>
+                <template if:true={cardOn}>
+                        <template if:true={titleOn} >
+                                <lightning-card class={wrapperClass} title={title}>
+                                        <div>
+                                                <iframe class="slds-p-left_small slds-p-right_small" src={URL} style="border: 0" width={width} height={height} scrolling="no"></iframe>
+                                                <div slot="footer" class="slds-theme_default">
+                                                        <div class="slds-align_absolute-center">
+                                                                Powered by&nbsp;<a href="http://www.7summitsinc.com/" target="_blank"><font color="blue">7Summits</font></a>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </lightning-card>
+                        </template>
+                        <template if:false={titleOn}>
+                                <lightning-card>
+                                        <div>
+                                                <iframe class="slds-p-left_small slds-p-right_small" src={URL} style="border: 0" width={width} height={height} scrolling="no"></iframe>
+                                                <div slot="footer" class="slds-theme_default">
+                                                        <div class="slds-align_absolute-center">
+                                                                Powered by&nbsp;<a href="http://www.7summitsinc.com/" target="_blank"><font color="blue">7Summits</font></a>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </lightning-card>
+                        </template>
+                </template>
+                <template if:false={cardOn}>
+                        <div>
+                                <template if:true={titleOn}>
+                                        <header class={wrapperClass}><div class="slds-theme_default slds-p-around_xxx-small"><lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text></div></header>
+                                </template>
+                                <template if:false={titleOn}>                                
+                                </template>
+                                <iframe src={URL} style="border: 0" width={width} height={height} scrolling="no"></iframe>
+                                <div slot="footer" class="slds-theme_default">
+                                        <div class="slds-align_absolute-center">
+                                                Powered by&nbsp;<a href="http://www.7summitsinc.com/" target="_blank"><font color="blue">7Summits</font></a>
+                                        </div>
+                                </div>
+                        </div>
+                </template>
+        </center>
+</template>

@@ -1,0 +1,21 @@
+audio {
+    display: block;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.audioContainer {
+    min-width: 285px;
+    margin: auto;
+}
+@media only screen and (max-width: 767px) {
+    .audioContainer {
+        min-width:auto !important;
+        width:100% !important;
+      
+    }  
+}

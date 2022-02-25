@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>false</plural>
+        <value>Stunden bis Tage Regel</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>true</plural>
+        <value>Stunden bis Tage Regeln</value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>false</plural>
+        <value><!-- Stunden bis Tage Regel --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>true</plural>
+        <value><!-- Stunden bis Tage Regeln --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>false</plural>
+        <value><!-- Stunden bis Tage Regel --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>true</plural>
+        <value><!-- Stunden bis Tage Regeln --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>false</plural>
+        <value><!-- Stunden bis Tage Regel --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>true</plural>
+        <value><!-- Stunden bis Tage Regeln --></value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Stunden bis Tage Regelname</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- Days Values required if the corresponding Hour Threshold is specified. --></errorMessage>
+        <name>pse__Day_Value_Required_for_Hour_Threshold</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Hour Thresholds must be in increasing order --></errorMessage>
+        <name>pse__Force_Increasing_Hour_Thresholds</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Hour Threshold is required if Days Value is specified. --></errorMessage>
+        <name>pse__Hour_Threshold_Required_for_Days_Value</name>
+    </validationRules>
+</CustomObjectTranslation>

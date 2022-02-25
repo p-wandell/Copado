@@ -1,0 +1,1820 @@
+<!-- User Note: TFRA111EENMNNDA Reporting Template for Ratio Analysis -->
+<!-- User Note: The Template Is Specific For Ratio Calculations For The Specified Year. Template Only Uses A Single Data Range And 10 Reporting Values -->
+<!-- User Note: The Template Expects Labels 01-29 For Profitability Ratios, 30-49 For Liquidity Ratios, 50-74 For Activity Ratios, 75-84 For Gearing Ratios And 85-99 For Elements Required. -->
+<!-- User Note: Special Features: Ratio Analysis Report With Specific Calculations, Split In 4 Categories And With Definitions. -->
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}">
+<!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+<!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+<!-- User Note: You Can Create Your Own Stylesheet In The Static Resources And Apply It To Your Reports -->
+<!-- User Note: The Style Has Been Designed To Allow Variations Within Different Types Of Reports -->
+<!-- User Note: Change The Last Character From D To S On The Style Classes Applied To Each Line Will Produce A Summary Report -->
+<!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:stylesheet value="{!StyleSheetName}"/>
+<!-- Variable to represent boolean true/false when needing to set other variables to these states -->
+<apex:variable var="true" value="{!1=1}"/>
+<apex:variable var="false" value="{!1=0}"/>
+<!-- User Note: I Want To Format Values On A Report In Different Ways -->
+<!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+<!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brakets/Minus 3Charcterinternationalcurrencycode/None-->
+<!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+<!-- User Note: You Can Add Your Own Formats To The List Below Try To Keep A Good Coding Structure-->
+<apex:variable var="V2NCB" value="#,###,###,##0.00;(#,###,###,##0.00);0.00"/>
+<apex:variable var="P2NCB" value="#,###,###,##0.00%;(#,###,###,##0.00%);0.00%"/>
+<apex:variable var="V0NCB" value="#,###,###,##0;(#,###,###,##0);0"/>
+<apex:variable var="P0NCB" value="#,###,###,##0%;(#,###,###,##0%);0%"/>
+<apex:variable var="V2RCB" value="(#,###,###,##0.00);#,###,###,##0.00;0.00"/>
+<apex:variable var="P2RCB" value="(#,###,###,##0.00%);#,###,###,##0.00%;0.00%"/>
+<apex:variable var="V0RCB" value="(#,###,###,##0);#,###,###,##0;0"/>
+<apex:variable var="P0RCB" value="(#,###,###,##0%);#,###,###,##0%;0%"/>
+<apex:variable var="V2NCBUSD" value="$#,###,###,##0.00;$(#,###,###,##0.00);$0.00"/>
+<apex:variable var="V2RCBUSD" value="$(#,###,###,##0.00);$#,###,###,##0.00;$0.00"/>
+<!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+<!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+<!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+<!-- User Note: It Is Possible To Use Individual Variables Against A Line This Method Allows You To Make A Single Change To All Related Formats -->
+<apex:variable var="VN" value="{!V2NCB}"/>
+<apex:variable var="PN" value="{!P2NCB}"/>
+<apex:variable var="VR" value="{!V2RCB}"/>
+<apex:variable var="PR" value="{!P2RCB}"/>
+
+<!-- REGION 01: GENERAL CONFIGURATION END -->
+<!-- REGION 02: REPORT HEADER START -->
+<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+<!-- User Note: Show The Error Messages From The Reporting Engine -->
+<apex:form >
+<apex:PageMessages />
+<div class="chatterPosition"></div>
+<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+<!-- User Note: When Creating New Templates This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+<table class="ffrgridd">
+<tr>
+<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+</tr>
+<tr>
+<td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+<td align="right">{!NOW()}</td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">{!ffr__ReportingDefinition__c.ffr__Description__c}</td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+</tr>
+</table>
+<!-- User Note: Create a new table to display the prompt information -->
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">
+<table class="ffrgrid">
+<apex:repeat value="{!promptList}" var="prompt" >
+<tr>
+<td align="left">{!prompt.label}</td>
+<td align="left" class="ffrgridspacer"></td>
+<td align="left"><strong>{!prompt.value}</strong></td>
+</tr>
+</apex:repeat>
+</table>
+</td>
+</tr>
+</table>
+<!-- User Note: Insert a space after the header -->
+<table class="ffrgrid">
+<tr><td class="ffrgridspacer"></td></tr>
+</table>
+<!-- REGION 02: REPORT HEADER END -->
+<!-- REGION 03: REPORT DATA START -->
+<apex:outputpanel rendered="{!!hasMessages}">
+<!-- This template uses only one data range -->
+<apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+<!-- Configuration of columns and groups (elastic template responds dynamically to existence of groups and columns -->
+<!-- Column setup -->
+<!-- Set the default column rendering state variables to "false" -->
+<apex:variable var="RenderColumnA" value="{!false}"/>
+<apex:variable var="RenderColumnB" value="{!false}"/>
+<apex:variable var="RenderColumnC" value="{!false}"/>
+<apex:variable var="RenderColumnD" value="{!false}"/>
+<apex:variable var="RenderColumnE" value="{!false}"/>
+<apex:variable var="RenderColumnF" value="{!false}"/>
+<apex:variable var="RenderColumnG" value="{!false}"/>
+<apex:variable var="RenderColumnH" value="{!false}"/>
+<apex:variable var="RenderColumnI" value="{!false}"/>
+<apex:variable var="RenderColumnJ" value="{!false}"/>
+<apex:variable var="RenderColumnK" value="{!false}"/>
+<apex:variable var="RenderColumnL" value="{!false}"/>
+<apex:variable var="RenderColumnM" value="{!false}"/>
+<apex:variable var="RenderColumnN" value="{!false}"/>
+<apex:variable var="RenderColumnO" value="{!false}"/>
+<apex:variable var="RenderColumnP" value="{!false}"/>
+<apex:variable var="RenderColumnQ" value="{!false}"/>
+<apex:variable var="RenderColumnR" value="{!false}"/>
+<apex:variable var="RenderColumnS" value="{!false}"/>
+<apex:variable var="RenderColumnT" value="{!false}"/>
+<apex:variable var="RenderColumnU" value="{!false}"/>
+<apex:variable var="RenderColumnV" value="{!false}"/>
+<apex:variable var="RenderColumnW" value="{!false}"/>
+<apex:variable var="RenderColumnX" value="{!false}"/>
+<apex:variable var="RenderColumnY" value="{!false}"/>
+<apex:variable var="RenderColumnZ" value="{!false}"/>
+<!-- Now set the column rendering state variables according to which columns have been used (via column filter mappings) -->
+<apex:repeat var="columnKey" value="{!dataRange.columnKeyList}">
+    <apex:variable var="RenderColumnA" value="{!true}" rendered="{!columnKey=='A'}" />
+    <apex:variable var="RenderColumnB" value="{!true}" rendered="{!columnKey=='B'}" />
+    <apex:variable var="RenderColumnC" value="{!true}" rendered="{!columnKey=='C'}" />
+    <apex:variable var="RenderColumnD" value="{!true}" rendered="{!columnKey=='D'}" />
+    <apex:variable var="RenderColumnE" value="{!true}" rendered="{!columnKey=='E'}" />
+    <apex:variable var="RenderColumnF" value="{!true}" rendered="{!columnKey=='F'}" />
+    <apex:variable var="RenderColumnG" value="{!true}" rendered="{!columnKey=='G'}" />
+    <apex:variable var="RenderColumnH" value="{!true}" rendered="{!columnKey=='H'}" />
+    <apex:variable var="RenderColumnI" value="{!true}" rendered="{!columnKey=='I'}" />
+    <apex:variable var="RenderColumnJ" value="{!true}" rendered="{!columnKey=='J'}" />
+    <apex:variable var="RenderColumnK" value="{!true}" rendered="{!columnKey=='K'}" />
+    <apex:variable var="RenderColumnL" value="{!true}" rendered="{!columnKey=='L'}" />
+    <apex:variable var="RenderColumnM" value="{!true}" rendered="{!columnKey=='M'}" />
+    <apex:variable var="RenderColumnN" value="{!true}" rendered="{!columnKey=='N'}" />
+    <apex:variable var="RenderColumnO" value="{!true}" rendered="{!columnKey=='O'}" />
+    <apex:variable var="RenderColumnP" value="{!true}" rendered="{!columnKey=='P'}" />
+    <apex:variable var="RenderColumnQ" value="{!true}" rendered="{!columnKey=='Q'}" />
+    <apex:variable var="RenderColumnR" value="{!true}" rendered="{!columnKey=='R'}" />
+    <apex:variable var="RenderColumnS" value="{!true}" rendered="{!columnKey=='S'}" />
+    <apex:variable var="RenderColumnT" value="{!true}" rendered="{!columnKey=='T'}" />
+    <apex:variable var="RenderColumnU" value="{!true}" rendered="{!columnKey=='U'}" />
+    <apex:variable var="RenderColumnV" value="{!true}" rendered="{!columnKey=='V'}" />
+    <apex:variable var="RenderColumnW" value="{!true}" rendered="{!columnKey=='W'}" />
+    <apex:variable var="RenderColumnX" value="{!true}" rendered="{!columnKey=='X'}" />
+    <apex:variable var="RenderColumnY" value="{!true}" rendered="{!columnKey=='Y'}" />
+    <apex:variable var="RenderColumnZ" value="{!true}" rendered="{!columnKey=='Z'}" />
+</apex:repeat>
+<!-- Group setup-->
+<!-- Set the default group value rendering state variables to "false" -->
+<apex:variable var="RenderGroup01" value="{!false}"/>
+<apex:variable var="RenderGroup02" value="{!false}"/>
+<apex:variable var="RenderGroup03" value="{!false}"/>
+<apex:variable var="RenderGroup04" value="{!false}"/>
+<apex:variable var="RenderGroup05" value="{!false}"/>
+<apex:variable var="RenderGroup06" value="{!false}"/>
+<apex:variable var="RenderGroup07" value="{!false}"/>
+<apex:variable var="RenderGroup08" value="{!false}"/>
+<apex:variable var="RenderGroup09" value="{!false}"/>
+<apex:variable var="RenderGroup10" value="{!false}"/>
+<!-- In some places we want to span the groups with a single label, so to do this we need to know how many groups we will render -->
+<apex:variable var="countRenderedGroups" value="{!0}"/>
+<!-- Now set the group rendering state variables according to which group values have been used, and count them -->
+<apex:repeat var="groupKey" value="{!dataRange.groupKeyList}">
+<!-- Line-groups -->
+<apex:outputPanel layout="none" rendered="{!groupKey=='01'}">
+<apex:variable var="RenderGroup01" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='02'}">
+<apex:variable var="RenderGroup02" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='03'}">
+<apex:variable var="RenderGroup03" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='04'}">
+<apex:variable var="RenderGroup04" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='05'}">
+<apex:variable var="RenderGroup05" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='06'}">
+<apex:variable var="RenderGroup06" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='07'}">
+<apex:variable var="RenderGroup07" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='08'}">
+<apex:variable var="RenderGroup08" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='09'}">
+<apex:variable var="RenderGroup09" value="{!true}"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!groupKey=='10'}">
+<apex:variable var="RenderGroup10" value="{!true}"/>
+</apex:outputPanel>
+</apex:repeat>
+
+<table class="ffrgridnotfullpage">
+<tr><td class = "ffrhidden">
+<!-- We need to track Gross Profit  -->
+<apex:variable value="{!0}" var="grossProfitTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="grossProfitTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Earnings Before Interest and Tax  -->
+<apex:variable value="{!0}" var="ebitTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="ebitTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Profit After Tax  -->
+<apex:variable value="{!0}" var="patTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="patTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="patTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="patTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="patTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="patTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="patTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="patTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="patTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="patTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="patTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="patTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="patTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="patTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="patTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="patTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="patTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="patTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="patTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="patTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="patTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="patTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="patTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="patTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="patTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="patTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Sales Revenue -->
+<apex:variable value="{!0}" var="salesRevenueTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="salesRevenueTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Cost of Sales  -->
+<apex:variable value="{!0}" var="costOfSalesTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="costOfSalesTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Interest Expense  -->
+<apex:variable value="{!0}" var="interestExpenseTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="interestExpenseTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Current Assets  -->
+<apex:variable value="{!0}" var="currentAssetsTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="currentAssetsTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Receivables  -->
+<apex:variable value="{!0}" var="receivablesTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="receivablesTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Inventory  -->
+<apex:variable value="{!0}" var="inventoryTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="inventoryTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Total Assets  -->
+<apex:variable value="{!0}" var="totalAssetsTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="totalAssetsTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Current Liabilities  -->
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="currentLiabilitiesTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Total Liabilities  -->
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="totalLiabilitiesTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Shareholders Equity  -->
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="shareholdersEquityTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Historical Profit  -->
+<apex:variable value="{!0}" var="historicalProfitTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="historicalProfitTotalColumnZ" rendered="{!RenderColumnZ}"/>
+<!-- We need to track Preference Dividends  -->
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="preferenceDividendsTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</td></tr>
+<!-- Iterate over the Rows -->
+<apex:repeat value="{!dataRange.rowList}" var="row" >
+<!-- Setup for start of row -->
+<apex:variable var="rowKeyNum" value="{!0}"/>
+<tr><td class = "ffrhidden"><c:ToNumber value="{!row.key}" convertedVarName="rowKeyNum"/>
+<!-- Row-sensitive number format -->
+<apex:variable var="RowNumberPattern" value="{!if(rowKeyNum>20 && rowKeyNum<51,VN,VR)}"/>
+</td></tr>
+<!-- For each row, reset all column row-totals to zero (if the column is in use - determined by column render state variables) -->
+<tr><td class = "ffrhidden">
+<apex:variable value="{!0}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!0}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!0}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!0}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!0}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!0}" var="rowTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!0}" var="rowTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!0}" var="rowTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!0}" var="rowTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!0}" var="rowTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!0}" var="rowTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!0}" var="rowTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!0}" var="rowTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!0}" var="rowTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!0}" var="rowTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!0}" var="rowTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!0}" var="rowTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!0}" var="rowTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!0}" var="rowTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!0}" var="rowTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!0}" var="rowTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!0}" var="rowTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!0}" var="rowTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!0}" var="rowTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!0}" var="rowTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!0}" var="rowTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</td></tr>
+<!-- Iterate over the Lines -->
+<apex:repeat value="{!row.lineList}" var="line" >
+<!-- Line setup -->
+<!-- Each column is configured independently within an outputPanel the outputpanel rendered property determines whether the column is configured -->
+<!-- This uses the column render state variable (e.g. "renderColumnA" determines whether the panel for column A is configured and rendered) -->
+<apex:variable value="{!0}" var="lineTotal"/>
+<!-- For each column, add the column value to the line total - column-row totals are updated separately -->
+<tr><td class="ffrhidden">
+<apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['A'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['B'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['C'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['D'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['E'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnF}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['F'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnG}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['G'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnH}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['H'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnI}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['I'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnJ}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['J'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnK}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['K'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnL}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['L'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnM}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['M'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnN}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['N'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnO}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['O'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnP}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['P'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnQ}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['Q'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnR}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['R'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnS}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['S'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnT}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['T'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnU}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['U'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnV}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['V'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnW}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['W'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnX}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['X'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnY}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['Y'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnZ}">
+<apex:variable value="{!lineTotal+VALUE(TEXT(line.columns['Z'].values['A']))}" var="lineTotal"/>
+</apex:outputPanel>
+</td></tr>
+<!-- Setup for next line -->
+<!-- Add the values to the row-column totals -->
+<apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+<apex:variable value="{!rowTotalColumnA+VALUE(TEXT(line.columns['A'].values['A']))}" var="rowTotalColumnA"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+<apex:variable value="{!rowTotalColumnB+VALUE(TEXT(line.columns['B'].values['A']))}" var="rowTotalColumnB"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+<apex:variable value="{!rowTotalColumnC+VALUE(TEXT(line.columns['C'].values['A']))}" var="rowTotalColumnC"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+<apex:variable value="{!rowTotalColumnD+VALUE(TEXT(line.columns['D'].values['A']))}" var="rowTotalColumnD"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+<apex:variable value="{!rowTotalColumnE+VALUE(TEXT(line.columns['E'].values['A']))}" var="rowTotalColumnE"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnF}">
+<apex:variable value="{!rowTotalColumnF+VALUE(TEXT(line.columns['F'].values['A']))}" var="rowTotalColumnF"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnG}">
+<apex:variable value="{!rowTotalColumnG+VALUE(TEXT(line.columns['G'].values['A']))}" var="rowTotalColumnG"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnH}">
+<apex:variable value="{!rowTotalColumnH+VALUE(TEXT(line.columns['H'].values['A']))}" var="rowTotalColumnH"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnI}">
+<apex:variable value="{!rowTotalColumnI+VALUE(TEXT(line.columns['I'].values['A']))}" var="rowTotalColumnI"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnJ}">
+<apex:variable value="{!rowTotalColumnJ+VALUE(TEXT(line.columns['J'].values['A']))}" var="rowTotalColumnJ"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnK}">
+<apex:variable value="{!rowTotalColumnK+VALUE(TEXT(line.columns['K'].values['A']))}" var="rowTotalColumnK"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnL}">
+<apex:variable value="{!rowTotalColumnL+VALUE(TEXT(line.columns['L'].values['A']))}" var="rowTotalColumnL"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnM}">
+<apex:variable value="{!rowTotalColumnM+VALUE(TEXT(line.columns['M'].values['A']))}" var="rowTotalColumnM"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnN}">
+<apex:variable value="{!rowTotalColumnN+VALUE(TEXT(line.columns['N'].values['A']))}" var="rowTotalColumnN"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnO}">
+<apex:variable value="{!rowTotalColumnO+VALUE(TEXT(line.columns['O'].values['A']))}" var="rowTotalColumnO"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnP}">
+<apex:variable value="{!rowTotalColumnP+VALUE(TEXT(line.columns['P'].values['A']))}" var="rowTotalColumnP"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnQ}">
+<apex:variable value="{!rowTotalColumnQ+VALUE(TEXT(line.columns['Q'].values['A']))}" var="rowTotalColumnQ"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnR}">
+<apex:variable value="{!rowTotalColumnR+VALUE(TEXT(line.columns['R'].values['A']))}" var="rowTotalColumnR"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnS}">
+<apex:variable value="{!rowTotalColumnS+VALUE(TEXT(line.columns['S'].values['A']))}" var="rowTotalColumnS"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnT}">
+<apex:variable value="{!rowTotalColumnT+VALUE(TEXT(line.columns['T'].values['A']))}" var="rowTotalColumnT"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnU}">
+<apex:variable value="{!rowTotalColumnU+VALUE(TEXT(line.columns['U'].values['A']))}" var="rowTotalColumnU"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnV}">
+<apex:variable value="{!rowTotalColumnV+VALUE(TEXT(line.columns['V'].values['A']))}" var="rowTotalColumnV"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnW}">
+<apex:variable value="{!rowTotalColumnW+VALUE(TEXT(line.columns['W'].values['A']))}" var="rowTotalColumnW"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnX}">
+<apex:variable value="{!rowTotalColumnX+VALUE(TEXT(line.columns['X'].values['A']))}" var="rowTotalColumnX"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnY}">
+<apex:variable value="{!rowTotalColumnY+VALUE(TEXT(line.columns['Y'].values['A']))}" var="rowTotalColumnY"/>
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!RenderColumnZ}">
+<apex:variable value="{!rowTotalColumnZ+VALUE(TEXT(line.columns['Z'].values['A']))}" var="rowTotalColumnZ"/>
+</apex:outputPanel>
+</apex:repeat>
+<!-- Go to next line -->
+<!-- Setup for end of row -->
+<!-- Add up the values for the row total columns -->
+<!-- Note that the row-totals are reset for each successive row -->
+<!-- Accumulate Gross Profit if the row is in the range 01-05 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum<06}">
+<apex:variable value="{!grossProfitTotalColumnA+rowTotalColumnA}" var="grossProfitTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!grossProfitTotalColumnB+rowTotalColumnB}" var="grossProfitTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!grossProfitTotalColumnC+rowTotalColumnC}" var="grossProfitTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!grossProfitTotalColumnD+rowTotalColumnD}" var="grossProfitTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!grossProfitTotalColumnE+rowTotalColumnE}" var="grossProfitTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!grossProfitTotalColumnF+rowTotalColumnF}" var="grossProfitTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!grossProfitTotalColumnG+rowTotalColumnG}" var="grossProfitTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!grossProfitTotalColumnH+rowTotalColumnH}" var="grossProfitTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!grossProfitTotalColumnI+rowTotalColumnI}" var="grossProfitTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!grossProfitTotalColumnJ+rowTotalColumnJ}" var="grossProfitTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!grossProfitTotalColumnK+rowTotalColumnK}" var="grossProfitTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!grossProfitTotalColumnL+rowTotalColumnL}" var="grossProfitTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!grossProfitTotalColumnM+rowTotalColumnM}" var="grossProfitTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!grossProfitTotalColumnN+rowTotalColumnN}" var="grossProfitTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!grossProfitTotalColumnO+rowTotalColumnO}" var="grossProfitTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!grossProfitTotalColumnP+rowTotalColumnP}" var="grossProfitTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!grossProfitTotalColumnQ+rowTotalColumnQ}" var="grossProfitTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!grossProfitTotalColumnR+rowTotalColumnR}" var="grossProfitTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!grossProfitTotalColumnS+rowTotalColumnS}" var="grossProfitTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!grossProfitTotalColumnT+rowTotalColumnT}" var="grossProfitTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!grossProfitTotalColumnU+rowTotalColumnU}" var="grossProfitTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!grossProfitTotalColumnV+rowTotalColumnV}" var="grossProfitTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!grossProfitTotalColumnW+rowTotalColumnW}" var="grossProfitTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!grossProfitTotalColumnX+rowTotalColumnX}" var="grossProfitTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!grossProfitTotalColumnY+rowTotalColumnY}" var="grossProfitTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!grossProfitTotalColumnZ+rowTotalColumnZ}" var="grossProfitTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Earnings Before Interest and Tax if the row is in the range 06-10 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>05 && rowKeyNum<11}">
+<apex:variable value="{!ebitTotalColumnA+rowTotalColumnA}" var="ebitTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!ebitTotalColumnB+rowTotalColumnB}" var="ebitTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!ebitTotalColumnC+rowTotalColumnC}" var="ebitTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!ebitTotalColumnD+rowTotalColumnD}" var="ebitTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!ebitTotalColumnE+rowTotalColumnE}" var="ebitTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!ebitTotalColumnF+rowTotalColumnF}" var="ebitTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!ebitTotalColumnG+rowTotalColumnG}" var="ebitTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!ebitTotalColumnH+rowTotalColumnH}" var="ebitTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!ebitTotalColumnI+rowTotalColumnI}" var="ebitTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!ebitTotalColumnJ+rowTotalColumnJ}" var="ebitTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!ebitTotalColumnK+rowTotalColumnK}" var="ebitTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!ebitTotalColumnL+rowTotalColumnL}" var="ebitTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!ebitTotalColumnM+rowTotalColumnM}" var="ebitTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!ebitTotalColumnN+rowTotalColumnN}" var="ebitTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!ebitTotalColumnO+rowTotalColumnO}" var="ebitTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!ebitTotalColumnP+rowTotalColumnP}" var="ebitTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!ebitTotalColumnQ+rowTotalColumnQ}" var="ebitTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!ebitTotalColumnR+rowTotalColumnR}" var="ebitTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!ebitTotalColumnS+rowTotalColumnS}" var="ebitTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!ebitTotalColumnT+rowTotalColumnT}" var="ebitTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!ebitTotalColumnU+rowTotalColumnU}" var="ebitTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!ebitTotalColumnV+rowTotalColumnV}" var="ebitTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!ebitTotalColumnW+rowTotalColumnW}" var="ebitTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!ebitTotalColumnX+rowTotalColumnX}" var="ebitTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!ebitTotalColumnY+rowTotalColumnY}" var="ebitTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!ebitTotalColumnZ+rowTotalColumnZ}" var="ebitTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Profit After Tax if the row is in the range 11-15 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>10 && rowKeyNum<16}">
+<apex:variable value="{!patTotalColumnA+rowTotalColumnA}" var="patTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!patTotalColumnB+rowTotalColumnB}" var="patTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!patTotalColumnC+rowTotalColumnC}" var="patTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!patTotalColumnD+rowTotalColumnD}" var="patTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!patTotalColumnE+rowTotalColumnE}" var="patTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!patTotalColumnF+rowTotalColumnF}" var="patTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!patTotalColumnG+rowTotalColumnG}" var="patTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!patTotalColumnH+rowTotalColumnH}" var="patTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!patTotalColumnI+rowTotalColumnI}" var="patTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!patTotalColumnJ+rowTotalColumnJ}" var="patTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!patTotalColumnK+rowTotalColumnK}" var="patTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!patTotalColumnL+rowTotalColumnL}" var="patTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!patTotalColumnM+rowTotalColumnM}" var="patTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!patTotalColumnN+rowTotalColumnN}" var="patTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!patTotalColumnO+rowTotalColumnO}" var="patTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!patTotalColumnP+rowTotalColumnP}" var="patTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!patTotalColumnQ+rowTotalColumnQ}" var="patTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!patTotalColumnR+rowTotalColumnR}" var="patTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!patTotalColumnS+rowTotalColumnS}" var="patTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!patTotalColumnT+rowTotalColumnT}" var="patTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!patTotalColumnU+rowTotalColumnU}" var="patTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!patTotalColumnV+rowTotalColumnV}" var="patTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!patTotalColumnW+rowTotalColumnW}" var="patTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!patTotalColumnX+rowTotalColumnX}" var="patTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!patTotalColumnY+rowTotalColumnY}" var="patTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!patTotalColumnZ+rowTotalColumnZ}" var="patTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Sales Revenue if the row is in the range 16-20 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>15 && rowKeyNum<21}">
+<apex:variable value="{!salesRevenueTotalColumnA+rowTotalColumnA}" var="salesRevenueTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!salesRevenueTotalColumnB+rowTotalColumnB}" var="salesRevenueTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!salesRevenueTotalColumnC+rowTotalColumnC}" var="salesRevenueTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!salesRevenueTotalColumnD+rowTotalColumnD}" var="salesRevenueTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!salesRevenueTotalColumnE+rowTotalColumnE}" var="salesRevenueTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!salesRevenueTotalColumnF+rowTotalColumnF}" var="salesRevenueTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!salesRevenueTotalColumnG+rowTotalColumnG}" var="salesRevenueTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!salesRevenueTotalColumnH+rowTotalColumnH}" var="salesRevenueTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!salesRevenueTotalColumnI+rowTotalColumnI}" var="salesRevenueTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!salesRevenueTotalColumnJ+rowTotalColumnJ}" var="salesRevenueTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!salesRevenueTotalColumnK+rowTotalColumnK}" var="salesRevenueTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!salesRevenueTotalColumnL+rowTotalColumnL}" var="salesRevenueTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!salesRevenueTotalColumnM+rowTotalColumnM}" var="salesRevenueTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!salesRevenueTotalColumnN+rowTotalColumnN}" var="salesRevenueTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!salesRevenueTotalColumnO+rowTotalColumnO}" var="salesRevenueTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!salesRevenueTotalColumnP+rowTotalColumnP}" var="salesRevenueTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!salesRevenueTotalColumnQ+rowTotalColumnQ}" var="salesRevenueTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!salesRevenueTotalColumnR+rowTotalColumnR}" var="salesRevenueTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!salesRevenueTotalColumnS+rowTotalColumnS}" var="salesRevenueTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!salesRevenueTotalColumnT+rowTotalColumnT}" var="salesRevenueTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!salesRevenueTotalColumnU+rowTotalColumnU}" var="salesRevenueTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!salesRevenueTotalColumnV+rowTotalColumnV}" var="salesRevenueTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!salesRevenueTotalColumnW+rowTotalColumnW}" var="salesRevenueTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!salesRevenueTotalColumnX+rowTotalColumnX}" var="salesRevenueTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!salesRevenueTotalColumnY+rowTotalColumnY}" var="salesRevenueTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!salesRevenueTotalColumnZ+rowTotalColumnZ}" var="salesRevenueTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Cost of Sales if the row is in the range 21-25 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>20 && rowKeyNum<26}">
+<apex:variable value="{!costOfSalesTotalColumnA+rowTotalColumnA}" var="costOfSalesTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!costOfSalesTotalColumnB+rowTotalColumnB}" var="costOfSalesTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!costOfSalesTotalColumnC+rowTotalColumnC}" var="costOfSalesTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!costOfSalesTotalColumnD+rowTotalColumnD}" var="costOfSalesTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!costOfSalesTotalColumnE+rowTotalColumnE}" var="costOfSalesTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!costOfSalesTotalColumnF+rowTotalColumnF}" var="costOfSalesTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!costOfSalesTotalColumnG+rowTotalColumnG}" var="costOfSalesTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!costOfSalesTotalColumnH+rowTotalColumnH}" var="costOfSalesTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!costOfSalesTotalColumnI+rowTotalColumnI}" var="costOfSalesTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!costOfSalesTotalColumnJ+rowTotalColumnJ}" var="costOfSalesTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!costOfSalesTotalColumnK+rowTotalColumnK}" var="costOfSalesTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!costOfSalesTotalColumnL+rowTotalColumnL}" var="costOfSalesTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!costOfSalesTotalColumnM+rowTotalColumnM}" var="costOfSalesTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!costOfSalesTotalColumnN+rowTotalColumnN}" var="costOfSalesTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!costOfSalesTotalColumnO+rowTotalColumnO}" var="costOfSalesTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!costOfSalesTotalColumnP+rowTotalColumnP}" var="costOfSalesTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!costOfSalesTotalColumnQ+rowTotalColumnQ}" var="costOfSalesTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!costOfSalesTotalColumnR+rowTotalColumnR}" var="costOfSalesTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!costOfSalesTotalColumnS+rowTotalColumnS}" var="costOfSalesTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!costOfSalesTotalColumnT+rowTotalColumnT}" var="costOfSalesTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!costOfSalesTotalColumnU+rowTotalColumnU}" var="costOfSalesTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!costOfSalesTotalColumnV+rowTotalColumnV}" var="costOfSalesTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!costOfSalesTotalColumnW+rowTotalColumnW}" var="costOfSalesTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!costOfSalesTotalColumnX+rowTotalColumnX}" var="costOfSalesTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!costOfSalesTotalColumnY+rowTotalColumnY}" var="costOfSalesTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!costOfSalesTotalColumnZ+rowTotalColumnZ}" var="costOfSalesTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Interest Expense if the row is in the range 26-30 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>25 && rowKeyNum<31}">
+<apex:variable value="{!interestExpenseTotalColumnA+rowTotalColumnA}" var="interestExpenseTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!interestExpenseTotalColumnB+rowTotalColumnB}" var="interestExpenseTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!interestExpenseTotalColumnC+rowTotalColumnC}" var="interestExpenseTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!interestExpenseTotalColumnD+rowTotalColumnD}" var="interestExpenseTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!interestExpenseTotalColumnE+rowTotalColumnE}" var="interestExpenseTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!interestExpenseTotalColumnF+rowTotalColumnF}" var="interestExpenseTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!interestExpenseTotalColumnG+rowTotalColumnG}" var="interestExpenseTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!interestExpenseTotalColumnH+rowTotalColumnH}" var="interestExpenseTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!interestExpenseTotalColumnI+rowTotalColumnI}" var="interestExpenseTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!interestExpenseTotalColumnJ+rowTotalColumnJ}" var="interestExpenseTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!interestExpenseTotalColumnK+rowTotalColumnK}" var="interestExpenseTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!interestExpenseTotalColumnL+rowTotalColumnL}" var="interestExpenseTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!interestExpenseTotalColumnM+rowTotalColumnM}" var="interestExpenseTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!interestExpenseTotalColumnN+rowTotalColumnN}" var="interestExpenseTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!interestExpenseTotalColumnO+rowTotalColumnO}" var="interestExpenseTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!interestExpenseTotalColumnP+rowTotalColumnP}" var="interestExpenseTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!interestExpenseTotalColumnQ+rowTotalColumnQ}" var="interestExpenseTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!interestExpenseTotalColumnR+rowTotalColumnR}" var="interestExpenseTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!interestExpenseTotalColumnS+rowTotalColumnS}" var="interestExpenseTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!interestExpenseTotalColumnT+rowTotalColumnT}" var="interestExpenseTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!interestExpenseTotalColumnU+rowTotalColumnU}" var="interestExpenseTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!interestExpenseTotalColumnV+rowTotalColumnV}" var="interestExpenseTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!interestExpenseTotalColumnW+rowTotalColumnW}" var="interestExpenseTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!interestExpenseTotalColumnX+rowTotalColumnX}" var="interestExpenseTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!interestExpenseTotalColumnY+rowTotalColumnY}" var="interestExpenseTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!interestExpenseTotalColumnZ+rowTotalColumnZ}" var="interestExpenseTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Current Assets if the row is in the range 31-35 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>30 && rowKeyNum<36}">
+<apex:variable value="{!currentAssetsTotalColumnA+rowTotalColumnA}" var="currentAssetsTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!currentAssetsTotalColumnB+rowTotalColumnB}" var="currentAssetsTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!currentAssetsTotalColumnC+rowTotalColumnC}" var="currentAssetsTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!currentAssetsTotalColumnD+rowTotalColumnD}" var="currentAssetsTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!currentAssetsTotalColumnE+rowTotalColumnE}" var="currentAssetsTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!currentAssetsTotalColumnF+rowTotalColumnF}" var="currentAssetsTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!currentAssetsTotalColumnG+rowTotalColumnG}" var="currentAssetsTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!currentAssetsTotalColumnH+rowTotalColumnH}" var="currentAssetsTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!currentAssetsTotalColumnI+rowTotalColumnI}" var="currentAssetsTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!currentAssetsTotalColumnJ+rowTotalColumnJ}" var="currentAssetsTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!currentAssetsTotalColumnK+rowTotalColumnK}" var="currentAssetsTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!currentAssetsTotalColumnL+rowTotalColumnL}" var="currentAssetsTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!currentAssetsTotalColumnM+rowTotalColumnM}" var="currentAssetsTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!currentAssetsTotalColumnN+rowTotalColumnN}" var="currentAssetsTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!currentAssetsTotalColumnO+rowTotalColumnO}" var="currentAssetsTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!currentAssetsTotalColumnP+rowTotalColumnP}" var="currentAssetsTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!currentAssetsTotalColumnQ+rowTotalColumnQ}" var="currentAssetsTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!currentAssetsTotalColumnR+rowTotalColumnR}" var="currentAssetsTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!currentAssetsTotalColumnS+rowTotalColumnS}" var="currentAssetsTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!currentAssetsTotalColumnT+rowTotalColumnT}" var="currentAssetsTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!currentAssetsTotalColumnU+rowTotalColumnU}" var="currentAssetsTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!currentAssetsTotalColumnV+rowTotalColumnV}" var="currentAssetsTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!currentAssetsTotalColumnW+rowTotalColumnW}" var="currentAssetsTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!currentAssetsTotalColumnX+rowTotalColumnX}" var="currentAssetsTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!currentAssetsTotalColumnY+rowTotalColumnY}" var="currentAssetsTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!currentAssetsTotalColumnZ+rowTotalColumnZ}" var="currentAssetsTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Receivables if the row is in the range 36-40 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>35 && rowKeyNum<41}">
+<apex:variable value="{!receivablesTotalColumnA+rowTotalColumnA}" var="receivablesTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!receivablesTotalColumnB+rowTotalColumnB}" var="receivablesTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!receivablesTotalColumnC+rowTotalColumnC}" var="receivablesTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!receivablesTotalColumnD+rowTotalColumnD}" var="receivablesTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!receivablesTotalColumnE+rowTotalColumnE}" var="receivablesTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!receivablesTotalColumnF+rowTotalColumnF}" var="receivablesTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!receivablesTotalColumnG+rowTotalColumnG}" var="receivablesTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!receivablesTotalColumnH+rowTotalColumnH}" var="receivablesTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!receivablesTotalColumnI+rowTotalColumnI}" var="receivablesTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!receivablesTotalColumnJ+rowTotalColumnJ}" var="receivablesTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!receivablesTotalColumnK+rowTotalColumnK}" var="receivablesTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!receivablesTotalColumnL+rowTotalColumnL}" var="receivablesTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!receivablesTotalColumnM+rowTotalColumnM}" var="receivablesTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!receivablesTotalColumnN+rowTotalColumnN}" var="receivablesTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!receivablesTotalColumnO+rowTotalColumnO}" var="receivablesTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!receivablesTotalColumnP+rowTotalColumnP}" var="receivablesTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!receivablesTotalColumnQ+rowTotalColumnQ}" var="receivablesTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!receivablesTotalColumnR+rowTotalColumnR}" var="receivablesTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!receivablesTotalColumnS+rowTotalColumnS}" var="receivablesTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!receivablesTotalColumnT+rowTotalColumnT}" var="receivablesTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!receivablesTotalColumnU+rowTotalColumnU}" var="receivablesTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!receivablesTotalColumnV+rowTotalColumnV}" var="receivablesTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!receivablesTotalColumnW+rowTotalColumnW}" var="receivablesTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!receivablesTotalColumnX+rowTotalColumnX}" var="receivablesTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!receivablesTotalColumnY+rowTotalColumnY}" var="receivablesTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!receivablesTotalColumnZ+rowTotalColumnZ}" var="receivablesTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Inventory if the row is in the range 41-45 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>40 && rowKeyNum<46}">
+<apex:variable value="{!inventoryTotalColumnA+rowTotalColumnA}" var="inventoryTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!inventoryTotalColumnB+rowTotalColumnB}" var="inventoryTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!inventoryTotalColumnC+rowTotalColumnC}" var="inventoryTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!inventoryTotalColumnD+rowTotalColumnD}" var="inventoryTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!inventoryTotalColumnE+rowTotalColumnE}" var="inventoryTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!inventoryTotalColumnF+rowTotalColumnF}" var="inventoryTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!inventoryTotalColumnG+rowTotalColumnG}" var="inventoryTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!inventoryTotalColumnH+rowTotalColumnH}" var="inventoryTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!inventoryTotalColumnI+rowTotalColumnI}" var="inventoryTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!inventoryTotalColumnJ+rowTotalColumnJ}" var="inventoryTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!inventoryTotalColumnK+rowTotalColumnK}" var="inventoryTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!inventoryTotalColumnL+rowTotalColumnL}" var="inventoryTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!inventoryTotalColumnM+rowTotalColumnM}" var="inventoryTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!inventoryTotalColumnN+rowTotalColumnN}" var="inventoryTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!inventoryTotalColumnO+rowTotalColumnO}" var="inventoryTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!inventoryTotalColumnP+rowTotalColumnP}" var="inventoryTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!inventoryTotalColumnQ+rowTotalColumnQ}" var="inventoryTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!inventoryTotalColumnR+rowTotalColumnR}" var="inventoryTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!inventoryTotalColumnS+rowTotalColumnS}" var="inventoryTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!inventoryTotalColumnT+rowTotalColumnT}" var="inventoryTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!inventoryTotalColumnU+rowTotalColumnU}" var="inventoryTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!inventoryTotalColumnV+rowTotalColumnV}" var="inventoryTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!inventoryTotalColumnW+rowTotalColumnW}" var="inventoryTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!inventoryTotalColumnX+rowTotalColumnX}" var="inventoryTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!inventoryTotalColumnY+rowTotalColumnY}" var="inventoryTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!inventoryTotalColumnZ+rowTotalColumnZ}" var="inventoryTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Total Assets if the row is in the range 46-50 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>45 && rowKeyNum<51}">
+<apex:variable value="{!totalAssetsTotalColumnA+rowTotalColumnA}" var="totalAssetsTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!totalAssetsTotalColumnB+rowTotalColumnB}" var="totalAssetsTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!totalAssetsTotalColumnC+rowTotalColumnC}" var="totalAssetsTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!totalAssetsTotalColumnD+rowTotalColumnD}" var="totalAssetsTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!totalAssetsTotalColumnE+rowTotalColumnE}" var="totalAssetsTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!totalAssetsTotalColumnF+rowTotalColumnF}" var="totalAssetsTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!totalAssetsTotalColumnG+rowTotalColumnG}" var="totalAssetsTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!totalAssetsTotalColumnH+rowTotalColumnH}" var="totalAssetsTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!totalAssetsTotalColumnI+rowTotalColumnI}" var="totalAssetsTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!totalAssetsTotalColumnJ+rowTotalColumnJ}" var="totalAssetsTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!totalAssetsTotalColumnK+rowTotalColumnK}" var="totalAssetsTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!totalAssetsTotalColumnL+rowTotalColumnL}" var="totalAssetsTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!totalAssetsTotalColumnM+rowTotalColumnM}" var="totalAssetsTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!totalAssetsTotalColumnN+rowTotalColumnN}" var="totalAssetsTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!totalAssetsTotalColumnO+rowTotalColumnO}" var="totalAssetsTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!totalAssetsTotalColumnP+rowTotalColumnP}" var="totalAssetsTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!totalAssetsTotalColumnQ+rowTotalColumnQ}" var="totalAssetsTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!totalAssetsTotalColumnR+rowTotalColumnR}" var="totalAssetsTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!totalAssetsTotalColumnS+rowTotalColumnS}" var="totalAssetsTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!totalAssetsTotalColumnT+rowTotalColumnT}" var="totalAssetsTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!totalAssetsTotalColumnU+rowTotalColumnU}" var="totalAssetsTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!totalAssetsTotalColumnV+rowTotalColumnV}" var="totalAssetsTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!totalAssetsTotalColumnW+rowTotalColumnW}" var="totalAssetsTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!totalAssetsTotalColumnX+rowTotalColumnX}" var="totalAssetsTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!totalAssetsTotalColumnY+rowTotalColumnY}" var="totalAssetsTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!totalAssetsTotalColumnZ+rowTotalColumnZ}" var="totalAssetsTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Current Liabilities if the row is in the range 51-55 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>50 && rowKeyNum<56}">
+<apex:variable value="{!currentLiabilitiesTotalColumnA+rowTotalColumnA}" var="currentLiabilitiesTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnB+rowTotalColumnB}" var="currentLiabilitiesTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnC+rowTotalColumnC}" var="currentLiabilitiesTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnD+rowTotalColumnD}" var="currentLiabilitiesTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnE+rowTotalColumnE}" var="currentLiabilitiesTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnF+rowTotalColumnF}" var="currentLiabilitiesTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnG+rowTotalColumnG}" var="currentLiabilitiesTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnH+rowTotalColumnH}" var="currentLiabilitiesTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnI+rowTotalColumnI}" var="currentLiabilitiesTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnJ+rowTotalColumnJ}" var="currentLiabilitiesTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnK+rowTotalColumnK}" var="currentLiabilitiesTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnL+rowTotalColumnL}" var="currentLiabilitiesTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnM+rowTotalColumnM}" var="currentLiabilitiesTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnN+rowTotalColumnN}" var="currentLiabilitiesTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnO+rowTotalColumnO}" var="currentLiabilitiesTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnP+rowTotalColumnP}" var="currentLiabilitiesTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnQ+rowTotalColumnQ}" var="currentLiabilitiesTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnR+rowTotalColumnR}" var="currentLiabilitiesTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnS+rowTotalColumnS}" var="currentLiabilitiesTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnT+rowTotalColumnT}" var="currentLiabilitiesTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnU+rowTotalColumnU}" var="currentLiabilitiesTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnV+rowTotalColumnV}" var="currentLiabilitiesTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnW+rowTotalColumnW}" var="currentLiabilitiesTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnX+rowTotalColumnX}" var="currentLiabilitiesTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnY+rowTotalColumnY}" var="currentLiabilitiesTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!currentLiabilitiesTotalColumnZ+rowTotalColumnZ}" var="currentLiabilitiesTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Total Liabilities if the row is in the range 56-60 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>55 && rowKeyNum<61}">
+<apex:variable value="{!totalLiabilitiesTotalColumnA+rowTotalColumnA}" var="totalLiabilitiesTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnB+rowTotalColumnB}" var="totalLiabilitiesTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnC+rowTotalColumnC}" var="totalLiabilitiesTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnD+rowTotalColumnD}" var="totalLiabilitiesTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnE+rowTotalColumnE}" var="totalLiabilitiesTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnF+rowTotalColumnF}" var="totalLiabilitiesTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnG+rowTotalColumnG}" var="totalLiabilitiesTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnH+rowTotalColumnH}" var="totalLiabilitiesTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnI+rowTotalColumnI}" var="totalLiabilitiesTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnJ+rowTotalColumnJ}" var="totalLiabilitiesTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnK+rowTotalColumnK}" var="totalLiabilitiesTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnL+rowTotalColumnL}" var="totalLiabilitiesTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnM+rowTotalColumnM}" var="totalLiabilitiesTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnN+rowTotalColumnN}" var="totalLiabilitiesTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnO+rowTotalColumnO}" var="totalLiabilitiesTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnP+rowTotalColumnP}" var="totalLiabilitiesTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnQ+rowTotalColumnQ}" var="totalLiabilitiesTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnR+rowTotalColumnR}" var="totalLiabilitiesTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnS+rowTotalColumnS}" var="totalLiabilitiesTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnT+rowTotalColumnT}" var="totalLiabilitiesTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnU+rowTotalColumnU}" var="totalLiabilitiesTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnV+rowTotalColumnV}" var="totalLiabilitiesTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnW+rowTotalColumnW}" var="totalLiabilitiesTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnX+rowTotalColumnX}" var="totalLiabilitiesTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnY+rowTotalColumnY}" var="totalLiabilitiesTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!totalLiabilitiesTotalColumnZ+rowTotalColumnZ}" var="totalLiabilitiesTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Shareholders Equity if the row is in the range 61-65 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>60 && rowKeyNum<66}">
+<apex:variable value="{!shareholdersEquityTotalColumnA+rowTotalColumnA}" var="shareholdersEquityTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnB+rowTotalColumnB}" var="shareholdersEquityTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnC+rowTotalColumnC}" var="shareholdersEquityTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnD+rowTotalColumnD}" var="shareholdersEquityTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnE+rowTotalColumnE}" var="shareholdersEquityTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnF+rowTotalColumnF}" var="shareholdersEquityTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnG+rowTotalColumnG}" var="shareholdersEquityTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnH+rowTotalColumnH}" var="shareholdersEquityTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnI+rowTotalColumnI}" var="shareholdersEquityTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnJ+rowTotalColumnJ}" var="shareholdersEquityTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnK+rowTotalColumnK}" var="shareholdersEquityTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnL+rowTotalColumnL}" var="shareholdersEquityTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnM+rowTotalColumnM}" var="shareholdersEquityTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnN+rowTotalColumnN}" var="shareholdersEquityTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnO+rowTotalColumnO}" var="shareholdersEquityTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnP+rowTotalColumnP}" var="shareholdersEquityTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnQ+rowTotalColumnQ}" var="shareholdersEquityTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnR+rowTotalColumnR}" var="shareholdersEquityTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnS+rowTotalColumnS}" var="shareholdersEquityTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnT+rowTotalColumnT}" var="shareholdersEquityTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnU+rowTotalColumnU}" var="shareholdersEquityTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnV+rowTotalColumnV}" var="shareholdersEquityTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnW+rowTotalColumnW}" var="shareholdersEquityTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnX+rowTotalColumnX}" var="shareholdersEquityTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnY+rowTotalColumnY}" var="shareholdersEquityTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!shareholdersEquityTotalColumnZ+rowTotalColumnZ}" var="shareholdersEquityTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Historical Profit if the row is in the range 66-70 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>65 && rowKeyNum<71}">
+<apex:variable value="{!historicalProfitTotalColumnA+rowTotalColumnA}" var="historicalProfitTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!historicalProfitTotalColumnB+rowTotalColumnB}" var="historicalProfitTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!historicalProfitTotalColumnC+rowTotalColumnC}" var="historicalProfitTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!historicalProfitTotalColumnD+rowTotalColumnD}" var="historicalProfitTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!historicalProfitTotalColumnE+rowTotalColumnE}" var="historicalProfitTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!historicalProfitTotalColumnF+rowTotalColumnF}" var="historicalProfitTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!historicalProfitTotalColumnG+rowTotalColumnG}" var="historicalProfitTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!historicalProfitTotalColumnH+rowTotalColumnH}" var="historicalProfitTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!historicalProfitTotalColumnI+rowTotalColumnI}" var="historicalProfitTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!historicalProfitTotalColumnJ+rowTotalColumnJ}" var="historicalProfitTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!historicalProfitTotalColumnK+rowTotalColumnK}" var="historicalProfitTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!historicalProfitTotalColumnL+rowTotalColumnL}" var="historicalProfitTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!historicalProfitTotalColumnM+rowTotalColumnM}" var="historicalProfitTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!historicalProfitTotalColumnN+rowTotalColumnN}" var="historicalProfitTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!historicalProfitTotalColumnO+rowTotalColumnO}" var="historicalProfitTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!historicalProfitTotalColumnP+rowTotalColumnP}" var="historicalProfitTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!historicalProfitTotalColumnQ+rowTotalColumnQ}" var="historicalProfitTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!historicalProfitTotalColumnR+rowTotalColumnR}" var="historicalProfitTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!historicalProfitTotalColumnS+rowTotalColumnS}" var="historicalProfitTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!historicalProfitTotalColumnT+rowTotalColumnT}" var="historicalProfitTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!historicalProfitTotalColumnU+rowTotalColumnU}" var="historicalProfitTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!historicalProfitTotalColumnV+rowTotalColumnV}" var="historicalProfitTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!historicalProfitTotalColumnW+rowTotalColumnW}" var="historicalProfitTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!historicalProfitTotalColumnX+rowTotalColumnX}" var="historicalProfitTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!historicalProfitTotalColumnY+rowTotalColumnY}" var="historicalProfitTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!historicalProfitTotalColumnZ+rowTotalColumnZ}" var="historicalProfitTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+<!-- Accumulate Preference Dividends if the row is in the range 71-75 -->
+<apex:outputPanel layout="none" rendered="{!rowKeyNum>70 && rowKeyNum<76}">
+<apex:variable value="{!preferenceDividendsTotalColumnA+rowTotalColumnA}" var="preferenceDividendsTotalColumnA" rendered="{!RenderColumnA}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnB+rowTotalColumnB}" var="preferenceDividendsTotalColumnB" rendered="{!RenderColumnB}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnC+rowTotalColumnC}" var="preferenceDividendsTotalColumnC" rendered="{!RenderColumnC}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnD+rowTotalColumnD}" var="preferenceDividendsTotalColumnD" rendered="{!RenderColumnD}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnE+rowTotalColumnE}" var="preferenceDividendsTotalColumnE" rendered="{!RenderColumnE}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnF+rowTotalColumnF}" var="preferenceDividendsTotalColumnF" rendered="{!RenderColumnF}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnG+rowTotalColumnG}" var="preferenceDividendsTotalColumnG" rendered="{!RenderColumnG}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnH+rowTotalColumnH}" var="preferenceDividendsTotalColumnH" rendered="{!RenderColumnH}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnI+rowTotalColumnI}" var="preferenceDividendsTotalColumnI" rendered="{!RenderColumnI}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnJ+rowTotalColumnJ}" var="preferenceDividendsTotalColumnJ" rendered="{!RenderColumnJ}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnK+rowTotalColumnK}" var="preferenceDividendsTotalColumnK" rendered="{!RenderColumnK}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnL+rowTotalColumnL}" var="preferenceDividendsTotalColumnL" rendered="{!RenderColumnL}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnM+rowTotalColumnM}" var="preferenceDividendsTotalColumnM" rendered="{!RenderColumnM}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnN+rowTotalColumnN}" var="preferenceDividendsTotalColumnN" rendered="{!RenderColumnN}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnO+rowTotalColumnO}" var="preferenceDividendsTotalColumnO" rendered="{!RenderColumnO}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnP+rowTotalColumnP}" var="preferenceDividendsTotalColumnP" rendered="{!RenderColumnP}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnQ+rowTotalColumnQ}" var="preferenceDividendsTotalColumnQ" rendered="{!RenderColumnQ}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnR+rowTotalColumnR}" var="preferenceDividendsTotalColumnR" rendered="{!RenderColumnR}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnS+rowTotalColumnS}" var="preferenceDividendsTotalColumnS" rendered="{!RenderColumnS}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnT+rowTotalColumnT}" var="preferenceDividendsTotalColumnT" rendered="{!RenderColumnT}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnU+rowTotalColumnU}" var="preferenceDividendsTotalColumnU" rendered="{!RenderColumnU}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnV+rowTotalColumnV}" var="preferenceDividendsTotalColumnV" rendered="{!RenderColumnV}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnW+rowTotalColumnW}" var="preferenceDividendsTotalColumnW" rendered="{!RenderColumnW}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnX+rowTotalColumnX}" var="preferenceDividendsTotalColumnX" rendered="{!RenderColumnX}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnY+rowTotalColumnY}" var="preferenceDividendsTotalColumnY" rendered="{!RenderColumnY}"/>
+<apex:variable value="{!preferenceDividendsTotalColumnZ+rowTotalColumnZ}" var="preferenceDividendsTotalColumnZ" rendered="{!RenderColumnZ}"/>
+</apex:outputPanel>
+</apex:repeat> <!-- Go to the next row -->
+</table>
+<!-- REGION 03: REPORT DATA END -->
+<!-- REGION 04: RATIOS START -->
+<!-- Set calculated values as variables (for ease of use) -->
+<apex:variable value="{!(shareholdersEquityTotalColumnA+historicalProfitTotalColumnA)}" var="shareholdersFunds"/>
+<apex:variable value="{!(patTotalColumnA+preferenceDividendsTotalColumnA)}" var="PATPD"/>
+<apex:variable value="{!if((totalAssetsTotalColumnA+currentLiabilitiesTotalColumnA)=0,0,(ebitTotalColumnA/(totalAssetsTotalColumnA+currentLiabilitiesTotalColumnA)))}" var="ROCE"/>
+<apex:variable value="{!if(totalAssetsTotalColumnA=0,0,(patTotalColumnA/totalAssetsTotalColumnA))}" var="ROA"/>
+<apex:variable value="{!if(salesRevenueTotalColumnA=0,0,(grossProfitTotalColumnA/salesRevenueTotalColumnA))}" var="GM"/>
+<apex:variable value="{!if(salesRevenueTotalColumnA=0,0,(patTotalColumnA/salesRevenueTotalColumnA))}" var="NPM"/>
+<apex:variable value="{!if(shareholdersFunds=0,0,(PATPD/shareholdersFunds))}" var="ROE"/>
+<apex:variable value="{!if(currentLiabilitiesTotalColumnA=0,0,(currentAssetsTotalColumnA/currentLiabilitiesTotalColumnA))}" var="CR"/>
+<apex:variable value="{!if(currentLiabilitiesTotalColumnA=0,0,((currentAssetsTotalColumnA-inventoryTotalColumnA)/currentLiabilitiesTotalColumnA))}" var="QR"/>
+<apex:variable value="{!(currentAssetsTotalColumnA+currentLiabilitiesTotalColumnA)}" var="WC"/>
+<apex:variable value="{!if(receivablesTotalColumnA=0,0,(salesRevenueTotalColumnA/receivablesTotalColumnA))}" var="RT"/>
+<apex:variable value="{!if(inventoryTotalColumnA=0,0,(costOfSalesTotalColumnA/inventoryTotalColumnA))}" var="IT1"/>
+<apex:variable value="{!if(inventoryTotalColumnA=0,0,(salesRevenueTotalColumnA/inventoryTotalColumnA))}" var="IT2"/>
+<apex:variable value="{!if(totalAssetsTotalColumnA=0,0,(salesRevenueTotalColumnA/totalAssetsTotalColumnA))}" var="TAT"/>
+<apex:variable value="{!if(shareholdersFunds=0,0,(totalLiabilitiesTotalColumnA/shareholdersFunds))}" var="DER"/>
+<apex:variable value="{!if(interestExpenseTotalColumnA=0,0,(ebitTotalColumnA/interestExpenseTotalColumnA))}" var="IC"/>
+
+<!-- Set up a table to contain the ratios, divided in 4 sections: first 2 sections side by side in row 1 and the last 2 sections side by side in row 2 -->
+<table class="ffrgrid">
+<!-- First section of the top half of the table (Start)-->
+<tr><td style="vertical-align:top">
+
+<table class="ffrgrid">
+
+<!-- Ratio Group Category Header -->
+<tr><th colspan="3"><h1 class="ffrname">{!label['L01']}</h1></th></tr>
+<tr><td class="ffrcalcsumlabeld" colspan="3">{!label['L02']}</td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L03']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!GM}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L04']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L05']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L89']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!costOfSalesTotalColumnA}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L10']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!NPM}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L11']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L12']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L87']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalColumnA}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L15']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PR}" value="{!ROCE}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L16']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L17']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L86']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!ebitTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L94']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L95']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalColumnA}"/></td>
+</tr>
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L20']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PR}" value="{!ROA}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L21']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L22']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L87']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L94']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalColumnA}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L25']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!ROE}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L26']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L27']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L87']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!patTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L98']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!preferenceDividendsTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L97']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!shareholdersFunds}"/></td>
+</tr>
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- First section of the top half of the table (End)-->
+</table>
+</td>
+
+<!-- Second section of the top half of the table (Start)-->
+<td style="vertical-align:top">
+
+<table class="ffrgrid">
+
+<!-- Ratio Group Category Header -->
+<tr><th colspan="3"><h1 class="ffrname">{!label['L30']}</h1></th></tr>
+<tr><td class="ffrcalcsumlabeld" colspan="3">{!label['L31']}</td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L32']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!CR}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L33']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L34']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L91']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L95']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalColumnA}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L40']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!QR}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L41']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L42']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L91']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L93']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!inventoryTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L95']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalColumnA}"/></td>
+</tr>
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L45']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VN}" value="{!WC}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L46']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L47']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L91']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!currentAssetsTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L95']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!currentLiabilitiesTotalColumnA}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+<!-- Second section of the top half of the table (End)-->
+</table>
+</td>
+</tr>
+
+<!-- First section of the bottom half of the table (Start)-->
+<tr><td style="vertical-align:top">
+
+<table class="ffrgrid">
+
+<!-- Ratio Group Category Header -->
+<tr><th colspan="3"><h1 class="ffrname">{!label['L50']}</h1></th></tr>
+<tr><td class="ffrcalcsumlabeld" colspan="3">{!label['L51']}</td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L52']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!RT}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L53']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L54']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L92']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!receivablesTotalColumnA}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L60']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VN}" value="{!IT1}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr>
+<td class="ffrgridsumlabeld">{!label['L61']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!IT2}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L62']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L63']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L89']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!costOfSalesTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L93']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!inventoryTotalColumnA}"/></td>
+</tr>
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L70']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!TAT}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L71']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L72']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L88']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!salesRevenueTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L94']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!totalAssetsTotalColumnA}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+<!-- First section of the bottom half of the table (End)-->
+</table>
+</td>
+
+<!-- Second section of the bottom half of the table (Start)-->
+<td style="vertical-align:top">
+
+<table class="ffrgrid">
+
+<!-- Ratio Group Category Header -->
+<tr><th colspan="3"><h1 class="ffrname">{!label['L75']}</h1></th></tr>
+<tr><td class="ffrcalcsumlabeld" colspan="3">{!label['L76']}</td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L77']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!PN}" value="{!DER}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L78']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L79']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L96']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!totalLiabilitiesTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L97']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!shareholdersFunds}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+
+<!-- New Ratio Start (Summary)-->
+<tr>
+<td class="ffrgridsumlabeld">{!label['L80']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrgridsumd"><c:NumberFormatter pattern="{!VR}" value="{!IC}"/></td>
+</tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrtextsmallleft" colspan="3">{!label['L81']}</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">{!label['L82']}</td></tr>
+<tr><td class="ffrgridspacer" colspan="3"></td></tr>
+<!-- Ratio Calculations-->
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L86']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VR}" value="{!ebitTotalColumnA}"/></td>
+</tr>
+<tr>
+<td class="ffrcalcsumlabeld">{!label['L90']}</td>
+<td class="ffrcolumnspacerd"/>
+<td class="ffrcalcsumd"><c:NumberFormatter pattern="{!VN}" value="{!interestExpenseTotalColumnA}"/></td>
+</tr>
+
+
+
+
+
+<!-- Add some blank rows to the report and make space before the next ratio so it is easier to see -->
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrrowspacerd" colspan="3"></td></tr>
+<!-- Ratio End-->
+
+<!-- Second section of the bottom half of the table (End)-->
+</table>
+</td>
+</tr>
+
+<!-- Now the table that contains all 4 sections can be closed -->
+</table>
+</apex:outputpanel>
+</apex:form>
+<!-- REGION 06: REPORT CHATTER START -->
+<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

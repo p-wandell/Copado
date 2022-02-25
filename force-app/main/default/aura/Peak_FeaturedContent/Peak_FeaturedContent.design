@@ -1,0 +1,39 @@
+<!--
+ - Created by brianpoulsen on 7/20/18.
+ -->
+
+<design:component label="7S Featured Content">
+    <design:attribute name="layoutType" label="Layout" dataSource="Calls to Action, Horizontal, Vertical" />
+
+    <design:attribute name="cardColor1" label="Tile 1 Color" datasource="Brand Blue, Orange, Teal, Green, Dark Blue, Purple, Gray" description="Sets the color of the tile border and CTA icon." />
+    <design:attribute name="cardTopic1" label="Tile 1 Topic" datasource="apex://Peak_NavigationalTopicsList" />
+    <design:attribute name="cardTitle1" label="Tile 1 Title" description="This is the title of the item" />
+    <design:attribute name="cardLink1" label="Tile 1 Link" description="Use 'http(s)://' for external links (open in new browser tab); use '/pagename' to link to a community page" />
+    <design:attribute name="cardDescription1" label="Tile 1 Description" description="This is the description of the item" />
+    <design:attribute name="cardIcon1" label="Tile 1 Icon" description="Path to SVG icon (Calls to Action); '/sfsites/c/resource/{resource name}/{path}/{icon file}.svg#{icon id}" />
+    <design:attribute name="cardImage1" label="Tile 1 Image" description="Path to tile image (Horizontal &amp; Vertical layouts)" />
+
+    <design:attribute name="cardColor2" label="Tile 2 Color" datasource="Brand Blue, Orange, Teal, Green, Dark Blue, Purple, Gray" description="Sets the color of the tile border and CTA icon." />
+    <design:attribute name="cardTopic2" label="Tile 2 Topic" datasource="apex://Peak_NavigationalTopicsList" />
+    <design:attribute name="cardTitle2" label="Tile 2 Title" description="" />
+    <design:attribute name="cardLink2" label="Tile 2 Link" description="Use 'http(s)://' for external links (open in new browser tab); use '/pagename' to link to a community page" />
+    <design:attribute name="cardDescription2" label="Tile 2 Description" description="This is the description of the item" />
+    <design:attribute name="cardIcon2" label="Tile 2 Icon" description="Path to SVG icon (Calls to Action); '/sfsites/c/resource/{resource name}/{path}/{icon file}.svg#{icon id}" />
+    <design:attribute name="cardImage2" label="Tile 2 Image" description="Path to tile image (Horizontal &amp; Vertical layouts)" />
+
+    <design:attribute name="cardColor3" label="Tile 3 Color" datasource="Brand Blue, Orange, Teal, Green, Dark Blue, Purple, Gray" description="Sets the color of the tile border and CTA icon." />
+    <design:attribute name="cardTopic3" label="Tile 3 Topic" datasource="apex://Peak_NavigationalTopicsList" />
+    <design:attribute name="cardTitle3" label="Tile 3 Title" description="" />
+    <design:attribute name="cardLink3" label="Tile 3 Link" description="Use 'http(s)://' for external links (open in new browser tab); use '/pagename' to link to a community page" />
+    <design:attribute name="cardDescription3" label="Tile 3 Description" description="This is the description of the item" />
+    <design:attribute name="cardIcon3" label="Tile 3 Icon" description="Path to SVG icon (Calls to Action); '/sfsites/c/resource/{resource name}/{path}/{icon file}.svg#{icon id}" />
+    <design:attribute name="cardImage3" label="Tile 3 Image" description="Path to tile image (Horizontal &amp; Vertical layouts)" />
+
+    <design:attribute name="cardColor4" label="Tile 4 Color" datasource="Brand Blue, Orange, Teal, Green, Dark Blue, Purple, Gray" description="Sets the color of the tile border and CTA icon." />
+    <design:attribute name="cardTopic4" label="Tile 4 Topic" datasource="apex://Peak_NavigationalTopicsList" />
+    <design:attribute name="cardTitle4" label="Tile 4 Title" description="" />
+    <design:attribute name="cardLink4" label="Tile 4 Link" description="Use 'http(s)://' for external links (open in new browser tab); use '/pagename' to link to a community page" />
+    <design:attribute name="cardDescription4" label="Tile 4 Description" description="This is the description of the item" />
+    <design:attribute name="cardIcon4" label="Tile 4 Icon" description="Path to SVG icon (Calls to Action); '/sfsites/c/resource/{resource name}/{path}/{icon file}.svg#{icon id}" />
+    <design:attribute name="cardImage4" label="Tile 4 Image" description="Path to tile image (Horizontal &amp; Vertical layouts)" />
+</design:component>

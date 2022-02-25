@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Project Survey</label>
+    <protected>false</protected>
+    <values>
+        <field>EmailFromAddress__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>EmailTemplateName__c</field>
+        <value xsi:type="xsd:string">Client_Survey_Notification</value>
+    </values>
+    <values>
+        <field>ProjectStages__c</field>
+        <value xsi:type="xsd:string">Define,Design,Build,Verify,Launch</value>
+    </values>
+    <values>
+        <field>SubjectPrefix__c</field>
+        <value xsi:type="xsd:string">7Summits Survey:</value>
+    </values>
+    <values>
+        <field>SurveyLinkHTML__c</field>
+        <value xsi:type="xsd:string">&lt;img src=&quot;https://7summitsagency--c.na70.content.force.com/servlet/servlet.ImageServer?id=0151E0000034TyF&amp;amp;oid=00D80000000bR1O&quot; border=&quot;0&quot; align=&quot;left&quot; alt=&quot;&quot;&gt;</value>
+    </values>
+    <values>
+        <field>SurveyLinkText__c</field>
+        <value xsi:type="xsd:string">Take the Survey</value>
+    </values>
+    <values>
+        <field>SurveyLink__c</field>
+        <value xsi:type="xsd:string">https://www.getfeedback.com/r/gaCQFCZf?Response_Account_ID=###ACCOUNT###&amp;Response_Contact_ID=###CONTACT###&amp;Response_PSA_Project_ID=###PROJECT###</value>
+    </values>
+</CustomMetadata>

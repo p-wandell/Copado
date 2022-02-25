@@ -1,0 +1,9 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Events Calendar">
+    <design:attribute name="debugMode"
+                      label="Debug Mode"
+                      description="Enable/disable debug mode"/>
+	<design:attribute name="filterByTopic"
+	                  label="Topics"
+	                  description="Enter a Topic ID to filter the event list"/>
+</design:component>

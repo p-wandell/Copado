@@ -1,0 +1,53 @@
+<apex:page title="Connection List" standardStylesheets="false" controller="ffct.ConnectionListController" action="{!isToolMustBeActivated}" sidebar="true" docType="html-5.0">
+ 
+<apex:sectionHeader title="{!$Label.ffct__connections}" help="helploader?topicid=1013"/>
+ 
+<apex:form id="form"> 
+<apex:pageMessages id="pgMsg" />
+<apex:actionStatus id="eventStatus"  >
+	         <apex:facet name="start">
+	          <apex:outputPanel >
+	                        <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+	                            <div style="position:absolute;top:50%;left:50%">
+	                                <apex:image value="/img/loading32.gif"></apex:image>
+	                            </div>
+	                        </div>
+	           </apex:outputPanel>
+	        </apex:facet>  
+	    </apex:actionStatus>
+	    <c:connectedappbuilder connectedAppConfiguration="{!AppConfiguration}" componentId="pgMsg" rendered="{!!IsOAuthConfigured}"/>
+	<apex:pageBlock tabStyle="Bundle__c" rendered="{!IsOAuthConfigured}" >   
+   <apex:pageBlockButtons location="bottom" >
+   <apex:outputPanel id="paginationButtons">
+        <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="dataPanel,paginationButtons" status="eventStatus"/>
+        <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="dataPanel,paginationButtons" status="eventStatus"/>        
+        <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="dataPanel,paginationButtons" status="eventStatus"/>
+        <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="dataPanel,paginationButtons" status="eventStatus"/>        
+   </apex:outputPanel>
+   </apex:pageBlockButtons>
+    <apex:pageBlockSection >
+       <apex:commandButton action="{!setupNewConnection}" value="New Connection" id="theButton"/>
+     </apex:pageBlockSection>
+   
+   <apex:pageBlockSection id="connectionlist" title="Total Connections: {!TotalSize}" columns="1" collapsible="false">
+   <apex:outputPanel id="dataPanel">
+   <apex:pageBlockTable value="{!Connections}" var="con">
+        <apex:column headerValue="{!$Label.ffct__connectionname}">
+        <apex:outputLink value="/apex/setupconnection">{!con.name}
+            <apex:param name="returningFeature" value="{!PageUrl}" /> 
+            <apex:param name="mode" value="viewMode" />
+            <apex:param name="selectedCon" value="{!con.Id}" /> 
+        </apex:outputLink>
+           </apex:column>
+           <apex:column headerValue="{!$Label.ffct__connectiontype}" value="{!con.ffct__Environment_Type__c}" />
+           <apex:column headerValue="{!$Label.ffct__hosturl}" value="{!con.ffct__Host_URL__c}" />
+           <apex:column headerValue="{!$Label.ffct__uniquename}" value="{!con.ffct__Unique__c}" />
+       <apex:facet name="footer">Showing Page # {!pageNumber} of {!totalPages}</apex:facet>
+   </apex:pageBlockTable>
+   </apex:outputPanel>
+   </apex:pageBlockSection>
+
+</apex:pageBlock>
+ </apex:form>
+ 
+</apex:page>

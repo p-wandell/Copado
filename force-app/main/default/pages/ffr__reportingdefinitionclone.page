@@ -1,0 +1,27 @@
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingDefinitionCloneController" lightningStylesheets="true">
+
+	<apex:stylesheet value="{!URLFOR($Resource.ffr__front, 'base/style.css')}"/>
+
+    <apex:form >
+        <apex:pageBlock title="{!$Label.ffr__reportingdefinitionclonetitle}" mode="edit">
+            <apex:PageMessages />
+            <apex:pageBlockSection title="{!$Label.ffr__reportingdefinitionclonesubtitle}" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="ReportingDefinitionName" value="{!$ObjectType.ffr__ReportingDefinition__c.fields.Name.label}"/>
+                    <apex:outputPanel styleClass="requiredInput">
+	                    <div class="requiredBlock" ></div>
+	                    <apex:inputField id="ReportingDefinitionName" value="{!ffr__ReportingDefinition__c.Name}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>   
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveClone}" value="Save" styleClass="hidden save-clone" />
+            <input id="save" class="btn disable" value="Save" type="button" onclick="disableButtonsByClass('disable', '{!JSENCODE($Label.ReportingDefinitionProcessing)}', 'save-clone');"/>
+
+			<apex:commandButton action="{!cancel}" value="Cancel" styleClass="disable"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+
+	<script src="{!URLFOR($Resource.front,'utils/buttons.js')}" type="text/javascript"></script>
+</apex:page>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resource_Planner_Name__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(NOT(ISBLANK(Assignment_Name_Override__c)),Assignment_Name_Override__c,
+IF(pse__Is_Billable__c = FALSE, 
+  pse__Project__r.Name+&quot; &quot;+&quot;Non-bill&quot;+&quot;-&quot;+TEXT(pse__Role__c), 
+IF(AND(pse__Is_Billable__c = TRUE, WAR__c = TRUE), 
+  pse__Project__r.Name + &quot; &quot;+&quot;WAR&quot;+&quot;-&quot;+TEXT(pse__Role__c),
+pse__Project__r.Name+&quot;-&quot;+TEXT(pse__Role__c))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Resource Planner Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

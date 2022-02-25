@@ -1,0 +1,20 @@
+<design:component label="7S Image Gallery">
+    <design:attribute name="Title" label="Component Title"/>
+    
+	<design:attribute name="ImageURL1" label="Image 1: Image ID" description="Copy and Paste the Url of the Image you want to use"/>
+    <design:attribute name="ImageTitle1" label="Image 1: Title"/>
+    <design:attribute name="ImageDescription1" label="Image 1: Description"/>
+    
+    <design:attribute name="ImageURL2" label="Image 2: Image ID" description="Copy and Paste the Url of the Image you want to use"/>
+    <design:attribute name="ImageTitle2" label="Image 2: Title"/>
+    <design:attribute name="ImageDescription2" label="Image 2: Description"/>
+    
+    <design:attribute name="ImageURL3" label="Image 3: Image ID" description="Copy and Paste the Url of the Image you want to use"/>
+    <design:attribute name="ImageTitle3" label="Image 3: Title"/>
+    <design:attribute name="ImageDescription3" label="Image 3: Description"/>
+    
+    <design:attribute name="hideDescriptions" label="Hide All Descriptions" description="Check this setting to hide all descriptions, even if the description fields are populated."/>
+    <design:attribute name="descriptionLineLength" label="Maximum Description Lines" description="The maximum number of lines of the description text to be displayed." />
+    <design:attribute name="hasBorder" label="Add Border"/>
+	
+</design:component>

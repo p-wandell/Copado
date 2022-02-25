@@ -1,0 +1,35 @@
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingDefinitionController" lightningStylesheets="true">
+    
+    <!-- Demand fields to be loaded -->
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ExcelTemplate__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+    
+    <apex:form > 
+        <apex:pageBlock title="{!ffr__ReportingDefinition__c.Name}" mode="edit">
+            <apex:PageMessages />
+            <apex:pageBlockSection title="{!$Label.ffr__reportingdefinitionsavepagetitle}" collapsible="false" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.ffr__reportingdefinitionsavepageformat}"/>
+                    <apex:outputPanel styleClass="requiredInput">
+	                    <div class="requiredBlock"></div>
+	                    <apex:selectList multiselect="false" value="{!TypeValue}" size="1" required="true">
+	                        <apex:selectOptions value="{!Types}"/>
+	                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.ffr__reportingdefinitionsavepagedestinationname}"/>
+                    <apex:outputPanel styleClass="requiredInput">
+	                    <div class="requiredBlock"></div>
+	                    <apex:inputText id="showText" value="{!ffr__ReportingDefinition__c.Name}" required="true"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >  
+                <apex:commandButton action="{!saveFileAs}" value="{!$Label.ffr__reportingdefinitionsavepagebuttonsave}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.ffr__reportingdefinitionsavepagebuttoncancel}"/>
+            </apex:pageBlockButtons> 
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

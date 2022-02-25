@@ -1,0 +1,88 @@
+<!-- use a list controller in order to supply use this for a custom list button  -->
+<apex:page title="{!$Label.pse__create_res_req_title}" standardController="pse__Resource_Request__c"
+ recordSetVar="resourceRequests" extensions="pse.CreateResourceRequestsController"
+ action="{!initForOpportunity}" lightningStylesheets="true">
+
+<!--
+Bug/Fix: The Salesforce javascript 'twistSection' method does not get defined when
+the pageBlock & collapsible pageBlocksection are in a template rather than the page.
+Giving rise to the javascript error : method twistSection is not defined.
+The lines below fix this by causing the javascript method 'twistSection' to be included.
+ -->
+<div style="display:none">
+	<apex:pageBlock title="includeTwistSection">
+		<apex:pageBlockSection collapsible="true" />
+	</apex:pageBlock>
+</div>
+
+<c:WaitComponent />
+<apex:composition template="pse__CreateResourceRequestsTemplate">
+
+	<apex:define name="sectionHeader">
+		<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+		<c:ffui_header instanceName="$FFHEADER" />
+		<script>
+			prepareHeader();
+
+			function prepareHeader() {
+				var config = {
+					recordName: '{!JSENCODE(opp.Name)}',
+					objectName: '{!JSENCODE($Label.create_res_req_label_request_resources)}',
+					objectApiName: '{!$ObjectType["Resource_Request__c"].name}',
+					helpUrl: '{!$Page.ResourceRequestHelp}',
+					onRender: 'onHeaderLoadCallback',
+					buttons: [{
+						id: 'cancel',
+						label: '{!JSENCODE($Label.common_label_cancel)}',
+						actionFn: 'onCancelClick'
+					}, {
+						id: 'save',
+						label: '{!JSENCODE($Label.common_label_save)}',
+						actionFn: 'onSaveClick'
+					}]
+				};
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+		</script>
+	</apex:define>
+
+	<apex:define name="resourcesSection">
+		<apex:pageBlockSection title="{!$Label.pse__create_res_req_label_resources}" columns="2" id="newResourceSection" collapsible="false">
+
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="{!$Label.pse__create_res_req_label_num_resources}" for="numResources"/>
+				<c:RequiredInputText value="{!numNewResourcesText}" style="width:40px"/>
+			</apex:pageBlockSectionItem>
+
+			<apex:repeat value="{!createRRFromOppFields}" var="fName">
+
+				<!-- Opportunity -->
+				<apex:outputField rendered="{!(fName.Label == $ObjectType.pse__Resource_Request__c.Fields.pse__Opportunity__c.Label)}" value="{!newResourceRequest[fName]}"/>
+
+				<!-- process the Resource Role, Requested Hours, Start Date, End Date here and make mandatory -->
+				<apex:inputField rendered="{!OR(fName.Label == $ObjectType.Resource_Request__c.Fields.Resource_Role__c.Label,
+												fName.Label == $ObjectType.Resource_Request__c.Fields.SOW_Hours__c.Label,
+												fName.Label == $ObjectType.Resource_Request__c.Fields.Start_Date__c.Label,
+												fName.Label == $ObjectType.Resource_Request__c.Fields.End_Date__c.Label)}" required="true" value="{!newResourceRequest[fName]}"/>
+
+				<!-- dont process the Resource Role, Requested Hours, Start Date, End Date here -->
+				<apex:inputField rendered="{!AND(NOT(fName.Label == $ObjectType.Resource_Request__c.Fields.Resource_Role__c.Label),
+												 NOT(fName.Label == $ObjectType.Resource_Request__c.Fields.SOW_Hours__c.Label),
+												 NOT(fName.Label == $ObjectType.Resource_Request__c.Fields.Start_Date__c.Label),
+												 NOT(fName.Label == $ObjectType.Resource_Request__c.Fields.Opportunity__c.Label),
+												 NOT(fName.Label == $ObjectType.Resource_Request__c.Fields.End_Date__c.Label))}" required="{!OR(fName.required,fName.DBRequired)}" value="{!newResourceRequest[fName]}"/>
+
+			</apex:repeat>
+
+		</apex:pageBlockSection>
+
+	</apex:define>
+
+</apex:composition>
+
+</apex:page>

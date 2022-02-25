@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright (c) 2020.  7Summits Inc. All rights reserved.
+  -->
+
+<!-- x7S Card -->
+<template>
+    <a href={link}
+       class={componentClass}
+       onmouseenter={handleFocus}
+       onmouseleave={handleBlur}
+       onfocus={handleFocus}
+       onblur={handleBlur}
+       target={linkTarget}
+       style={tileStyle}
+    >
+        <template if:true={showImage}>
+            <span class="x7s-tile__image" style={imageStyle}> </span>
+        </template>
+        <template if:true={showIcon}>
+            <div class="x7s-tile__icon">
+                <lightning-icon icon-name={iconName} size="large"> </lightning-icon>
+            </div>
+        </template>
+        <template if:true={showOverlay}>
+            <span class="x7s-tile__overlay" style={overlayStyle}> </span>
+        </template>
+        <div class="x7s-tile__info slds-col">
+            <span class="x7s-tile__title"
+                  style={titleStyle}
+            >
+                <lightning-formatted-rich-text value={title}> </lightning-formatted-rich-text>
+            </span>
+            <template if:true={showDescription}>
+                <span class="x7s-tile__description"
+                      style={descriptionStyle}
+                >
+                    <lightning-formatted-rich-text value={description}> </lightning-formatted-rich-text>
+                </span>
+            </template>
+        </div>
+    </a>
+</template>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Case created email notification to the case contact.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Internal Support Request Created Notification</name>
+    <style>none</style>
+    <subject>Your Support Request {!Case.CaseNumber} has been Received</subject>
+    <textOnly>Thank you for submitting your support request, please allow up to 24 hrs for resolution.
+
+Case Reason:  {!Case.Reason}
+Case Subject:  {!Case.Subject}
+Case Description:  {!Case.Description}
+Case Link:  {!Case.Link}
+
+
+IT Support</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

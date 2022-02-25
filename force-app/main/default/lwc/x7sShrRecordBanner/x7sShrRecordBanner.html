@@ -1,0 +1,21 @@
+<template>
+    <header class="record-banner">
+        <div class={containerClass}>
+            <slot name="title" class="record-banner_title-slot" style={titleSlotStyle}></slot>
+            <div class="record-banner_title-container">
+                <div class="record-banner_title-wrapper">
+                    <div class="record-banner_topics slds-p-bottom_x-small" if:true={topics}>
+                        <c-x-7s-shr-topic-list topics={topics}></c-x-7s-shr-topic-list>
+                    </div>
+                    <h1 class={titleClass}>{title}</h1>
+                    <p if:true={subtitle} class={subtitleClass}>{subtitle}</p>
+                    <p if:true={description}>{description}</p>
+                </div>
+                <slot name="actions" class="record-banner_actions-slot"></slot>
+            </div>
+        </div>
+        <div class={metaClass}>
+            <slot name="meta" class="record-banner_meta-slot"></slot>
+        </div>
+    </header>
+</template>

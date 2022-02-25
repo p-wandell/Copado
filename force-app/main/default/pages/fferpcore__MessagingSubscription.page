@@ -1,0 +1,7 @@
+<apex:page standardController="fferpcore__MessagingSubscription__c" extensions="fferpcore.SubscriptionDescriptionController,fferpcore.SubscriptionController,fferpcore.EndPointController,fferpcore.SubscriptionFiltersController" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+    <apex:detail subject="{!fferpcore__MessagingSubscription__c.Id}" relatedList="true"/>
+
+    <c:MessagingSubscriptionSenchaLauncher subscriptionId="{!fferpcore__MessagingSubscription__c.Id}" selectedView=""/>
+
+</apex:page>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>IF(Opportunity.Month_Won__c:MIN = 1, FK_Quota_Detail__c.January_Target__c:MAX,  
+IF(Opportunity.Month_Won__c:MIN = 2, FK_Quota_Detail__c.February_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 3, FK_Quota_Detail__c.March_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 4, FK_Quota_Detail__c.April_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 5, FK_Quota_Detail__c.May_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 6, FK_Quota_Detail__c.June_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 7, FK_Quota_Detail__c.July_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 8, FK_Quota_Detail__c.August_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 9, FK_Quota_Detail__c.September_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 10, FK_Quota_Detail__c.October_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 11, FK_Quota_Detail__c.November_Target__c:MAX, 
+IF(Opportunity.Month_Won__c:MIN = 12, FK_Quota_Detail__c.December_Target__c:MAX,0))))))))))))</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Quota Target</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>IF(
+Opportunity.Month_Won__c:MIN = 1, 
+FK_Quota_Detail__c.January_Attained__c:SUM,
+IF(
+Opportunity.Month_Won__c:MIN = 2,
+FK_Quota_Detail__c.February_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 3,
+FK_Quota_Detail__c.March_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 4,
+FK_Quota_Detail__c.April_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 5,
+FK_Quota_Detail__c.May_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 6,
+FK_Quota_Detail__c.June_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 7,
+FK_Quota_Detail__c.July_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 8,
+FK_Quota_Detail__c.August_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 9,
+FK_Quota_Detail__c.September_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 10,
+FK_Quota_Detail__c.October_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 11,
+FK_Quota_Detail__c.November_Attained__c:SUM, 
+IF(
+Opportunity.Month_Won__c:MIN = 12,
+FK_Quota_Detail__c.December_Attained__c:SUM,0))))))))))))</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA2</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Closed Won</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>IF(Opportunity.Month_Won__c:MIN = 1, ((FK_Quota_Detail__c.January_Attained__c:SUM/FK_Quota_Detail__c.January_Target__c:MAX)*100),  
+IF(Opportunity.Month_Won__c:MIN = 2,((FK_Quota_Detail__c.February_Attained__c:SUM/ FK_Quota_Detail__c.February_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 3, ((FK_Quota_Detail__c.March_Attained__c:SUM/FK_Quota_Detail__c.March_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 4, ((FK_Quota_Detail__c.April_Attained__c:SUM/FK_Quota_Detail__c.April_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 5, ((FK_Quota_Detail__c.May_Attained__c:SUM/FK_Quota_Detail__c.May_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 6, ((FK_Quota_Detail__c.June_Attained__c:SUM/FK_Quota_Detail__c.June_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 7, ((FK_Quota_Detail__c.July_Attained__c:SUM/FK_Quota_Detail__c.July_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 8, ((FK_Quota_Detail__c.August_Attained__c:SUM/FK_Quota_Detail__c.August_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 9, ((FK_Quota_Detail__c.September_Attained__c:SUM/FK_Quota_Detail__c.September_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 10, ((FK_Quota_Detail__c.October_Attained__c:SUM/FK_Quota_Detail__c.October_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 11, ((FK_Quota_Detail__c.November_Attained__c:SUM/FK_Quota_Detail__c.November_Target__c:MAX)*100), 
+IF(Opportunity.Month_Won__c:MIN = 12, ((FK_Quota_Detail__c.December_Attained__c:SUM/FK_Quota_Detail__c.December_Target__c:MAX)*100),0))))))))))))</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA3</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>% of Target Attained</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>AMOUNT</column>
+        </chartSummaries>
+        <chartType>VerticalColumn</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>FULL_NAME</groupingColumn>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <currency>USD</currency>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FULL_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>DO NOT USE Monthly Quota Attained</name>
+    <params>
+        <name>open</name>
+        <value>closedwon</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityProduct@Opportunity.Quota_Name__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_THISMONTH</interval>
+    </timeFrameFilter>
+</Report>

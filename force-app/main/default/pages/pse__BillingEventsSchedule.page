@@ -1,0 +1,51 @@
+<apex:page standardController="pse__Billing_Event__c" extensions="pse.BillingEventsController" tabStyle="Billing_Event_Generation__tab" title="{!$Label.pse__billing_label_billing_events}" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+   <apex:sectionHeader title="{!$Label.pse__billing_label_billing_events}" />
+   <apex:form >
+      <apex:pageMessages id="msgs" />
+      <apex:pageBlock title="{!$Label.pse__billing_label_schedule_generate_billing_events}"  mode="edit" >
+         <apex:pageBlockButtons >
+            <apex:commandButton action="{!schedule}" value="{!$Label.pse__common_label_schedule}"/>
+            <apex:commandButton action="{!Cancel}" value="{!$Label.pse__common_label_cancel}" immediate="true"/>
+         </apex:pageBlockButtons>
+         
+         <apex:pageBlockSection title="{!$Label.pse__common_label_schedule}" columns="1" collapsible="false" >
+         	
+            <apex:outputField value="{!rpgObj.pse__Region__c}" rendered="{!rpgObj.pse__Region__c != null}"/>
+            <apex:outputField value="{!rpgObj.pse__Practice__c}" rendered="{!rpgObj.pse__Practice__c != null}"/>
+            <apex:outputField value="{!rpgObj.pse__Group__c}" rendered="{!rpgObj.pse__Group__c != null}"/>
+            <apex:outputField value="{!selectedAccount.pse__Account__c}" rendered="{!selectedAccount.pse__Account__c != null}"/>
+            <apex:outputField value="{!selectedProject.pse__Project__c}" rendered="{!selectedProject.pse__Project__c != null}"/>
+            
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel for="jobName" value="{!$Label.pse__billing_label_job_name}"/>
+               <c:RequiredInputText id="jobName" value="{!scheduleJobName}"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!NOT(USE_FLEXIBLE_PERIOD_MODE)}" >
+               <apex:outputLabel for="periodOffset" value="{!$Label.pse__billing_label_period}"/>
+               <apex:selectList value="{!schedulePeriodOffset}" id="periodOffset" size="1" required="true">
+                  <apex:selectOption itemValue="0" itemLabel="{!SUBSTITUTE($Label.pse__billing_label_period_current,'{0}',TIME_PERIOD_TYPE)}"/>
+                  <apex:selectOption itemValue="-1" itemLabel="{!SUBSTITUTE($Label.pse__billing_label_period_last,'{0}',TIME_PERIOD_TYPE)}"/>
+                  <apex:selectOption itemValue="-2" itemLabel="{!SUBSTITUTE($Label.pse__billing_label_period_two_ago,'{0}',TIME_PERIOD_TYPE)}"/>
+               </apex:selectList>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!USE_FLEXIBLE_PERIOD_MODE}">
+               <apex:outputLabel for="periodOffset2" value="{!$Label.pse__billing_label_period_offset}"/>
+               <apex:InputText value="{!schedulePeriodOffset}" id="periodOffset2" required="true"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!NOT(USE_FLEXIBLE_PERIOD_MODE)}" >
+               <apex:outputLabel for="includePrior" value="{!$Label.pse__billing_label_include_prior_periods}"/>
+               <apex:inputCheckbox value="{!includePriorPeriods}"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem >
+               <c:ApexSchedule schedPattern="{!schedulePattern}"/>
+            </apex:pageBlockSectionItem>
+            
+         </apex:pageBlockSection>
+      </apex:pageBlock>
+   </apex:form>
+</apex:page>

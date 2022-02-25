@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>WAR_checkbox_validation</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+  NOT(ISPICKVAL(ForecastCategoryName, &quot;Commit&quot;)),
+		WAR__c,
+		ISCHANGED(WAR__c)
+)</errorConditionFormula>
+    <errorDisplayField>WAR__c</errorDisplayField>
+    <errorMessage>Forecast Category must be &quot;commit&quot; to check WAR.</errorMessage>
+</ValidationRule>

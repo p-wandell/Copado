@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>45.0</apiVersion>
+    <description>7S Community Footer</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Community Footer</masterLabel>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+
+            <property name="communityLogo" type="String" label="Community Logo"
+                      description="This is the path to the image for the community logo" placeholder="Example: /path_prefix/s/sfsites/c/resource/resource_name" default="/hive/s/sfsites/c/resource/x7S_HiveLightning/images/hiveCommunityLogo.svg#main"/>
+            <property name="linkText1" type="String" label="Link 1 Text"
+                      description="This is the text that will display for the link" placeholder="Link Text" default="Privacy Policy"/>
+            <property name="linkUrl1" type="String" label="Link Url"
+                      description="This is the url the link will navigate to. If the link text is blank this will be displayed instead as the text. If this field is left blank this link will not display" placeholder="Link 1 Url"/>
+            <property name="linkNewTab1" type="Boolean" label="Open Link In New Tab"
+                      description="Check this box to have the link open in a new tab" default="false"/>
+
+            <property name="linkText2" type="String" label="Link 2 Text"
+                      description="This is the text that will display for the link" placeholder="Link Text" default="Terms of Use"/>
+            <property name="linkUrl2" type="String" label="Link 2 Url"
+                      description="This is the url the link will navigate to. If the link text is blank this will be displayed instead as the text. If this field is left blank this link will not display" placeholder="Link Url"/>
+            <property name="linkNewTab2" type="Boolean" label="Open Link In New Tab"
+                      description="Check this box to have the link open in a new tab" default="false"/>
+
+            <property name="linkText3" type="String" label="Link 3 Text"
+                      description="This is the text that will display for the link" placeholder="Link Text" default="Community Guidelines"/>
+            <property name="linkUrl3" type="String" label="Link 3 Url"
+                      description="This is the url the link will navigate to. If the link text is blank this will be displayed instead as the text. If this field is left blank this link will not display" placeholder="Link Url"/>
+            <property name="linkNewTab3" type="Boolean" label="Open Link In New Tab"
+                      description="Check this box to have the link open in a new tab" default="false"/>
+
+            <property name="linkText4" type="String" label="Link 4 Text"
+                      description="This is the text that will display for the link" placeholder="Link Text" />
+            <property name="linkUrl4" type="String" label="Link 4 Url"
+                      description="This is the url the link will navigate to. If the link text is blank this will be displayed instead as the text. If this field is left blank this link will not display" placeholder="Link Url" />
+            <property name="linkNewTab4" type="Boolean" label="Open Link In New Tab"
+                      description="Check this box to have the link open in a new tab"  default="false"/>
+
+            <property name="linkText5" type="String" label="Link 5 Text"
+                      description="This is the text that will display for the link" placeholder="Link Text" />
+            <property name="linkUrl5" type="String" label="Link 5 Url"
+                      description="This is the url the link will navigate to. If the link text is blank this will be displayed instead as the text. If this field is left blank this link will not display" placeholder="Link Url" />
+            <property name="linkNewTab5" type="Boolean" label="Open Link In New Tab"
+                      description="Check this box to have the link open in a new tab" default="false" />
+
+            <property name="companyLinkText" type="String" label="Company Link Text"
+                      description="This is the text that will display for the link" placeholder="Link Text" default="7SummitsInc.com"/>
+            <property name="companyLinkUrl" type="String" label="Company Link Url"
+                      description="This is the url the link will navigate to. If the link text is blank this will be displayed instead as the text. If this field is left blank this link will not display" placeholder="Link Url" default="https://www.7summitsinc.com"/>
+            <property name="companyLinkNewTab" type="Boolean" label="Open Link In New Tab"
+                      description="Check this box to have the link open in a new tab" default="true" />
+
+            <property name="linkedinUrl" type="String" label="LinkedIn Url"
+                      description="Company LinkedIn url" default="https://www.linkedin.com/company/7summits/"/>
+            <property name="twitterUrl" type="String" label="Twitter Url"
+                      description="Company Twitter url" default="https://twitter.com/7SummitsInc"/>
+            <property name="facebookUrl" type="String" label="Facebook Url"
+                      description="Company Facebook url" default="https://www.facebook.com/7SummitsInc"/>
+
+            <property name="customId" type="String" label="Component Custom Id"
+                      description="Custom, distinct CSS ID name. Usually remains blank." placeholder="Custom CSS Id"/>
+            <property name="customClass" type="String" label="Component Custom Class"
+                      description="Custom CSS class name. Usually remains blank." placeholder="Custom CSS Class Name"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

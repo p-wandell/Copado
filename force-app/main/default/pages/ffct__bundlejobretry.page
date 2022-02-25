@@ -1,0 +1,6 @@
+<apex:page standardController="ffct__BundleJob__c" extensions="ffct.BundleJobRunController" action="{!retry}">
+    <apex:form id="form" >
+        <apex:sectionHeader title="Retry Bundle Job"/>
+        <apex:pageMessages escape="false" id="messageDiv"/>
+    </apex:form>
+</apex:page>

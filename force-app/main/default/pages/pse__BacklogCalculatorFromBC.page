@@ -1,0 +1,9 @@
+<apex:page standardController="pse__Backlog_Calculation__c" action="{!initForBC}" extensions="pse.BacklogCalculatorController" showHeader="false" sidebar="false" lightningStylesheets="true">
+
+    <apex:composition template="pse__BacklogCalculatorTemplate">
+        <apex:define name="sectionHeader">
+            <apex:sectionHeader title="{!$Label.pse__backlog_label_calculate_backlog}" subtitle="" help="{!$Page.pse__BacklogCalculationHelp}" />
+        </apex:define>
+    </apex:composition>
+
+</apex:page>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Indica el tipo de registro (Error, Información, Cancelar, Externo).</help>
+    <label><!-- Log Type --></label>
+    <name>pse__Log_Type__c</name>
+    <picklistValues>
+        <masterLabel>Abort</masterLabel>
+        <translation>Abortar</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Error</masterLabel>
+        <translation>Error</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>External</masterLabel>
+        <translation>Externo</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Information</masterLabel>
+        <translation>Información</translation>
+    </picklistValues>
+</CustomFieldTranslation>

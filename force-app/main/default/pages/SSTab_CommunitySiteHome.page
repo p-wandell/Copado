@@ -1,0 +1,44 @@
+<!--Home -->
+<apex:page showHeader="true" sidebar="false" standardStylesheets="true" controller="SS_CommunitySiteHomeController" action="{!forwardToCustomAuthPage}" title="{!$Label.home}">
+<script type="text/javascript">
+    if (window.location.pathname.indexOf('apex') >= 0) {
+        window.location = '/';
+    } 
+</script>
+    
+    <c:SSTab_CommunitySiteIncludes />
+
+    <title>{!$Label.home}</title>
+    <div id="content">
+        <c:SS_PageHeader title="{!$Label.welcomeTo7summitsCommunity}"/>
+        <div class="row">
+            <div class="col-md-8">
+                <a href="/Cases?create=1" id="create-case-home" class="btn btn-lg btn-block ss-button">Create a Case</a>
+                <chatter:newsfeed />
+            </div>
+            <!--<div class="col-md-4">
+                <chatter:followers entityId="{!$User.Id}"/>
+            </div>-->
+            <div class="col-md-4 ss-bootstrap">
+                <div class="page-header" style="margin: 10px 0 20px !important;"><h4><a href="http://twitter.com/7SummitsAgency" title="@7SummitsAgency" target="_blank">@7SummitsAgency</a> {!$Label.recentTweets}</h4></div>
+                <div class="well well-sm">
+                    <a class="twitter-timeline" width="100%" height="500" href="https://twitter.com/7SummitsAgency" data-widget-id="441959907600773121" data-tweet-limit="5" data-chrome="noheader nofooter noborders transparent">Tweets by @7SummitsAgency</a>
+                    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                </div>
+                <div id="fb-root"></div>
+                <script>(function(d, s, id) {
+                  var js, fjs = d.getElementsByTagName(s)[0];
+                  if (d.getElementById(id)) return;
+                  js = d.createElement(s); js.id = id;
+                  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=125833187522082";
+                  fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));</script>
+                <div class="page-header" style="margin: 10px 0 20px !important;"><h4><a href="http://facebook.com/7SummitsAgency" title="@7SummitsAgency" target="_blank">7SummitsAgency</a> {!$Label.facebookPosts}</h4></div>
+                <div class="well well-sm">
+                    <div class="fb-like-box" data-href="https://www.facebook.com/7SummitsAgency" data-colorscheme="light" data-show-faces="true" data-header="false" data-stream="true" data-show-border="false"></div>
+                </div>
+            </div>
+        </div>
+        <c:SS_CommunitySiteTerms />
+    </div>
+</apex:page>

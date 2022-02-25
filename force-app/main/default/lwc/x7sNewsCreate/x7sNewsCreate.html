@@ -1,0 +1,421 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc. All rights reserved.
+  -->
+<template>
+	<div role={ariaLandmarkRoleForComponent} aria-label={ariaLabelForNewsCreateLandmark}>
+		<c-x7s-shr-component-wrapper
+				auto-slds-card
+				variant={variant}
+				custom-class={customClass}
+				title={headingTitle}
+				title-align={headerAlignment}
+		>
+			<div role="form" class="slds-text-align_left slds-grid slds-wrap slds-grid--pull-padded">
+				<template if:true={isLoading}>
+					<lightning-spinner
+							size="medium"
+							variant="brand"
+							alternative-text="Loading..."
+					>
+					</lightning-spinner>
+				</template>
+
+				<!--Title Section -->
+				<div class="slds-col--padded slds-size--1-of-1">
+					<div class="slds-form-element__control inputDiv">
+						<lightning-input
+								label={labelNewsTitle}
+								type="text"
+								class="slds-form-element__control remove-margin"
+								placeholder={labelNewsDescription}
+								data-id="newsName"
+								onchange={handleName}
+								value={newsName}
+								required
+						>
+						</lightning-input>
+					</div>
+				</div>
+				<!--  Language Selection  languageValues = groupValues, newsLanguage = newsGroup -->
+
+				<template if:true={user_Lang_Enabled}>
+					<div class="slds-col--padded slds-size--1-of-1">
+						<div class="slds-form-element__control inputDiv">
+							<lightning-combobox
+									label={labelLanguage}
+									name="newsLanguage"
+									class="requiredField slds-form-element__control remove-margin"
+									options={languageValues}
+									value={newsLanguage}
+									data-id="newsLanguage"
+									onchange={handleLanguage}
+									required
+							>
+							</lightning-combobox>
+						</div>
+					</div>
+				</template>
+
+				<!-- Audience Targeting -->
+				<template if:true={audienceEnabled}>
+					<div class="slds-col--padded slds-size--1-of-1">
+						<template if:true={audienceShowCombo}>
+							<div class="slds-form-element__control inputDiv">
+								<lightning-combobox
+										label={audienceLabel}
+										placeholder={audiencePlaceHolder}
+										class="slds-form-element__control"
+										name="newsAudience"
+										options={audienceList}
+										onchange={handleAudience}
+										value={audienceSelected}
+								>
+								</lightning-combobox>
+							</div>
+						</template>
+
+						<template if:true={audienceShowDelete}>
+							<div
+									class="slds-p-left_large slds-text-body_small slds-text-color_weak"
+							>
+								{audienceLabel}
+							</div>
+							<div class="slds-form-element__control slds-p-left_large">
+								<lightning-button
+										label={audienceName}
+										icon-name="utility:delete"
+										icon-position="right"
+										variant="base"
+										title={newsCreateTooltipDeleteAudience}
+										onclick={deleteAudience}
+								>
+								</lightning-button>
+							</div>
+						</template>
+
+						<template if:true={audienceNoAccess}>
+							<div
+									class="slds-p-left_large slds-text-body_small slds-text-color_weak"
+							>
+								{audienceLabel}
+							</div>
+
+							<div
+									class="slds-p-left_large slds-text-body_small slds-text-color_weak slds-p-bottom_large"
+							>
+								{newsCreateAudienceNoAccess}
+							</div>
+						</template>
+					</div>
+				</template>
+
+				<!--Details Section -->
+				<div class="slds-col--padded slds-size--1-of-1">
+					<div class="marginLess inputDiv">
+						<template if:true={showSource}>
+							<lightning-textarea
+									value={newsDetails}
+									placeholder={detailPlaceholder}
+									valid={detailValid}
+									label={labelFullArticle}
+									onblur={handleDetail}
+									class="show-source"
+							>
+							</lightning-textarea>
+						</template>
+						<template if:false={showSource}>
+							<div class="slds-grid">
+								<abbr class="slds-required" title="required">* </abbr>
+								<p class="slds-form-element__label label-abbr-p">
+									{labelFullArticle}
+								</p>
+							</div>
+							<lightning-input-rich-text
+									class="marginLess"
+									value={newsDetails}
+									label={labelFullArticle}
+									placeholder={detailPlaceholder}
+									valid={detailValid}
+									onblur={handleDetail}
+							>
+							</lightning-input-rich-text>
+						</template>
+						<template if:true={allowShowSource}>
+							<lightning-button-stateful
+									onclick={handleSourceToggle}
+									selected={showSource}
+									label-when-off={labelwhenoff}
+									label-when-on={labelwhenon}
+							>
+							</lightning-button-stateful>
+						</template>
+					</div>
+				</div>
+
+				<!-- Image -->
+				<div class="slds-col--padded slds-size--1-of-1">
+					<template if:true={isEdit}>
+						<div class="marginLess inputDiv">
+							<div class="descriptiveText">
+								{x7sFeatureImagePolicy}
+							</div>
+
+							<lightning-input
+									data-id="image"
+									name={labelUploadPhoto}
+									type="file"
+									label={labelUploadPhoto}
+									accept={attachmentAccept}
+									class="slds-input attachEdit"
+									placeholder={labelUploadPhoto}
+									onchange={notifyFileSelected}
+							>
+							</lightning-input>
+
+							<label data-id="fileLabel" class="attachmentLabel"
+							>{attachmentName}</label
+							>
+							<template if:true={isBrowseError}>
+								<div class="slds-has-error">
+									<p class="slds-form-element__help">
+										{strError}
+									</p>
+								</div>
+							</template>
+						</div>
+					</template>
+					<template if:false={isEdit}>
+						<div class="marginLess inputDiv">
+							<div class="descriptiveText">
+								{x7sFeatureImagePolicy}
+							</div>
+
+							<lightning-input
+									data-id="image"
+									name={labelUploadPhoto}
+									type="file"
+									label={labelUploadPhoto}
+									accept={attachmentAccept}
+									class="slds-input attachEdit"
+									placeholder={labelUploadPhoto}
+									onchange={notifyFileSelected}
+							>
+							</lightning-input>
+
+							<label data-id="fileLabel">{attachmentName}</label>
+							<template if:true={isBrowseError}>
+								<div class="slds-has-error">
+									<p class="slds-form-element__help">
+										{strError}
+									</p>
+								</div>
+							</template>
+						</div>
+					</template>
+				</div>
+
+				<!-- Publish -->
+				<div
+						class="slds-col--padded slds-size--1-of-1 slds-m-top--medium inputDiv"
+				>
+					<div class="slds-form-element__legend slds-form-element__label">
+						{labelPublishNow}
+					</div>
+					<div class="slds-form-element slds-m-bottom--medium">
+						<label class="slds-checkbox_toggle slds-grid">
+							<input
+									type="checkbox"
+									name="toggle-desc"
+									onchange={toggleSchedule}
+									value="toggle-desc"
+									aria-describedby="toggle-desc"
+									checked={publishNow}
+							/>
+
+							<span
+									id="toggle-desc"
+									class="slds-checkbox_faux_container"
+									aria-live="assertive"
+							>
+              <span class="slds-checkbox_faux"></span>
+              <span class="slds-checkbox_on">{labelPostPublishNow}</span>
+              <span class="slds-checkbox_off">{labelSetPublishDate}</span>
+            </span>
+						</label>
+					</div>
+
+					<div class="slds-form-element__legend slds-form-element__label">
+						{schedulePublication}
+					</div>
+					<div class="marginLess">
+						<div class="descriptiveText">{publishDateDesc}</div>
+						<div
+								class="slds-form-element slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--3-of-6 dtInput modalWidth"
+								id="pbDt"
+						>
+							<!-- Had to add an change event handler to fire the validation for Summer 17 (6/29/2017)
+                                        change just threw a locale error and did not call the validation function -->
+							<lightning-input
+									data-id="publishDate"
+									type="datetime"
+									required
+									name={publishDateLabel}
+									label={publishDateLabel}
+									onchange={handlePublish}
+									value={newsPublishDate}
+									class=""
+							>
+							</lightning-input>
+						</div>
+					</div>
+
+					<!-- Archive -->
+					<div class="marginLess">
+						<div class="descriptiveText">{labelArchiveDateDesc}</div>
+						<div
+								class="slds-form-element slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--3-of-6 dtInput modalWidth"
+								id="arDt"
+						>
+							<lightning-input
+									data-id="archiveDate"
+									type="datetime"
+									name={labelArchiveDate}
+									label={labelArchiveDate}
+									value={newsArchiveDate}
+									onchange={handleArchive}
+									class="requiredField remove-font-weight"
+							>
+							</lightning-input>
+						</div>
+					</div>
+				</div>
+
+				<!-- Topics -->
+				<div
+						class="slds-m-bottom_x-small slds-col--padded slds-size--1-of-1 inputDiv"
+				>
+					<div class="slds-form-element__label">
+						{labelSelectTopics}
+						<template if:true={requireTopics}
+						><span class="required">*</span></template
+						>
+					</div>
+					<template if:true={topicValues.length}>
+						<div class="slds-var-p-right_medium">
+							<c-x7s-news-multi-select
+									class="marginLess"
+									items={topicValues}
+									label-name={addTopics}
+									onitemchangeevent={handleTopicChangeEvent}
+									selection-list={selectedItemIds}
+									aria-selected-items-label={ariaSelectedTopicsLabel}
+							>
+							</c-x7s-news-multi-select>
+						</div>
+					</template>
+					<template if:true={strError}>
+						<div class="slds-has-error">
+							<p class="slds-form-element__help">
+								{strError}
+							</p>
+						</div>
+					</template>
+				</div>
+
+				<!--  Limit to Specific Groups  -->
+				<template if:true={limitToSpecificGroups}>
+					<div class="slds-col--padded slds-size--1-of-1">
+						<div class="slds-form-element__control inputDiv">
+							<div class="slds-m-top_xx-small descriptiveText">
+								{labelGroupDesc}
+							</div>
+							<lightning-combobox
+									label={labelLimitToSpecificGroups}
+									name="newsGroups"
+									options={groupValues}
+									value={newsGroup}
+									onchange={handleGroup}
+									required={requireGroups}
+							>
+							</lightning-combobox>
+						</div>
+					</div>
+
+					<div class="slds-col--padded slds-size--1-of-1">
+						<lightning-input
+								type="checkbox"
+								class="slds-p-left--medium"
+								label={label_privateGroup}
+								title={tooltip_privateGroup}
+								checked={newsPrivate}
+								onchange={handlePrivate}
+								name="privateItem"
+						>
+						</lightning-input>
+					</div>
+				</template>
+
+				<!-- Author -->
+				<div class="slds-col--padded slds-size--1-of-1">
+					<div class="marginLess slds-m-left_medium">
+						<lightning-input
+								type="checkbox"
+								label={labelArticleAuthor}
+								variant="label-hidden"
+								name={labelArticleAuthor}
+								onchange={handleAuthorDropdown}
+								checked={newsShowAuthor}
+								value=""
+								class="checkboxCss"
+						>
+						</lightning-input>
+
+						<div class="slds-form-element__label">{labelShowAuthor}</div>
+
+						<div class="marginLess hideDropdown authorSelection">
+							<div class="slds-form-element__label">
+								{labelSelectAuthor}
+							</div>
+							<lightning-input
+									type="search"
+									placeholder={authorPlaceHolder}
+									name="searchAuthor"
+									label="Search"
+									onchange={handleSearch}
+									value={searchString}
+							>
+							</lightning-input>
+
+							<lightning-combobox
+									label={newsLabelSelectAuthor}
+									name="newsAuthors"
+									options={authorValues}
+									value={newsAuthor}
+									onchange={handleAuthor}
+							>
+							</lightning-combobox>
+						</div>
+					</div>
+				</div>
+				<!--Button Section -->
+				<div class="slds-col--padded slds-size--1-of-1">
+					<div class="slds-grid slds-grid--pull-padded">
+						<div class="slds-m-top_xx-small slds-col">
+							<lightning-button
+									label={submitNewsText}
+									class="slds-p-horizontal--small"
+									onclick={submitNews}
+									disabled={disableButton}
+									variant="brand"
+							>
+							</lightning-button>
+							<lightning-button label={labelCancel} onclick={handleCancel}>
+							</lightning-button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</c-x7s-shr-component-wrapper>
+	</div>
+
+</template>

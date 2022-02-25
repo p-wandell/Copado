@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Prosjektoppgaveoppgave</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Prosjektoppgaveoppdrag</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+    </caseValues>
+    <fieldSets>
+        <label><!-- Create Project from Template Copy PTA Fields --></label>
+        <name>pse__CreateProjectFromTemplateCopyPTAFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Mass Link UI Display Fields --></label>
+        <name>pse__MassLinkUIDisplayFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- MassReassignTaskAssignmentColumns --></label>
+        <name>pse__MassReassignTaskAssignmentColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Require Lock For Editing --></label>
+        <name>pse__Require_Lock_For_Editing</name>
+    </fieldSets>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Prosjektoppgave-oppdragsnummer</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- A resource request will be created automatically with the new project task assignment. Please clear the Resource Request field and try again. --></errorMessage>
+        <name>pse__Cannot_Associate_RR_On_PTA_Creation</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot apply both Allocation Hours and Allocation Percentage --></errorMessage>
+        <name>pse__Cannot_Specify_Hours_And_Percent</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot specify both Resource and External Resource --></errorMessage>
+        <name>pse__Cannot_Specify_Res_And_Ext_Res</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- We cannot associate a project task assignment with the resource request because they do not belong to the same project. Enter a different resource request and try again. --></errorMessage>
+        <name>pse__PTA_RR_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- We can&apos;t save a project task assignment without a Resource, External Resource or Resource Role. --></errorMessage>
+        <name>pse__Resc_OR_Ext_Resc_OR_Resc_Role_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Resource or External Resource is required --></errorMessage>
+        <name>pse__Resource_OR_External_Resource_Required</name>
+    </validationRules>
+</CustomObjectTranslation>

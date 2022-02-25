@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Demo_Needed_Required_Fields</fullName>
+    <active>true</active>
+    <description>Validation to ensure Demo fields are filled in if the Demo Needed checkbox is checked.</description>
+    <errorConditionFormula>AND(Demo_Needed__c , 
+   OR(ISBLANK(TEXT( Demo_Type__c )) , 
+      ISBLANK(TEXT( Primary_Demo_Scenario__c )) ,
+      ISBLANK( Demo_Due_Date__c ) , 
+      ISBLANK( Demo_Description__c ))  
+)</errorConditionFormula>
+    <errorMessage>When a Demo is needed, you must provide a Demo Type, Primary Demo Scenario, Demo Due Date and Demo Description.  Please fill in missing information to save.</errorMessage>
+</ValidationRule>

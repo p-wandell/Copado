@@ -1,0 +1,19 @@
+<!--
+ - Created by tdavis on 2/13/18.
+ - CD-1490 - Version Scheduling
+ -->
+<apex:page controller="ffps_7summits.ScheduleVersioningController"  tabStyle="pse__PS_Admin__tab">
+    <apex:sectionHeader title="Scheduled Versioning" help="{!$Page.pse__PSAAdminHelp}"/>
+    <apex:pageMessages id="msgs" />
+    <apex:form >
+        <apex:pageBlock title="Recalculate Schedules for Project Versioning">
+            <apex:commandButton action="{!processProjVersRescheduleBatch}" value="{!$Label.pse__admin_page_submit_batch}"/>
+            <apex:commandButton action="{!projVersScheduleRecalcFutureTimeBatch}" value="{!$Label.pse__admin_page_schedule_batch}"/>
+        </apex:pageBlock>
+        <apex:pageBlock title="{!$Label.pse__common_label_schedule}">
+            <apex:pageBlockSection title="{!$Label.pse__utilization_label_schedule}" columns="1">
+                <c:ApexSchedule schedPattern="{!schedulePattern}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

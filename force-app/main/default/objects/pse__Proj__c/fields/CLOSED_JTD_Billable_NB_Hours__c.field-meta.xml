@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CLOSED_JTD_Billable_NB_Hours__c</fullName>
+    <description>Sum of all approved nonbill and billable hours logged (closed project)</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Sum of all approved nonbill and billable hours logged (closed project)</inlineHelpText>
+    <label>CLOSED_JTD Billable &amp; NB (Hours)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

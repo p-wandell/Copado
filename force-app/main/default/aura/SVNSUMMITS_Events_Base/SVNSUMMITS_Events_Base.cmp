@@ -1,0 +1,34 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+
+<!--
+ - Created by francoiskorb on 6/5/17.
+ -->
+
+<aura:component description="SVNSUMMITS_Events_Base"
+                controller="SVNSUMMITS_EventBaseController"
+                abstract="true"
+                extensible="true">
+
+	<ltng:require
+			styles="{!join(',',
+				$Resource.ATC                         + '/ATC/ATCStyle.css',
+				$Resource.SVNSUMMITS_Event_SemanticUI + '/SemanticUI/dist/components/dropdown.min.css',
+			    $Resource.SVNSUMMITS_Event_SemanticUI + '/SemanticUI/dist/components/transition.min.css',
+			    $Resource.SVNSUMMITS_Event_Resource   + '/EventsResource/FullCalendar/fullcalendar.min.css')}"
+			scripts="{!join(',',
+				$Resource.SVNSUMMITS_Event_Resource   + '/EventsResource/jQuery/jquery-3.3.1.min.js',
+				$Resource.SVNSUMMITS_Event_Resource   + '/EventsResource/jQuery/jquery-ui.js',
+				$Resource.SVNSUMMITS_Event_Custom     + '/EventsCustom/moment.min.js',
+				$Resource.SVNSUMMITS_Event_Custom     + '/EventsCustom/moment-timezone-with-data.min.js',
+				$Resource.SVNSUMMITS_Event_Resource   + '/EventsResource/FullCalendar/fullcalendar.min.js',
+				$Resource.SVNSUMMITS_Event_SemanticUI + '/SemanticUI/dist/components/dropdown.min.js',
+			    $Resource.SVNSUMMITS_Event_SemanticUI + '/SemanticUI/dist/components/transition.min.js',
+				$Resource.ATC                         + '/ATC/AddToCalender.js',
+				$Resource.SVNSUMMITS_Forcetk,
+				$Resource.svg4everybodyMod)}"
+			afterScriptsLoaded="{!c.doInit}"/>
+
+	<aura:registerEvent name="baseReady" type="c:SVNSUMMITS_Events_BaseReady"/>
+
+	{!v.body}
+</aura:component>

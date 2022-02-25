@@ -1,0 +1,119 @@
+<apex:page Controller="rh2.PS_ScheduleManagement_Controller" title="Rollup Helper Schedule Management" standardStylesheets="false"  sidebar="false" applyBodyTag="false" docType="html-5.0" showHeader="true">
+   <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <head>
+         <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+         <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }"/>
+         <apex:stylesheet value="{! URLFOR($Resource.PT_Resources_v1, '/font-awesome/css/font-awesome.min.css') }" />
+      </head>
+      <apex:slds />
+      <apex:form >
+         <div class="slds-scope" role="main">
+            <div class="slds-card">
+               <header class="slds-card__header slds-grid">
+                  <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                     <div class="slds-media__body">
+                        <h4 class="slds-text-heading_small slds-truncate">{!$Label.rh2__rollupschedulemanagement}</h4>
+                     </div>
+                  </div>
+               </header>
+               <section class="slds-card__body">
+                  <apex:outputPanel >
+                     <br/>
+                     <apex:outputPanel id="tableContainer">
+                        <apex:outputPanel rendered="{!IF(numberOfJobs == 0, true, false)}">
+                           <br/><br/>
+                           <center>
+                              {!$Label.rh2__nojobswerefound}
+                           </center>
+                        </apex:outputPanel>
+                        <apex:outputPanel id="jobList" rendered="{!IF(numberOfJobs != 0, true, false)}">
+                           <apex:commandButton action="{!saveInlineEdits}" value="{!$Label.rh2__savechanges}" id="saveInlineEditBtn" styleClass="slds-button slds-button_brand" style="display:none; float:right;"/>
+                           <div style="float:right; padding-right:25px;">
+                              <c:Paginate pageController="{! pgCon }" renderedComponent="jobList" />
+                           </div>
+                           <table class="slds-table slds-table_bordered" >
+                                 <tr>
+                                    <th class="slds-text-heading_label" style="width: 50%;" >
+                                       <apex:commandLink value="{!$Label.rh2__rollupname}" action="{! doSettingSort}">
+                                          <apex:param name="sortingField" value="Rollup_Name__c" assignTo="{!sortVars.sortField}"/>
+                                          <apex:outputText value="{!IF(sortVars.sortField=='Rollup_Name__c', IF(sortVars.sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                       </apex:commandLink>
+                                    </th>
+                                    <th class="slds-text-heading_label">
+                                       <apex:commandLink value="{!$Label.rh2__nextfiretime}" action="{! doSettingSort}">
+                                          <apex:param name="sortingField" value="NextFireTime__c" assignTo="{!sortVars.sortField}"/>
+                                          <apex:outputText value="{!IF(sortVars.sortField=='NextFireTime__c', IF(sortVars.sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                       </apex:commandLink>
+                                    </th>
+                                    <th></th>
+                                    <th class="slds-text-heading_label">
+                                       <apex:commandLink value="{!$Label.rh2__interval}" action="{! doSettingSort }" >
+                                          <apex:param name="sortingField" value="Increment__c" assignTo="{!sortVars.sortField}"/>
+                                          <apex:outputText value="{!IF(sortVars.sortField=='Increment__c', IF(sortVars.sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                       </apex:commandLink>
+                                    </th>
+                                    <th></th>
+                                    <th class="slds-text-heading_label">
+                                       <apex:commandLink value="{!$Label.rh2__intervalunit}" action="{! doSettingSort }" >
+                                          <apex:param name="sortingField" value="Unit__c" assignTo="{!sortVars.sortField}"/>
+                                          <apex:outputText value="{!IF(sortVars.sortField=='Unit__c', IF(sortVars.sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                       </apex:commandLink>
+                                    </th>
+                                    <th></th>
+                                    <th class="slds-text-heading_label">
+                                       <apex:commandLink value="{!$Label.rh2__jobstatus}" action="{! doSettingSort }" >
+                                          <apex:param name="sortingField" value="Rollup_Status__c" assignTo="{!sortVars.sortField}"/>
+                                          <apex:outputText value="{!IF(sortVars.sortField=='Rollup_Status__c', IF(sortVars.sortDirection=='asc', ' ▲', ' ▼'),'')}"/>
+                                       </apex:commandLink>
+                                    </th>
+                                    <th></th>
+                                 </tr>                                 
+                                 <apex:repeat value="{!modifiedJobs}" var="job">
+                                    <tr>
+                                       <td>
+                                          <apex:commandLink action="{!navigateToJobSchedulePage}" style="width: 50%;" rendered="{!job.rh2__Rollup_Status__c == 'Active' || job.rh2__Rollup_Status__c == 'Inactive'}">
+                                             <apex:param name="sortingField" value="{!job.Id}" assignTo="{!jobSchedulePageParam}"/>
+                                             {!job.rh2__Rollup_Name__c}
+                                          </apex:commandLink>
+                                          <apex:outputPanel rendered="{!job.rh2__Rollup_Status__c == 'Deleted'}">
+                                             {!job.rh2__Rollup_Name__c}
+                                          </apex:outputPanel>
+                                       </td>
+                                       <td>
+                                          <apex:outputField style="text-align:right;" value="{!job.rh2__NextFireTime__c}">
+                                             <apex:inlineEditSupport showOnEdit="saveInlineEditBtn" event="ondblclick"/>                                             
+                                          </apex:outputField>
+                                       </td>
+                                       <td><i class="fa fa-pencil" style="float:left; color:#d9d9db; padding-left:0px !important;"></i></td>
+                                       <td>
+                                          <apex:outputField value="{!job.rh2__Increment__c}">
+                                             <apex:inlineEditSupport showOnEdit="saveInlineEditBtn" event="ondblclick"/>                                             
+                                          </apex:outputField>
+                                       </td>
+                                       <td><i class="fa fa-pencil" style="color:#d9d9db; padding-left:0px !important;"></i></td>
+                                       <td>
+                                          <apex:outputField value="{!job.rh2__Unit__c}">
+                                             <apex:inlineEditSupport showOnEdit="saveInlineEditBtn" event="ondblclick"/>                                             
+                                          </apex:outputField>
+                                       </td>
+                                       <td><i class="fa fa-pencil" style="color:#d9d9db; padding-left:0px !important;"></i></td>
+                                       <td>
+                                          {!job.Rollup_Status__c}
+                                       </td>
+                                       <td>
+                                          <apex:commandLink value="{!$Label.rh2__delete}" action="{!deleteJob}" oncomplete="window.top.location.reload();">
+                                             <apex:param name="sortingField" value="{!job.Id}" assignTo="{!jobToDeleteID}"/>
+                                          </apex:commandLink>
+                                       </td>
+                                    </tr>
+                                 </apex:repeat>
+                           </table>
+                        </apex:outputPanel>
+                     </apex:outputPanel>
+                  </apex:outputPanel>
+               </section>
+            </div>
+         </div>
+      </apex:form>
+   </html>
+</apex:page>

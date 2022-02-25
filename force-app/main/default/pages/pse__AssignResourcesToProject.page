@@ -1,0 +1,158 @@
+<apex:page title="{!$Label.pse__mass_assign_proj_resources_label_title}" standardController="pse__Assignment__c" recordsetvar="assignments"
+ extensions="pse.AssignResourcesToProjectController" sidebar="false" lightningStylesheets="true">
+	<style>
+		tr.dataRow>td.availabilityColumn {
+			text-align: right;
+			width: 10%;
+			min-width: 160px;
+		}
+	</style>
+	<c:WaitComponent />
+	<c:LoadMaskRegion >
+
+		<!-- Render the javascript function to create JS function to select all resources -->
+		<c:selectAllCheckboxes functionName="selectAllResources" />
+
+		<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+		<apex:outputPanel id="ffHeader">
+			<c:ffui_header instanceName="$FFHEADER" />
+		</apex:outputPanel>
+
+		<apex:outputPanel layout="block" id="error-panel" rendered="{!bean.onlyShowError}">
+			<apex:form >
+				<apex:pageBlock >
+					<apex:pageMessages />
+					<apex:pageBlockButtons location="bottom">
+						<apex:commandButton value="{!$Label.pse__common_label_cancel}" style="align:center" action="{!cancel}" />
+					</apex:pageBlockButtons>
+				</apex:pageBlock>
+			</apex:form>
+		</apex:outputPanel>
+
+		<apex:outputPanel layout="none" id="everything" rendered="{!NOT(bean.onlyShowError)}">
+			<apex:form >
+				<apex:pageMessages id="messageSection" />
+
+				<c:ResourceFilter parentComponent="{!this}" initialResource="{!filterContact}" initialStartDate="{!bean.project.pse__Start_Date__c}"
+				 initialEndDate="{!bean.project.pse__End_Date__c}" customContactFields="{!customResourceFilterFields}" rerender="everything,ffHeaderScript,ffHeader"
+				/>
+				<apex:pageBlock title="{!$Label.pse__mass_assign_proj_resources_label_select_resources}" id="resourceSelector">
+
+					<apex:actionFunction name="onCreateAssignmentClick" action="{!onAddSelectedResources}" rendered="{!bean.hasMatchingResources}"
+					/>
+					<apex:actionFunction name="doCancel" action="{!cancel}" />
+
+					<apex:pageBlockSection columns="1" id="availableResources">
+						<apex:outputPanel rendered="{!bean.hasMatchingResources}">
+							<apex:variable var="tableState" value="{!bean.sortState}" />
+							<apex:pageBlockTable value="{!bean.resources}" var="wrapper" id="resourceResults" rows="{!bean.matchingResPaginator.pageSize}">
+
+								<apex:column id="resourceSelectColumn">
+									<apex:facet name="header">
+										<input type="checkbox" onclick="selectAllResources(this, 'matchingResourceSelector')" id="resourceSelectHeader" />
+									</apex:facet>
+									<apex:inputCheckbox value="{!wrapper.selected}" id="matchingResourceSelector" />
+								</apex:column>
+
+								<apex:column >
+									<apex:facet name="header">
+										<c:SortColumnLink id="resourceNameHeader" value="{!$ObjectType.Contact.fields.Name.label}" rerender="resourceResults" recordsList="{!bean.resources}"
+										 comparatorImpl="{!nameComparator}" tableState="{!tableState}" />
+									</apex:facet>
+									<apex:outputLink value="/{!wrapper.res.Id}" id="resourceNameCell">{!wrapper.res.Name}</apex:outputLink>
+								</apex:column>
+
+								<apex:column styleClass="availabilityColumn" rendered="{!isUtilizationEnabled}">
+									<apex:facet name="header">
+										<apex:outputPanel >
+											<c:SortColumnLink id="resourceAvailabilityHeader" value="{!$Label.pse__common_availability_header_column}" rerender="resourceResults"
+											 recordsList="{!bean.resources}" comparatorImpl="{!availabilityComparator}" tableState="{!tableState}" />
+											<apex:image value="/s.gif" title="{!$Label.pse__common_availability_header_column_info}" styleClass="infoIcon" style="float: right;"
+											/>
+										</apex:outputPanel>
+									</apex:facet>
+									<apex:outputText value="{!NULLVALUE(TEXT(FLOOR(wrapper.availability)), '–')}" id="resourceAvailability" /> &nbsp;
+									<c:IntensityIcon value="{!wrapper.availability}" thresholdGreen="100" thresholdAmber="50" size="16" />
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Skill_Certification_Rating__c.fields.pse__Skill_Certification__c.label}" rendered="{!isSkillSearch}"
+								 id="resourceSkillColumn">
+									<apex:repeat value="{!wrapper.res.Skill_Certification_Ratings__r}" var="rating" id="resourceSkillCell">
+										<apex:outputField value="{!rating.Skill_Certification__r.Name}" id="resourceSkillLine" />
+										<br/>
+									</apex:repeat>
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Skill_Certification_Rating__c.fields.pse__Rating__c.label}" rendered="{!isSkillSearch}"
+								 id="resourceRatingColumn">
+									<apex:repeat value="{!wrapper.res.Skill_Certification_Ratings__r}" var="rating" id="resourceRatingCell">
+										<apex:outputField value="{!rating.pse__Rating__c}" id="resourceRatingLine" />
+										<br/>
+									</apex:repeat>
+								</apex:column>
+
+								<apex:repeat value="{!resourceResultColumns}" var="column">
+									<apex:column >
+										<apex:variable var="f" value="{!column.field}" />
+										<apex:facet name="header">
+											<c:SortColumnLink value="{!column.field.label}" rerender="resourceResults" recordsList="{!bean.resources}" comparatorImpl="{!column.sortComparator}"
+											 tableState="{!tableState}" />
+										</apex:facet>
+										<apex:outputField value="{!wrapper.res[f]}" />
+									</apex:column>
+								</apex:repeat>
+							</apex:pageBlockTable>
+
+						</apex:outputPanel>
+						<apex:pageBlockSectionItem id="paginatorLinkSection">
+							<c:PaginatorLinkPanel paginator="{!bean.matchingResPaginator}" rerender="availableResources" />
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem rendered="{!bean.matchingResPaginator.pageSize >= bean.resourceLoadLimit}" id="maxResourcesSection">
+							<apex:outputPanel style="text-align: left; display:inline;">
+								<apex:outputText style="font-style:italic" value="{!$Label.pse__mass_create_assignments_label_max_resources_shown}">
+									<apex:param value="{!bean.resourceLoadLimit}" />
+								</apex:outputText>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+				</apex:pageBlock>
+			</apex:form>
+		</apex:outputPanel>
+	</c:LoadMaskRegion>
+
+	<apex:outputPanel id="ffHeaderScript">
+		<script>
+			prepareVFConfig();
+			function prepareVFConfig() {
+				var config = {
+					objectName: '{!JSENCODE($Label.mass_assign_proj_resources_label_title)}',
+					recordName: '{!JSENCODE(bean.project.Name)}',
+					helpUrl: '{!$Page.AssignResourcesToProjectHelp}',
+					objectApiName: '{!$ObjectType["Assignment__c"].name}',
+					onRender: onHeaderLoadCallback,
+					buttons: [{
+						id: 'cancel',
+						label: '{!JSENCODE($Label.common_label_cancel)}',
+						actionFn: 'doCancel'
+					}]
+				};
+
+				if ('{!bean.hasMatchingResources}' === 'true') {
+					config.buttons.push({
+						id: 'createAssignment',
+						label: '{!JSENCODE($Label.mass_assign_proj_resources_label_create_assignments)}',
+						actionFn: 'onCreateAssignmentClick'
+					});
+				}
+
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+		</script>
+	</apex:outputPanel>
+</apex:page>

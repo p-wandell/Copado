@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ETC_Billable_New__c</fullName>
+    <description>Billable forecasted hours multiplied by Assignment&apos;s bill rate (current week forward). Except for Customer Success projects where this is the sum of Milestone Amounts with Target Date in the future.</description>
+    <externalId>false</externalId>
+    <formula>IF(Opp_Project_Type__c =&quot;Customer Success&quot;,ETC_Billable_CS__c, ETC_Billable_TM__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Billable forecasted hours multiplied by Assignment&apos;s bill rate (current week forward). Except for Customer Success projects where this is the sum of Milestone Amounts with Target Date in the future.</inlineHelpText>
+    <label>ETC Billable ($)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

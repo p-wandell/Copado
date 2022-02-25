@@ -1,0 +1,49 @@
+<apex:page standardController="pse__Proj__c" showHeader="false" applyHtmlTag="true" applyBodyTag="false" lightningstylesheets="true" extensions="PreFlightRisksExtension">
+        <head>
+        <apex:slds />
+            <style type="text/css">
+                td.input { vertical-align: top; }
+                td.description { width: 40%; }
+                td.impact { width: 10%; }
+                td.mitigation { width: 50%; }
+                td.typeHeader { font-weight: bold; font-size: large; background-color: lightgray; }
+            </style>
+    </head>
+    <body class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <apex:form >
+            <apex:pageBlock >
+                <apex:pageBlockSection columns="2" collapsible="false" >
+                    <apex:pageBlockSectionItem ><b>Project: </b>{!project.Name}</apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:pageblock >
+                <apex:pageBlockButtons >
+                    <apex:commandButton value="Save" action="{!save}"/>
+                    <apex:commandButton value="Cancel" action="{!cancel}"/>
+                </apex:pageBlockButtons>
+                <table width="100%">
+                    <tr>
+                        <th width="40%">Risk Name</th>
+                        <th width="10%">Impact</th>
+                        <th width="50%">Mitigation</th>
+                    </tr>
+                    <apex:variable value="{!''}" var="type" />
+                    <apex:repeat value="{!preflightRisks}" var="risk">
+                        <apex:outputText rendered="{!IF(risk.Type__c != type, true,false)}">
+                            <tr>
+                                <td colspan="3" class="typeHeader">{!risk.Type__c}</td>
+                            </tr>
+                        </apex:outputText>
+                        
+                        <tr>
+                            <td class="input description"><span style="width: 90%;">{!risk.Name__c}</span></td>
+                            <td class="input impact"><apex:inputField value="{!risk.Impact__c}" /></td>
+                            <td class="input mitigation"><apex:inputTextarea value="{!risk.Mitigation_Steps__c}" cols="80" rows="2" /></td>
+                        </tr>
+                        <apex:variable value="{!risk.Type__c}" var="type"/>
+                    </apex:repeat>                    
+                </table>
+            </apex:pageblock>
+        </apex:form>
+    </body>
+</apex:page>

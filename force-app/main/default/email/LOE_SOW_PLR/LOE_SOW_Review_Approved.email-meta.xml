@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>When the LOE or SOW is approved, an email is sent to the creator or the request.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>LOE/SOW Review Approved</name>
+    <style>none</style>
+    <subject>LOE/SOW Has Been Approved - Read for Details</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+
+.progress-circle-text-container {
+	position: absolute;
+	text-align: center;
+	font-size: 2.5rem;
+	top: 50%;
+	transform: perspective(1px) translateY(-50%);
+}
+
+.progress-circle-text-container span {
+	font-size: 1.125rem;
+	vertical-align: super;
+}
+
+.progress-circle-text-container p {
+	font-size: 0.875rem;
+	margin-top: -10px;
+	margin-left: -10px;
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Neutral__c</fullName>
+    <externalId>false</externalId>
+    <label>Neutral</label>
+    <summaryFilterItems>
+        <field>GetFeedback_Aut__Answer__c.GetFeedback_Aut__IsDetractor__c</field>
+        <operation>equals</operation>
+        <value>False</value>
+    </summaryFilterItems>
+    <summaryFilterItems>
+        <field>GetFeedback_Aut__Answer__c.GetFeedback_Aut__IsPromoter__c</field>
+        <operation>equals</operation>
+        <value>False</value>
+    </summaryFilterItems>
+    <summaryFilterItems>
+        <field>GetFeedback_Aut__Answer__c.GetFeedback_Aut__Number__c</field>
+        <operation>notEqual</operation>
+        <value/>
+    </summaryFilterItems>
+    <summaryForeignKey>GetFeedback_Aut__Answer__c.GetFeedback_Aut__Response__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Excluded_Roles__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Enables you to select the roles that do not require utilization summary records to be created.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the roles that do not require utilization summary records to be created.</inlineHelpText>
+    <label>Excluded Roles</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Architect</fullName>
+                <default>false</default>
+                <label>Architect</label>
+            </value>
+            <value>
+                <fullName>Business Analyst</fullName>
+                <default>false</default>
+                <label>Business Analyst</label>
+            </value>
+            <value>
+                <fullName>Client Manager</fullName>
+                <default>false</default>
+                <label>Client Manager</label>
+            </value>
+            <value>
+                <fullName>Consultant</fullName>
+                <default>false</default>
+                <label>Consultant</label>
+            </value>
+            <value>
+                <fullName>Contractor</fullName>
+                <default>false</default>
+                <label>Contractor</label>
+            </value>
+            <value>
+                <fullName>Executive</fullName>
+                <default>false</default>
+                <label>Executive</label>
+            </value>
+            <value>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+                <label>Project Manager</label>
+            </value>
+            <value>
+                <fullName>Senior Consultant</fullName>
+                <default>false</default>
+                <label>Senior Consultant</label>
+            </value>
+            <value>
+                <fullName>Trainer</fullName>
+                <default>false</default>
+                <label>Trainer</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>5</visibleLines>
+</CustomField>

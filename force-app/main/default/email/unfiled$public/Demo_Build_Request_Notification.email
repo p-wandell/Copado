@@ -1,0 +1,6 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[A new demo build has been requested by&nbsp;{!Demo_Build__c.CreatedBy}. Please review, assign and prioritize accordingly.<div><br></div><div><b>Primary Use Case:</b>&nbsp;{!Demo_Build__c.Name}</div><div><br></div><div><b>Type:</b>&nbsp;{!Demo_Build__c.Type__c}</div><div><br></div><div><b>Industry:</b>&nbsp;{!Demo_Build__c.Industry__c}</div><div><br></div><div><b>Description:</b>&nbsp;{!Demo_Build__c.Description__c}</div><div><br></div><div><b>Compelling Reason:</b>&nbsp;{!Demo_Build__c.Compelling_Reason__c}</div><div><br></div><div><b>IBM Partners:</b>&nbsp;{!Demo_Build__c.IBM_Partners__c}</div><div><br></div><div><br></div><div>View Demo Build here:&nbsp;{!Demo_Build__c.Link}</div><div><br></div>]]></td>
+</tr>
+</table>

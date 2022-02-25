@@ -1,0 +1,2 @@
+<apex:page standardController="pse__Rate_Card_Set__c"  action="{!URLFOR($Page.CreateRateCardSet,'',[id=$CurrentPage.parameters.id,mode='View'])}">
+</apex:page>

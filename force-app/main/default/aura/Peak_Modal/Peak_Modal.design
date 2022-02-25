@@ -1,0 +1,14 @@
+<!--
+ - Created by kentheberling on 9/5/18.
+ -->
+
+<design:component label="Peak Modal">
+    <design:attribute label="Modal Title" name="modalTitle"/>
+    <design:attribute label="First Paragraph" name="paragraphOne" />
+    <design:attribute label="Second Paragraph" name="paragraphTwo" />
+    <design:attribute label="Third Paragraph" name="paragraphThree" />
+    <design:attribute label="Cancel Button Text" name="cancelText" />
+    <design:attribute label="Save Button Text" name="saveText" />
+    <design:attribute label="Save Action" name="actionName" description="Requires developer assistance to add new options." dataSource="consoleTest"/>
+    <design:attribute label="Show Footer?" name="showFooter" />
+</design:component>

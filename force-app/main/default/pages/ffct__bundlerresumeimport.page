@@ -1,0 +1,28 @@
+<apex:page standardcontroller="ffct__Bundle__c" extensions="ffct.BundlerResumeImportController" action="{!resumeImport}"> 
+    <apex:form id="form">
+    <apex:actionStatus id="eventStatus"  >
+         <apex:facet name="start">
+          <apex:outputPanel >
+                        <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                            <div style="position:absolute;top:50%;left:50%">
+                                <apex:image value="/img/loading32.gif"></apex:image>
+                            </div>
+                        </div>
+           </apex:outputPanel>
+        </apex:facet>   
+         </apex:actionStatus>
+        <apex:sectionheader title="{!$Label.ffct__importbundle}"/>
+        <apex:pageMessages escape="false" id="messagesDiv"/>
+        <apex:outputPanel id="progressDiv" layout="block" >
+            <apex:outputPanel layout="block" rendered="{!StartImport}">
+                <img src="{!URLFOR($Resource.progressGIF)}" />
+            </apex:outputPanel>
+            <apex:outputLink style="padding-top:50px;padding-left:50px;color: #015BA7;" value="{!URLFOR($Action.ffct__Bundle__c.View,BundleId)}" rendered="{!DeploymentCompleted}">
+                 {!$Label.ffct__gotobundle}
+            </apex:outputLink>
+        </apex:outputPanel>
+        <apex:outputPanel id="importPanel" rendered="{!StartImport}">
+            <apex:actionPoller action="{!isAllBundleComponentsProcessed}" interval="5" rerender="importPanel,progressDiv,messagesDiv"/>              
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

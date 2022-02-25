@@ -1,0 +1,7 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="VideoID" type="String" default="ANJ4ZjuEUhU" access="global" />
+    <aura:attribute name="CustomClassName" type="String" default="" access="global" />
+    <aura:attribute name="CustomIdName" type="String" default="" access="global" />
+
+    <div class="{!'peak-component video-container ' + v.CustomClassName}" id="{!v.CustomIdName}"><iframe src="{!'https://www.youtube.com/embed/'+v.VideoID}" frameborder="0" allowfullscreen="true"></iframe></div>
+</aura:component>

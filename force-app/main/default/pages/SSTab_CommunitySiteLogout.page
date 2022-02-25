@@ -1,0 +1,21 @@
+<apex:page showHeader="true" sidebar="false" title="{!$Label.site.logout}">
+    <c:SSTab_CommunitySiteIncludes />
+
+    <title>{!$Label.site.logout}</title>
+    <div id="content">
+        <div class="page-header"><h2>{!$Label.loggingOut}</h2></div>
+        <div class="row">
+            <!-- This implementation is a workaround to show a custom branded page while logging the user
+                 out. The only psuedo-official way to log out of a Community is hitting the JSP link below -->
+
+            <apex:iframe src="{!$Site.Prefix}/secur/logout.jsp" height="1" width="1" />
+            <script>
+                function redirectToLogin() {
+                    window.parent.location="{!$Site.Prefix}/Login?startURL=%2F";
+                }
+                 
+                setTimeout("redirectToLogin()", 3000);
+            </script>
+        </div>
+    </div>
+</apex:page>

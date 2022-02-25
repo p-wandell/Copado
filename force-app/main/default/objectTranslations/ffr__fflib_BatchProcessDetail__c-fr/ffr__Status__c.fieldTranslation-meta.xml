@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Status --></label>
+    <name>ffr__Status__c</name>
+    <picklistValues>
+        <masterLabel>Aborted</masterLabel>
+        <translation>Avorté</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Completed</masterLabel>
+        <translation>Terminé</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed</masterLabel>
+        <translation>Échoué</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Holding</masterLabel>
+        <translation>En portant</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Preparing</masterLabel>
+        <translation>En train de préparer</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Processing</masterLabel>
+        <translation>En traitement</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Queued</masterLabel>
+        <translation>En file d&apos;attente</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,74 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<aura:component access="global"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+	<aura:registerEvent name="appEvent" type="c:SVNSUMMITS_Members_SortBy_Event"/>
+	<aura:handler event="c:SVNSUMMITS_Members_Header_Event" action="{!c.setNoOfMembers}"/>
+
+	<aura:attribute name="showNumberOfMembers" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showSort" type="Boolean" default="true" access="global"/>
+
+	<aura:attribute name="numberOfMembers" type="Integer" default="0" access="global"/>
+	<aura:attribute name="memberTitle" type="String" default="Members" access="global"/>
+	<aura:attribute name="sortBy" type="String" default="Sort by First Name" access="global"/>
+
+	<lightning:layout class="slds-border--bottom slds-p-top--small slds-p-bottom--medium"
+	                  verticalAlign="center"
+	                  horizontalAlign="spread">
+
+		<lightning:layoutItem size="12"
+		                      largeDeviceSize="6"
+		                      mediumDeviceSize="6"
+		                      smallDeviceSize="12">
+			<lightning:layout multipleRows="false"
+			                  verticalAlign="center">
+
+				<lightning:layoutItem >
+					<lightning:icon iconName="standard:groups"
+					                size="large"
+					                alternativeText="Groups"
+					                variant="bare"/>
+				</lightning:layoutItem>
+
+				<aura:if isTrue="{!v.showNumberOfMembers}">
+					<lightning:layoutItem class="slds-text-heading--large slds-p-left--small">
+							{!v.numberOfMembers}
+					</lightning:layoutItem>
+				</aura:if>
+
+				<lightning:layoutItem class="slds-text-heading--large slds-p-horizontal--small">
+						{!v.memberTitle}
+				</lightning:layoutItem>
+
+			</lightning:layout>
+		</lightning:layoutItem>
+
+		<!-- Sort -->
+		<aura:if isTrue="{!v.showSort}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="4"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<lightning:select name="headerSort"
+				                  label="{!$Label.c.ss_mbr_sortMembers}"
+				                  value="{!v.sortBy}"
+				                  onchange="{!c.selectSortBy}">
+					<option value="Sort by First Name">
+							{!$Label.c.ss_mbr_label_Sort_by_First_Name}
+					</option>
+					<option value="Sort by Last Name">
+							{!$Label.c.ss_mbr_label_Sort_by_Last_Name}
+					</option>
+					<option value="Date Joined Newest">
+							{!$Label.c.ss_mbr_label_Sort_by_joinedNewest}
+					</option>
+					<option value="Date Joined Oldest">
+							{!$Label.c.ss_mbr_label_Sort_by_joinedOldest}
+					</option>
+				</lightning:select>
+			</lightning:layoutItem>
+		</aura:if>
+	</lightning:layout>
+</aura:component>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>用于ERP汇率的汇率类型。我们建议您不要删除托管费率类型。有关更多信息，请参阅ERP帮助。</help>
+    <label><!-- Exchange Rate Type --></label>
+    <name>fferpcore__ExchangeRateType__c</name>
+    <picklistValues>
+        <masterLabel>Average</masterLabel>
+        <translation>平均</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Budget</masterLabel>
+        <translation>预算</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Closing</masterLabel>
+        <translation>闭幕</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Commercial</masterLabel>
+        <translation>广告</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Historical</masterLabel>
+        <translation>历史的</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Spot</masterLabel>
+        <translation>点</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Translation</masterLabel>
+        <translation>翻译</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,100 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+  -->
+<template>
+	<!-- Folder Layout -->
+	<div if:true={isFolder} class={itemClass}>
+		<div class="files-item__thumb folder">
+			<lightning-icon icon-name={itemIconName} size="small"
+			                class="files-item__icon slds-align_absolute-center"></lightning-icon>
+		</div>
+
+		<div class="files-item__meta">
+			<template if:true={showTitle}><a href={url} target="_parent" onclick={handleFolderClick}>
+				<div class="files-item__title">{item.Title}</div>
+			</a></template>
+			<template if:true={showDescription}><p class={descriptionClass} style={descriptionStyle}>
+				{item.Description}</p></template>
+			<div class="files-item__description">
+				<template if:true={showCreatedDate}> {labels.labelAdded}&nbsp;
+					<lightning-formatted-date-time value={fileCreatedDate}></lightning-formatted-date-time>
+				</template>
+			</div>
+		</div>
+		<div
+			class="files-item__footer slds-text-align_center slds-grow-none slds-shrink-none"
+			if:true={showViewDetailsAction}
+		>
+			<lightning-button
+				variant="base"
+				icon-name="utility:preview"
+				onclick={handleItemClick}
+				label={labels.labelViewDetails}
+			></lightning-button>
+		</div>
+
+		<div if:true={showThumb}>
+			<img src={thumbUrl} alt={item.Title}/>
+		</div>
+	</div>
+
+	<!-- Document Layout -->
+	<div if:true={isFile} class={itemClass}>
+		<div
+			class="files-item__thumb file"
+			if:true={showFileThumb}
+			style={thumbStyle}
+		></div>
+		<div if:false={showFileThumb} class="files-item__thumb file">
+			<div
+				class="files-item__thumb file" 
+				style={fileImage}
+				if:true={isImage}
+			></div>
+			<lightning-icon
+				if:false={isImage}
+				icon-name={fileIcon}
+				size="small"
+				class="files-item__icon slds-align_absolute-center"
+			></lightning-icon>
+		</div>
+
+		<div class="files-item__meta">
+			<template if:true={showTitle}><a href={url} target="_parent" onclick={handleThumbClick}>
+				<div class="files-item__title">{item.Title}</div>
+			</a></template>
+			<template if:true={showDescription}><p class={descriptionClass} style={descriptionStyle}>
+				{item.Description}</p></template>
+			<div class="files-item__description">
+				<template if:true={showFileSize}> {fileSize}
+					<template if:true={isShowTypeAndSize}> -</template>
+				</template>
+				<template if:true={showFileType}>
+					{item.FileType}
+				</template>
+			</div>
+			<div class="files-item__description">
+				<template if:true={showCreatedDate}> {labels.labelAdded} &nbsp;
+					<lightning-formatted-date-time value={fileCreatedDate}></lightning-formatted-date-time>
+				</template>
+			</div>
+		</div>
+		<div class="files-item__footer slds-text-align_center slds-grow-none slds-shrink-none">
+			<lightning-button
+				variant="base"
+				icon-name="utility:download"
+				onclick={downloadHandler}
+				if:true={showDownloadAction}
+				label={labels.labelDownload}
+			></lightning-button>
+			<lightning-button
+				variant="base"
+				icon-name="utility:preview"
+				onclick={handleItemClick}
+				if:true={showViewDetailsAction}
+				label={labels.labelViewDetails}
+			></lightning-button>
+		</div>
+
+	</div>
+</template>

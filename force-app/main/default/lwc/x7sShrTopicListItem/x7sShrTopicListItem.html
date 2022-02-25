@@ -1,0 +1,15 @@
+<!--
+  ~ Copyright (c) 2020.  7Summits Inc. All rights reserved.
+  -->
+
+<!-- x7S Topic List Item -->
+<template>
+    <li class="topic-list-item"
+        key={topic.Id}
+    >
+        <a href={topic.url}
+           onclick={handleClick}
+           class="topic-list-item__link"
+        >{topic.Name}</a>
+    </li>
+</template>

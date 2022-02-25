@@ -1,0 +1,6 @@
+<apex:page standardController="pse__Forecast_Calculation__c">
+    <c:fflib_batchInfo id="jobStatus"
+                       batchControlRecordId="{!pse__Forecast_Calculation__c.Id}"
+                       batchJobClass="ForecastBatchCoordinator"
+    />
+</apex:page>

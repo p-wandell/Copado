@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Project_Deliverable</fullName>
+    <active>true</active>
+    <label>Project Deliverable</label>
+    <picklistValues>
+        <picklist>Audit_Status__c</picklist>
+        <values>
+            <fullName>Completed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In Progress</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Started</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Project_Phase__c</picklist>
+        <values>
+            <fullName>Build</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Close Out</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Define %26 Design</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Launch</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Phase Independent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prepare</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Verify</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Status__c</picklist>
+        <values>
+            <fullName>Delivered</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In Progress</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Started</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Signed Off</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type__c</picklist>
+        <values>
+            <fullName>Case Study</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Change Management</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Delivery to Sales handoff</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Deployment Workbook</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Design Comps</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>JIRA Board</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Knowledge Transfer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Lessons Learned</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Migration Plan</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pre-flight Assessment</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Process Flow</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Project Kickoff</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Project Plan</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Project Workbook</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>RACI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Requirements Workbook</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Roadmap %2F Release Plan</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sales to Delivery Handoff</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sitemap</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sprint Demo</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sprint Plan</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technical Design Document</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Test Plan</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Tollgate</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Training</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UAT Test Scripts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Wireframes</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Workshops</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

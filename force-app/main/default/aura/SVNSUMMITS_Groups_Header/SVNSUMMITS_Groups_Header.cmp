@@ -1,0 +1,113 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global"
+                controller="SVNSUMMITS_GroupsController"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+	<ltng:require
+			scripts="{!$Resource.SVNSUMMITS_LightningSlider1 + '/js/jquery-3.3.1.min.js'}"
+			afterScriptsLoaded="{!c.onInit}"/>
+
+	<aura:handler event="c:SVNSUMMITS_Groups_Header_Event" action="{!c.setNoOfGroups}"/>
+	<aura:registerEvent name="appEvent" type="c:SVNSUMMITS_Groups_SortBy_Event"/>
+
+	<!-- Builder -->
+	<aura:attribute name="debugMode"            type="Boolean"  default="false" access="global"/>
+	<aura:attribute name="groupTitle"           type="String"   default="" access="global"/>
+	<aura:attribute name="showIcon"             type="Boolean"  default="true" access="global"/>
+	<aura:attribute name="showNumberOfGroups"   type="Boolean"  default="true" access="global"/>
+	<aura:attribute name="showBottomBorder"     type="Boolean"  default="true" access="global"/>
+	<aura:attribute name="newGroupURL"          type="String"   default="/createrecord/NewGroup" access="global"/>
+	<aura:attribute name="newGroupLabel"        type="String"   default="{!$Label.c.ss_grp_label_New_Group}" access="global"/>
+
+	<aura:attribute name="numberOfGroups" type="Integer" access="global"/>
+	<aura:attribute name="iconName" default="groups" type="String" access="global"/>
+	<aura:attribute name="sortBy" type="String" default="" access="global"/>
+
+	<aura:attribute name="isObjectCreatable" type="Boolean" access="global"/>
+	<aura:attribute name="sitePath" type="String" access="global"/>
+	<aura:attribute name="sitePrefix" type="String" access="global"/>
+	<aura:attribute name="searchString" type="String" default="" access="global"/>
+	<aura:attribute name="filterMyGroups" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="isSearchText" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="placeholderText" type="String" default="{!$Label.c.ss_grp_label_Search_Groups}"
+	                access="global"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="center"
+	                  horizontalAlign="spread"
+	                  class="{! equals(v.showBottomBorder, true) ? 'slds-border--bottom' : ''}">
+
+		<!-- ICON and TITLE -->
+		<lightning:layoutItem size="12"
+		                      smallDeviceSize="12"
+		                      mediumDeviceSize="3"
+		                      largeDeviceSize="3"
+		                      padding="around-small">
+			<lightning:layout multipleRows="false"
+			                  verticalAlign="center">
+				<aura:if isTrue="{!v.showIcon}">
+					<lightning:layoutItem>
+						<lightning:icon iconName="standard:groups"
+						                size="large"
+						                alternativeText="Groups"
+						                variant="bare"/>
+					</lightning:layoutItem>
+				</aura:if>
+
+				<aura:if isTrue="{!v.showNumberOfGroups}">
+					<lightning:layoutItem class="slds-text-heading--large slds-p-left--small">
+						{!v.numberOfGroups || ''}
+					</lightning:layoutItem>
+				</aura:if>
+
+				<aura:if isTrue="{! not(equals(v.groupTitle, 'none'))}">
+					<lightning:layoutItem class="slds-text-heading--large slds-truncate slds-p-left--small">
+						<aura:if isTrue="{! not(equals(v.groupTitle, ''))}">
+							{!v.groupTitle}
+							<aura:set attribute="else">
+								{!$Label.c.ss_grp_label_Groups}
+							</aura:set>
+						</aura:if>
+					</lightning:layoutItem>
+				</aura:if>
+
+			</lightning:layout>
+		</lightning:layoutItem>
+
+		<!-- SEARCH -->
+		<lightning:layoutItem size="12"
+		                      smallDeviceSize="12"
+		                      mediumDeviceSize="4"
+		                      largeDeviceSize="4"
+		                      padding="around-small">
+			<lightning:input type="search" label="{!$Label.c.ss_grp_label_Search}"
+			                 name="search"
+			                 onchange="{!c.getSearchString}"
+			                 value="{!v.searchString}"
+			                 placeholder="{!v.placeholderText}"
+			                 variant="label-hidden"/>
+		</lightning:layoutItem>
+
+		<!-- NEW BUTTON -->
+
+			<lightning:layoutItem size="12"
+			                      smallDeviceSize="12"
+			                      mediumDeviceSize="3"
+			                      largeDeviceSize="3"
+			                      padding="around-medium">
+				<aura:if isTrue="{!v.isObjectCreatable}">
+					<lightning:button name="newItem"
+					                  class="slds-float--right"
+					                  title="{!v.newGroupLabel || $Label.c.ss_grp_label_New_Group}"
+					                  onclick="{!c.createNewGroup}"
+					                  value="{!v.newGroupLabel || $Label.c.ss_grp_label_New_Group}"
+					                  label="{!v.newGroupLabel || $Label.c.ss_grp_label_New_Group}"
+					                  variant="brand"/>
+				</aura:if>
+			</lightning:layoutItem>
+
+
+	</lightning:layout>
+
+</aura:component>

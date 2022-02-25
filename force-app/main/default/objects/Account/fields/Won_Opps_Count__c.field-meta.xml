@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Won_Opps_Count__c</fullName>
+    <description>Number of opportunities closed/won</description>
+    <externalId>false</externalId>
+    <label>Won Opps Count</label>
+    <summaryFilterItems>
+        <field>Opportunity.IsWon</field>
+        <operation>equals</operation>
+        <value>True</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Opportunity.AccountId</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

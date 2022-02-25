@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Only_Sub_Total__c</fullName>
+    <externalId>false</externalId>
+    <label>Product Only Sub-Total</label>
+    <summarizedField>OpportunityLineItem.TotalPrice</summarizedField>
+    <summaryFilterItems>
+        <field>OpportunityLineItem.Opp_Prod_Family__c</field>
+        <operation>equals</operation>
+        <value>Product</value>
+    </summaryFilterItems>
+    <summaryForeignKey>OpportunityLineItem.OpportunityId</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

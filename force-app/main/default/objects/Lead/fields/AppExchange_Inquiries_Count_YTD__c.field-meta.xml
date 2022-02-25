@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AppExchange_Inquiries_Count_YTD__c</fullName>
+    <externalId>false</externalId>
+    <formula>X7Summits_Profile_Demo_Count__c+X7Summits_Profile_Learn_More_Count__c+
+Alumni_Careers_Bolt_Demo_Count__c+Alumni_Careers_Bolt_Install_Request_Co__c+
+Alumni_Engagement_Bolt_Demo_Count__c+Alumni_Engagement_Bolt_Install_Count__c+
+Community_Migration_Accel_Demo_Couont__c+Community_Migration_Accel_Install_Ct__c+
+Contact_Us_Demo_Count__c+Contact_Us_Install_Count__c+
+Customer_Experience_Accelerator_Demo_C__c+Customer_Exp_Accelerator_Install_Count__c+
+Digital_StFr_B2B_Comm_Bolt_Demo_Ct__c+Digital_StFr_B2B_Comm_Install_Ct__c+
+Digital_Storefront_Bolt_Demo_Count__c+Digital_Storefront_Bolt_Install_Reques__c+
+Employee_Digital_Workspace_Bolt_Demo_C__c+Employee_Workspace_Bolt_Install_Count__c+
+Guide_Me_Demo_Count__c+Guide_Me_Install_Count__c+Ideas_Demo_Count__c+
+Ideas_Install_Request_Count__c+Leaderboard_Plus_Demo_Count__c+
+Leaderboard_Plus_Install_Count__c+Page_Info_Demo_Count__c+
+Page_Info_Install_Count__c+PartnerFirst_Bolt_Demo_Count__c+
+PartnerFirst_Bolt_Install_Request_Count__c+PartnerFirst_for_Mfg_Bolt_Demo_Count__c+
+PartnerFirst_Mfg_Bolt_Install_Count__c+Profile_Wizard_Flow_Demo_Count__c+
+Profile_Wizard_Flow_Install_Count__c+Questionnaire_Flow_Demo_Count__c+
+Questionnaire_Flow_Install_Count__c+Slideshare_Flow_Demo_Count__c+
+Slideshare_Flow_Install_Count__c+Social_Engagement_Flow_Demo_Count__c+
+Social_Engagement_Flow_Install_Count__c+Social_Share_Demo_Count__c+
+Social_Share_Install_Count__c+Student_Success_Bolt_Demo_Count__c+
+Student_Success_Bolt_Install_Count__c+Twitter_Feed_Demo_Count__c+
+Twitter_Feed_Install_Count__c+Video_Gallery_Demo_Count__c+
+Video_Gallery_Install_Count__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>AppExchange Inquiries Count (YTD)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

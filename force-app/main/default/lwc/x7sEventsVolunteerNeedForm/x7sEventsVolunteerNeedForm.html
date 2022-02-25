@@ -1,0 +1,125 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+-->
+<template>
+	<section>
+		<template if:true={isInit}>
+			<template for:each={saveResults} for:item="message">
+				{message}
+			</template>
+		</template>
+		<lightning-layout>
+                <lightning-layout-item size="12">
+                    <div class="slds-m-bottom_medium">
+                        <label class="slds-form-element__label">{labels.labelVolunteerDesc}</label>
+                        <div class="slds-form-element__help slds-m-bottom_small">{labels.labelVolunteerDescHelp}</div>
+						<lightning-input-rich-text value={volunteerDescription} 
+								message-when-bad-input={labels.ErrorMessageDescription}
+                                valid={validity}
+                                onblur={handleVolDecChange}>
+						</lightning-input-rich-text>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+
+            <template for:each={lineItems} for:item="need" for:index="index">
+                <section class="slds-m-bottom_medium" key={need.taskNumber}>
+
+                    <lightning-layout pull-to-boundary="small">
+                        <lightning-layout-item padding="around-small">
+                            <h4>{labels.labelTask}</h4>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" class="slds-col_bump-left">
+                            <div class="slds-text-align_right slds-text-link">
+                                    <lightning-formatted-text data-id={need.lineItemId} value={labels.labelRemove} onclick={removeLineItem} linkify>
+                                    </lightning-formatted-text>
+                                <!-- <a href="" onclick={removeLineItem} data-id={need.itemId}>{labels.labelRemove}</a> -->
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+
+                    <div class="slds-card">
+                        <div class="slds-card__body slds-card__body_inner">
+                            <lightning-layout multiple-rows="true" pull-to-boundary="small">
+
+                                <lightning-layout-item padding="around-small" size="12">
+                                    <lightning-input 
+                                            name ="Name"
+                                            label={labels.labelName} 
+											value={need.Name} 
+                                            placeholder={labels.labelTaskName} 
+                                            data-tasknumber={need.taskNumber}
+                                            data-lineitem={need.lineItemId}
+                                            onchange={handleInputChange}
+                                            max-length=80
+											required>
+									</lightning-input>
+                                </lightning-layout-item>
+
+                                <lightning-layout-item padding="around-small" size="8">
+                                    <lightning-input label={labels.labelCriteria} 
+                                            name="Criteria__c"
+                                            value={need.Criteria__c}
+                                            data-tasknumber={need.taskNumber}
+                                            data-lineitem={need.lineItemId}
+                                            onchange={handleInputChange} 
+											placeholder="">
+									</lightning-input>
+                                </lightning-layout-item>
+
+                                <lightning-layout-item padding="around-small" size="4">
+                                    <lightning-input type="number" 
+                                            name="Volunteers_Needed__c"
+                                            label={labels.labelVolunteersNeeded}
+                                            data-tasknumber={need.taskNumber}
+                                            data-lineitem={need.lineItemId}
+                                            onchange={handleInputChange} 
+											value={need.Volunteers_Needed__c}
+											required>
+									</lightning-input>
+                                    <div class="slds-form-element__help">{labels.labelNoVolunteerLimitMsg}</div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                    </div>
+
+                </section>
+            </template>
+
+            <div class="slds-align_absolute-center slds-m-bottom-large">
+                <lightning-button variant="neutral" 
+                        label={labels.labelAddTask} 
+                        icon-name="action:new" 
+                        icon-position="left" 
+                        onclick={addLineItem}>
+                </lightning-button>
+            </div>
+
+            <!-- form error message -->
+            <template if:true={strError}>
+				<div class="slds-text-color_destructive">
+					{strError}
+				</div>
+			  </template>
+
+            <!--Button Section Start-->
+            <div class="slds-col--padded slds-size--1-of-1 slds-p-horizontal--medium slds-p-vertical--large">
+                <div class="slds-grid slds-grid--pull-padded">
+                    <div class="slds-col--padded">
+                        <lightning-button
+                                class="slds-m-horizontal_small"
+                                variant="brand"
+                                label={labels.labelSaveButton}
+                                onclick={saveAction}
+                                disabled={disableButton}>
+                        </lightning-button>
+                        <lightning-formatted-url class="slds-button slds-button_neutral btn btn-link"
+                                      value={detailPageURL}
+                                      label={labels.labelCancelButton}>
+                        </lightning-formatted-url>
+                    </div>
+                </div>
+            </div>
+
+	</section>
+</template>

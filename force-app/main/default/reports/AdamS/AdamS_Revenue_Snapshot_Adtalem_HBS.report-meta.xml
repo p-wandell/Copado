@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>pse__Est_Vs_Actuals__c.pse__Actual_Billable_Amount__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Billable Revenue</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>IF(pse__Est_Vs_Actuals__c.pse__Actual_Hours__c:SUM&gt;0, pse__Est_Vs_Actuals__c.pse__Actual_Billable_Amount__c:SUM / pse__Est_Vs_Actuals__c.pse__Actual_Hours__c:SUM, 0)</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Average Bill Rate</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c.pse__Actual_Hours__c</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(1 AND 2) AND 3 AND (4 OR 5)</booleanFilter>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Time_Period_Type__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Month</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.Billable__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Resource__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Adam Shiffler</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>HBS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>Adtalem</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Quarter</dateGranularity>
+        <field>pse__Est_Vs_Actuals__c.pse__End_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Est_Vs_Actuals__c.pse__Resource__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>AdamS - Revenue Snapshot Adtalem_HBS</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>CustomEntity$pse__Est_Vs_Actuals__c@pse__Est_Vs_Actuals__c.pse__Project__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Est_Vs_Actuals__c.pse__End_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

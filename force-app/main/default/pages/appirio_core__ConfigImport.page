@@ -1,0 +1,56 @@
+<apex:page controller="appirio_core.ConfigImportController">
+<script type="text/javascript">
+function confirmRestoreDefault(value) 
+{
+    if (!value){return true;}
+    if (confirm('{!JSINHTMLENCODE($Label.appirio_core__config_import_label_confirm_delete_config_data)}')) 
+    {
+      return true;
+    }
+    return false;
+}
+</script>
+    <apex:pageMessages />
+
+    <apex:outputPanel layout="none" rendered="{!canUsePage}">
+      <h1>{!$Label.appirio_core__config_import_label_export_configuration}</h1>
+      <br/>
+      <apex:outputText rendered="{!devMode}">{!SUBSTITUTE(SUBSTITUTE(($Label.appirio_core__config_import_label_dev_imported_activated),'{0}','pse__'),'{1}', devNS)}</apex:outputText>
+      <br/>
+      <p/>    
+      <apex:form >
+      
+         <apex:selectList value="{!selectedConfig}" multiselect="false"  size="1">
+              <apex:selectOptions value="{!configurationFileSelectOptions}"/>
+         </apex:selectList>
+         &nbsp;&nbsp;
+         <apex:selectList value="{!selectedGroup}" multiselect="false"  size="1">
+              <apex:selectOptions value="{!configurationFileGroups}"/>
+         </apex:selectList>
+        &nbsp;&nbsp;
+        <apex:commandButton action="{!loadConfig}" value="{!$Label.appirio_core__config_import_label_import_configuration}"  />
+        &nbsp;&nbsp;
+        <apex:commandButton action="{!diffConfig}" value="{!$Label.appirio_core__config_import_label_diff_configuration}"  />
+        &nbsp;&nbsp;
+        <apex:variable var="restoreToDefaultTitleText" value="{!IF(canRestoreDefault,null,'{!$Label.config_import_error_insufficient_permission_to_delete_configs}')}" />
+        <apex:inputCheckbox id="restoreToDefault" value="{!restoreDefault}" immediate="true" onclick="return confirmRestoreDefault(this.checked);" disabled="{!NOT(canRestoreDefault)}" title="{!restoreToDefaultTitleText}"/>
+        <apex:outputLabel value="{!$Label.appirio_core__config_import_label_replace_data_from_file}" for="restoreToDefault" title="{!restoreToDefaultTitleText}"/>
+      
+      </apex:form>
+
+    </apex:outputPanel>
+
+  <apex:outputPanel layout="none" rendered="{!showImportMsg}"><h1>{!$Label.appirio_core__config_import_label_dev_import_completed}</h1></apex:outputPanel>
+
+  <apex:pageBlock rendered="{!showDiff}">    
+  	<apex:pageBlockTable value="{!configDelta}" var="cd">
+		<apex:column headerValue="{!$Label.appirio_core__config_import_label_diff_config_group}"   value="{!cd.groupKey}" />
+		<apex:column headerValue="{!$Label.appirio_core__config_import_label_diff_config_option}"  value="{!cd.optionKey}" />
+		<apex:column headerValue="{!$Label.appirio_core__config_import_label_diff_config_field}"   value="{!cd.fieldName}" />
+		<apex:column headerValue="{!$Label.appirio_core__config_import_label_diff_config_default}" value="{!cd.defaultValue}" />
+		<apex:column headerValue="{!$Label.appirio_core__config_import_label_diff_config_current}" value="{!cd.currentValue}" />
+	</apex:pageBlockTable>
+  </apex:pageBlock>    
+
+
+</apex:page>

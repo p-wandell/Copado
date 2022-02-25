@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>welcome email for The Hive</description>
+    <encodingKey>UTF-8</encodingKey>
+    <letterhead>Letterhead_with_Logo</letterhead>
+    <name>The Hive Welcome Email</name>
+    <style>freeForm</style>
+    <subject>Welcome to The Hive!</subject>
+    <textOnly>Welcome {!User.FirstName}!
+
+We are excited to have on the Summit, let&apos;s start collaborating! The Hive is our internal community that makes it easy to find resources, chat with team members and keep up on all the 7Summits news.
+
+We encourage you to look over the Training documentation and attend the training session for utilizing our tools: https://docs.google.com/presentation/d/1GgeJpN_Dqjd_ASF8yQ0-EzHxynjNO06oMyhw0xFagXw/edit?usp=sharing
+
+
+Your User Name:
+{!User.Username}
+
+
+Get Started:
+
+Go to https://hive.7summitsinc.com and login with your Salesforce credentials.
+Fill in your profile and add your profile photo
+Update your settings to ensure you are receiving emails
+Follow your Department group
+Follow Hive Buzz
+Comment on a News article
+
+
+To the Summit!</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

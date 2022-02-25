@@ -1,0 +1,51 @@
+<apex:page controller="ffr.RCPChatterController" showHeader="false" sidebar="false" lightningStylesheets="true" docType="html-5.0">
+	<apex:dynamicComponent componentValue="{!chatterComponentFeed}"/>
+
+	<script>
+		// fix any anchor where the href isn't a script or a bookmark
+		function fixAnchorTarget(anchor) {
+			var href = anchor.getAttribute('href');
+
+			if (href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0) {
+				anchor.setAttribute('target', '_blank');
+			}
+		}
+
+		function ready () {
+			if (document.readyState != 'loading'){
+				docReadyFn();
+			} else {
+				document.addEventListener('DOMContentLoaded', docReadyFn);
+			}
+		}
+
+		function docReadyFn () {
+			var anchors = document.querySelectorAll('a');
+			Array.prototype.forEach.call(anchors, fixAnchorTarget);
+		}
+
+		if(MutationObserver !== undefined) {
+			var observer = new MutationObserver(function(mutations) {
+				mutations.forEach(function(mutation) {
+			 		var addedNodes = mutation.addedNodes,
+						len = addedNodes ? addedNodes.length : 0,
+						i,
+						node,
+						elements;
+
+					for (i = 0; i < len; ++i) {
+						node = addedNodes.item(i);
+						if (node.nodeType === 1) { // Check that node is an Element
+							elements = node.querySelectorAll('a');
+						 	Array.prototype.forEach.call(elements, fixAnchorTarget);
+						}
+					}
+				});
+			});
+			// patch any new achor tags which get added
+			observer.observe(document.body, {childList: true, subtree: true})
+		}
+
+		ready();
+	</script>
+</apex:page>

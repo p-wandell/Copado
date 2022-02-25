@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Q1_Sales_Plan_Breakdown__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( LastName = &quot;Brown&quot;,(1250000.00),
+IF( LastName = &quot;Ebrahim&quot;,(1250000.00),
+IF( LastName = &quot;Walsh&quot;,(1250000.00),
+IF( LastName = &quot;Hogervorst&quot;,(975000.00),
+IF (LastName = &quot;Capute&quot;,(937500.00),
+IF (LastName = &quot;MacManus&quot;,(937500.00),
+IF (LastName = &quot;McSkimming&quot;,(937500.00),
+IF (LastName = &quot;Friedhoff&quot;,(781250.00),
+IF (LastName = &quot;Cugno&quot;,(468750.00),
+IF (LastName = &quot;Fortino&quot;,(468750.00),
+IF( LastName = &quot;Sharp&quot;,(0.00),
+IF( LastName = &quot;Gendelman&quot;,(0.00),
+0))))))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Q1 Sales Plan Breakdown</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Currency</type>
+</CustomField>

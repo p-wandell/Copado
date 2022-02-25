@@ -1,0 +1,8 @@
+<aura:component >
+    <aura:attribute name="alternativeText" type="String" default="{!$Label.c.X7S_Loading}"/>
+    <aura:attribute name="size" type="String" default="medium"/>
+    <aura:attribute name="title" type="String" default=""/>
+    <aura:attribute name="variant" type="String" default="brand"/>
+
+    <lightning:spinner variant="{!v.variant}"  alternativeText="{!v.alternativeText}" size="{!v.size}" title="{!v.title}"/>
+</aura:component>

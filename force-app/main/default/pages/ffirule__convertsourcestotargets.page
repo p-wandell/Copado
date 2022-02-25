@@ -1,0 +1,26 @@
+<apex:page standardController="ffirule__IntegrationRuleSourceTest__c" recordSetVar="records" extensions="ffirule.IntegrationRuleEngine" action="{!validate}" lightningStylesheets="true">
+    <apex:sectionHeader title="{!$Label.ffirule__convertsourcestotargetsheadertitle}"/>
+    <apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}" layout="none">
+        <style>
+            .pageTitleIcon {
+                border-radius: .25rem;
+                background-color: #5a9cdd;
+                background-image: url("{!URLFOR($Asset.SLDS, 'assets/icons/custom/custom57.svg')}");
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: 2rem;
+                display: block !important;
+            }
+        </style>
+    </apex:outputPanel>
+     <apex:form >
+        <apex:pageBlock rendered="{!showConfirmation}">
+            <apex:pageMessage summary="{!$Label.ffirule__convertsourcestotargetsconfirmation}" severity="Info"/>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!convert}" value="{!$Label.ffirule__continue}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.ffirule__cancel}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    <c:IntegrationRule engine="{!engine}" rendered="{!!showConfirmation}"/>
+</apex:page>

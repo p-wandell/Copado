@@ -1,0 +1,3 @@
+<apex:page showheader="false" sidebar="false">
+	<apex:image url="/sfc/servlet.shepherd/version/download/{!$CurrentPage.parameters.id}"/>
+</apex:page>

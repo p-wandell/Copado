@@ -1,0 +1,121 @@
+<aura:component controller="SVNSUMMITS_EventVolunteersController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId">
+
+
+    <!-- Base model -->
+    <aura:attribute name="baseModel" type="String" access="global"/>
+    <aura:handler name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.doInit}"/>
+
+    <aura:attribute name="event" type="Event__c" default="{'sobjectType':'Event__c'}" access="global"/>
+    <aura:attribute name="volunteerDescription" type="String" default="" access="global"/>
+    <aura:attribute name="lineItems" type="List"  default="[]" access="global"/>
+    <aura:attribute name="recordId" type="Id" access="global"/>
+    <aura:attribute name="submissionSuccess" type="Boolean" default="false" access="global"/>
+    <aura:attribute name="saveResults" type="String[]" default="[]" access="global"/>
+    <aura:attribute name="disableButton" type="Boolean" default="false" access="global"/>
+
+    <aura:attribute name="sitePath" type="String" access="global"/>
+    <aura:attribute name="sitePrefix" type="String" access="global"/>
+    <aura:attribute name="detailPageUrl" type="String" default="/event/" access="global"/>
+
+    <aura:attribute name="descriptionErrorMessage" type="String" default="Volunteer description is required"/>
+    <aura:attribute name="validity" type="Boolean" default="true"/>
+    <aura:attribute name="isInit" type="Boolean" default="false"/>
+
+    <section>
+        <aura:if isTrue="{!v.isInit}">
+
+            <!--{!v.submissionSuccess}-->
+
+            <aura:iteration items="{!v.saveResults}" var="message">
+                    {!message}
+            </aura:iteration>
+
+            <lightning:layout >
+                <lightning:layoutItem size="12">
+                    <div class="slds-m-bottom_medium">
+                        <label class="slds-form-element__label">{!$Label.c.ss_evt_volunteer_desc}</label>
+                        <div class="slds-form-element__help slds-m-bottom_small">{!$Label.c.ss_evt_volunteer_desc_help}</div>
+                        <lightning:inputRichText value="{!v.volunteerDescription}" messageWhenBadInput="{!v.descriptionErrorMessage}" valid="{!v.validity}" />
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+
+
+            <aura:iteration items="{!v.lineItems}" var="need" indexVar="lineItemIndex">
+
+                <section class="slds-m-bottom_medium">
+
+                    <lightning:layout pullToBoundary="small">
+                        <lightning:layoutItem padding="around-small">
+                            <h4>{!$Label.c.ss_evt_label_task + ' '} {!lineItemIndex + 1}</h4>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" class="slds-col_bump-left">
+                            <!--<aura:if isTrue="{!greaterthan(v.lineItems.length, lineItemIndex+1)}">-->
+                            <!--<div class="slds-text-align_right">-->
+                            <!--<a href="" onclick="{!c.removeLineItem}" id="{!lineItemIndex+'lineItem'}">{!$Label.c.ss_evt_label_remove}</a>-->
+                            <!--</div>-->
+                            <!--</aura:if>-->
+                            <div class="slds-text-align_right">
+                                <a href="" onclick="{!c.removeLineItem}" id="{!lineItemIndex+'lineItem'}">{!$Label.c.ss_evt_label_remove}</a>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                    <div class="slds-card">
+                        <div class="slds-card__body slds-card__body_inner">
+                            <lightning:layout multipleRows="true" pullToBoundary="small">
+
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <lightning:input label="{!$Label.c.ss_evt_label_name}" value="{!need.Name}" placeholder="{!$Label.c.ss_evt_label_task_name}" required="true"/>
+                                </lightning:layoutItem>
+
+                                <lightning:layoutItem padding="around-small" size="8">
+                                    <lightning:input label="{!$Label.c.ss_evt_label_criteria}" value="{!need.Criteria__c}" placeholder=""/>
+                                </lightning:layoutItem>
+
+                                <lightning:layoutItem padding="around-small" size="4">
+                                    <lightning:input type="number" label="{!$Label.c.ss_evt_label_volunteers_needed}" value="{!need.Volunteers_Needed__c}" required="false"/>
+                                    <div class="slds-form-element__help">Enter '0' for no volunteer limit</div>
+                                </lightning:layoutItem>
+
+                            </lightning:layout>
+                        </div>
+                    </div>
+
+                </section>
+            </aura:iteration>
+
+            <div class="slds-align_absolute-center slds-m-bottom_xx-large">
+                <lightning:button variant="neutral" label="{!$Label.c.ss_evt_label_add_task}" iconName="action:new" iconPosition="left" onclick="{! c.addLineItem }" />
+            </div>
+
+            <!-- form error message -->
+            <div aura:id="ErrorMessage" class="slds-hidden slds-p-around_medium">
+                <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                    <h2>Please review the form for errors.</h2>
+                </div>
+            </div>
+
+            <!--Button Section Start-->
+            <div class="slds-col--padded slds-size--1-of-1 ">
+                <div class="slds-grid slds-grid--pull-padded">
+                    <div class="slds-col--padded">
+                        <lightning:button
+                                class="targetButton slds-m-bottom_x-small"
+                                variant="brand"
+                                label="{!$Label.c.ss_evt_label_SaveButtonLabel}"
+                                onclick="{!c.saveAction}"
+                                disabled="{!v.disableButton}"/>
+                        <ui:outputURL class="slds-button slds-button_neutral btn btn-link slds-m-bottom_x-small"
+                                      value="{!v.sitePath + v.detailPageUrl+ v.recordId}"
+                                      label="{!$Label.c.ss_evt_label_CancelButtonLabel}"/>
+                    </div>
+                </div>
+            </div>
+
+        </aura:if>
+    </section>
+</aura:component>

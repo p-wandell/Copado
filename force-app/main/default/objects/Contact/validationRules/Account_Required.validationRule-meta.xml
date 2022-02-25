@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Required</fullName>
+    <active>true</active>
+    <description>An Account is required for all Customer Contacts</description>
+    <errorConditionFormula>AND(
+RecordType.Name = &quot;Contact&quot;,
+ISBLANK(Account.Name)
+)</errorConditionFormula>
+    <errorDisplayField>AccountId</errorDisplayField>
+    <errorMessage>Account is required</errorMessage>
+</ValidationRule>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>[商談商品]を選択した場合、[IsServicesProductLine]がオンになっている商談商品のみが含まれます。 [商品]を選択した場合、商品自体にIsServicesProductがチェックされている商談商品のみが含まれます。</help>
+    <label><!-- Use Is Services Product On Opp Product --></label>
+    <name>pse__Use_Is_Services_Product_On_Opp_Product__c</name>
+    <picklistValues>
+        <masterLabel>Opportunity Product</masterLabel>
+        <translation>機会商品</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Product</masterLabel>
+        <translation>製品</translation>
+    </picklistValues>
+</CustomFieldTranslation>

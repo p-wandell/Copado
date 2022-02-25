@@ -1,0 +1,175 @@
+<apex:page standardController="pse__Vendor_Invoice_Item__c" recordSetVar="items" 
+    tabStyle="pse__Vendor_Invoice__c" title="{!$Label.pse__vendor_label_add_invoice_items}" extensions="pse.VendorInvoiceWizardController">
+
+<style type="text/css">
+div#wait { width: 100%; height: 100% }
+div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+/*div#waitingHolder { width: 213px; }*/
+</style>
+
+<apex:sectionHeader title="{!$Label.pse__vendor_label_add_invoice_items}" subtitle="{!invoice.Name}"/>
+
+<apex:pageMessages id="messages"/>
+
+{!$Label.vendor_message_wizard_instruction1}<p/>
+
+<script type="text/javascript">
+function toggleCheckboxes(isChecked, tableComponent)
+{
+alert('Is checked?=' + isChecked + ';comp=' + tableComponent);
+}
+
+function setVisible(name, visible) {
+  var e = document.getElementById(name);
+  if (e != null) {
+    if (visible) {
+      e.setAttribute("style", "display: block");
+      e.style.cssText = "display: block";
+    } else {
+      e.setAttribute("style", "display: none");
+      e.style.cssText = "display: none";
+    }
+  }
+}
+
+function wait(val) {
+  setVisible('loading', val);
+  setVisible('wait', val);
+}
+
+</script>
+
+<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+<div id="loading" class="waitingSearchDiv" style="display: none">
+ <div id="waitingHolder" class="waitingHolder">
+  <img class="waitingImage" src="/img/loading.gif"/>
+  <span class="waitingDescription">{!$Label.common_message_processing_wait}</span>
+ </div>
+</div>
+
+
+<apex:form >
+
+<apex:pageBlock title="{!$Label.pse__common_label_search}">
+    <apex:pageBlockButtons >
+        <apex:commandButton value="{!$Label.pse__common_label_search}" action="{!doSearch}" rerender="uninvoicedItemsBlock,messages" onclick="wait(true);" oncomplete="wait(false);"/>
+        <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancel}"/>
+    </apex:pageBlockButtons>
+    <apex:pageBlockSection title="{!$Label.pse__common_label_information}" columns="2">
+        <apex:outputField value="{!invoice.Name}"/>
+        <apex:outputField value="{!invoice.pse__Account__c}"/>
+        <apex:outputField value="{!invoice.pse__Date__c}"/>
+        <apex:outputField value="{!invoice.pse__Status__c}"/>
+        <apex:outputField value="{!invoice.pse__Description__c}"/>
+    </apex:pageBlockSection>
+    <!-- 
+    <apex:pageBlockSection title="{!$Label.common_label_search_criteria}" columns="2">
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel value="{!$Label.common_label_start_date}"/>
+            <apex:inputField required="false" value="{!startDateCriteria.Date__c}"/>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel value="{!$Label.common_label_end_date}"/>
+            <apex:inputField required="false" value="{!endDateCriteria.Date__c}"/>
+        </apex:pageBlockSectionItem>
+        <apex:inputField value="{!itemCriteria.Project__c}" style="vertical-align:top;"/>
+        <apex:pageBlockSectionItem />
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel value="{!$Label.vendor_label_show_expenses}"/>
+            <apex:inputCheckbox value="{!showExpenses}"/>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel value="{!$Label.vendor_label_show_milestones}"/>
+            <apex:inputCheckbox value="{!showMilestones}"/>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel value="{!$Label.vendor_label_show_misc}"/>
+            <apex:inputCheckbox value="{!showMiscAdjustments}"/>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel value="{!$Label.vendor_label_show_timecards}"/>
+            <apex:inputCheckbox value="{!showTimecards}"/>
+        </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+    -->
+</apex:pageBlock>
+<!-- 
+  {!$Label.vendor_message_wizard_instruction2}<p/>
+
+<apex:pageBlock title="{!$Label.vendor_label_uninvoiced_items}" id="uninvoicedItemsBlock">
+    <apex:pageBlockButtons location="both">
+        <apex:commandButton value="{!$Label.common_label_add}" disabled="{!addButtonDisabled}" action="{!addItems}" rerender="messages,uninvoicedItemsBlock" onclick="wait(true);" oncomplete="wait(false);"/>
+        <apex:commandButton value="{!$Label.common_label_next}" disabled="{!nextButtonDisabled}" action="{!gotoNextPage}" />
+    </apex:pageBlockButtons>
+  
+  <apex:outputPanel id="itemPanel">
+      <apex:pageBlockTable var="iw" value="{!currentItemPage}" id="itemTable">
+          <apex:column width="30" style="width:20px;padding-top:0;">
+              <apex:facet name="header">
+                  <input type="checkbox" id="selectAllCheckBox" onclick="javascript:toggleCheckboxes(this.checked, document.getElementById('{!$Component.itemTable}'));"/>
+              </apex:facet>
+              <apex:inputCheckbox value="{!iw.included}" id="includedCBox" style="vertical-align:top;"/>
+          </apex:column>
+          <apex:column >
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.txviewer_message_click_to_sort}" action="{!sortName}" rerender="itemPanel,messages" onclick="wait(true);" oncomplete="wait(false);">
+                      {!$Label.common_label_name}&nbsp;<apex:image style="margin-bottom:3px;" value="/img/colTitle_uparrow.gif" rendered="{!nameSortType=1}"/>
+                      <apex:image style="margin-bottom:3px;" value="/img/colTitle_downarrow.gif" rendered="{!nameSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+              <apex:outputField value="{!iw.item.Expense__c}" rendered="{!NOT(ISNULL(iw.item.Expense__c))}"/>
+              <apex:outputField value="{!iw.item.Milestone__c}" rendered="{!NOT(ISNULL(iw.item.Milestone__c))}"/>
+              <apex:outputField value="{!iw.item.Miscellaneous_Adjustment__c}" rendered="{!NOT(ISNULL(iw.item.Miscellaneous_Adjustment__c))}"/>
+              <apex:outputField value="{!iw.item.Timecard__c}" rendered="{!NOT(ISNULL(iw.item.Timecard__c))}"/>
+          </apex:column>
+          <apex:column value="{!iw.objectType}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" action="{!sortObjectType}" rerender="itemPanel,messages" onclick="wait(true);" oncomplete="wait(false);">
+                      {!$Label.common_label_type}&nbsp;<apex:image style="margin-bottom:3px;" value="/img/colTitle_uparrow.gif" rendered="{!objectTypeSortType=1}"/>
+                      <apex:image style="margin-bottom:3px;" value="/img/colTitle_downarrow.gif" rendered="{!objectTypeSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>
+          <apex:column value="{!iw.item.Project__c}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.txviewer_message_click_to_sort}" action="{!sortProject}" rerender="itemPanel,messages" onclick="wait(true);" oncomplete="wait(false);">
+                      {!$Label.common_label_project}&nbsp;<apex:image style="margin-bottom:3px;" value="/img/colTitle_uparrow.gif" rendered="{!projectSortType=1}"/>
+                      <apex:image style="margin-bottom:3px;" value="/img/colTitle_downarrow.gif" rendered="{!projectSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>
+          <apex:column >
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.txviewer_message_click_to_sort}" action="{!sortProject}" rerender="itemPanel,messages" onclick="wait(true);" oncomplete="wait(false);">
+                      {!$Label.common_label_resource}&nbsp;<apex:image style="margin-bottom:3px;" value="/img/colTitle_uparrow.gif" rendered="{!projectSortType=1}"/>
+                      <apex:image style="margin-bottom:3px;" value="/img/colTitle_downarrow.gif" rendered="{!projectSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+              <apex:outputLink value="/{!iw.resourceId}" rendered="{!NOT(ISNULL(iw.resourceId))}">{!iw.resourceName}</apex:outputLink>
+          </apex:column>
+          <apex:column value="{!iw.item.Date__c}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.txviewer_message_click_to_sort}" action="{!sortDate}" rerender="itemPanel,messages" onclick="wait(true);" oncomplete="wait(false);">
+                      {!$Label.common_label_date}&nbsp;<apex:image style="margin-bottom:3px;" value="/img/colTitle_uparrow.gif" rendered="{!dateSortType=1}"/>
+                      <apex:image style="margin-bottom:3px;" value="/img/colTitle_downarrow.gif" rendered="{!dateSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>
+          </apex:column>
+          <apex:column value="{!iw.item.Amount__c}">
+              <apex:facet name="header">
+                  <apex:commandLink style="text-decoration:none;color:#333333;" title="{!$Label.txviewer_message_click_to_sort}" action="{!sortAmount}" rerender="itemPanel,messages" onclick="wait(true);" oncomplete="wait(false);">
+                      {!$Label.common_label_amount}&nbsp;<apex:image style="margin-bottom:3px;" value="/img/colTitle_uparrow.gif" rendered="{!amountSortType=1}"/>
+                      <apex:image style="margin-bottom:3px;" value="/img/colTitle_downarrow.gif" rendered="{!amountSortType=2}"/>
+                  </apex:commandLink>
+              </apex:facet>          
+          </apex:column>
+      </apex:pageBlockTable>
+
+      <p/>
+  </apex:outputPanel>
+
+  </apex:pageBlock>
+  -->
+  </apex:form>  
+  
+</apex:page>

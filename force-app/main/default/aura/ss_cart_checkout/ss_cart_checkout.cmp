@@ -1,0 +1,62 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 8/9/17.
+ -->
+
+<aura:component description="ss_cart_checkout"
+                controller="sc_listController"
+                extends="c:ss_product_base"
+                implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                access="global">
+
+	<aura:attribute name="setting"   type="String"  default=""      access="global"/>
+	<aura:attribute name="model"     type="Map"                     access="public"/>
+	<aura:attribute name="usePoints" type="Boolean" default="true"  access="public"/>
+	<aura:attribute name="itemCount" type="Integer" default="0"     access="public"/>
+	<aura:attribute name="itemTotal" type="Decimal" default="0.0"   access="public"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+	<div class="slds-progress">
+		<ol class="slds-progress__list">
+			<li class="slds-progress__item slds-is-completed">
+				<button class="slds-button slds-progress__marker " title="Cart" value="Cart">
+					<span class="slds-assistive-text">Cart</span>
+				</button>
+			</li>
+			<li class="slds-progress__item slds-is-active">
+				<button class="slds-button slds-progress__marker">
+					<span class="slds-assistive-text">Shipping</span>
+				</button>
+			</li>
+			<li class="slds-progress__item">
+				<button class="slds-button slds-progress__marker">
+					<span class="slds-assistive-text">Payment</span>
+				</button>
+			</li>
+			<li class="slds-progress__item">
+				<button class="slds-button slds-progress__marker">
+					<span class="slds-assistive-text">Confirm</span>
+				</button>
+			</li>
+		</ol>
+
+		<div class="slds-progress-bar slds-progress-bar_x-small" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+		     role="progressbar">
+	      <span class="slds-progress-bar__value" style="width: 0%;">
+		      <span class="slds-assistive-text">Progress: 0%</span>
+	      </span>
+		</div>
+	</div>
+
+
+	<lightning:layout horizontalAlign="end"
+	                  verticalAlign="end">
+		<lightning:button label="Return"
+		                  onclick="{!c.goBack}"
+		                  variant="neutral"/>
+	</lightning:layout>
+</aura:component>

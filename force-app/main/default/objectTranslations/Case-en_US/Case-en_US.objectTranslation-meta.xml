@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldSets>
+        <label><!-- Community Fieldset --></label>
+        <name>CommunityFieldset</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Community Fieldset 2 --></label>
+        <name>CommunityFieldset2</name>
+    </fieldSets>
+    <recordTypes>
+        <description><!-- Record type for all internal helpdesk support cases --></description>
+        <label><!-- Internal Support --></label>
+        <name>Internal_Support</name>
+    </recordTypes>
+    <validationRules>
+        <errorMessage><!-- Only members of the support team can update the case status. --></errorMessage>
+        <name>Prevent_Case_Status_Edit</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Wait a minute, you&apos;re not Steve. Please enter your name to submit your support request. --></errorMessage>
+        <name>Prevent_Contact_Name</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You must provide a resolution in order to close a case. --></errorMessage>
+        <name>Require_Resolution_for_Support_Cases</name>
+    </validationRules>
+</CustomObjectTranslation>

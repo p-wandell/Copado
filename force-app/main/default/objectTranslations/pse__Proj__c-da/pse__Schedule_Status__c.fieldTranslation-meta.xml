@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Vælg den aktuelle skema status fra picklisten. Alternativt kan du bruge procesbuilder eller arbejdsprocesregler til at bruge din egen logik til at styre opførslen af ​​det tilsvarende farveindikatorfelt.</help>
+    <label><!-- Schedule Status --></label>
+    <name>pse__Schedule_Status__c</name>
+    <picklistValues>
+        <masterLabel>Green</masterLabel>
+        <translation>Grøn</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Red</masterLabel>
+        <translation>Rød</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Yellow</masterLabel>
+        <translation>Gul</translation>
+    </picklistValues>
+</CustomFieldTranslation>

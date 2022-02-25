@@ -1,0 +1,33 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 10/31/17.
+ -->
+
+<aura:component description="ss_cart_empty">
+
+	<ltng:require styles="{!join(',', $Resource.ss_product_catalog)}"/>
+
+	<aura:attribute name="emptyCartImage" type="String"
+	                default="{!$Resource.ss_product_catalog + '/cart-image-empty.png'}"/>
+
+	<lightning:layout horizontalAlign="center"
+	                  verticalAlign="center"
+	                  multipleRows="true">
+
+		<lightning:layoutItem size="4"
+		                      padding="around-large">
+			<img src="{!v.emptyCartImage}"
+			     style="height: 180px;"
+			     alt="Empty cart"
+			     class="slds-m-top_xx-large"/>
+		</lightning:layoutItem>
+
+		<lightning:layoutItem size="10"
+		                      padding="around-large">
+				{!$Label.c.ss_pc_cart_label_empty}
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

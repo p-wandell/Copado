@@ -1,0 +1,90 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventListController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName">
+
+	<!-- Base model -->
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.doInit}"/>
+
+	<aura:attribute name="debugMode" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="peopleAttendText" type="String"
+	                default="Attending"
+	                required="true"
+	                access="global"/>
+	<aura:attribute name="willYouAttendText" type="String"
+	                default="Will you attend"
+	                required="true"
+	                access="global"/>
+
+	<aura:attribute name="wrappedEventsObj" type="SVNSUMMITS_EventListWrapper" access="global"/>
+	<aura:attribute name="recordId" type="String" access="global"/>
+	<aura:attribute name="passedEvent" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="isPresentRSVP" type="boolean" access="global" default="false"/>
+	<aura:attribute name="variantSelected" type="String" default="neutral" access="global"/>
+	<aura:attribute name="variantUnselected" type="String" default="brand" access="global"/>
+	<aura:attribute name="attendeeCount" type="Integer" default="0" access="public"/>
+
+	<aura:iteration items="{!v.wrappedEventsObj.objEventList}" var="event">
+		<aura:renderIf isTrue="{! and(v.passedEvent, event.Enable_RSVP__c)}">
+
+			<lightning:layout horizontalAlign="center"
+			                  multipleRows="true"
+			                  verticalAlign="start">
+				<aura:if isTrue="{!event.Number_of_Attendees__c >= event.RSVP_Count_Threshold__c}">
+					<lightning:layoutItem size="12"
+					                      largeDeviceSize="12"
+					                      mediumDeviceSize="12"
+					                      smallDeviceSize="12"
+					                      padding="around-small">
+						<lightning:icon iconName="utility:groups"
+						                size="medium"
+						                alternativeText="group"
+						                class="slds-align_absolute-center"/>
+					</lightning:layoutItem>
+
+					<lightning:layoutItem class="slds-p-bottom--medium">
+						<lightning:layout multipleRows="false"
+						                  horizontalAlign="center"
+						                  class="slds-text-heading--small">
+							<lightning:layoutItem>
+							{!v.attendeeCount}&nbsp;
+							</lightning:layoutItem>
+
+							<lightning:layoutItem>
+									{!v.peopleAttendText}
+							</lightning:layoutItem>
+						</lightning:layout>
+					</lightning:layoutItem>
+				</aura:if>
+
+				<lightning:layoutItem size="12"
+				                      largeDeviceSize="12"
+				                      mediumDeviceSize="12"
+				                      smallDeviceSize="12"
+				                      class="slds-text-heading--small slds-align_absolute-center">
+						{!v.willYouAttendText}
+				</lightning:layoutItem>
+
+				<lightning:layoutItem size="12"
+				                      largeDeviceSize="12"
+				                      mediumDeviceSize="12"
+				                      smallDeviceSize="12"
+				                      class="slds-align_absolute-center slds-p-top--small">
+					<lightning:buttonStateful
+							labelWhenOff="{!$Label.c.ss_evt_label_No}"
+							labelWhenOn="{!$Label.c.ss_evt_label_Yes}"
+							labelWhenHover="{!$Label.c.ss_evt_label_WillNotAttend}"
+							iconNameWhenOff="utility:add"
+							iconNameWhenOn="utility:check"
+							iconNameWhenHover="utility:close"
+							state="{!v.isPresentRSVP}"
+							onclick="{!c.handleAttendClick}"
+							variant="{!v.isPresentRSVP ? v.variantSelected : v.variantUnselected}"/>
+				</lightning:layoutItem>
+			</lightning:layout>
+		</aura:renderIf>
+	</aura:iteration>
+</aura:component>

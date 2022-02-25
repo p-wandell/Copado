@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resource_Requests_Resource_Request</fullName>
+    <columns>NAME</columns>
+    <columns>pse__Notes__c</columns>
+    <columns>pse__Status__c</columns>
+    <columns>pse__Resource_Role__c</columns>
+    <columns>pse__Start_Date__c</columns>
+    <columns>pse__End_Date__c</columns>
+    <columns>pse__SOW_Hours__c</columns>
+    <filterScope>Queue</filterScope>
+    <label>Resource Requests</label>
+    <queue>Resource_Requests</queue>
+    <sharedTo>
+        <allInternalUsers/>
+    </sharedTo>
+</ListView>

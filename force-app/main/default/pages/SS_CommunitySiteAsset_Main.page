@@ -1,0 +1,734 @@
+<apex:page showHeader="false" sidebar="false" contentType="text/css">
+.ss-bootstrap {
+  /* Override the SF styling of the btn class */
+  /* Footer, Chatter Feed bottom bar, Publisher action bottom bar, comment fields - reset*/
+  /* Publisher actions, search box, new case modal - reset to default */
+  /* Error Page */
+  /* Use for highlighting the selected tab */
+  /* Reset our headers */
+  /* Resetting the ChatterAnswer version of h2 */
+  /* User Profile for ChatterAnswer is affected by our ul definition */
+  /* Hide the help option in the ChatterAnswer tag */
+  /* Updates to revert Bootstrap styles that override standard VF components */
+  /* Lastly, apply responsive CSS fixes as necessary */
+}
+.ss-bootstrap html,
+.ss-bootstrap body,
+.ss-bootstrap div,
+.ss-bootstrap span,
+.ss-bootstrap applet,
+.ss-bootstrap object,
+.ss-bootstrap iframe,
+.ss-bootstrap h1,
+.ss-bootstrap h2,
+.ss-bootstrap h3,
+.ss-bootstrap h4,
+.ss-bootstrap h5,
+.ss-bootstrap h6,
+.ss-bootstrap p,
+.ss-bootstrap blockquote,
+.ss-bootstrap pre,
+.ss-bootstrap a,
+.ss-bootstrap abbr,
+.ss-bootstrap acronym,
+.ss-bootstrap address,
+.ss-bootstrap big,
+.ss-bootstrap cite,
+.ss-bootstrap code,
+.ss-bootstrap del,
+.ss-bootstrap dfn,
+.ss-bootstrap em,
+.ss-bootstrap font,
+.ss-bootstrap img,
+.ss-bootstrap ins,
+.ss-bootstrap kbd,
+.ss-bootstrap q,
+.ss-bootstrap s,
+.ss-bootstrap samp,
+.ss-bootstrap small,
+.ss-bootstrap strike,
+.ss-bootstrap strong,
+.ss-bootstrap sub,
+.ss-bootstrap sup,
+.ss-bootstrap tt,
+.ss-bootstrap var,
+.ss-bootstrap dl,
+.ss-bootstrap dt,
+.ss-bootstrap dd,
+.ss-bootstrap ol,
+.ss-bootstrap ul,
+.ss-bootstrap li,
+.ss-bootstrap fieldset,
+.ss-bootstrap form,
+.ss-bootstrap label,
+.ss-bootstrap legend,
+.ss-bootstrap table,
+.ss-bootstrap caption,
+.ss-bootstrap tbody,
+.ss-bootstrap tfoot,
+.ss-bootstrap thead,
+.ss-bootstrap tr,
+.ss-bootstrap th,
+.ss-bootstrap td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  /*font-weight:inherit;
+  font-style:inherit;
+  font-size:100.0%;
+  font-family:inherit;*/
+  vertical-align: baseline;
+}
+.ss-bootstrap *:focus {
+  outline: 0;
+}
+.ss-bootstrap body {
+  line-height: 1;
+  height: 100%;
+  color: #444444;
+  background: #FFFFFF;
+  /*font:16px / 18px Helvetica Neue,Arial,Helvetica,Geneva,sans-serif;*/
+}
+.ss-bootstrap ol,
+.ss-bootstrap ul,
+.ss-bootstrap li {
+  list-style: none;
+  margin-left: 0 !important;
+}
+.ss-bootstrap table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.ss-bootstrap caption,
+.ss-bootstrap th,
+.ss-bootstrap td {
+  text-align: left;
+  /*font-weight:normal;*/
+}
+.ss-bootstrap .title {
+  margin: 0 0 31px;
+  overflow: hidden;
+  display: table;
+}
+.ss-bootstrap .title h1,
+.ss-bootstrap .title h2,
+.ss-bootstrap .title h3,
+.ss-bootstrap .title h4,
+.ss-bootstrap .title h5,
+.ss-bootstrap .title h6 {
+  display: table-cell;
+  white-space: pre;
+}
+.ss-bootstrap .title h1,
+.ss-bootstrap #main .post-content .title h1 {
+  float: left;
+  padding: 0 8px 0 0 !important;
+  margin: 0 !important;
+}
+.ss-bootstrap .title h2,
+.ss-bootstrap #main .post-content .title h2 {
+  float: left;
+  padding: 0 8px 0 0 !important;
+  margin: 0 !important;
+  font-size: 18px !important;
+}
+.ss-bootstrap .title h3,
+.ss-bootstrap #main .post-content .title h3 {
+  float: left;
+  padding: 0 8px 0 0 !important;
+  margin: 0 !important;
+}
+.ss-bootstrap .title h4,
+.ss-bootstrap #main .post-content .title h4 {
+  float: left;
+  padding: 0 8px 0 0 !important;
+  margin: 0 !important;
+}
+.ss-bootstrap .title h5,
+.ss-bootstrap #main .post-content .title h5 {
+  float: left;
+  padding: 0 8px 0 0 !important;
+  margin: 0 !important;
+}
+.ss-bootstrap .title h6,
+.ss-bootstrap #main .post-content .title h6 {
+  float: left;
+  padding: 0 8px 0 0 !important;
+  margin: 0 !important;
+}
+.ss-bootstrap .title .title-sep-container {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+  position: relative;
+  height: 6px;
+}
+.ss-bootstrap .title-sep {
+  display: block;
+  border-top: 1px solid #e7e6e6;
+  border-bottom: 1px solid #e7e6e6;
+  width: 100%;
+  position: relative;
+  height: 6px;
+}
+.ss-bootstrap #summits-topbar {
+  display: block;
+  height: 35px;
+  line-height: 35px;
+  background-color: #edebeb;
+  position: relative;
+  z-index: 99999;
+  margin-top: -12px;
+}
+.ss-bootstrap .lt-ie9 #summits-topbar {
+  display: none!important;
+}
+.ss-bootstrap #summits-topbar .item {
+  margin-left: 8px;
+  padding-left: 8px;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
+.ss-bootstrap #summits-topbar .fb-like {
+  padding-left: 20px;
+}
+.ss-bootstrap #summits-topbar .linked-in {
+  position: relative;
+  top: 3px;
+}
+.ss-bootstrap #summits-topbar .item.is-external-link {
+  text-weight: bold;
+  padding-right: 19px;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  height: 32px;
+  background: url('http://www.7summitsagency.com/wp-content/themes/AvadaNew/images/newwindow.png') right center no-repeat;
+}
+.ss-bootstrap h2 .subheader {
+  margin-top: 5px;
+}
+.ss-bootstrap .group:after {
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.ss-bootstrap * html .group {
+  height: 1.0%;
+}
+.ss-bootstrap *:first-child + html .group {
+  min-height: 1px;
+}
+.ss-bootstrap html .imageReplacement {
+  text-indent: -9999px;
+}
+.ss-bootstrap .clear {
+  clear: both;
+}
+.ss-bootstrap .floatLeft {
+  float: left;
+  position: relative;
+}
+.ss-bootstrap .floatRight {
+  float: right;
+  position: relative;
+}
+.ss-bootstrap img.floatLeft {
+  float: left;
+  position: relative;
+  margin-right: 20px;
+}
+.ss-bootstrap img.floatRight {
+  float: right;
+  position: relative;
+  margin-left: 20px;
+}
+.ss-bootstrap .content-row {
+  display: block;
+  position: relative;
+  height: 260;
+}
+.ss-bootstrap .content-column {
+  float: left;
+  position: relative;
+  display: block;
+}
+.ss-bootstrap p {
+  /*font-size:12px;*/
+  line-height: 18px;
+}
+.ss-bootstrap h1 {
+  margin-bottom: 10px;
+  color: #3AA9E5;
+  /*font-weight:200;
+  font-size:18px;*/
+}
+.ss-bootstrap strong {
+  /*font-weight:600;*/
+}
+.ss-bootstrap .no-case-message {
+  margin-bottom: 10px;
+}
+.ss-bootstrap input.bs-btn-override.btn,
+.ss-bootstrap button.bs-btn-override.btn {
+  padding: 6px 12px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: normal;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.ss-bootstrap a,
+.ss-bootstrap a.ss-link,
+.ss-bootstrap #header a,
+.ss-bootstrap #summits-topbar a {
+  color: #3AA9E5;
+  text-decoration: none;
+}
+.ss-bootstrap a:hover,
+.ss-bootstrap a:hover.ss-link,
+.ss-bootstrap a:hover #header a:hover,
+.ss-bootstrap #summits-topbar a:hover,
+.ss-bootstrap .ss-bootstrap .navbar-default .navbar-nav > li > a:hover,
+.ss-bootstrap .ss-bootstrap .navbar-default .navbar-nav > li > a {
+  color: #3AA9E5;
+  text-decoration: none;
+}
+.ss-bootstrap a.btn,
+.ss-bootstrap a.btn.ss-button {
+  line-height: 18px;
+  font-size: 11px;
+  display: inline-block;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: #ff6600 repeat-x 0 bottom;
+  color: #FFFFFF;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.ss-bootstrap a:hover.btn,
+.ss-bootstrap a:hover.btn.ss-button {
+  color: #FFFFFF;
+}
+.ss-bootstrap a.btn-social {
+  font-weight: normal;
+  font-size: 14px;
+  padding: 6px 0px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.ss-bootstrap #header {
+  position: relative;
+  display: block;
+  width: 940px;
+  margin-right: auto;
+  margin-left: auto;
+  height: 100px;
+  margin-bottom: 40px;
+  border-bottom: 0px solid fuchsia;
+}
+.ss-bootstrap #header .logo {
+  height: 80px;
+  width: 150px;
+  position: absolute;
+  top: 10px;
+}
+.ss-bootstrap #header .social-navigation-header {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  height: 20px;
+  width: 700px;
+  text-align: right;
+}
+.ss-bootstrap #header .social-navigation-header .twitter-follow-button {
+  padding-top: 2px;
+}
+.ss-bootstrap #header .navigation {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: block;
+}
+.ss-bootstrap #header .navigation ul.root {
+  position: relative;
+  background: url(menuLeft.png) repeat-x;
+  height: 45px;
+  max-width: 700px;
+  float: left;
+  padding-left: 1px;
+}
+.ss-bootstrap #header .navigation ul.root li {
+  position: relative;
+  float: left;
+  line-height: 47px;
+  border-right: 1px solid #4B5967;
+  border-left: 1px solid #576676;
+}
+.ss-bootstrap #header .navigation ul.root li.menuitem-selected {
+  background: url(activeMenuBG.png) repeat-x 0 3px;
+}
+.ss-bootstrap #header .navigation ul.root li.menuitem-selected a {
+  color: #3AA9E5;
+}
+.ss-bootstrap #header .navigation ul.root li a {
+  position: relative  !important;
+  color: #585858 !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  display: block !important;
+  padding-left: 26px !important;
+  padding-right: 26px !important;
+  line-height: 47px !important;
+}
+.ss-bootstrap #header .navigation ul.root li a:hover {
+  color: #3AA9E5;
+}
+.ss-bootstrap #header .navigation .search {
+  float: left;
+  position: relative;
+  background: url(menuRight.png) repeat-x right;
+  height: 45px;
+  max-width: 500px;
+  color: #FFFFFF;
+  padding-right: 26px;
+  padding-left: 26px;
+  line-height: 50px;
+  font-size: 13px;
+  width: 117px;
+}
+.ss-bootstrap #content {
+  position: relative;
+  display: block;
+  width: 940px;
+  margin-right: auto;
+  margin-left: auto;
+  border: 0px solid maroon;
+  margin-bottom: 40px;
+}
+.ss-bootstrap #push {
+  height: 30px;
+}
+.ss-bootstrap #toprow {
+  height: 35px;
+  position: relative;
+  top: 1px;
+  text-align: right;
+  padding-right: 120px;
+}
+.ss-bootstrap #wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  /* Negative indent footer by it's height */
+  margin: 0 auto -60px;
+}
+.ss-bootstrap #footer,
+.ss-bootstrap .publishercontainer #publisherBottomBar,
+.ss-bootstrap .publishercontainer .bottomBar,
+.ss-bootstrap .feeditemcommentplaceholder .cxcommentplaceholderaction {
+  box-sizing: content-box !important;
+}
+.ss-bootstrap .quickActionPanel *,
+.ss-bootstrap .page-header *,
+.ss-bootstrap #myModal * {
+  box-sizing: border-box !important;
+}
+.ss-bootstrap #footer a {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 11px;
+  display: block;
+}
+.ss-bootstrap #footer a:hover {
+  color: #3AA9E5;
+}
+.ss-bootstrap #footer h4 a {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+.ss-bootstrap #footer {
+  position: relative;
+  display: block;
+  height: 30px;
+  background-color: #666666 !important;
+  padding-top: 20px;
+  color: #666666 !important;
+  font-size: 12px;
+}
+.ss-bootstrap #footer-content {
+  width: 940px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.ss-bootstrap #footer .content-column {
+  width: 160px;
+  padding-right: 20px;
+  margin-right: 20px;
+}
+.ss-bootstrap .flex-container a:active,
+.ss-bootstrap .flexslider a:active {
+  outline: none;
+}
+.ss-bootstrap .slides,
+.ss-bootstrap .flex-control-nav,
+.ss-bootstrap .flex-direction-nav {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ss-bootstrap .flexslider {
+  width: 100.0%;
+  margin: 0;
+  padding: 0;
+}
+.ss-bootstrap .flexslider .slides > li {
+  display: none;
+}
+.ss-bootstrap .flexslider .slides img {
+  max-width: 100.0%;
+  display: block;
+}
+.ss-bootstrap .flex-pauseplay span {
+  text-transform: capitalize;
+}
+.ss-bootstrap .slides:after {
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+.ss-bootstrap html[xmlns].slides {
+  display: block;
+}
+.ss-bootstrap * html .slides {
+  height: 1.0%;
+}
+.ss-bootstrap .no-js .slides > li:first-child {
+  display: block;
+}
+.ss-bootstrap .flexslider {
+  position: relative;
+  zoom: 1;
+}
+.ss-bootstrap .flexslider .slides {
+  zoom: 1;
+}
+.ss-bootstrap .flexslider .slides > li {
+  position: relative;
+}
+.ss-bootstrap .flex-container {
+  zoom: 1;
+  position: relative;
+  width: 940px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.ss-bootstrap .flex-direction-nav li a {
+  width: 20px;
+  height: 30px;
+  margin: 0px 0 0;
+  display: block;
+  background: url(rotator-next-previous.png) no-repeat 0 0;
+  position: absolute;
+  top: 50.0%;
+  cursor: pointer;
+  text-indent: -9999px;
+}
+.ss-bootstrap .flex-direction-nav li .next {
+  background-position: -30px 0;
+  right: -40px;
+}
+.ss-bootstrap .flex-direction-nav li .prev {
+  left: -40px;
+}
+.ss-bootstrap .flex-direction-nav li .disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.ss-bootstrap .flex-control-nav {
+  width: 100.0%;
+  position: absolute;
+  bottom: -30px;
+  text-align: center;
+}
+.ss-bootstrap .flex-control-nav li {
+  margin: 0 0 0 5px;
+  display: inline-block;
+  zoom: 1;
+}
+.ss-bootstrap .flex-control-nav li:first-child {
+  margin: 0;
+}
+.ss-bootstrap .flex-control-nav li a {
+  width: 13px;
+  height: 13px;
+  display: block;
+  background: url(theme/bg_control_nav.png) no-repeat 0 0;
+  cursor: pointer;
+  text-indent: -9999px;
+}
+.ss-bootstrap .flex-control-nav li a:hover {
+  background-position: 0 -13px;
+}
+.ss-bootstrap .flex-control-nav li a.active {
+  background-position: 0 -26px;
+  cursor: default;
+}
+.ss-bootstrap .copyright {
+  color: white !important;
+  font-size: 12px !important;
+  text-align: center;
+  list-style: none;
+  float: left;
+  text-shadow: 1px 2px 1px #000;
+  padding-left: 100px;
+}
+.ss-bootstrap #powered {
+  padding-top: 30px;
+  padding-left: 200px;
+}
+.ss-bootstrap .post-content h2,
+.ss-bootstrap .title h2,
+.ss-bootstrap #main .post-content .title h2,
+.ss-bootstrap .page-title h1,
+.ss-bootstrap #main .post h2 a {
+  font-size: 24px !important;
+  line-height: 36px !important;
+}
+.ss-bootstrap .error-image {
+  background-image: url(../image/404_image@2x.png) !important;
+  -webkit-background-size: 311px 133px;
+  -moz-background-size: 311px 133px;
+  -o-background-size: 311px 133px;
+  background-size: 311px 133px;
+  width: 311px;
+  height: 133px;
+  margin-top: 14px;
+}
+.ss-bootstrap #content.no-bottom {
+  margin-bottom: 0px;
+}
+.ss-bootstrap li.tab-selected a:hover,
+.ss-bootstrap .navbar-default .navbar-nav > li.tab-selected > a:hover,
+.ss-bootstrap .navbar-default .navbar-nav > li.tab-selected > a {
+  color: #000;
+}
+.ss-bootstrap #header li.tab-selected a {
+  color: #000;
+}
+.ss-bootstrap a#create-case-home {
+  padding: 10px 0px;
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+.ss-bootstrap #content .page-header h2 {
+  font-weight: normal;
+}
+.ss-bootstrap #content h2 {
+  font-size: 30px;
+}
+.ss-bootstrap ul li.usericon {
+  margin-left: -80px !important;
+}
+.ss-bootstrap div.cxfooter {
+  display: none;
+  visibility: hidden;
+}
+.ss-bootstrap .feeditemcontent label {
+  display: inline;
+  /* Chatter input text is not wide enough */
+}
+.ss-bootstrap .feeditemcontent input[type="text"] {
+  font-weight: normal;
+  /* Otherwise bootstrap makes this bold */
+}
+.ss-bootstrap .vfButtonBar h3 {
+  /* Update: Mimic the h4 bootstrap tag */
+  font-size: 18px;
+  /* 12px; - this is the default */
+  line-height: normal;
+  /* 20px; - this is the default */
+  font-weight: normal;
+  /* bold; - this is the default */
+}
+@media only screen and (min-width: 768px) {
+  .ss-bootstrap nav.navbar {
+    display: inline-block;
+    float: right;
+  }
+  .ss-bootstrap .navbar-nav {
+    float: none;
+    margin: 0px;
+  }
+  .ss-bootstrap div.navbar-collapse {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+@media only screen and (max-width: 1023px) {
+  .ss-bootstrap #header .social-navigation-header,
+  .ss-bootstrap #header .navigation ul.root {
+    width: 100%;
+  }
+  .ss-bootstrap #header,
+  .ss-bootstrap #content,
+  .ss-bootstrap #footer-content {
+    width: 90%;
+  }
+  .ss-bootstrap #header .navigation {
+    right: 0px;
+  }
+  .ss-bootstrap .navbar-collapse {
+    padding-right: 0px;
+  }
+  .ss-bootstrap #footer {
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .ss-bootstrap #footer a {
+    display: inline-block;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .ss-bootstrap {
+    /* Replace a style from bootstrap.css that adds a big margin above the top of the content */
+  }
+  .ss-bootstrap #header {
+    height: 100%;
+    margin-bottom: 0px;
+    text-align: center;
+  }
+  .ss-bootstrap #header .logo {
+    position: relative;
+  }
+  .ss-bootstrap #toprow {
+    padding-right: 10px;
+  }
+  .ss-bootstrap nav.navbar {
+    margin-top: 25px;
+    box-sizing: border-box !important;
+  }
+  .ss-bootstrap nav .navbar-nav {
+    margin-right: 0px;
+    float: none;
+  }
+  .ss-bootstrap ul.copyright {
+    padding-left: 0px;
+    width: 100%;
+  }
+  .ss-bootstrap .page-header {
+    margin-top: 0px;
+  }
+}
+
+</apex:page>

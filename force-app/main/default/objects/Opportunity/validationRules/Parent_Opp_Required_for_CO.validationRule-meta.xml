@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Opp_Required_for_CO</fullName>
+    <active>true</active>
+    <description>Parent Opportunity is required on change orders when the opp is closed/won.</description>
+    <errorConditionFormula>AND 
+( 
+CloseDate&gt;=DATE(2019,01,01), 
+ISPICKVAL(Project_Type__c, &quot;Change Order&quot;), 
+ISBLANK(Parent_Opportunity__c), 
+OR(
+ISPICKVAL(StageName , &quot;6 Negotiating&quot; ), 
+ISPICKVAL(StageName , &quot;7 Verbal Agreement&quot; ), 
+ISPICKVAL(StageName , &quot;8 Closed Won&quot; ) 
+)
+)
+&amp;&amp; $Profile.Name != &quot;System Administrator&quot;</errorConditionFormula>
+    <errorDisplayField>Parent_Opportunity__c</errorDisplayField>
+    <errorMessage>Parent Opportunity is required.</errorMessage>
+</ValidationRule>

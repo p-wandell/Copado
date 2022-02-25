@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Affectation</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Tâches</value>
+    </caseValues>
+    <fieldSets>
+        <label><!-- Assign Resource Assignment Information Section FieldSet --></label>
+        <name>pse__AssignResAssignmentInfoSecFieldSet</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Assignment Columns for Multiple Assignment Creation UI --></label>
+        <name>pse__AssignmentColumnsforMultipleAssignmentUI</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Assignment Custom Lookup Column --></label>
+        <name>pse__Assignment_Custom_Lookup_Column</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Assignment Tooltip Field Set --></label>
+        <name>pse__Assignment_Tooltip_Field_Set</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Create Project From Template Alt Copy Assignment Fields --></label>
+        <name>pse__CreateProjFromTempAltCopyAssignmentField</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Create Project from Template Assignments Columns --></label>
+        <name>pse__CreateProjFromTemplateAssignmentColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- LinkMethodologyAssignmentColumns --></label>
+        <name>pse__LinkMethodologyAssignmentColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Link Milestone Assignment Columns --></label>
+        <name>pse__LinkMilestoneAssignmentColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- LinkPhaseAssignmentColumns --></label>
+        <name>pse__LinkPhaseAssignmentColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- MassReassignAssignmentColumns --></label>
+        <name>pse__MassReassignAssignmentColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- SelfAssignmentUIAssignmentFields --></label>
+        <name>pse__SelfAssignmentUIAssignmentFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Unfilled Resource Requests Assignment Columns --></label>
+        <name>pse__UnfilledRRAssignmentGridFieldSet</name>
+    </fieldSets>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Nom de l&apos;affectation</nameFieldLabel>
+    <sharingReasons>
+        <label><!-- PSE Member Share --></label>
+        <name>pse__PSE_Member_Share</name>
+    </sharingReasons>
+    <sharingReasons>
+        <label><!-- PSE PM Share --></label>
+        <name>pse__PSE_PM_Share</name>
+    </sharingReasons>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <errorMessage><!-- Assignments may only be marked as &quot;Time Credited&quot; if they are Non-Billable. --></errorMessage>
+        <name>Bill_Assignments_may_not_be_Credited_V2</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Assignments marked Billable must have a Bill Rate greater than zero. --></errorMessage>
+        <name>Billable_Bill_Rate_Cannot_be_Zero</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- An Assignment&apos;s Currency field value may not be updated once set. --></errorMessage>
+        <name>pse__Assignment_Currency_is_Constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- An Assignment may only be marked &apos;Is Billable&apos; if it is for a Billable Project. --></errorMessage>
+        <name>pse__Assignment_May_Not_Be_Billable</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- An Assignment&apos;s Project field value may not be blank and may not be updated once set. --></errorMessage>
+        <name>pse__Assignment_Project_is_Constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- An Assignment&apos;s Resource field value can not be changed. --></errorMessage>
+        <name>pse__Assignment_Resource_is_Constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- An Assignment&apos;s Resource field value may not be blank. --></errorMessage>
+        <name>pse__Assignment_Resource_is_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Assignment requires a Bill Rate. --></errorMessage>
+        <name>pse__Bill_Rate_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Assignments may only be marked as &quot;Time Credited&quot; if they are Non-Billable. --></errorMessage>
+        <name>pse__Billable_Assignments_may_not_be_Credited</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Assignments may only be marked as &quot;Time Excluded&quot; if they are Non-Billable. --></errorMessage>
+        <name>pse__Billable_Assignments_may_not_be_Excluded</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Assignments may not be marked as &quot;Time Excluded&quot; if they are also marked as &quot;Time Credited&quot;. --></errorMessage>
+        <name>pse__Credited_Assignments_may_not_be_Excluded</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- At most one of the two override checkboxes may be set for which currency to hold Resource Cost Rates constant in - Resource or Project.  If neither is checked, the default config is used. --></errorMessage>
+        <name>pse__Max_One_Default_Resource_Cost_Currency</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Assignments marked non-billable may not have a bill rate greater than zero. --></errorMessage>
+        <name>pse__Non_Billable_Bill_Rate_must_be_Zero</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You cannot switch the schedule record once set. --></errorMessage>
+        <name>pse__cannot_switch_schedule_records</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You must select an active resource. --></errorMessage>
+        <name>pse__select_resource</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Assign_Multiple_Milestones_to_Assignments --></label>
+        <name>pse__Assign_Multiple_Milestones_to_Assignments</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Assign_Multiple_Projects --></label>
+        <name>pse__Assign_Multiple_Projects</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Assign_Multiple_Resources --></label>
+        <name>pse__Assign_Multiple_Resources</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Assign_Resource --></label>
+        <name>pse__Assign_Resource</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Close_Assignment --></label>
+        <name>pse__Close_Assignment</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Close_Assignments --></label>
+        <name>pse__Close_Assignments</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Edit_Schedule --></label>
+        <name>pse__Edit_Schedule</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Link_To_Methodologies --></label>
+        <name>pse__Link_To_Methodologies</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Link_To_Phases --></label>
+        <name>pse__Link_To_Phases</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Link_to_Milestones --></label>
+        <name>pse__Link_to_Milestones</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Reschedule_Assignments --></label>
+        <name>pse__Reschedule_Assignments</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Zero_Schedule --></label>
+        <name>pse__Zero_Schedule</name>
+    </webLinks>
+</CustomObjectTranslation>

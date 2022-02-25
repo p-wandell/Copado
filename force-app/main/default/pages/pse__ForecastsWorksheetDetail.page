@@ -1,0 +1,304 @@
+<apex:page controller="pse.ForecastsWorksheetDetailController" sidebar="false" showHeader="false" tabStyle="Forecasts__tab">
+<body class="Custom39Tab">
+<style>
+    h1.pageType.noSecondHeader {
+    	margin-left: 10px !important;
+	}
+    .pageTitleIcon {
+    	display: none;
+    }
+</style>
+<apex:sectionHeader title="{!$Label.pse__forecast_worksheet_label_section_header_title}" />
+
+<apex:pageBlock title="{!$Label.pse__forecast_worksheet_label_page_block_title}">
+<apex:pageMessages id="msgs" />
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'sales'}">
+<apex:pageBlockTable value="{!selectedOpportunities}" var="opp">
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(SUBSTITUTE(($Label.forecast_worksheet_sales_opportunities),'{0}',selectedOpportunityLabel),'{1}', selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!opp.Id}">{!opp.Name}</a>
+</apex:column>
+<apex:column headerValue="{!$Label.pse__common_label_account}">
+  <a href="/{!opp.Account}">{!opp.Account.Name}</a>
+</apex:column>
+<apex:column rendered="{!NOT(USE_PROD_ATTACHED_FROM_SERVICES)}" value="{!opp.Amount}" />
+<apex:column rendered="{!USE_PROD_ATTACHED_FROM_SERVICES}"      value="{!opp.pse__Services_Attached_From_Products__c}" />
+<apex:column value="{!opp.CloseDate}" />
+<apex:column value="{!opp.Probability}" />
+<apex:column value="{!opp.StageName}" />
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_owner_name}" value="{!opp.Owner.Name}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'it'}">
+<apex:pageBlockTable value="{!selectedTimecards}" var="t" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_internal_timecards),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!t.Id}">{!t.Name}</a>
+</apex:column>
+<apex:column value="{!t.Resource__r.Name}" headerValue="{!$Label.pse__common_label_resource_name}" />
+<apex:column value="{!t.Project__r.Name}" />
+<apex:column value="{!t.pse__Start_Date__c}" />
+<apex:column value="{!t.pse__End_Date__c}" />
+<apex:column value="{!t.pse__Status__c}" />
+<apex:column value="{!t.pse__Total_Billable_Amount__c}" />
+<apex:column value="{!t.pse__Total_Cost__c}" />
+<apex:column value="{!t.pse__Total_Days_Worked__c}" />
+<apex:column value="{!t.pse__Total_Hours__c}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'its'}">
+<apex:pageBlockTable value="{!selectedTimecards}" var="t" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_internal_timecards_submitted),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!t.Id}">{!t.Name}</a>
+</apex:column>
+<apex:column value="{!t.Resource__r.Name}" headerValue="{!$Label.pse__common_label_resource_name}" />
+<apex:column value="{!t.Project__r.Name}" />
+<apex:column value="{!t.pse__Start_Date__c}" />
+<apex:column value="{!t.pse__End_Date__c}" />
+<apex:column value="{!t.pse__Status__c}" />
+<apex:column value="{!t.pse__Total_Billable_Amount__c}" />
+<apex:column value="{!t.pse__Total_Cost__c}" />
+<apex:column value="{!t.pse__Total_Days_Worked__c}" />
+<apex:column value="{!t.pse__Total_Hours__c}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'ie'}">
+<apex:pageBlockTable value="{!selectedExpenses}" var="e" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_internal_expenses),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!e.Id}">{!e.Name}</a>
+</apex:column>
+<apex:column value="{!e.Expense_Report__r.Name}" />
+<apex:column value="{!e.pse__Expense_Date__c}" />
+<apex:column value="{!e.pse__Type__c}" />
+<apex:column value="{!e.pse__Amount__c}" />
+<apex:column value="{!e.pse__Status__c}" />
+<apex:column value="{!e.Project__r.Name}" />
+<apex:column value="{!e.Resource__r.Name}" headerValue="{!$Label.pse__common_label_resource_name}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'ies'}">
+<apex:pageBlockTable value="{!selectedExpenses}" var="e" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_internal_expenses_submitted),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!e.Id}">{!e.Name}</a>
+</apex:column>
+<apex:column value="{!e.Expense_Report__r.Name}" />
+<apex:column value="{!e.pse__Expense_Date__c}" />
+<apex:column value="{!e.pse__Type__c}" />
+<apex:column value="{!e.pse__Amount__c}" />
+<apex:column value="{!e.pse__Status__c}" />
+<apex:column value="{!e.Project__r.Name}" />
+<apex:column value="{!e.Resource__r.Name}" headerValue="{!$Label.pse__common_label_resource_name}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'm'}">
+<apex:pageBlockTable value="{!selectedMilestones}" var="m" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_milestones),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!m.Id}">{!m.Name}</a>
+</apex:column>
+<apex:column value="{!m.Project__r.Name}" />
+<apex:column value="{!m.pse__Status__c}" />
+<apex:column value="{!m.pse__Target_Date__c}" />
+<apex:column value="{!m.pse__Actual_Date__c}" />
+<apex:column value="{!m.pse__Milestone_Amount__c}" />
+<apex:column value="{!m.pse__Milestone_Cost__c}" />
+<apex:column value="{!m.pse__Log_Milestone_Cost_As_External__c}" />
+<apex:column value="{!m.pse__Billed__c}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'a'}">
+<apex:pageBlockTable value="{!selectedAdjustments}" var="a" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_miscellaneous_adjustments),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!a.Id}">{!a.Name}</a>
+</apex:column>
+<apex:column value="{!a.pse__Effective_Date__c}" />
+<apex:column value="{!a.Project__r.Name}" />
+<apex:column value="{!a.pse__Transaction_Category__c}" />
+<apex:column value="{!a.pse__Amount__c}" />
+<apex:column value="{!a.pse__Status__c}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'et'}">
+<apex:pageBlockTable value="{!selectedTimecards}" var="t" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_external_timecards),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!t.Id}">{!t.Name}</a>
+</apex:column>
+<apex:column value="{!t.Resource__r.Name}" headerValue="{!$Label.pse__common_label_resource_name}" />
+<apex:column value="{!t.Project__r.Name}" />
+<apex:column value="{!t.pse__Start_Date__c}" />
+<apex:column value="{!t.pse__End_Date__c}" />
+<apex:column value="{!t.pse__Status__c}" />
+<apex:column value="{!t.pse__Total_Billable_Amount__c}" />
+<apex:column value="{!t.pse__Total_Cost__c}" />
+<apex:column value="{!t.pse__Total_Days_Worked__c}" />
+<apex:column value="{!t.pse__Total_Hours__c}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'ets'}">
+<apex:pageBlockTable value="{!selectedTimecards}" var="t" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_external_timecards_submitted),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!t.Id}">{!t.Name}</a>
+</apex:column>
+<apex:column value="{!t.Resource__r.Name}" headerValue="{!$Label.pse__common_label_resource_name}" />
+<apex:column value="{!t.Project__r.Name}" />
+<apex:column value="{!t.pse__Start_Date__c}" />
+<apex:column value="{!t.pse__End_Date__c}" />
+<apex:column value="{!t.pse__Status__c}" />
+<apex:column value="{!t.pse__Total_Billable_Amount__c}" />
+<apex:column value="{!t.pse__Total_Cost__c}" />
+<apex:column value="{!t.pse__Total_Days_Worked__c}" />
+<apex:column value="{!t.pse__Total_Hours__c}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'ee'}">
+<apex:pageBlockTable value="{!selectedExpenses}" var="e" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_external_expenses),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!e.Id}">{!e.Name}</a>
+</apex:column>
+<apex:column value="{!e.Expense_Report__r.Name}" />
+<apex:column value="{!e.pse__Expense_Date__c}" />
+<apex:column value="{!e.pse__Type__c}" />
+<apex:column value="{!e.pse__Amount__c}" />
+<apex:column value="{!e.pse__Status__c}" />
+<apex:column value="{!e.Project__r.Name}" />
+<apex:column value="{!e.Resource__r.Name}" headerValue="{!$Label.pse__common_label_resource_name}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'actuals' && worksheetDetailType == 'ees'}">
+<apex:pageBlockTable value="{!selectedExpenses}" var="e" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_external_expenses_submitted),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!e.Id}">{!e.Name}</a>
+</apex:column>
+<apex:column value="{!e.Expense_Report__r.Name}" />
+<apex:column value="{!e.pse__Expense_Date__c}" />
+<apex:column value="{!e.pse__Type__c}" />
+<apex:column value="{!e.pse__Amount__c}" />
+<apex:column value="{!e.pse__Status__c}" />
+<apex:column value="{!e.Project__r.Name}" />
+<apex:column value="{!e.Resource__r.Name}" headerValue="{!$Label.pse__common_label_resource_name}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'backlog' && worksheetDetailType == 'u'}">
+<apex:pageBlockTable value="{!unscheduledBacklog}" var="p" >
+  <apex:facet name="header">{!SUBSTITUTE(($Label.pse__forecast_worksheet_unscheduled_backlog),'{0}',selectedForecastName)}</apex:facet>
+  <apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!p.Id}">{!p.Name}</a>
+</apex:column>
+<apex:column value="{!p.Project_Manager__r.Name}" headerValue="{!$Label.pse__forecast_worksheet_project_manager}" />
+<apex:column value="{!p.Account__r.Name}" />
+<apex:column value="{!p.Opportunity__r.Name}" />
+<apex:column value="{!p.pse__Start_Date__c}" />
+<apex:column value="{!p.pse__Is_Active__c}" />
+<apex:column value="{!p.pse__Is_Billable__c}" />
+<apex:column value="{!p.pse__Unscheduled_Backlog__c}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!worksheetDetailMode == 'backlog' && worksheetDetailType == 'm'}">
+<apex:pageBlockTable value="{!backlogMilestones}" var="m" >
+  <apex:facet name="header">
+  <apex:outputPanel >
+  {!SUBSTITUTE(($Label.forecast_worksheet_backlog_milestones),'{0}',selectedForecastName)}&nbsp;
+  <apex:outputText value="{!TimePeriodStartDate}" />&nbsp;-&nbsp;<apex:outputText value="{!TimePeriodEndDate}" />
+  </apex:outputPanel>
+  </apex:facet>
+<apex:column headerValue="{!$Label.pse__forecast_worksheet_label_name}">
+  <a href="/{!m.Id}">{!m.Name}</a>
+</apex:column>
+<apex:column value="{!m.Project__r.Name}" />
+<apex:column value="{!m.pse__Status__c}" />
+<apex:column value="{!m.pse__Target_Date__c}" />
+<apex:column value="{!m.pse__Actual_Date__c}" />
+<apex:column value="{!m.pse__Milestone_Amount__c}" />
+<apex:column value="{!m.pse__Milestone_Cost__c}" />
+<apex:column value="{!m.pse__Log_Milestone_Cost_As_External__c}" />
+<apex:column value="{!m.pse__Billed__c}" />
+</apex:pageBlockTable>
+</apex:outputPanel>
+
+</apex:pageBlock>
+</body>
+</apex:page>

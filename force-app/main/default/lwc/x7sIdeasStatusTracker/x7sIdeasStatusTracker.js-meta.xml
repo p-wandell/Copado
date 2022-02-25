@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Ideas Status Tracker</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="title" label="Status Title" type="String" description="Enter the status title. Leave blank to hide."/>
+            <property name="statusType" label="Tracker Type" type="String" description="Select the status type" datasource="base,path"/>
+            <property name="statusAllowed" label="Idea Status List" type="String" description="Enter the allowed idea status list (csv) for the current zone"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+            <property name="recordId" label="Record Id" type="String" default="{!recordId}" description="Set to {!recordId} to pass the page's record Id."/>
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,lightning__RecordPage">
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="title" label="Status Title" type="String" description="Enter the status title. Leave blank to hide."/>
+            <property name="statusType" label="Tracker Type" type="String" description="Select the status type" datasource="base,path"/>
+            <property name="statusAllowed" label="Idea Status List" type="String" description="Enter the allowed idea status list (csv) for the current zone"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

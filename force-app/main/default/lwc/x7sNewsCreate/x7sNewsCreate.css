@@ -1,0 +1,183 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc. All rights reserved.
+ */
+
+ .required {
+	color: red;
+}
+
+ .attachmentLabel {
+	padding-left: 5px !important;
+}
+
+ .attachEdit[type=file] {
+	width: 97px;
+}
+
+ .attachEditSafari {
+	width: 100px !important;
+}
+
+ .attachEditMozilla {
+	width: 97px !important;
+}
+
+ .testColor {
+	background: red !important;
+	width: 150px !important;
+}
+
+ .slds-notify--toast {
+	margin: 0 0 0.5rem 0 !important;
+	min-width: 150px !important;
+}
+
+ .checkboxCss {
+	float: left;
+	margin-right: 8px;
+}
+
+ .authorSelection {
+	margin-left: 2%;
+}
+
+ .authorDropdown {
+	font-size: 17px;
+	font-weight: 300;
+	margin-bottom: 10px;
+}
+
+ .slds-form-element__control {
+	margin-bottom: 3%;
+}
+
+ .showlabel {
+	font-weight: 400;
+	margin-bottom: 15px;
+}
+
+ .descriptiveText {
+	font-size: 0.8rem;
+	font-weight: 300;
+	color: #8E8A8A;
+	margin-bottom: 12px;
+}
+
+ .inputDiv {
+	margin-left: 20px;
+}
+
+ .dateText {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+ .dtInput {
+	margin-left: 0%;
+}
+
+
+ .hideDropdown {
+	display: none;
+}
+
+ .showDropdown {
+	display: block;
+}
+
+ .errorDiv {
+	width: 358px;
+}
+
+ .hide {
+	display: none;
+}
+
+ .salesforceSource_blurybackground {
+	position: absolute;
+	left: 1px;
+	top: 1px;
+	width: 100%;
+	height: 700%;
+	z-index: 9999;
+	text-align: center;
+	vertical-align: middle;
+	/*background-color: #dcdcdc; */
+	opacity: 0.7;
+	filter: alpha(opacity=60)
+}
+
+ .toggle {
+	display: none;
+}
+
+ .waitingHolder {
+	width: 144px;
+	vertical-align: middle;
+}
+
+.marginLess{
+	margin-bottom: 1%;
+}
+/*class addition 010616 - To fix alignment of red & yellow alerts on Create News page*/
+
+/*media query 010616 - To fix alignment of red alerts in iPhone5 & iPhone6*/
+@media screen and (max-width: 375px) {
+	 .errorAttachment {
+		width: 275px !important
+	}
+
+	 .fontFix {
+		font-size: 13px !important
+	}
+}
+
+ .hide {
+	display: none;
+}
+
+ .show {
+	display: initial;
+}
+
+ .displayIconImage {
+	height: 18px;
+	margin-right: 5px;
+}
+
+ .searchContainer {
+	position: relative;
+}
+
+ .searchContainer .displayIconImage {
+	position: absolute;
+	height: 15px;
+	right: 20px;
+	z-index: 5000;
+	top: 8px;
+}
+
+ .show-source {
+	font-family: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Monaco", "Courier New", Courier, monospace;
+}
+ .show-source textarea {
+	min-height: 300px;
+}
+ .show-source .slds-form-element__control {
+	margin-bottom: 0;
+}
+ .label-abbr-p {
+    padding-top: .15rem;
+}
+
+ .remove-margin .slds-form-element__control {
+    margin-bottom: 0px;
+}
+
+ .attachEdit .slds-form-element__control {
+    margin-bottom: 1rem;
+}
+
+ .remove-font-weight .slds-form-element__legend {
+    font-weight: 400;
+}

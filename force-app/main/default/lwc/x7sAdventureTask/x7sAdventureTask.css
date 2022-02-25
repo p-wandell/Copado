@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+
+.iconCircle {
+    align-items: center;
+    border: 0px solid var(--lwc-colorBorder);
+    border-radius: 50%;
+    display: flex;
+    height: 2rem;
+    justify-content: center;
+    width: 2.25rem;
+}
+
+.iconCircle [class*='slds-icon-action'] {
+    padding: 5px;
+}
+
+
+.iconCircle lightning-icon svg {
+    width: 1.058rem;
+    height: 1.05rem;
+    fill: currentColor;
+}
+
+/*.iconCircle:hover, .iconCircle:focus {*/
+/*    background-color: var(--lwc-colorBackgroundButtonBrand);*/
+/*}*/
+
+.slds-checkbox-button {
+    width: 24px;
+    height: 24px;
+}
+
+.task-wrapper {
+    border-bottom: 1px solid #efefef;
+}
+
+.task-icon-color { color: #999; }

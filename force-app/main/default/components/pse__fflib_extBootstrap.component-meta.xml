@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexComponent xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>41.0</apiVersion>
+    <description>Consumes a static resource and development prefix to load a Sencha Ext application produced by Sencha Cmd</description>
+    <label>fflib_extBootstrap</label>
+    <packageVersions>
+        <majorNumber>2018</majorNumber>
+        <minorNumber>402</minorNumber>
+        <namespace>appirio_core</namespace>
+    </packageVersions>
+    <packageVersions>
+        <majorNumber>2018</majorNumber>
+        <minorNumber>403</minorNumber>
+        <namespace>fferpcore</namespace>
+    </packageVersions>
+</ApexComponent>

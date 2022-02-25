@@ -1,0 +1,590 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<div class={componentClass} aria-label={labels.labelAriaWrapper}>
+    <lightning-layout multiple-rows="true"
+	                  vertical-align="start"
+	                  horizontal-align="spread"
+	                  pull-to-boundary="small"
+	                  class="slds-p-bottom--small">
+
+		<!-- MY MEMBERS -->
+		<template if:true={showMembersFollow}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      flexibility="grow"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<lightning-input type="toggle"
+								 class="slds-p-left--small slds-float_left"
+								 data-id="myMember"
+								 is-loading="true"
+				                 name="checkMemberIFollow"
+				                 checked={showMyMembers}
+				                 label={labelMembersFollow}
+								 onchange={changeFilterHandler}
+								 role="navigation">
+                </lightning-input>                 
+			</lightning-layout-item>
+		</template>
+
+		<!-- SEARCH -->
+		<template if:true={showSearch}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      flexibility="grow"
+			                      size="12"
+			                      large-device-size={compactView_12_6}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<lightning-layout multiple-rows="true">
+					<template if:true={enableLastNameSearch}>
+						<lightning-layout-item size="12">
+
+							<lightning-layout multiple-rows="false"
+							                  horizontal-align="spread"
+							                  vertical-align="center">
+								<lightning-layout-item >
+									<lightning-input type="toggle"												 
+									                 label={labels.labelSearchLastName}
+									                 name="lastNameSearch"
+									                 onchange={handleEnableLastFirst}
+													 checked={searchLastName}
+													 role="navigation">
+                                    </lightning-input>
+								</lightning-layout-item>
+
+								<lightning-layout-item>
+									<lightning-button label="Search"
+									                  data-id="searchLastFirstButton"
+									                  class="slds-hide"
+									                  onclick={searchLastFirstName}
+                                                      name="searchLastFirst">
+                                    </lightning-button>
+								</lightning-layout-item>
+							</lightning-layout>
+						</lightning-layout-item>
+					</template>
+
+				</lightning-layout>
+			</lightning-layout-item>
+		</template>
+
+		<!-- CLEAR ALL -->
+		<template if:true={showClearAll}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<lightning-button icon-name="utility:close"
+				                  class="slds-float_right slds-p-right_small"
+				                  name="clearAllFilters"
+				                  label={labels.labelButtonClearAll}
+				                  title={labels.labelClearAll}
+				                  onclick={clearAll}
+				                  disabled={disableClear}
+								  variant="brand"
+								  role="navigation">
+                </lightning-button>
+			</lightning-layout-item>
+		</template>
+
+		 <lightning-spinner size="small"
+		                   class="slds-hide"
+		                   data-id="loadingSpinner"
+						   alternative-text="Loading...">
+						   </lightning-spinner>
+	</lightning-layout>
+
+	<!-- FIELD FILTERS -->
+	<lightning-layout multiple-rows="true"
+	                  pull-to-boundary="small"
+	                  vertical-align="start">
+
+		<template if:true={showTopicFilter}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+								  small-device-size="12">			
+				  <lightning-combobox
+										class="slds-p-horizontal--small"
+										name="topicFilter"
+										data-id="topicFilter"										
+										label={labels.labelSearchTopics}
+										value={topicSearch}										
+										options={topicValues}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>
+			</lightning-layout-item>
+		</template>
+
+		<!-- Title -->
+		 <template if:true={showTitleFilter}>			
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="titleTypeAhead"
+									value={titleTypeAhead}
+									onchange={handleContactTypeAhead}                   
+									name="titleTypeAhead"
+									placeholder={labels.labelPlaceholderTitle}
+									label={labels.labelTypeAheadTitle}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="titleFilter"
+										data-id="titleFilter"										
+										label={labels.labelSearchTitle}
+										value={titleSearch}										
+										options={titleValues}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>														
+				</template> 
+				<template if:false={showPicklists}>
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="titleSearch"
+									value={titleSearch}
+									onchange={changeFilterHandler}                   
+									name="titleSearch"
+									placeholder={labels.labelPlaceholderTitle}
+									label={labels.labelSearchTitle}>
+					</lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- Country -->
+		<template if:true={showCountryFilter}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>					
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="countryTypeAhead"
+									value={countryTypeAhead}
+									onchange={handleContactTypeAhead}                   
+									name="countryTypeAhead"
+									placeholder={labels.labelPlaceholderCountry}
+									label={labels.labelTypeAheadCountry}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="countryFilter"
+										data-id="countryFilter"										
+										label={labels.labelSearchCountries}
+										value={countrySearch}										
+										options={countryValues}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>										 
+				</template>
+				<template if:false={showPicklists}>				
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="countrySearch"
+									value={countrySearch}
+									onchange={changeFilterHandler}                   
+									name="countrySearch"
+									placeholder={labels.labelPlaceholderCountry}
+									label={labels.labelSearchCountries}>
+					</lightning-input>						
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- State -->
+		<template if:true={showStateFilter}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>				
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="stateTypeAhead"
+									value={stateTypeAhead}
+									onchange={handleContactTypeAhead}                   
+									name="stateTypeAhead"
+									placeholder={labels.labelPlaceholderState}
+									label={labels.labelTypeAheadState}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="stateFilter"
+										data-id="stateFilter"										
+										label={labels.labelSearchStates}
+										value={stateSearch}										
+										options={stateValues}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>									
+				</template>
+				<template if:false={showPicklists}>					
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="stateSearch"
+									value={stateSearch}
+									onchange={changeFilterHandler}                   
+									name="stateSearch"
+									placeholder={labels.labelPlaceholderState}
+									label={labels.labelSearchStates}>
+					</lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- City -->
+		<template if:true={showCityFilter}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>					
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="cityTypeAhead"
+									value={cityTypeAhead}
+									onchange={handleContactTypeAhead}                   
+									name="cityTypeAhead"
+									placeholder={labels.labelPlaceholderCity}
+									label={labels.labelTypeAheadCity}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="cityFilter"
+										data-id="cityFilter"										
+										label={labels.labelSearchCities}
+										value={citySearch}										
+										options={cityValues}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>
+				</template>
+				<template if:false={showPicklists}>					
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="citySearch"
+									value={citySearch}
+									onchange={changeFilterHandler}                   
+									name="citySearch"
+									placeholder={labels.labelPlaceholderCity}
+									label={labels.labelSearchStates}>
+					</lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- Account Name -->
+		<template if:true={showAccountFilter}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>					
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="accountTypeAhead"
+									value={accountTypeAhead}
+									onchange={handleContactTypeAhead}                   
+									name="accountTypeAhead"
+									placeholder={labels.labelPlaceholderAccount}
+									label={labels.labelTypeAheadAccount}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="accountFilter"
+										data-id="accountFilter"										
+										label={labels.labelSearchAccounts}
+										value={accountSearch}										
+										options={accountValues}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>				
+				</template>
+				<template if:false={showPicklists}>					
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="accountSearch"
+									value={accountSearch}
+									onchange={changeFilterHandler}                   
+									name="accountSearch"
+									placeholder={labels.labelPlaceholderAccount}
+									label={labels.labelSearchAccounts}>
+					</lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- CUSTOM FILTERS -->
+
+		<!-- Custom Field1 -->
+		<template if:true={customField1val}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>
+					<!-- type ahead with dropdown -->										
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="typeAheadCustomField1"
+									value={typeAheadField1}
+									onchange={customTypeAheadHandle}                   
+									name="typeAheadCustomField1"
+									placeholder={placeHolderCustomField1}
+									label={labelCustomField1}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="customField1Filter"
+										data-id="customField1Filter"										
+										label={pickListLabelField1}
+										value={searchCustomField1}										
+										options={customValuesField1}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>
+				</template>
+				
+				<template if:false={showPicklists}>
+					<!-- no dropdown - just search -->					
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"								
+									value={searchCustomField1}
+									data-id="searchCustomField1"
+									onchange={searchCustomFieldHandle}                   
+									name="customField1"
+									placeholder={placeHolderCustomField1}
+									label={labelCustomField1}>
+					</lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- Custom Field2 -->
+		<template if:true={customField2val}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>
+					<!-- type ahead with dropdown -->
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="typeAheadCustomField2"
+									value={typeAheadField2}
+									onchange={customTypeAheadHandle}                   
+									name="typeAheadCustomField2"
+									placeholder={placeHolderCustomField2}
+									label={labelCustomField2}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="customField2Filter"
+										data-id="customField2Filter"										
+										label={pickListLabelField2}
+										value={searchCustomField2}										
+										options={customValuesField2}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>										
+				</template>
+				<template if:false={showPicklists}>
+					<!-- no dropdown - just search -->
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"								
+									value={searchCustomField2}
+									data-id="searchCustomField2"
+									onchange={searchCustomFieldHandle}                   
+									name="customField2"
+									placeholder={placeHolderCustomField2}
+									label={labelCustomField2}>
+					</lightning-input>						
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- Custom Field3 -->
+		<template if:true={customField3val}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>
+					<!-- type ahead with dropdown -->
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="typeAheadCustomField3"
+									value={typeAheadField3}
+									onchange={customTypeAheadHandle}                   
+									name="typeAheadCustomField3"
+									placeholder={placeHolderCustomField3}
+									label={labelCustomField3}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="customField3Filter"
+										data-id="customField3Filter"										
+										label={pickListLabelField3}
+										value={searchCustomField3}										
+										options={customValuesField3}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>
+				</template>
+				<template if:false={showPicklists}>
+					<!-- no dropdown - just search -->
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"								
+									value={searchCustomField3}
+									data-id="searchCustomField3"
+									onchange={searchCustomFieldHandle}                   
+									name="customField3"
+									placeholder={placeHolderCustomField3}
+									label={labelCustomField3}>
+					</lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- Custom Field4 -->
+		<template if:true={customField4val}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>
+					<!-- type ahead with dropdown -->
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="typeAheadCustomField4"
+									value={typeAheadField4}
+									onchange={customTypeAheadHandle}                   
+									name="typeAheadCustomField4"
+									placeholder={placeHolderCustomField4}
+									label={labelCustomField4}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="customField4Filter"
+										data-id="customField4Filter"										
+										label={pickListLabelField4}
+										value={searchCustomField4}										
+										options={customValuesField4}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>
+				</template>
+				<template if:false={showPicklists}>
+					<!-- no dropdown - just search -->
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"								
+									value={searchCustomField4}
+									data-id="searchCustomField4"
+									onchange={searchCustomFieldHandle}                   
+									name="customField4"
+									placeholder={placeHolderCustomField4}
+									label={labelCustomField4}>
+					</lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- Custom Field5 -->
+		<template if:true={customField5val}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+								  small-device-size="12">
+				<template if:true={showPicklists}>
+				   <lightning-input type="search"
+								  class="slds-p-horizontal--small"
+								  data-id="typeAheadCustomField5"
+								  value={typeAheadField5}
+								  onchange={customTypeAheadHandle}                   
+								  name="typeAheadCustomField5"
+								  placeholder={placeHolderCustomField5}
+								  label={labelCustomField5}>
+				  </lightning-input>
+				  <lightning-combobox
+									  class="slds-p-horizontal--small"
+									  name="customField5Filter"
+									  data-id="customField5Filter"										
+									  label={pickListLabelField5}
+									  value={searchCustomField5}										
+									  options={customValuesField5}
+									  onchange={changeFilterHandler} >
+				  </lightning-combobox>
+			  </template>
+			  <template if:false={showPicklists}>
+				  <!-- no dropdown - just search -->
+				  <lightning-input type="search"
+								  class="slds-p-horizontal--small"								
+								  value={searchCustomField5}
+								  data-id="searchCustomField5"
+								  onchange={searchCustomFieldHandle}                   
+								  name="customField5"
+								  placeholder={placeHolderCustomField5}
+								  label={labelCustomField5}>
+				  </lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>
+
+		<!-- Custom Field6 -->
+		<template if:true={customField6val}>
+			<lightning-layout-item class="slds-p-around--small"
+			                      size="12"
+			                      large-device-size={compactView_12_3}
+			                      medium-device-size="6"
+			                      small-device-size="12">
+				<template if:true={showPicklists}>
+					<!-- type ahead with dropdown -->
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"
+									data-id="typeAheadCustomField6"
+									value={typeAheadField6}
+									onchange={customTypeAheadHandle}                   
+									name="typeAheadCustomField6"
+									placeholder={placeHolderCustomField6}
+									label={labelCustomField6}>
+					</lightning-input>
+					<lightning-combobox
+										class="slds-p-horizontal--small"
+										name="customField6Filter"
+										data-id="customField6Filter"										
+										label={pickListLabelField6}
+										value={searchCustomField6}										
+										options={customValuesField6}
+										onchange={changeFilterHandler} >
+        			</lightning-combobox>
+				</template>
+				<template if:false={showPicklists}>
+					<!-- no dropdown - just search -->
+					<lightning-input type="search"
+									class="slds-p-horizontal--small"								
+									value={searchCustomField6}
+									data-id="searchCustomField6"
+									onchange={searchCustomFieldHandle}                   
+									name="customField6"
+									placeholder={placeHolderCustomField6}
+									label={labelCustomField6}>
+					</lightning-input>
+				</template>
+			</lightning-layout-item>
+		</template>	
+	</lightning-layout>
+</div>
+</template>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Current_Employee__c</fullName>
+    <externalId>false</externalId>
+    <formula>AND(Start_Date__c &gt; DATE(2000,12,20),IsActive)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Current Employee</label>
+    <type>Checkbox</type>
+</CustomField>

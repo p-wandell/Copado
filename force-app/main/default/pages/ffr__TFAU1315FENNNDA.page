@@ -1,0 +1,551 @@
+<!-- User Note: TFAU1315FENNNDA Reporting Template For Audit Purposes -->
+<!-- User Note: This Template Helps To Identify Differences Between Transaction Line Item Object, Budgets And Balances Object And Reporting Balances Object -->
+<!-- User Note: The Template Uses 3 Data Ranges. -->
+<!-- User Note: Special Features: Calculations To Identify Differences Between The 3 Objects  -->
+
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}">
+<!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+<!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+<!-- User Note: You Can Create Your Own Stylsheet In The Static Resources And Apply It To Your Reports -->
+<!-- User Note: The Style Has Been Designed To Allow Variations Within Different Types Of Reports -->
+<!-- User Note: Change The Last Character From D To S On The Style Classes Applied To Each Line Will Produce A Summary Report -->
+<!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:stylesheet value="{!StyleSheetName}"/>
+<!-- Variable to represent boolean true/false when needing to set other variables to these states -->
+<apex:variable var="true" value="{!1=1}"/>
+<apex:variable var="false" value="{!1=0}"/>
+<!-- User Note: I Want To Format Values On A Report In Different Ways -->
+<!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+<!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brakets/Minus 3Charcterinternationalcurrencycode/None-->
+<!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+<!-- User Note: You Can Add Your Own Formats To The List Below Try To Keep A Good Coding Structure-->
+<apex:variable var="V2NCB" value="#,###,###,##0.00;(#,###,###,##0.00);0.00"/>
+<apex:variable var="P2NCB" value="#,###,###,##0.00%;(#,###,###,##0.00%);0.00%"/>
+<apex:variable var="V0NCB" value="#,###,###,##0;(#,###,###,##0);0"/>
+<apex:variable var="P0NCB" value="#,###,###,##0%;(#,###,###,##0%);0%"/>
+<apex:variable var="V2RCB" value="(#,###,###,##0.00);#,###,###,##0.00;0.00"/>
+<apex:variable var="P2RCB" value="(#,###,###,##0.00%);#,###,###,##0.00%;0.00%"/>
+<apex:variable var="V0RCB" value="(#,###,###,##0);#,###,###,##0;0"/>
+<apex:variable var="P0RCB" value="(#,###,###,##0%);#,###,###,##0%;0%"/>
+<apex:variable var="V2NCBUSD" value="$#,###,###,##0.00;$(#,###,###,##0.00);$0.00"/>
+<apex:variable var="V2RCBUSD" value="$(#,###,###,##0.00);$#,###,###,##0.00;$0.00"/>
+<!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+<!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+<!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+<!-- User Note: It Is Possible To Use Individual Variables Against A Line This Method Allows You To Make A Single Change To All Related Formats -->
+<apex:variable var="VN0" value="{!V0NCB}"/>
+<apex:variable var="VN2" value="{!V2NCB}"/>
+<apex:variable var="PN" value="{!P0NCB}"/>
+<apex:variable var="VR" value="{!V0RCB}"/>
+<apex:variable var="PR" value="{!P0RCB}"/>
+<!-- REGION 01: GENERAL CONFIGURATION END -->
+
+<!-- REGION 02: REPORT HEADER START -->
+<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+<!-- User Note: Show The Error Messages From The Reporting Engine -->
+
+<apex:PageMessages />
+<div class="chatterPosition"></div>
+<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+<!-- User Note: When Creating New Templates This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+<table class="ffrgridd">
+<tr>
+<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+</tr>
+<tr>
+<td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+<td align="right">{!NOW()}</td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">{!ffr__ReportingDefinition__c.ffr__Description__c}</td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+</tr>
+</table>
+<!-- User Note: Create a new table to display the prompt information -->
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">
+<table class="ffrgrid">
+<apex:repeat value="{!promptList}" var="prompt" >
+<tr>
+<td align="left">{!prompt.label}</td>
+<td align="left" class="ffrgridspacer"></td>
+<td align="left"><strong>{!prompt.value}</strong></td>
+</tr>
+</apex:repeat>
+</table>
+</td>
+</tr>
+</table>
+<!-- User Note: Insert a space after the header -->
+<table class="ffrgrid">
+<tr><td class="ffrgridspacer"></td></tr>
+</table>
+<!-- REGION 02: REPORT HEADER END -->
+
+<!-- REGION 03: REPORT BODY -->
+<!-- CREATE A TABLE TO SHOW THE INTRODUCTION, MADE UP OF AN IMAGE ON THE LEFT HAND SIDE AND TEXT LABELS ON THE RIGHT HAND SIDE -->
+<apex:outputpanel rendered="{!!hasMessages}">
+	<table class="ffrgrid">
+	<tr>
+
+	<!-- DISPLAY TEXT LABELS ON THE LEFT HAND SIDE -->
+	<td>
+	<table valign="top">
+	<apex:outputPanel layout="none" rendered="{!len(label['L01'])!=0}"><tr><th><h1 class="ffrname">{!label['L01']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L02'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L02']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L03'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L03']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L04'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L04']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L05'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L05']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L06'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L06']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L07'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L07']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L08'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L08']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L09'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L09']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L10'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L10'])!=0}"><tr><td class="ffrgridspacer"></td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L10'])!=0}"><tr><th><h1 class="ffrname">{!label['L10']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L11'])!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L11']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L12'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L12']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L13'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L13']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L14'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L14']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!len(label['L15'])!=0}"><tr><td class="ffrgridrowlabeld">{!label['L15']}</td></tr></apex:outputPanel>
+	</table>
+	</td>
+
+	<!-- DISPLAY IMAGE ON THE RIGHT HAND SIDE -->
+	<td valign="top"><apex:outputPanel layout="none" rendered="{!len(label['L95'])!=0}"><apex:image value="{!URLFOR($Resource.ffr__ReportingDefaultImages,label['L95'])}" width="475"/></apex:outputPanel></td>
+	<td class="ffrgridspacer"></td>
+
+	</tr>
+
+	<!-- INSERT A SPACE BEFORE THE NEXT SECTION -->
+	<tr><td class="ffrgridspacer"></td></tr>
+
+	</table>
+
+	<!-- THIS REPORT USES 3 DATA RANGES -->
+	<apex:variable var="dataRange1" value="{!reportingData['DR01']}"/>
+	<apex:variable var="dataRange2" value="{!reportingData['DR02']}"/>
+	<apex:variable var="dataRange3" value="{!reportingData['DR03']}"/>
+
+	<!-- CREATE A TABLE TO SHOW DATA ON THE PAGE -->
+	<table class="ffgridd">
+	<tr>
+	<td class="ffrgridtitleleftd">{!label['L23']}</td>
+	<th class="ffrgridtitlerightd">Period 000</th>
+	<th class="ffrgridtitlerightd">Period 001</th>
+	<th class="ffrgridtitlerightd">Period 002</th>
+	<th class="ffrgridtitlerightd">Period 003</th>
+	<th class="ffrgridtitlerightd">Period 004</th>
+	<th class="ffrgridtitlerightd">Period 005</th>
+	<th class="ffrgridtitlerightd">Period 006</th>
+	<th class="ffrgridtitlerightd">Period 007</th>
+	<th class="ffrgridtitlerightd">Period 008</th>
+	<th class="ffrgridtitlerightd">Period 009</th>
+	<th class="ffrgridtitlerightd">Period 010</th>
+	<th class="ffrgridtitlerightd">Period 011</th>
+	<th class="ffrgridtitlerightd">Period 012</th>
+	<th class="ffrgridtitlerightd">Period 100</th>
+	<th class="ffrgridtitlerightd">Period 101</th>
+	</tr>
+
+	<!-- SET ALL THE VALUES TO 0 (FOR AUDIT CALCULATIONS) -->
+	<tr><td class = "ffrhidden">
+	<!-- DATA RANGE 1 VALUES -->
+	<apex:variable value="{!0}" var="transactionsValueColumnA"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnB"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnC"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnD"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnE"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnF"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnG"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnH"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnI"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnJ"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnK"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnL"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnM"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnY"/>
+	<apex:variable value="{!0}" var="transactionsValueColumnZ"/>
+	<!-- DATA RANGE 2 VALUES -->
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnA"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnB"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnC"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnD"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnE"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnF"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnG"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnH"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnI"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnJ"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnK"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnL"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnM"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnY"/>
+	<apex:variable value="{!0}" var="budgetsAndBalancesValueColumnZ"/>
+	<!-- DATA RANGE 3 VALUES -->
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnA"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnB"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnC"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnD"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnE"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnF"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnG"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnH"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnI"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnJ"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnK"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnL"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnM"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnY"/>
+	<apex:variable value="{!0}" var="reportingBalancesValueColumnZ"/>
+	</td></tr>
+
+	<!-- DATA RANGE D01 START -->
+	<!-- DATA RANGE D01: ITERATE OVER THE ROWS AND LINES IN THE REPORT ENGINE. NOTE THERE ARE ALSO 2 REPEAT END TAGS AT THE END -->
+	<apex:repeat value="{!dataRange1.rowList}" var="row" >
+	<apex:repeat value="{!row.lineList}" var="line" >
+	<tr class="ffrgridrowd">
+
+	<!-- DATA RANGE D01: SALESFORCE CURRENTLY REQUIRES A VARIABLE TO BE CREATED TO HOLD EACH OF THE VALUES-->
+	<apex:variable value="{!line.columns['A'].values['A']}" var="DV1AA"/>
+	<apex:variable value="{!line.columns['B'].values['A']}" var="DV1BA"/>
+	<apex:variable value="{!line.columns['C'].values['A']}" var="DV1CA"/>
+	<apex:variable value="{!line.columns['D'].values['A']}" var="DV1DA"/>
+	<apex:variable value="{!line.columns['E'].values['A']}" var="DV1EA"/>
+	<apex:variable value="{!line.columns['F'].values['A']}" var="DV1FA"/>
+	<apex:variable value="{!line.columns['G'].values['A']}" var="DV1GA"/>
+	<apex:variable value="{!line.columns['H'].values['A']}" var="DV1HA"/>
+	<apex:variable value="{!line.columns['I'].values['A']}" var="DV1IA"/>
+	<apex:variable value="{!line.columns['J'].values['A']}" var="DV1JA"/>
+	<apex:variable value="{!line.columns['K'].values['A']}" var="DV1KA"/>
+	<apex:variable value="{!line.columns['L'].values['A']}" var="DV1LA"/>
+	<apex:variable value="{!line.columns['M'].values['A']}" var="DV1MA"/>
+	<apex:variable value="{!line.columns['Y'].values['A']}" var="DV1YA"/>
+	<apex:variable value="{!line.columns['Z'].values['A']}" var="DV1ZA"/>
+
+	<!-- DATA RANGE D01: ONLY USE THE GROUP 01 LABEL TO DISPLAY ON THE RESULTS -->
+	<td class="ffrgridrowlabeld">{!label['L20']}</td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1AA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1BA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1CA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1DA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1EA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1FA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1GA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1HA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1IA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1JA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1KA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1LA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1MA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1YA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV1ZA}"/></td>
+
+	</tr>
+
+	<!-- DATA RANGE D01: WE NEED TO TRACK DATA RANGE 1 VALUES (FOR AUDIT CALCULATIONS) -->
+	<apex:variable value="{!transactionsValueColumnA+DV1AA}" var="transactionsValueColumnA"/>
+	<apex:variable value="{!transactionsValueColumnB+DV1BA}" var="transactionsValueColumnB"/>
+	<apex:variable value="{!transactionsValueColumnC+DV1CA}" var="transactionsValueColumnC"/>
+	<apex:variable value="{!transactionsValueColumnD+DV1DA}" var="transactionsValueColumnD"/>
+	<apex:variable value="{!transactionsValueColumnE+DV1EA}" var="transactionsValueColumnE"/>
+	<apex:variable value="{!transactionsValueColumnF+DV1FA}" var="transactionsValueColumnF"/>
+	<apex:variable value="{!transactionsValueColumnG+DV1GA}" var="transactionsValueColumnG"/>
+	<apex:variable value="{!transactionsValueColumnH+DV1HA}" var="transactionsValueColumnH"/>
+	<apex:variable value="{!transactionsValueColumnI+DV1IA}" var="transactionsValueColumnI"/>
+	<apex:variable value="{!transactionsValueColumnJ+DV1JA}" var="transactionsValueColumnJ"/>
+	<apex:variable value="{!transactionsValueColumnK+DV1KA}" var="transactionsValueColumnK"/>
+	<apex:variable value="{!transactionsValueColumnL+DV1LA}" var="transactionsValueColumnL"/>
+	<apex:variable value="{!transactionsValueColumnM+DV1MA}" var="transactionsValueColumnM"/>
+	<apex:variable value="{!transactionsValueColumnY+DV1YA}" var="transactionsValueColumnY"/>
+	<apex:variable value="{!transactionsValueColumnZ+DV1ZA}" var="transactionsValueColumnZ"/>
+
+	<!-- DATA RANGE D01: END THE REPEAT TAGS USED TO GENERATE THE VALUES FOR THE LINES AND COLUMNS -->
+	</apex:repeat>
+	</apex:repeat>
+
+	<!-- DATA RANGE D01 END -->
+
+	<!-- DATA RANGE D02 START -->
+	<!-- DATA RANGE D02: ITERATE OVER THE ROWS AND LINES IN THE REPORT ENGINE. NOTE THERE ARE ALSO 2 REPEAT END TAGS AT THE END -->
+	<apex:repeat value="{!dataRange2.rowList}" var="row" >
+	<apex:repeat value="{!row.lineList}" var="line" >
+	<tr class="ffrgridrowd">
+
+	<!-- DATA RANGE D02: SALESFORCE CURRENTLY REQUIRES A VARIABLE TO BE CREATED TO HOLD THE EACH OF THE VALUES-->
+	<apex:variable value="{!line.columns['A'].values['A']}" var="DV2AA"/>
+	<apex:variable value="{!line.columns['A'].values['B']}" var="DV2AB"/>
+	<apex:variable value="{!line.columns['A'].values['C']}" var="DV2AC"/>
+	<apex:variable value="{!line.columns['A'].values['D']}" var="DV2AD"/>
+	<apex:variable value="{!line.columns['A'].values['E']}" var="DV2AE"/>
+	<apex:variable value="{!line.columns['A'].values['F']}" var="DV2AF"/>
+	<apex:variable value="{!line.columns['A'].values['G']}" var="DV2AG"/>
+	<apex:variable value="{!line.columns['A'].values['H']}" var="DV2AH"/>
+	<apex:variable value="{!line.columns['A'].values['I']}" var="DV2AI"/>
+	<apex:variable value="{!line.columns['A'].values['J']}" var="DV2AJ"/>
+	<apex:variable value="{!line.columns['A'].values['K']}" var="DV2AK"/>
+	<apex:variable value="{!line.columns['A'].values['L']}" var="DV2AL"/>
+	<apex:variable value="{!line.columns['A'].values['M']}" var="DV2AM"/>
+	<apex:variable value="{!line.columns['A'].values['Y']}" var="DV2AY"/>
+	<apex:variable value="{!line.columns['A'].values['Z']}" var="DV2AZ"/>
+
+	<!-- DATA RANGE D02: ONLY USE THE GROUP 01 LABEL TO DISPLAY ON THE RESULTS -->
+	<td class="ffrgridrowlabeld">{!label['L21']}</td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AB}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AC}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AD}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AE}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AF}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AG}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AH}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AI}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AJ}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AK}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AL}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AM}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AY}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV2AZ}"/></td>
+
+	</tr>
+
+	<!-- DATA RANGE D02: WE NEED TO TRACK DATA RANGE 2 VALUES (FOR AUDIT CALCULATIONS) -->
+	<apex:variable value="{!budgetsAndBalancesValueColumnA+DV2AA}" var="budgetsAndBalancesValueColumnA"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnB+DV2AB}" var="budgetsAndBalancesValueColumnB"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnC+DV2AC}" var="budgetsAndBalancesValueColumnC"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnD+DV2AD}" var="budgetsAndBalancesValueColumnD"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnE+DV2AE}" var="budgetsAndBalancesValueColumnE"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnF+DV2AF}" var="budgetsAndBalancesValueColumnF"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnG+DV2AG}" var="budgetsAndBalancesValueColumnG"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnH+DV2AH}" var="budgetsAndBalancesValueColumnH"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnI+DV2AI}" var="budgetsAndBalancesValueColumnI"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnJ+DV2AJ}" var="budgetsAndBalancesValueColumnJ"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnK+DV2AK}" var="budgetsAndBalancesValueColumnK"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnL+DV2AL}" var="budgetsAndBalancesValueColumnL"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnM+DV2AM}" var="budgetsAndBalancesValueColumnM"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnY+DV2AY}" var="budgetsAndBalancesValueColumnY"/>
+	<apex:variable value="{!budgetsAndBalancesValueColumnZ+DV2AZ}" var="budgetsAndBalancesValueColumnZ"/>
+
+	<!-- END THE REPEAT TAGS USED TO GENERATE THE VALUES FOR THE LINES AND COLUMNS -->
+	</apex:repeat>
+	</apex:repeat>
+
+	<!-- DATA RANGE D02 END -->
+
+	<!-- DATA RANGE D03 START -->
+	<!-- DATA RANGE D03: ITERATE OVER THE ROWS AND LINES IN THE REPORT ENGINE. NOTE THERE ARE ALSO 2 REPEAT END TAGS AT THE END -->
+	<apex:repeat value="{!dataRange3.rowList}" var="row" >
+	<apex:repeat value="{!row.lineList}" var="line" >
+	<tr class="ffrgridrowd">
+
+	<!-- DATA RANGE D03: SALESFORCE CURRENTLY REQUIRES A VARIABLE TO BE CREATED TO HOLD THE EACH OF THE VALUES-->
+	<apex:variable value="{!line.columns['A'].values['A']}" var="DV3AA"/>
+	<apex:variable value="{!line.columns['B'].values['A']}" var="DV3BA"/>
+	<apex:variable value="{!line.columns['C'].values['A']}" var="DV3CA"/>
+	<apex:variable value="{!line.columns['D'].values['A']}" var="DV3DA"/>
+	<apex:variable value="{!line.columns['E'].values['A']}" var="DV3EA"/>
+	<apex:variable value="{!line.columns['F'].values['A']}" var="DV3FA"/>
+	<apex:variable value="{!line.columns['G'].values['A']}" var="DV3GA"/>
+	<apex:variable value="{!line.columns['H'].values['A']}" var="DV3HA"/>
+	<apex:variable value="{!line.columns['I'].values['A']}" var="DV3IA"/>
+	<apex:variable value="{!line.columns['J'].values['A']}" var="DV3JA"/>
+	<apex:variable value="{!line.columns['K'].values['A']}" var="DV3KA"/>
+	<apex:variable value="{!line.columns['L'].values['A']}" var="DV3LA"/>
+	<apex:variable value="{!line.columns['M'].values['A']}" var="DV3MA"/>
+	<apex:variable value="{!line.columns['Y'].values['A']}" var="DV3YA"/>
+	<apex:variable value="{!line.columns['Z'].values['A']}" var="DV3ZA"/>
+
+	<!-- DATA RANGE D03: ONLY USE THE GROUP 01 LABEL TO DISPLAY ON THE RESULTS -->
+	<td class="ffrgridrowlabeld">{!label['L22']}</td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3AA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3BA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3CA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3DA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3EA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3FA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3GA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3HA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3IA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3JA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3KA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3LA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3MA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3YA}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN0}" value="{!DV3ZA}"/></td>
+
+	</tr>
+
+	<!-- DATA RANGE D03: WE NEED TO TRACK DATA RANGE 3 VALUES (FOR AUDIT CALCULATIONS) -->
+	<apex:variable value="{!reportingBalancesValueColumnA+DV3AA}" var="reportingBalancesValueColumnA"/>
+	<apex:variable value="{!reportingBalancesValueColumnB+DV3BA}" var="reportingBalancesValueColumnB"/>
+	<apex:variable value="{!reportingBalancesValueColumnC+DV3CA}" var="reportingBalancesValueColumnC"/>
+	<apex:variable value="{!reportingBalancesValueColumnD+DV3DA}" var="reportingBalancesValueColumnD"/>
+	<apex:variable value="{!reportingBalancesValueColumnE+DV3EA}" var="reportingBalancesValueColumnE"/>
+	<apex:variable value="{!reportingBalancesValueColumnF+DV3FA}" var="reportingBalancesValueColumnF"/>
+	<apex:variable value="{!reportingBalancesValueColumnG+DV3GA}" var="reportingBalancesValueColumnG"/>
+	<apex:variable value="{!reportingBalancesValueColumnH+DV3HA}" var="reportingBalancesValueColumnH"/>
+	<apex:variable value="{!reportingBalancesValueColumnI+DV3IA}" var="reportingBalancesValueColumnI"/>
+	<apex:variable value="{!reportingBalancesValueColumnJ+DV3JA}" var="reportingBalancesValueColumnJ"/>
+	<apex:variable value="{!reportingBalancesValueColumnK+DV3KA}" var="reportingBalancesValueColumnK"/>
+	<apex:variable value="{!reportingBalancesValueColumnL+DV3LA}" var="reportingBalancesValueColumnL"/>
+	<apex:variable value="{!reportingBalancesValueColumnM+DV3MA}" var="reportingBalancesValueColumnM"/>
+	<apex:variable value="{!reportingBalancesValueColumnY+DV3YA}" var="reportingBalancesValueColumnY"/>
+	<apex:variable value="{!reportingBalancesValueColumnZ+DV3ZA}" var="reportingBalancesValueColumnZ"/>
+
+	<!-- DATA RANGE D03: END THE REPEAT TAGS USED TO GENERATE THE VALUES FOR THE LINES AND COLUMNS -->
+	</apex:repeat>
+	</apex:repeat>
+
+	<!-- INSERT A SPACE BEFORE THE NEXT SECTION -->
+	<tr><td class="ffrgridspacer"></td></tr>
+
+	<!-- AUDIT 1: COMPARE DR01 vs DR02 -->
+	<tr>
+	<td class="ffrgridrowlabeld">{!label['L24']}</td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnA-budgetsAndBalancesValueColumnA)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnB-budgetsAndBalancesValueColumnB)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnC-budgetsAndBalancesValueColumnC)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnD-budgetsAndBalancesValueColumnD)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnE-budgetsAndBalancesValueColumnE)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnF-budgetsAndBalancesValueColumnF)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnG-budgetsAndBalancesValueColumnG)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnH-budgetsAndBalancesValueColumnH)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnI-budgetsAndBalancesValueColumnI)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnJ-budgetsAndBalancesValueColumnJ)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnK-budgetsAndBalancesValueColumnK)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnL-budgetsAndBalancesValueColumnL)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnM-budgetsAndBalancesValueColumnM)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnY-budgetsAndBalancesValueColumnY)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(transactionsValueColumnZ-budgetsAndBalancesValueColumnZ)}"/></td>
+	<!-- <td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!ABS(transactionsValueColumnA-budgetsAndBalancesValueColumnA)+ABS(transactionsValueColumnB-budgetsAndBalancesValueColumnB)+ABS(transactionsValueColumnC-budgetsAndBalancesValueColumnC)+ABS(transactionsValueColumnD-budgetsAndBalancesValueColumnD)+ABS(transactionsValueColumnE-budgetsAndBalancesValueColumnE)+ABS(transactionsValueColumnF-budgetsAndBalancesValueColumnF)+ABS(transactionsValueColumnG-budgetsAndBalancesValueColumnG)+ABS(transactionsValueColumnH-budgetsAndBalancesValueColumnH)+ABS(transactionsValueColumnI-budgetsAndBalancesValueColumnI)+ABS(transactionsValueColumnJ-budgetsAndBalancesValueColumnJ)+ABS(transactionsValueColumnK-budgetsAndBalancesValueColumnK)+ABS(transactionsValueColumnL-budgetsAndBalancesValueColumnL)+ABS(transactionsValueColumnM-budgetsAndBalancesValueColumnM)+ABS(transactionsValueColumnY-budgetsAndBalancesValueColumnY)+ABS(transactionsValueColumnZ-budgetsAndBalancesValueColumnZ)}"/></td> -->
+	</tr>
+
+	<!-- AUDIT 2: COMPARE DR02 vs DR03 -->
+	<tr>
+	<td class="ffrgridrowlabeld">{!label['L25']}</td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnA-reportingBalancesValueColumnA)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnB-reportingBalancesValueColumnB)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnC-reportingBalancesValueColumnC)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnD-reportingBalancesValueColumnD)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnE-reportingBalancesValueColumnE)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnF-reportingBalancesValueColumnF)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnG-reportingBalancesValueColumnG)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnH-reportingBalancesValueColumnH)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnI-reportingBalancesValueColumnI)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnJ-reportingBalancesValueColumnJ)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnK-reportingBalancesValueColumnK)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnL-reportingBalancesValueColumnL)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnM-reportingBalancesValueColumnM)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnY-reportingBalancesValueColumnY)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(budgetsAndBalancesValueColumnZ-reportingBalancesValueColumnZ)}"/></td>
+	<!-- <td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!ABS(budgetsAndBalancesValueColumnA-reportingBalancesValueColumnA)+ABS(budgetsAndBalancesValueColumnB-reportingBalancesValueColumnB)+ABS(budgetsAndBalancesValueColumnC-reportingBalancesValueColumnC)+ABS(budgetsAndBalancesValueColumnD-reportingBalancesValueColumnD)+ABS(budgetsAndBalancesValueColumnE-reportingBalancesValueColumnE)+ABS(budgetsAndBalancesValueColumnF-reportingBalancesValueColumnF)+ABS(budgetsAndBalancesValueColumnG-reportingBalancesValueColumnG)+ABS(budgetsAndBalancesValueColumnH-reportingBalancesValueColumnH)+ABS(budgetsAndBalancesValueColumnI-reportingBalancesValueColumnI)+ABS(budgetsAndBalancesValueColumnJ-reportingBalancesValueColumnJ)+ABS(budgetsAndBalancesValueColumnK-reportingBalancesValueColumnK)+ABS(budgetsAndBalancesValueColumnL-reportingBalancesValueColumnL)+ABS(budgetsAndBalancesValueColumnM-reportingBalancesValueColumnM)+ABS(budgetsAndBalancesValueColumnY-reportingBalancesValueColumnY)+ABS(budgetsAndBalancesValueColumnZ-reportingBalancesValueColumnZ)}"/></td> -->
+	</tr>
+
+	<!-- AUDIT 3: COMPARE DR03 vs DR01 -->
+	<tr>
+	<td class="ffrgridrowlabeld">{!label['L26']}</td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnA-transactionsValueColumnA)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnB-transactionsValueColumnB)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnC-transactionsValueColumnC)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnD-transactionsValueColumnD)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnE-transactionsValueColumnE)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnF-transactionsValueColumnF)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnG-transactionsValueColumnG)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnH-transactionsValueColumnH)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnI-transactionsValueColumnI)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnJ-transactionsValueColumnJ)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnK-transactionsValueColumnK)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnL-transactionsValueColumnL)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnM-transactionsValueColumnM)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnY-transactionsValueColumnY)}"/></td>
+	<td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!(reportingBalancesValueColumnZ-transactionsValueColumnZ)}"/></td>
+	<!-- <td class="ffrgridrowd"><c:NumberFormatter pattern="{!VN2}" value="{!ABS(reportingBalancesValueColumnA-transactionsValueColumnA)+ABS(reportingBalancesValueColumnB-transactionsValueColumnB)+ABS(reportingBalancesValueColumnC-transactionsValueColumnC)+ABS(reportingBalancesValueColumnD-transactionsValueColumnD)+ABS(reportingBalancesValueColumnE-transactionsValueColumnE)+ABS(reportingBalancesValueColumnF-transactionsValueColumnF)+ABS(reportingBalancesValueColumnG-transactionsValueColumnG)+ABS(reportingBalancesValueColumnH-transactionsValueColumnH)+ABS(reportingBalancesValueColumnI-transactionsValueColumnI)+ABS(reportingBalancesValueColumnJ-transactionsValueColumnJ)+ABS(reportingBalancesValueColumnK-transactionsValueColumnK)+ABS(reportingBalancesValueColumnL-transactionsValueColumnL)+ABS(reportingBalancesValueColumnM-transactionsValueColumnM)+ABS(reportingBalancesValueColumnY-transactionsValueColumnY)+ABS(reportingBalancesValueColumnZ-transactionsValueColumnZ)}"/></td> -->
+	</tr>
+
+	<!-- INSERT A SPACE BEFORE THE NEXT SECTION -->
+	<tr><td class="ffrgridspacer"></td></tr>
+	</table>
+
+	<!-- AUDIT MESSAGES SECTION -->
+	<table class="ffgridd">
+
+	<!-- SET ABSOLUTE AUDIT VALUES AS VARIABLES (FOR EASE OF USE) -->
+	<apex:variable value="{!ABS(transactionsValueColumnA-budgetsAndBalancesValueColumnA)+ABS(transactionsValueColumnB-budgetsAndBalancesValueColumnB)+ABS(transactionsValueColumnC-budgetsAndBalancesValueColumnC)+ABS(transactionsValueColumnD-budgetsAndBalancesValueColumnD)+ABS(transactionsValueColumnE-budgetsAndBalancesValueColumnE)+ABS(transactionsValueColumnF-budgetsAndBalancesValueColumnF)+ABS(transactionsValueColumnG-budgetsAndBalancesValueColumnG)+ABS(transactionsValueColumnH-budgetsAndBalancesValueColumnH)+ABS(transactionsValueColumnI-budgetsAndBalancesValueColumnI)+ABS(transactionsValueColumnJ-budgetsAndBalancesValueColumnJ)+ABS(transactionsValueColumnK-budgetsAndBalancesValueColumnK)+ABS(transactionsValueColumnL-budgetsAndBalancesValueColumnL)+ABS(transactionsValueColumnM-budgetsAndBalancesValueColumnM)+ABS(transactionsValueColumnY-budgetsAndBalancesValueColumnY)+ABS(transactionsValueColumnZ-budgetsAndBalancesValueColumnZ)}" var="Audit1Value"/>
+	<apex:variable value="{!ABS(budgetsAndBalancesValueColumnA-reportingBalancesValueColumnA)+ABS(budgetsAndBalancesValueColumnB-reportingBalancesValueColumnB)+ABS(budgetsAndBalancesValueColumnC-reportingBalancesValueColumnC)+ABS(budgetsAndBalancesValueColumnD-reportingBalancesValueColumnD)+ABS(budgetsAndBalancesValueColumnE-reportingBalancesValueColumnE)+ABS(budgetsAndBalancesValueColumnF-reportingBalancesValueColumnF)+ABS(budgetsAndBalancesValueColumnG-reportingBalancesValueColumnG)+ABS(budgetsAndBalancesValueColumnH-reportingBalancesValueColumnH)+ABS(budgetsAndBalancesValueColumnI-reportingBalancesValueColumnI)+ABS(budgetsAndBalancesValueColumnJ-reportingBalancesValueColumnJ)+ABS(budgetsAndBalancesValueColumnK-reportingBalancesValueColumnK)+ABS(budgetsAndBalancesValueColumnL-reportingBalancesValueColumnL)+ABS(budgetsAndBalancesValueColumnM-reportingBalancesValueColumnM)+ABS(budgetsAndBalancesValueColumnY-reportingBalancesValueColumnY)+ABS(budgetsAndBalancesValueColumnZ-reportingBalancesValueColumnZ)}" var="Audit2Value"/>
+	<apex:variable value="{!ABS(reportingBalancesValueColumnA-transactionsValueColumnA)+ABS(reportingBalancesValueColumnB-transactionsValueColumnB)+ABS(reportingBalancesValueColumnC-transactionsValueColumnC)+ABS(reportingBalancesValueColumnD-transactionsValueColumnD)+ABS(reportingBalancesValueColumnE-transactionsValueColumnE)+ABS(reportingBalancesValueColumnF-transactionsValueColumnF)+ABS(reportingBalancesValueColumnG-transactionsValueColumnG)+ABS(reportingBalancesValueColumnH-transactionsValueColumnH)+ABS(reportingBalancesValueColumnI-transactionsValueColumnI)+ABS(reportingBalancesValueColumnJ-transactionsValueColumnJ)+ABS(reportingBalancesValueColumnK-transactionsValueColumnK)+ABS(reportingBalancesValueColumnL-transactionsValueColumnL)+ABS(reportingBalancesValueColumnM-transactionsValueColumnM)+ABS(reportingBalancesValueColumnY-transactionsValueColumnY)+ABS(reportingBalancesValueColumnZ-transactionsValueColumnZ)}" var="Audit3Value"/>
+
+	<!-- AUDIT MESSAGES: AUDIT 1 -->
+	<!-- THE LABELS FOR THIS SECTION ARE ONLY DISPLAYED ON THE REPORT IF THERE ARE ANY DISCREPANCIES BETWEEN TRANSACTIONS AND BUDGETS & BALANCES -->
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><th><h1 class="ffrname">{!label['L30']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L31']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L32']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L33']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L34']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L35']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L36']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L37']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L38']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L39']}</td></tr></apex:outputPanel>
+
+	<!-- AUDIT MESSAGES: AUDIT 2 -->
+	<!-- THE LABELS FOR THIS SECTION ARE ONLY DISPLAYED ON THE REPORT IF THERE ARE ANY DISCREPANCIES BETWEEN BUDGETS & BALANCES AND REPORTING BALANCES -->
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><th><h1 class="ffrname">{!label['L40']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L41']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L42']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L43']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L44']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L45']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L46']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L47']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L48']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit2Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L49']}</td></tr></apex:outputPanel>
+
+	<!-- AUDIT MESSAGES: AUDIT 3 -->
+	<!-- THE LABELS FOR THIS SECTION ARE ONLY DISPLAYED ON THE REPORT IF THERE ARE ANY DISCREPANCIES BETWEEN REPORTING BALANCES AND TRANSACTIONS -->
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><th><h1 class="ffrname">{!label['L50']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrcalcsumlabeld">{!label['L51']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L52']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L53']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L54']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L55']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L56']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L57']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L58']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit3Value!=0}"><tr><td class="ffrgridrowlabeld">{!label['L59']}</td></tr></apex:outputPanel>
+
+	<!-- AUDIT MESSAGES: NO AUDIT ISSUES -->
+	<!-- THE LABELS FOR THIS SECTION ARE ONLY DISPLAYED ON THE REPORT IF THERE ARE NO DISCREPANCIES BETWEEN NEITHER OF THE 3 OBJECTS -->
+	<apex:outputPanel layout="none" rendered="{!Audit1Value=0 && Audit2Value=0 && Audit3Value=0}"><tr><th><h1 class="ffrname">{!label['L60']}</h1></th></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value=0 && Audit2Value=0 && Audit3Value=0}"><tr><td class="ffrcalcsumlabeld">{!label['L61']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value=0 && Audit2Value=0 && Audit3Value=0}"><tr><td class="ffrgridrowlabeld">{!label['L62']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value=0 && Audit2Value=0 && Audit3Value=0}"><tr><td class="ffrgridrowlabeld">{!label['L63']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value=0 && Audit2Value=0 && Audit3Value=0}"><tr><td class="ffrgridrowlabeld">{!label['L64']}</td></tr></apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!Audit1Value=0 && Audit2Value=0 && Audit3Value=0}"><tr><td class="ffrgridrowlabeld">{!label['L65']}</td></tr></apex:outputPanel>
+
+	</table>
+</apex:outputpanel>
+
+<!-- REGION 06: REPORT CHATTER START -->
+<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

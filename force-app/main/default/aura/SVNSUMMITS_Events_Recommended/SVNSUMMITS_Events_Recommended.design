@@ -1,0 +1,29 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component >
+		<design:attribute name="debugMode"
+		                  label="Debug Mode"
+		                  description="Enable/disable debug mode"/>
+	  	<design:attribute name="displayMode"
+	                      datasource="Full,Compact"
+	                      label="Display Mode"
+	                      description="Select full to display all information or compact to minimize the amount of information displayed (great for sidebars)" />
+    	<design:attribute name="titletext"
+	                      label="Title Text"
+	                      description="Recommended Title"/>
+    	<design:attribute name="numberofresults"
+	                      label="Number of results"
+	                      description="Number of Results to display"/>
+		<design:attribute name="listSize"
+		                  label="Number of events Per Page" description="Number of events to show in list" />
+    	<design:attribute name="sortBy"
+	                      label="Sort By"
+	                      datasource="Upcoming, Top Attendance, Closest"
+	                      description="Sort By"/>
+		<design:attribute name="filterOn"
+		                  label="Filter On"
+		                  datasource="None, Search Term, Topic Value, My Events"
+		                  description="Filter On" />
+    	<design:attribute name="eventDetailURL"
+	                      label="Event Detail URL"
+	                      description="URL for event detail page"/>
+</design:component>

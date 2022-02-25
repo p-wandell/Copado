@@ -1,0 +1,233 @@
+<template>
+    <center>
+        <template if:true={largeModal}>
+            <div class="contentLarge">
+                <template if:true={layoutOne}>
+                    <div class="slds-p-bottom_small">
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <img class="border" src={imageSrc}>
+                        </template>
+                    </div>
+                    <div>
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div class="descriptText">
+                        <template if:true={leftAlign}>
+                            <div class="slds-text-align_left">
+                                <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                            </div>
+                        </template>
+                        <template if:false={leftAlign}>
+                            <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                        </template>
+                    </div>
+                </template>
+                <template if:true={layoutTwo}>
+                    <div class="slds-p-bottom_small">
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div class="slds-p-bottom_small descriptText">
+                        <template if:true={leftAlign}>
+                            <div class="slds-text-align_left">
+                                <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                            </div>
+                        </template>
+                        <template if:false={leftAlign}>
+                            <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                        </template>
+                    </div>
+                    <div>
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <template if:true={borderOnElement}>
+                                <img class="border" src={imageSrc}>
+                            </template>
+                        </template>
+                    </div>
+                </template>
+                <template if:true={layoutThree}>
+                    <div class="slds-p-bottom_small">
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div class="slds-p-bottom_small">
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <template if:true={borderOnElement}>
+                                <img class="border" src={imageSrc}>
+                            </template>
+                        </template>
+                    </div>
+                    <div class="descriptText">
+                        <template if:true={leftAlign}>
+                            <div class="slds-text-align_left">
+                                <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                            </div>
+                        </template>
+                        <template if:false={leftAlign}>
+                            <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                        </template>
+                    </div>
+                </template>
+                <template if:true={hasNPages}>
+                    <template if:true={hasFieldApiName}>
+                        <lightning-input type="checkbox" label={showAgainMessage} class="slds-rich-text-editor__output"
+                            onchange={handleValue} checked={isChecked}></lightning-input>
+                    </template>
+
+                </template>
+            </div>
+        </template>
+        <template if:true={smallModal}>
+            <div class="contentSmall">
+                <template if:true={layoutOne}>
+                    <div class="slds-p-bottom_small">
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <template if:true={borderOnElement}>
+                                <img class="border" src={imageSrc}>
+                            </template>
+                        </template>
+                    </div>
+                    <div>
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div class="descriptText">
+                        <template if:true={leftAlign}>
+                            <div class="slds-text-align_left">
+                                <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                            </div>
+                        </template>
+                        <template if:false={leftAlign}>
+                            <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                        </template>
+                    </div>
+                </template>
+                <template if:true={layoutTwo}>
+                    <div>
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div class="slds-p-bottom_small descriptText">
+                        <template if:true={leftAlign}>
+                            <div class="slds-text-align_left">
+                                <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                            </div>
+                        </template>
+                        <template if:false={leftAlign}>
+                            <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                        </template>
+                    </div>
+                    <div>
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <template if:true={borderOnElement}>
+                                <img class="border" src={imageSrc}>
+                            </template>
+                        </template>
+                    </div>
+                </template>
+                <template if:true={layoutThree}>
+                    <div class="slds-p-bottom_small">
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div class="slds-p-bottom_small">
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <template if:true={borderOnOne}>
+                                <img class="border" src={imageSrc}>
+                            </template>
+                        </template>
+                    </div>
+                    <div class="descriptText">
+                        <template if:true={leftAlign}>
+                            <div class="slds-text-align_left">
+                                <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                            </div>
+                        </template>
+                        <template if:false={leftAlign}>
+                            <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                        </template>
+                    </div>
+                </template>
+                <template if:true={hasOnePage}>
+                    <template if:true={hasFieldApiName}>
+                        <lightning-input type="checkbox" label={showAgainMessage} class="slds-rich-text-editor__output"
+                            onchange={handleValue} checked={isChecked}></lightning-input>
+                    </template>
+
+                </template>
+            </div>
+        </template>
+        <template if:true={mobileModal}>
+            <div class="contentMobile">
+                <template if:true={layoutOne}>
+                    <div class="slds-p-bottom_small">
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <img class="border" src={imageSrc}>
+                        </template>
+                    </div>
+                    <div>
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div>
+                        <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                    </div>
+                </template>
+                <template if:true={layoutTwo}>
+                    <div>
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div class="slds-p-bottom_small">
+                        <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                    </div>
+                    <div>
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <img class="border" src={imageSrc}>
+                        </template>
+                    </div>
+                </template>
+                <template if:true={layoutThree}>
+                    <div class="slds-p-bottom_small">
+                        <lightning-formatted-rich-text class="text" value={title}></lightning-formatted-rich-text>
+                    </div>
+                    <div class="slds-p-bottom_small">
+                        <template if:false={borderOn}>
+                            <img src={imageSrc}>
+                        </template>
+                        <template if:true={borderOn}>
+                            <img class="border" src={imageSrc}>
+                        </template>
+                    </div>
+                    <div>
+                        <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                    </div>
+                </template>
+                <template if:true={hasOnePage}>
+                    <template if:true={hasFieldApiName}>
+                        <lightning-input type="checkbox" label={showAgainMessage} class="slds-rich-text-editor__output"
+                            onchange={handleValue} checked={isChecked}></lightning-input>
+                    </template>
+
+                </template>
+            </div>
+        </template>
+    </center>
+</template>

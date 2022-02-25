@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Software_Pymt_Terms__c</fullName>
+    <externalId>false</externalId>
+    <label>Retired - SW Pymt Terms</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Software_Type__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Annual Payments</fullName>
+                <default>false</default>
+                <label>Annual Payments</label>
+            </value>
+            <value>
+                <fullName>Upfront Payment</fullName>
+                <default>false</default>
+                <label>Upfront Payment</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Resell</controllingFieldValue>
+            <valueName>Annual Payments</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Resell</controllingFieldValue>
+            <valueName>Upfront Payment</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

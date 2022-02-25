@@ -1,0 +1,5 @@
+<apex:page standardController="fferpcore__MessagingSubscription__c" extensions="fferpcore.SubscriptionDescriptionController,fferpcore.SubscriptionController,fferpcore.EndPointController,fferpcore.SubscriptionFiltersController" lightningStylesheets="true">
+
+    <c:MessagingSubscriptionSenchaLauncher subscriptionId="{!fferpcore__MessagingSubscription__c.Id}" selectedView="Description"/>
+
+</apex:page>

@@ -1,0 +1,13 @@
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingDefinitionConfirmController" lightningStylesheets="true">
+	<apex:form >
+		<apex:sectionHeader title="{!TitleText}" help="{!helpLink}"/>
+		<apex:pageBlock >
+			<apex:PageMessages />
+
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!open}" value="{!$Label.ffr__reportingdefinitionconfirmpagebuttonopen}"/>
+				<apex:commandButton action="{!cancel}" value="{!$Label.ffr__reportingdefinitionconfirmpagebuttonfinish}"/> 
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

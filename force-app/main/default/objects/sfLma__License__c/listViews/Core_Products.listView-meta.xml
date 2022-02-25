@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Core_Products</fullName>
+    <columns>NAME</columns>
+    <columns>sfLma__Package__c</columns>
+    <columns>sfLma__Package_Version__c</columns>
+    <columns>sfLma__Package_Version_Number__c</columns>
+    <columns>sfLma__Org_Edition__c</columns>
+    <columns>sfLma__Org_Type__c</columns>
+    <columns>sfLma__Org_Status__c</columns>
+    <columns>sfLma__Status__c</columns>
+    <columns>sfLma__License_Status__c</columns>
+    <columns>sfLma__License_Type__c</columns>
+    <columns>sfLma__Install_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>sfLma__Package__c</field>
+        <operation>contains</operation>
+        <value>News,Events,Ideas,Groups,Members</value>
+    </filters>
+    <filters>
+        <field>sfLma__Status__c</field>
+        <operation>equals</operation>
+        <value>Active</value>
+    </filters>
+    <filters>
+        <field>sfLma__Is_Sandbox__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>sfLma__Org_Edition__c</field>
+        <operation>notEqual</operation>
+        <value>Developer Edition</value>
+    </filters>
+    <filters>
+        <field>sfLma__Org_Status__c</field>
+        <operation>notEqual</operation>
+        <value>TRIAL,SUSPENDED,deleted,free,hold,SIGNING_UP</value>
+    </filters>
+    <label>Active 7S Mgd Core Products (Production)</label>
+</ListView>

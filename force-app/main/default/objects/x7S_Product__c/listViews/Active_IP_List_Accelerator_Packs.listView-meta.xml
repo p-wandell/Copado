@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_IP_List_Accelerator_Packs</fullName>
+    <columns>NAME</columns>
+    <columns>Price_Short__c</columns>
+    <columns>Slides_Formula__c</columns>
+    <columns>Video_Formula__c</columns>
+    <columns>Guide_Formula__c</columns>
+    <columns>Battle_Card_Formula__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Active__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Launch_Date__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <filters>
+        <field>Bundle__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Product_Code__c</field>
+        <operation>startsWith</operation>
+        <value>Pack</value>
+    </filters>
+    <label>Active IP List: Accelerator Packs</label>
+</ListView>

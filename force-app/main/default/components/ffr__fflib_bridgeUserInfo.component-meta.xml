@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexComponent xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>41.0</apiVersion>
+    <description>This component avails the UserInfo methods and return values in JavaScript context. Client-side code needs this for language- or locale-interacting logic as those values are not available through the Visualforce $User global variable.</description>
+    <label>UserInfo bridging component</label>
+    <packageVersions>
+        <majorNumber>2018</majorNumber>
+        <minorNumber>403</minorNumber>
+        <namespace>fferpcore</namespace>
+    </packageVersions>
+</ApexComponent>

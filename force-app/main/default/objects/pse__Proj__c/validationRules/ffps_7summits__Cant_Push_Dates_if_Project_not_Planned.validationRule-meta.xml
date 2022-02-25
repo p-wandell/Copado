@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffps_7summits__Cant_Push_Dates_if_Project_not_Planned</fullName>
+    <active>true</active>
+    <description>If the Project Stage ≠ Planned, you cannot change the # of Weeks Pushed field.</description>
+    <errorConditionFormula>NOT(ISPICKVAL(pse__Stage__c, &apos;Planned&apos;)) &amp;&amp;  ISCHANGED(ffps_7summits__Weeks_Pushed__c)</errorConditionFormula>
+    <errorMessage>If the Project Stage ≠ Planned, you cannot change the # of Weeks Pushed field.</errorMessage>
+</ValidationRule>

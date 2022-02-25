@@ -1,0 +1,66 @@
+<apex:page standardController="ffct__BundleJobItem__c" sidebar="true" standardStylesheets="true" extensions="ffct.BundleJobItemControllerExtension" action="{!isToolMustBeActivated}">
+  <apex:form id="form">
+  <apex:sectionheader title="Bundle Job Item" help="helploader?topicid=1033"/>
+  	<apex:pagemessages id="pgMsg"/>
+  	<apex:actionStatus id="eventStatus"  >
+         <apex:facet name="start">
+          <apex:outputPanel >
+                        <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                            <div style="position:absolute;top:50%;left:50%">
+                                <apex:image value="/img/loading32.gif"></apex:image>
+                            </div>
+                        </div>
+           </apex:outputPanel>
+        </apex:facet>   
+    </apex:actionStatus>
+		<apex:pageBlock >
+			<apex:pageblockbuttons location="bottom">
+				<apex:commandbutton action="{!save}" value="{!$Label.ffct__save}" rerender="pgMsg" />
+				<apex:commandbutton action="{!cancel}" value="{!$Label.ffct__cancel}" />
+			</apex:pageblockbuttons>
+			<apex:pageBlockSection columns="2">
+				<apex:inputfield required="true" value="{!BundleJobItem.Name}" />
+				<apex:outputfield value="{!BundleJobItem.ffct__BundleJob__c}" />
+			</apex:pageBlockSection>
+			<apex:actionRegion >
+			<apex:pageBlockSection columns="2">
+				<apex:selectList value="{!BundleJobItem.ffct__BundleSource__c}" multiselect="false" size="1">
+						<apex:selectOption itemValue="gdrive" itemlabel="{!$Label.ffct__googledrive}" />
+						<apex:selectOption itemValue="sforg" itemlabel="{!$Label.ffct__organization}" />
+						<apex:actionSupport id="OptSelection" action="{!resetBundleDetailInfo}" event="onchange" status="eventStatus" rerender="bundleSec, bundleInfoPanel, pgMsg, tagsection" />
+				</apex:selectList>
+			</apex:pageBlockSection>
+			</apex:actionRegion>
+			<apex:actionRegion >
+			<apex:pageBlockSection id="tagsection" columns="1">
+				<apex:pageBlockSectionItem rendered="{!BundleJobItem.ffct__BundleSource__c == '' || BundleJobItem.ffct__BundleSource__c == 'gdrive'}">
+					<apex:outputLabel value="{!$Label.ffct__tags}" for="bundleTags"/>
+                    <apex:selectList value="{!TagSelected}" multiselect="false" size="1">
+						<apex:selectOption itemValue="" itemLabel="{!$Label.ffct__filterbytag}" />
+						<apex:selectOptions value="{!TagsForBundle}" rendered="{!TagsForBundle!=null}"/>
+						<apex:actionSupport id="OptSelection"  action="{!populateFilesFromGDrive}" event="onchange" status="eventStatus" rerender="bundleSec, bundleInfoPanel, pgMsg" />
+				</apex:selectList>
+				</apex:pageBlockSectionItem>		
+			</apex:pageBlockSection>
+			</apex:actionRegion>
+			
+			<apex:actionRegion >
+				<apex:pageBlockSection id="bundleSec" columns="1">
+					<apex:selectList value="{!BundleJobItem.ffct__Bundle__c}" size="1" rendered="{!BundleJobItem.ffct__BundleSource__c == '' || BundleJobItem.ffct__BundleSource__c == 'gdrive'}">						
+						<apex:selectOption itemValue="" itemLabel="{!$Label.ffct__selectbundlefile}" />
+						<apex:selectOptions value="{!DriveBundles}" rendered="{!DriveBundles!=null}"/>
+						<apex:actionSupport action="{!retrieveSourceBundleInfo}" event="onchange" status="eventStatus" rerender="bundleInfoPanel, pgMsg, bundleSec" />
+					</apex:selectList>
+					<apex:inputField value="{!bundleCompObj.ffct__Bundle__c}" rendered="{!BundleJobItem.ffct__BundleSource__c == 'sforg'}" onchange="retrieveBundleInfoForLocalBundle();"/>
+					<apex:inputfield value="{!BundleJobItem.ffct__SkipInstalledPackageComponents__c}"  rendered="{!BundleInfo!=null && BundleInfo.InstalledPackageComponentPresent!=null && BundleInfo.InstalledPackageComponentPresent}"/>
+				</apex:pageBlockSection>
+				<apex:outputPanel id="bundleInfoPanel">
+					<apex:pageBlockSection columns="1" collapsible="false" title="{!$Label.ffct__bundledetails}" rendered="{!BundleInfo!=null && (BundleInfo.ErrorMessage==null || len(BundleInfo.ErrorMessage)==0)}" >
+         				<c:displaybundledetail bundle="{!BundleInfo.ImportBundleinfoRec}" BundleComponentDetail="{!BundleInfo.BundleComponentDetailList}" rendered="{!BundleInfo!=null && (BundleInfo.ErrorMessage==null || len(BundleInfo.ErrorMessage)==0)}" />
+         			</apex:pageBlockSection>
+         		</apex:outputPanel>
+         		<apex:actionFunction name="retrieveBundleInfoForLocalBundle" action="{!retrieveSourceBundleInfo}" status="eventStatus"  rerender="bundleInfoPanel, pgMsg, bundleSec" />
+			</apex:actionRegion>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

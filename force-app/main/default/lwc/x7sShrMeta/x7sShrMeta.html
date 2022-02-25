@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) 2020.  7Summits Inc. All rights reserved.
+  -->
+
+<!-- x7s Meta -->
+<template>
+    <template if:true={useLink}>
+        <button class={componentClass} onclick={handleClick}>
+            <template if:true={icon}>
+                <lightning-icon class="x7s-meta__icon" icon-name={icon} size={size}></lightning-icon>
+            </template>
+            <span class="x7s-meta__label">
+                <template if:false={hideCount}>
+                    <span class="x7s-meta__label-count">
+                        {count}&nbsp;
+                    </span>
+                </template>
+                <template if:false={hideLabel}>
+                    <span class="x7s-meta__label-label">
+                        {label}
+                    </span>
+                </template>
+                <slot></slot>
+            </span>
+        </button>
+    </template>
+    <template if:false={useLink}>
+        <span class={componentClass}>
+            <template if:true={icon}>
+                <lightning-icon class="x7s-meta__icon" icon-name={icon} size={size}></lightning-icon>
+            </template>
+            <span class="x7s-meta__label">
+                <template if:false={hideCount}>
+                    <span class="x7s-meta__label-count">
+                        {count}&nbsp;
+                    </span>
+                </template>
+                <template if:false={hideLabel}>
+                    <span class="x7s-meta__label-label">
+                        {label}
+                    </span>
+                </template>
+                <slot></slot>
+            </span>
+        </span>
+    </template>
+</template>

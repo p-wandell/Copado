@@ -1,0 +1,28 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+    <section data-id="adventure_stepBanner">
+        <template if:true={showTitle}>
+            <lightning-layout>
+                <lightning-layout-item size="12" class={moduleClass} style="padding-bottom: 0px;padding-top: 0px;">
+                    <h2>{stepTitle}</h2>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <lightning-layout class="slds-wrap">
+            <lightning-layout-item size="12" medium-device-size="9" class={moduleDetailClass} style="padding-bottom: 0px;padding-top: 0px;">
+                <template if:true={showSubTitle}>
+                    {stepSubtitle}
+                </template>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" medium-device-size="3" class={moduleDetailClass} style="padding-bottom: 0px;padding-top: 0px;">
+                <template if:true={showOnlyMyTaskToggle}>
+                    <lightning-input class="checkboxCss" type="toggle" label={labels.toggleButtonLabel} name="input1"
+                                     data-id="tglbtn" checked={myFilter} onchange={filterByTask}
+                                     message-toggle-active="" message-toggle-inactive=""></lightning-input>
+                </template>
+            </lightning-layout-item>
+        </lightning-layout>
+    </section>
+</template>

@@ -1,0 +1,82 @@
+<apex:page standardController="ffct__BundleJob__c" extensions="ffct.BundleJobRunController" action="{!performAction}">
+    <apex:form id="form" >
+        <apex:sectionHeader title="Run Bundle Job" help="helploader?topicid=1033"/>
+        
+        <apex:pageBlock tabStyle="BundleJobItem__c">
+        <apex:pageMessages escape="false" id="messageDiv"/>
+        
+        <apex:outputPanel id="progressDiv" layout="block" >
+            <apex:outputPanel layout="block" rendered="{!TrackStatus}">
+                <img src="{!URLFOR($Resource.progressGIF)}" />
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+            <apex:pageBlockSection rendered="{! ShowResults && BundleJobObj.BundleJobItems__r != null && BundleJobObj.BundleJobItems__r.size > 0}" >
+                <apex:pageBlockTable value="{!BundleJobObj.BundleJobItems__r}" var="record1">
+                	<apex:column headervalue="Name" width="20%">
+						<apex:commandLink action="{!displayBundleJobItemDetail}" status="eventStatus" rerender="form, bundleComponentDetail" rendered="{!record1.ffct__Processed__c || (record1.ffct__ErrorMessage__c!=null && len(record1.ffct__ErrorMessage__c)>0)}">{!record1.Name}
+                            <apex:param name="jobItemId" value="{!record1.Id}" />
+						</apex:commandLink>
+						<apex:outputText value="{!record1.Name}" rendered="{!!record1.ffct__Processed__c && (record1.ffct__ErrorMessage__c==null || len(record1.ffct__ErrorMessage__c)==0)}" />
+        			</apex:column> 
+                    <apex:column value="{!record1.ffct__Processed__c}" headerValue="Processed" width="5%"/>
+                    <apex:column value="{!record1.ffct__SkipInstalledPackageComponents__c}" headerValue="Skip Installed Packages" width="5%"/>
+                    <apex:column value="{!record1.ffct__ErrorMessage__c}" headerValue="Error" width="70%"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <br/>
+            <apex:outputLink style="padding-top:50px;color: #015BA7;" value="{!URLFOR($Action.ffct__BundleJob__c.View,BundleJobId)}" rendered="{!!TrackStatus}">
+                 {!$Label.ffct__gotobundlejob}
+            </apex:outputLink>
+        
+        	<apex:outputPanel id="bundleComponentDetail" styleClass="popupBg" layout="block" rendered="{!DisplayPopUp}">
+				<apex:outputPanel styleClass="popup" layout="block" rendered="{!DisplayPopUp}">
+					<c:displaybundleimportresult bundleImportResults="{!ComponentRecords}" bundleName="{!ImportedBundleName}"/>
+					<apex:actionStatus id="Outerstatus" startText="Redirecting...">
+						<apex:facet name="stop">
+							<apex:commandLink value="Close" action="{!closePopup}" status="Outerstatus" rerender="bundleComponentDetail, form" /> 
+                		</apex:facet>
+            		</apex:actionStatus>
+        		</apex:outputPanel>
+			</apex:outputPanel>
+        
+        <apex:outputPanel id="trackPanel" rendered="{!TrackStatus}">
+            <apex:actionPoller action="{!trackBundleJob}" interval="5" rerender="trackPanel,progressDiv,messagesDiv,form"/>
+        </apex:outputPanel>
+        </apex:pageBlock>
+        
+    </apex:form>
+    	   <!--    CSS Style    -->
+	<style type = "text/css">
+		.popup
+		{
+			background-color:white;
+            border-width: 1px;
+			border-style: solid;
+			z-index: 9999;
+			left: 50%;
+			padding:10px;
+			width: 800px;
+			margin-left: -300px;
+			opacity: 1;
+			position: absolute;
+			overflow : scroll;
+			height :70%;
+			top: 25px;
+		}
+       
+		.popupBg
+		{
+			background-color:rgba(0,0,0,0.5);
+			opacity: 1;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			z-index: 9998;   
+		}
+  
+	</style>
+<!--    End of CSS Style    -->
+</apex:page>

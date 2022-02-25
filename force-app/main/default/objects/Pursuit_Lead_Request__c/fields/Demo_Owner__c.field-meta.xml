@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Demo_Owner__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Used to designate the owner of the demo</description>
+    <externalId>false</externalId>
+    <label>Demo Owner</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Pursuit_Lead_Requests1</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

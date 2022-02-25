@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>pse__Expense_Report__c.pse__Resource__c</field>
+    </columns>
+    <columns>
+        <field>pse__Expense_Report__c.pse__Billable__c</field>
+    </columns>
+    <columns>
+        <field>pse__Expense_Report__c.pse__Total_Reimbursement_Amount__c</field>
+    </columns>
+    <columns>
+        <field>pse__Expense_Report__c.pse__First_Expense_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Expense_Report__c.pse__Last_Expense_Date__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Expense_Report__c.pse__Status__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Submitted</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Expense Reports Submitted not Approved</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$pse__Expense_Report__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Expense_Report__c.pse__First_Expense_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

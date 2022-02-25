@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AutoResponseRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <autoResponseRule>
+        <fullName>Standard</fullName>
+        <active>true</active>
+        <ruleEntry>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>ProductSupportForm</value>
+            </criteriaItems>
+            <notifyCcRecipients>false</notifyCcRecipients>
+            <senderEmail>phil.weinmeister@7summitsinc.com</senderEmail>
+            <senderName>7Summits Product Support</senderName>
+            <template>unfiled$public/IP_Product_Support_Inquiry</template>
+        </ruleEntry>
+    </autoResponseRule>
+</AutoResponseRules>

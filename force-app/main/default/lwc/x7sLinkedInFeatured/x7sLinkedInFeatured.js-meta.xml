@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S LinkedIn Featured Posts</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S LinkedIn Featured Posts</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage, lightning__RecordPage, lightningCommunity__Default">
+            <property name="title" type="String" label="Title" default="Featured LinkedIn Posts" />
+            <property name="subTitle" type="String" label="Subtitle" default="Join In The Fun!" />
+            <property name="align" type="String" label="Title Alignment" datasource="left,center,right" />
+
+            <property name="moreText" type="String" label="'See More' Link Text" />
+            <property name="moreLink" type="String" label="'See More' Link" />
+
+            <property
+                    name="postIdsList"
+                    type="String"
+                    label="LinkedIn Post IDs [comma separated]"
+                    default="6411942536339820544,6407322848192450560,6448598494562258944"/>
+            <property
+                    name="postsPerRow"
+                    type="String"
+                    label="Posts Per Row"
+                    datasource="1,2,3,4,5,6"
+                    description="When viewed on a mobile device, the row count will be stacked vertically." />
+            <property
+                    name="postHeight"
+                    type="Integer"
+                    label="Post Height (px)"
+                    default="550" />
+            <property
+                    name="useMetaData"
+                    type="Boolean"
+                    label="Use custom metadata type values for content"
+                    description="If checked, use values from configured custom metadata type record and ignore all content/post IDs in property editor." />
+            <property
+                    name="record"
+                    type="String"
+                    label="Record Name for the post URLs"
+                    description="Only applicable if using custom metadata type values for content." />
+            <property
+                    name="variant"
+                    type="String"
+                    label="Variant"
+                    datasource="default, slds-card, featured"
+                    description="Sets the style of the component wrapper."
+                    default="slds-card"/>
+            <property
+                    name="ariaComponentWrapperLabel"
+                    type="String"
+                    label="ACCESSIBILITY: Component Container ARIA Label"
+                    default="LinkedIn posts container"
+                    description="This sets the LinkedIn Feed component wrapper's ARIA label, for screen reader support. The component wrapper contains the header/subheader text (if configured) and the embedded LinkedIn posts."/>
+            <property
+                    name="ariaPostTitleLabel"
+                    type="String"
+                    label="ACCESSIBILITY: ARIA Title of iFrame Containing Post"
+                    default="LinkedIn Post"
+                    description="This sets the title of the iFrame containing the embedded LinkedIn post(s), for screen reader support."/>
+            <property
+                    name="ariaUniqueIdLabel"
+                    type="String"
+                    label="ACCESSIBILITY: Unique Id ARIA Label Text"
+                    default="Unique Id"
+                    description="This sets the text placed before a unique id (GUID) appended to the ARIA component wrapper label and post title labels. This ensures unique ARIA labels/titles even if the component is used multiple times on the same page."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

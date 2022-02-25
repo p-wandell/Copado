@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Twitter_URL__c</fullName>
+    <externalId>false</externalId>
+    <formula>hyperlink(&quot;https://twitter.com/&quot;+  Twitter__c  ,&quot;@&quot;+Twitter__c,&quot;_blank&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Twitter URL</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

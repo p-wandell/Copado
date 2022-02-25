@@ -1,0 +1,7 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="true" controller="pse.EmbedPageController">
+
+	<body class="{!bodyClass}">
+	    <apex:include pageName="{!embeddedPage}"/>
+	</body>
+
+</apex:page>

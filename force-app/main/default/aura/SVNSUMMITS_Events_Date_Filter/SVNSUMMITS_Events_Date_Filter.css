@@ -1,0 +1,15 @@
+/* Copyright ©2016-2017 7Summits Inc. All rights reserved. */
+
+.THIS .toggleClass {
+    display: none;
+}
+.THIS .toggleClass1 {
+    display: block;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    /* IE10+ CSS styles go here */
+    .THIS .select.uiDatePicker--default, .THIS .uiDatePicker--default .select {
+        padding-right: 0 !important;
+    }
+}

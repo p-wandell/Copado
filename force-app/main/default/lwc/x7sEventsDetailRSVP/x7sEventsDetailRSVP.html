@@ -1,0 +1,69 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+  -->
+<template>
+    <template if:true={notPassedEvent}>
+        <c-x7s-shr-component-wrapper 
+                custom-class={componentClass}
+                variant={variant}
+                title={willYouAttendText}
+                shaded-header>
+            <slot>
+                <div class="slds-grid slds-grid_vertical slds-wrap slds-align_absolute-center">
+
+                    <!--Attendee Count-->
+                    <div if:true={isAttendeeCount} class='slds-col slds-p-vertical_small'>
+                        <lightning-formatted-number value={attendeeCount} class="slds-text-heading--large boldStyle">
+                        </lightning-formatted-number>&nbsp;
+                        <lightning-formatted-text value={peopleAttendText} class="slds-text-color_weak slds-text-heading--small slds-p-bottom_none boldStyle">
+                        </lightning-formatted-text>
+                    </div>
+
+                    <!--Ticket Price-->
+                    <div if:true={isPaidEvent} class="slds-p-vertical_small">
+                        <div class='slds-col'>
+                            <lightning-icon icon-name="utility:money" 
+                                            alternative-text="Ticket Price" 
+                                            size="small"
+                                            title="Ticket Price">
+                            </lightning-icon>
+                            &nbsp;<lightning-formatted-text value={labels.labelTicketPrice} 
+                                            class="slds-text-heading--small slds-p-bottom_none boldStyle">
+                            </lightning-formatted-text>
+                        </div>
+                        <div class='slds-col'>
+                            <lightning-formatted-text value={eventPrice}
+                                                      class="slds-text-body_regular slds-p-left_x-large">
+                            </lightning-formatted-text>
+                        </div>
+                    </div>
+                    <!--Buttons-->
+                    <div if:true={isPaidEvent} class="slds-p-vertical_small">
+                        <div class='slds-col'>
+                            <lightning-button label={labels.labelBookEventTicket}
+                                        icon-name="utility:money" 
+                                        icon-position="left"
+                                        onclick={navigateToPaymentURL}
+                                        variant="brand">
+                            </lightning-button>
+                        </div>
+                    </div>
+
+                    <div class='slds-col'>
+                        <lightning-button-stateful
+                            label-when-off={labels.labelNo}
+                            label-when-on={labels.labelYes}
+                            label-when-hover={labels.labelWillNotAttend}
+                            icon-name-when-off="utility:add"
+                            icon-name-when-on="utility:check"
+                            icon-name-when-hover="utility:close"
+                            selected={isPresentRSVP}
+                            onclick={handleAttendClick}
+                            variant={buttonVariant}>
+                        </lightning-button-stateful>
+                    </div>
+                </div>
+            </slot>
+        </c-x7s-shr-component-wrapper>
+    </template>
+</template>

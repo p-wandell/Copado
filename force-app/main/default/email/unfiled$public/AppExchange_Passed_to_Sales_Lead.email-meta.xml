@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Blank_Letterhead</letterhead>
+    <name>AppExchange Passed to Sales Lead</name>
+    <style>freeForm</style>
+    <subject>You&apos;ve been assigned a new Lead from {!Lead.Company}</subject>
+    <textOnly>Review the AppExchange inquiry - {!Lead.LeadSource} (see below for inquiry definitions), follow up, and disposition the Customer Intro / Qualification Meeting task associated with {!Lead.Name}. For complete details on the nature of the inquiry, check the Lead&apos;s Activity History. *Please remember that you are required to perform outreach within 24 hours.
+
+Use the below link to view the Lead record
+{!Lead.Link}
+
+AppExchange inquiry definitions:
+SFDC-IN (Bolt) = Install request
+SFDC-IN (Non Bolt) = Installed
+SFDC-DM = Demo request
+SFDC-Dup-IN(DM) = Duplicate inquiry</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

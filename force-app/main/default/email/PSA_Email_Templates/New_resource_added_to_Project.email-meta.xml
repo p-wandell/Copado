@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Used to alert Project Manager when a new resource is added</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Blank_Letterhead</letterhead>
+    <name>New resource added to Project</name>
+    <style>freeForm</style>
+    <subject>{!pse__Assignment__c.pse__Project__c} : New resource added to project</subject>
+    <textOnly>For the following project {!pse__Assignment__c.pse__Project__c}, a new resource {!pse__Assignment__c.pse__Resource__c} is added by {!pse__Assignment__c.LastModifiedBy}.
+
+Link for the assignment record: {!pse__Assignment__c.Link}</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

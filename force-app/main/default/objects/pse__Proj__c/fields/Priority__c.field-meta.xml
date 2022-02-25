@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Priority__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>Sales leadership priority/ranking to schedule project</inlineHelpText>
+    <label>Priority</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>High 1</fullName>
+                <default>false</default>
+                <label>High 1</label>
+            </value>
+            <value>
+                <fullName>High 2</fullName>
+                <default>false</default>
+                <label>High 2</label>
+            </value>
+            <value>
+                <fullName>High 3</fullName>
+                <default>false</default>
+                <label>High 3</label>
+            </value>
+            <value>
+                <fullName>Medium 1</fullName>
+                <default>false</default>
+                <label>Medium 1</label>
+            </value>
+            <value>
+                <fullName>Medium 2</fullName>
+                <default>false</default>
+                <label>Medium 2</label>
+            </value>
+            <value>
+                <fullName>Medium 3</fullName>
+                <default>false</default>
+                <label>Medium 3</label>
+            </value>
+            <value>
+                <fullName>Low 1</fullName>
+                <default>false</default>
+                <label>Low 1</label>
+            </value>
+            <value>
+                <fullName>Low 2</fullName>
+                <default>false</default>
+                <label>Low 2</label>
+            </value>
+            <value>
+                <fullName>Low 3</fullName>
+                <default>false</default>
+                <label>Low 3</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

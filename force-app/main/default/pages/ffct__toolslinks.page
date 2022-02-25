@@ -1,0 +1,247 @@
+<apex:page controller="ffct.ToolLinksController" action="{!initiateActivation}">
+<script>
+function createRemoteSite()
+{
+	var binding = new XMLHttpRequest();
+    // Disable button
+    document.getElementById('createremotesitebtn').disabled = true;
+    // Calls the Metdata API from JavaScript to create the Remote Site Setting to permit Apex callouts
+    var existingRSSNames=[];
+    
+    var listRSSRequest = '<?xml version="1.0" encoding="UTF-8"?>'+
+						 '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
+						   '<env:Header>'+
+						      '<SessionHeader xmlns="http://soap.sforce.com/2006/04/metadata">'+
+						         '<sessionId>{!$Api.Session_ID}</sessionId>'+
+						      '</SessionHeader>'+
+						   '</env:Header>'+
+						   '<env:Body>'+
+						      '<listMetadata xmlns="http://soap.sforce.com/2006/04/metadata">'+
+						         '<queries>'+
+						            '<type>RemoteSiteSetting</type>'+
+						         '</queries>'+
+						         '<asOfVersion>30.0</asOfVersion>'+
+						      '</listMetadata>'+
+						   '</env:Body>'+
+						 '</env:Envelope>';
+	
+    var handler =
+        function() { 
+        	var doc = getResponseDocument(binding.responseText);
+            if(binding.readyState==4) {
+            	
+                var elements = doc.getElementsByTagName('fullName');
+                if(elements){
+                	for(var i = 0;i<elements.length;i++){
+                        existingRSSNames.push(elements.item(i).innerHTML);
+                    }
+                }
+                addRemoteSite({!RssConfig.RssJSonString},existingRSSNames);
+            }
+        };
+     makeRequest(listRSSRequest,handler,binding);					 
+}
+
+function getResponseDocument(response)
+{
+	var parser = new DOMParser();
+    var doc = null;
+    if(isIE())
+    {
+        doc  = new ActiveXObject("Microsoft.XMLDOM");
+        doc.async=false;
+        doc.loadXML(response);
+    }
+    else
+    {
+        doc  = parser.parseFromString(response, 'application/xml');
+    }
+    
+    return doc;
+}
+    
+function addRemoteSite(rssJson, existingRssNames)
+{
+	var binding = new XMLHttpRequest();
+    var metadataToCreate = '';
+    
+	for(var i=0; i<Object.keys(rssJson).length ;i++)
+    {
+    	var rssName = Object.keys(rssJson)[i];
+        var newRssName = rssName;
+        var index=0;
+        while(existingRssNames){
+        	
+            if(existingRssNames.indexOf(newRssName)==-1)
+            {
+                break;
+            }    
+            newRssName=rssName+'_'+index;
+            index++;
+        }
+                     
+    	metadataToCreate = metadataToCreate + '<metadata xsi:type="RemoteSiteSetting">' +
+                        '<fullName>'+newRssName+'</fullName>' +
+                        '<description>Metadata API Remote Site Setting for Consultant Tools </description>' +
+                        '<disableProtocolSecurity>false</disableProtocolSecurity>' +
+                        '<isActive>true</isActive>' +
+                        '<url>https://' + rssJson[rssName]+'</url>' +
+                    '</metadata>' ;
+    }
+    var request =
+        '<?xml version="1.0" encoding="utf-8"?>' +
+        '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
+            '<env:Header>' +
+                '<urn:SessionHeader xmlns:urn="http://soap.sforce.com/2006/04/metadata">' +
+                    '<urn:sessionId>{!$Api.Session_ID}</urn:sessionId>' +
+                '</urn:SessionHeader>' +
+                '<urn:AllOrNoneHeader xmlns:urn="http://soap.sforce.com/2006/04/metadata">' +
+                	'<urn:allOrNone>true</urn:allOrNone>' +
+                '</urn:AllOrNoneHeader>' +	
+            '</env:Header>' +
+            '<env:Body>' +
+                '<createMetadata xmlns="http://soap.sforce.com/2006/04/metadata">' +
+                    metadataToCreate +
+                '</createMetadata>' +
+            '</env:Body>' +
+        '</env:Envelope>';
+    var handler =
+        function() { 
+            if(binding.readyState==4) {
+                var doc = getResponseDocument(binding.responseText);
+                var errors = doc.getElementsByTagName('errors');
+                var fullName = doc.getElementsByTagName('fullName');
+                var messageText = '';
+                for(var errorIdx = 0; errorIdx < errors.length; errorIdx++)
+                    messageText+= fullName.item(errorIdx).innerHTML + " " +  errors.item(errorIdx).getElementsByTagName('message').item(0).innerHTML + '<br>';
+                displayMetadataResponse(messageText);
+            }
+        }
+    makeRequest(request,handler,binding);
+}   
+
+function makeRequest(request,handler,binding){
+	binding.open('POST', 'https://{!RssConfig.Host}/services/Soap/m/35.0');
+    binding.setRequestHeader('SOAPAction','""');
+    binding.setRequestHeader('Content-Type', 'text/xml');
+    binding.onreadystatechange = handler;
+    
+    binding.send(request);
+}
+
+var isIE = function () {
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE ");
+
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
+            return true;
+        else
+            return false;
+    }
+</script>
+	<apex:actionStatus id="eventStatus"  >
+       	<apex:facet name="start">
+      		<apex:outputPanel >
+             	<div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+					<div style="position:absolute;top:50%;left:50%">
+                    	<apex:image value="/img/loading32.gif"></apex:image>
+                  	</div>
+             	</div>
+       		</apex:outputPanel>
+      	</apex:facet>   
+	</apex:actionStatus>
+    <apex:sectionHeader title="FinancialForce Consulting" subtitle="Tools" help="helploader?topicid=1022" />
+    <apex:form id="form">
+    	<apex:pageMessages id="pgMsg" escape="false" />
+        <apex:actionFunction action="{!isUserAgreed}" name="isUserAgreed" rerender="form"/>
+        <apex:actionFunction name="displayMetadataResponse" action="{!displayMetadataResponse}" status="eventStatus" rerender="form">
+			<apex:param name="metadataResponse" assignTo="{!RssConfig.MetadataResponse}" value="{!RssConfig.MetadataResponse}"/>
+		</apex:actionFunction>
+        <apex:pageBlock rendered="{!AgreedOnTerms && RssConfig.IsRemoteSiteSettingCreationRequired}">
+			<apex:outputPanel >
+				<h1>{!$Label.ffct__postinstallstepheader}</h1> 
+				<br/>
+				<br/>
+				<apex:outputText value="{!$Label.ffct__postinstallstep}" escape="false" />
+				<br/>
+				<br/>
+				<apex:repeat value="{!RssConfig.RssMap}" var="rss" >
+					<li>https://{!RssConfig.RssMap[rss]}</li>
+				</apex:repeat>
+				<br/>
+				<br/>
+				<apex:outputText value="{!$Label.ffct__createremotesitebybuttonclickinfo}" escape="false" />
+				<br/>
+				<br/>
+				<input id="createremotesitebtn" type="button" onclick="createRemoteSite();" value="Create Remote Site Setting"/>
+			</apex:outputPanel>
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!ShowLinks && !RssConfig.IsRemoteSiteSettingCreationRequired}">
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!MergeLayoutToolUrl}">Merge Layouts</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!MergeProfileToolUrl}">Merge Profiles</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!BundleToolUrl}">Bundle Tool</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!CompareDeployUrl}">Compare and Deploy Profiles and Permission Sets</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!BundleToolPushToOrgUrl}">{!$Label.ffct__provisionandpushtoorg}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!CreateAndExecuteBundleJobUrl}">{!$Label.ffct__createandexecutebundlejob}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!DateMoverToolOrgUrl}">Date Mover Tool</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!ClearDataToolOrgUrl}">{!$Label.ffct__cleardatatool}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!PicklistUpdaterToolUrl}">{!$Label.ffct__picklistupdatertool}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!PreUpgradeCheckerToolUrl}">{!$Label.ffct__preupgradecheckertool}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!MigrationSetToolUrl}">{!$Label.ffct__preprareexecutemigrationset}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock> 
+        <apex:pageBlock rendered="{!ShowLinks && !RssConfig.IsRemoteSiteSettingCreationRequired}">
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!BundleToolClickLinkUrl}">Configure Bundle Tool ClickLink Features</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!BundleToolGoogleAuthorizeUrl}">{!$Label.ffct__configuregoogledriveforbundletool}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!BundleToolBankFormatLinkUrl}">{!$Label.ffct__configurebundletoolbankformatfeatures}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!ConfigureConnectionsUrl}">{!$Label.ffct__configureconnections}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!ReleasePackageToolUrl}">{!$Label.ffct__configurereleasepackages}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLink value="{!MigrationRuleUrl}">{!$Label.ffct__configuremigrationrules}</apex:outputLink>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock> 
+        <apex:pageBlock rendered="{!!AgreedOnTerms}">
+            <table><tr>
+            <td><apex:inputCheckbox value="{!AgreedOnTerms}" onchange="isUserAgreed();"/></td>
+            <td>{!$Label.ffct__termstoaccesstools}</td>
+            </tr></table>
+        </apex:pageBlock> 
+    </apex:form>    
+</apex:page>

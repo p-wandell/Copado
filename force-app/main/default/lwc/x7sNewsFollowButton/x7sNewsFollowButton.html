@@ -1,0 +1,18 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc. All rights reserved.
+  -->
+
+<template>
+    <lightning-button-stateful 
+                                label-when-off={labelWhenOff}
+                                label-when-on={labelWhenOn}
+                                label-when-hover={labelWhenHover}
+                                icon-name-when-off="utility:add"
+                                icon-name-when-on="utility:check"
+                                icon-name-when-hover="utility:close"
+                                selected={isFollowing}
+                                onclick={handleFollowClick}
+                                aria-live="assertive"
+                >
+    </lightning-button-stateful>
+</template>

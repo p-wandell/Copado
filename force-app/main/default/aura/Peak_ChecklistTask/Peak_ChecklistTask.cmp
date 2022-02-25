@@ -1,0 +1,15 @@
+<aura:component extends="c:Peak_ChecklistBase" access="global">
+    <aura:attribute name="task" type="Peak_Checklist_Task__c" default="{'sobjectType':'Peak_Checklist_Task__c'}"/>
+
+    <aura:if isTrue="{!v.task.Complete__c}">
+        <div class="peak-checklist-item  checked">
+            <lightning:input type="checkbox" label="{!v.task.Name}" name="{!v.task.Name}" checked="{!v.task.Complete__c}" onchange="{!c.doUpdateTask}"/>
+        </div>
+        <aura:set attribute="else">
+            <div class="peak-checklist-item">
+                <lightning:input type="checkbox" label="{!v.task.Name}" name="{!v.task.Name}" checked="{!v.task.Complete__c}" onchange="{!c.doUpdateTask}"/>
+            </div>
+        </aura:set>
+
+    </aura:if>
+</aura:component>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customers_with_Community_Activity</fullName>
+    <columns>NAME</columns>
+    <columns>Account__c</columns>
+    <columns>Opportunity__c</columns>
+    <columns>Product__c</columns>
+    <columns>Purchase_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Product__c</field>
+        <operation>equals</operation>
+        <value>Community Activity</value>
+    </filters>
+    <label>Customers with Community Activity</label>
+</ListView>

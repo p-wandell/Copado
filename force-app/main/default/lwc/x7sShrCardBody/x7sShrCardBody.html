@@ -1,0 +1,7 @@
+<template>
+    <div class="card__meta" if:true={topics}>
+        <c-x-7s-shr-topic-list topics={topics}></c-x-7s-shr-topic-list>
+    </div>
+    <h3 class={titleClass} style={titleStyle} if:true={showTitle}><a href={href} onclick={handleTitleClick}>{title}</a></h3>
+    <p class={descriptionClass} style={descriptionStyle} if:true={description}>{description}</p>
+</template>

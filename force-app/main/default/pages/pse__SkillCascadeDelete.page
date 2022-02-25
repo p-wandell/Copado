@@ -1,0 +1,27 @@
+<apex:page standardController="pse__Skill__c" extensions="pse.SkillCascadeDeleteController" showHeader="true" sidebar="true" lightningStylesheets="true">
+
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:form id="form">
+		<apex:sectionHeader title="{!$Label.pse__skill_cascade_delete_page_title}"
+			subtitle="{!pse__Skill__c.Name}"
+			help="{!$Page.pse__SkillCascadeDeleteHelp}"
+		/>
+
+		<apex:pageBlock id="block">
+
+			<apex:pageMessages />
+
+			<apex:pageBlockButtons location="bottom" id="buttons">
+				<c:ProcessingButton >
+					<apex:commandButton value="{!$Label.pse__skill_cascade_delete_button}" action="{!cascadeDeleteHierarchy}" disabled="{!!canDelete}" rerender="block"/>
+				</c:ProcessingButton>
+				<apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancel}" immediate="true"  style="margin-left:5px;"/>
+			</apex:pageBlockButtons>
+
+		</apex:pageBlock>
+
+		<!-- Hidden fields needed by controller -->
+		<apex:outputText value="{!pse__Skill__c.RecordType.DeveloperName}" rendered="false"/>
+	</apex:form>
+
+</apex:page>

@@ -1,0 +1,604 @@
+<!-- User Note: TFCF121FE3MCNCA Reporting Template With Sub-Totalling Groups -->
+<!-- User Note: This Template Is Specific To Cash Flow Reporting -->
+<!-- User Note: This Template Has Value Groups 01-03 Which Automatically Subtotal, Value Groups 10-15 Used For Display Purposes -->
+<!-- User Note: Indentation is applied to Lines and Subtotals -->
+<!-- User Note: The Template Expects 1 Sum type Reporting Value only (SUM A) -->
+<!-- User Note: It Expects Labels 05, 06, 07 & 08 (For Section Headers) and 10, 11 & 12 (For Various Calculations) -->
+<!-- User Note: It Can Only Be Used With 2 Data Ranges And Applies Different Formatting For Each Of Them -->
+<!-- User Note: Data Range 01 Calculates Net From Operating Activities; Data Range 02 Incorporates Net From Investing, Financing And Other Activities And Opening Balance For Cash And Equivalents And Calculates Its Closing Balance -->
+<!-- User Note: It Expects 1 Reporting Filter Type Colum (A) And Any Number of Reporting Filters Of Type Row (1 to 99) -->
+<!-- User Note: Special Features: Different Formatting Applies Based On Template Key Selected For Row Filters -->
+<!-- User Note: Special Features: Line Values, Subtotals And Row Totals Are Displayed For Row Filters 11 to 70; Only Row Totals Are Displayed For Row Filters 01 to 10 And 71 to 99 -->
+<!-- User Note: Special Features: 2 Decimal Places. Normal Values (Credits As Negative And Debits As Positive) Apply To Row Filters 11 to 20 And 51 to 99; Reversed Values (Credits As Positive And Debits As Negative) Apply To Row Filters 01 to 10 And 21 to 50 -->
+<!-- User Note: Special Features: It Tracks Accumulated Values Based On Row Filter Ranges -->
+<!-- User Note: Special Features: Profit Before Interest & Tax = SUM(DR01 Rows 01 to 10) -->
+<!-- User Note: Special Features: P&L Adjustments From Operating Activities = SUM(DR01 Rows 11 to 20) -->
+<!-- User Note: Special Features: Other Adjustments From Operating Activities = SUM(DR01 Rows 21 to 30) -->
+<!-- User Note: Special Features: Net Cash From Investing & Financing Activities = SUM(DR02 Rows 31 to 50) -->
+<!-- User Note: Special Features: Other Cash Flows = SUM(DR02 Rows 51 to 70) -->
+<!-- User Note: Special Features: Opening Balance For Cash & Equivalents = SUM(DR02 Rows 71 to 99) -->
+<!-- User Note: Special Features: The Following Calculations Are Included In This Template -->
+<!-- User Note: Special Features: Net Cash From Operating Activities = SUM(DR01 Rows 01 to 10) - SUM(DR01 Rows 11 to 20) + SUM(DR01Rows 21 to 30) -->
+<!-- User Note: Special Features: Net Cash Movement = SUM(DR01 Rows 01 to 10) - SUM(DR01 Rows 11 to 20) + SUM(DR01 Rows 21 to 30) + SUM(DR02 Rows 31 to 50) - SUM(DR02 Rows 51 to 70) -->
+<!-- User Note: Special Features: Closing Balance For Cash & Equivalents = SUM(DR01 Rows 01 to 10) - SUM(DR01 Rows 11 to 20) + SUM(DR01 Rows 21 to 30) + SUM(DR02 Rows 31 to 50) - SUM(DR02 Rows 51 to 70) - SUM(DR02 Rows 71 to 99) -->
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}">
+	<!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+	<!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+	<!-- User Note: You Can Create Your Own Stylsheet In The Static Resources And Apply It To Your Reports -->
+	<!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+	<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+	<apex:stylesheet value="{!StyleSheetName}"/>
+	<!-- Variable to represent boolean true/false when needing to set other variables to these states -->
+	<apex:variable var="true" value="{!1=1}"/>
+	<apex:variable var="false" value="{!1=0}"/>
+	<!-- User Note: I Want To Format Values On A Report In Different Ways -->
+	<!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+	<!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brakets/Minus 3Charcterinternationalcurrencycode/None-->
+	<!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+	<!-- User Note: You Can Add Your Own Formats To The List Below Try To Keep A Good Coding Structure-->
+	<apex:variable var="V2NCB" value="{0, number, #,###,###,##0.00;(#,###,###,##0.00)}"/>
+	<apex:variable var="P2NCB" value="{0, number, #,###,###,##0.00%;(#,###,###,##0.00%)}"/>
+	<apex:variable var="V0NCB" value="{0, number, #,###,###,##0;(#,###,###,##0)}"/>
+	<apex:variable var="P0NCB" value="{0, number, #,###,###,##0%;(#,###,###,##0%)}"/>
+	<apex:variable var="V2RCB" value="{0, number, (#,###,###,##0.00);#,###,###,##0.00}"/>
+	<apex:variable var="P2RCB" value="{0, number, (#,###,###,##0.00%);#,###,###,##0.00%}"/>
+	<apex:variable var="V0RCB" value="{0, number, (#,###,###,##0);#,###,###,##0}"/>
+	<apex:variable var="P0RCB" value="{0, number, (#,###,###,##0%);#,###,###,##0%}"/>
+	<apex:variable var="V2NCBUSD" value="{0, number, $#,###,###,##0.00;$(#,###,###,##0.00)}"/>
+	<apex:variable var="V2RCBUSD" value="{0, number, $(#,###,###,##0.00);$#,###,###,##0.00}"/>
+	<!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+	<!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+	<!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+	<!-- User Note: It Is Possible To Use Individual Variables Against A Line This Method Allows You To Make A Single Change To All Related Formats -->
+	<apex:variable var="VN" value="{!V2NCB}"/>
+	<apex:variable var="PN" value="{!P2NCB}"/>
+	<apex:variable var="VR" value="{!V2RCB}"/>
+	<apex:variable var="PR" value="{!P2RCB}"/>
+	<apex:variable var="VZ" value="0.00"/>
+	<!-- User Note: The following variable counts the maximum number of Reporting Values of Type Group, excluding those used for Subtotals, defined and available to display with this template -->
+	<!-- User Note: Groups 01 to 03 are used for subtotals and 10 to 15 are used for display purposes, so the total number available to display is 6 -->
+	<apex:variable var="totalDisplayGroupsAvailable" value="6"/>
+	<!-- REGION 01: GENERAL CONFIGURATION END-->
+	<!-- REGION 02: REPORT HEADER START -->
+	<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+	<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+	<!-- User Note: Show The Error Messages From The Reporting Engine -->
+<apex:PageMessages />
+	<div class="chatterPosition"></div>
+	<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+	<!-- User Note: When Creating New Templates This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+	<table class="ffrgridd">
+		<tr>
+			<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+		</tr>
+		<tr>
+			<td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+			<td align="right">{!NOW()}</td>
+		</tr>
+		<tr><td class="ffrgridspacer2"></td></tr>
+		<tr>
+			<td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+			<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+		</tr>
+		<tr><td class="ffrgridspacer2"></td></tr>
+		<tr>
+			<td align="left"><apex:outputField value="{!ffr__ReportingDefinition__c.ffr__Description__c}"/></td>
+			<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+		</tr>
+	</table>
+	<!-- User Note: Create a new table to display the prompt information -->
+	<table class="ffrgridnotfullpage">
+		<tr><td class="ffrgridspacer2"></td></tr>
+		<tr>
+			<td align="left">
+				<table class="ffrgrid">
+					<apex:repeat value="{!promptList}" var="prompt" >
+						<tr>
+							<td align="left">{!prompt.label}</td>
+							<td align="left" class="ffrgridspacer"></td>
+							<td align="left"><strong>{!prompt.value}</strong></td>
+						</tr>
+					</apex:repeat>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<!-- REGION 02: REPORT HEADER END -->
+	<!-- REGION 03: REPORT BODY START -->
+	<!-- Initialise Variables to be used in calculations using data from both Data Ranges -->
+	<apex:outputpanel rendered="{!!hasMessages}">
+		<apex:variable value="{!0}" var="netFromOperatingActivitiesColumnA"/>
+		<!-- User Note: Create a table to display the data -->
+		<table class="ffrgrid">
+			<!-- DATA RANGE 1: START-->
+			<apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+			<!-- Configuration of groups (elastic template responds dynamically to existence of groups) -->
+			<!-- Group setup-->
+			<!-- Set the default group value rendering state variables to "false" -->
+			<apex:variable var="RenderGroup01" value="{!false}"/>
+			<apex:variable var="RenderGroup02" value="{!false}"/>
+			<apex:variable var="RenderGroup03" value="{!false}"/>
+			<apex:variable var="RenderGroup10" value="{!false}"/>
+			<apex:variable var="RenderGroup11" value="{!false}"/>
+			<apex:variable var="RenderGroup12" value="{!false}"/>
+			<apex:variable var="RenderGroup13" value="{!false}"/>
+			<apex:variable var="RenderGroup14" value="{!false}"/>
+			<apex:variable var="RenderGroup15" value="{!false}"/>
+			<!-- We need to know whether to keep group subtotals. Default condition is false -->
+			<apex:variable var="RenderGroupSubtotals" value="{!false}"/>
+			<!-- Now set the group rendering state variables according to which group values have been used -->
+			<!-- Additionally, if we have any of groups 01-03 we need to maintain group subtotals -->
+			<apex:repeat var="groupKey" value="{!dataRange.groupKeyList}">
+				<!-- group-groups -->
+				<apex:outputPanel layout="none" rendered="{!groupKey=='01'}">
+					<apex:variable var="RenderGroup01" value="{!true}"/>
+					<apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+				</apex:outputPanel>
+				<apex:outputPanel layout="none" rendered="{!groupKey=='02'}">
+					<apex:variable var="RenderGroup02" value="{!true}"/>
+					<apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+				</apex:outputPanel>
+				<apex:outputPanel layout="none" rendered="{!groupKey=='03'}">
+					<apex:variable var="RenderGroup03" value="{!true}"/>
+					<apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+				</apex:outputPanel>
+				<!-- Line-groups -->
+				<apex:variable var="RenderGroup10" value="{!true}" rendered="{!groupKey=='10'}"/>
+				<apex:variable var="RenderGroup11" value="{!true}" rendered="{!groupKey=='11'}"/>
+				<apex:variable var="RenderGroup12" value="{!true}" rendered="{!groupKey=='12'}"/>
+				<apex:variable var="RenderGroup13" value="{!true}" rendered="{!groupKey=='13'}"/>
+				<apex:variable var="RenderGroup14" value="{!true}" rendered="{!groupKey=='14'}"/>
+				<apex:variable var="RenderGroup15" value="{!true}" rendered="{!groupKey=='15'}"/>
+			</apex:repeat>
+			<!-- Column headings -->
+			<!-- Note that these are contained within outputPanels which are rendered (displayed) depending on the appropriate column render state variable -->
+			<!-- Do not display headings for Reporting Values, only Column Filter Labels -->
+			<tr>
+				<td class="ffrgridtitleleftd" colspan="{!totalDisplayGroupsAvailable}"></td>
+				<td class="ffrgridspacer"/>
+				<td class="ffrgridtitlerightd"><apex:outputPanel layout="none">{!dataRange.columnLabels['A']}</apex:outputPanel></td>
+			</tr>
+			<!-- Display the header for the first section: Operating Activities (Label L05) -->
+			<tr><td class="ffrcalcsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L05']}</td></tr>
+			<!-- Spacer -->
+			<tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+			<!-- Set all relevant variables to zero (if the column is in use - determined by column render state variables) -->
+			<!-- We need to track Profit Before Interest & Tax (PBIT) -->
+			<apex:variable value="{!0}" var="pbitColumnA"/>
+			<!-- We need to track P&L Adjustments from Operating Activities to be deducted from PBIT -->
+			<apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnA"/>
+			<!-- We need to track Other Adjustments from Operating Activities to be added to PBIT -->
+			<apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnA"/>
+			<!-- Iterate over the Rows -->
+			<apex:repeat value="{!dataRange.rowList}" var="row" >
+				<!-- Setup for start of row -->
+				<apex:variable var="rowKeyNum" value="{!VALUE(row.key)}"/>
+				<!-- Row-sensitive number format -->
+				<apex:variable var="RowNumberPattern" value="{!if((rowKeyNum>10 && rowKeyNum<21) || rowKeyNum>50,VN,VR)}"/>
+				<!-- For each row, reset all column row-totals and subtotals to zero (only required for Column A) -->
+				<!-- It calculates one Row Subtotal per Group (01 to 03), so we need rowSubtotal variables for each group (ie, rowSubtotalGroup01) -->
+				<apex:variable value="{!0}" var="rowTotalColumnA"/>
+				<apex:variable value="{!0}" var="rowSubtotalGroup01ColumnA"/>
+				<apex:variable value="{!0}" var="rowSubtotalGroup02ColumnA"/>
+				<apex:variable value="{!0}" var="rowSubtotalGroup03ColumnA"/>
+				<!-- These variables are used to determine when to print a subtotal -->
+				<apex:variable var="previousLineGroup01" value=""/>
+				<apex:variable var="previousLineGroup02" value=""/>
+				<apex:variable var="previousLineGroup03" value=""/>
+				<apex:variable var="currentLineGroup01" value=""/>
+				<apex:variable var="currentLineGroup02" value=""/>
+				<apex:variable var="currentLineGroup03" value=""/>
+				<!-- This variable is used to determine whether the line is the first line in the row - to prevent a subtotal being printed before the first line -->
+				<apex:variable var="firstLine" value="{!true}"/>
+				<!-- Iterate over the Lines -->
+				<apex:repeat value="{!row.lineList}" var="line" >
+					<!-- Display the line and process subtotals - only for rows between 11 and 70 -->
+					<!-- Set the variables representing the groups for the current line for comparison with the previous line -->
+					<apex:variable value="{!line.groups['01']}" var="currentLineGroup01" rendered="{!RenderGroup01}"/>
+					<apex:variable value="{!line.groups['02']}" var="currentLineGroup02" rendered="{!RenderGroup02}"/>
+					<apex:variable value="{!line.groups['03']}" var="currentLineGroup03" rendered="{!RenderGroup03}"/>
+					<!-- Mid-row subtotal line -->
+					<!-- Do we want to process a (mid-row) subtotal line for Group03? -->
+					<apex:variable var="doSubtotal03" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02 || currentLineGroup03!=previousLineGroup03)}"/>
+					<!-- Process a subtotal line - only for rows between 11 and 70 -->
+					<!-- Display Subtotals if Group03 is rendered -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(doSubtotal03 && RenderGroup03,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!doSubtotal03 && RenderGroup03}"><div style="margin-left: 60px;">{!previousLineGroup03}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(doSubtotal03 && RenderGroup03,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(doSubtotal03 && RenderGroup03,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03}"><apex:param value="{!rowSubtotalGroup03ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Reset the subtotals for Group03 -->
+					<apex:variable value="{!0}" var="rowSubtotalGroup03ColumnA" rendered="{!doSubtotal03 && RenderGroup03}"/>
+					<!-- Do we want to process a (mid-row) subtotal line for Group02? -->
+					<apex:variable var="doSubtotal02" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02)}"/>
+					<!-- Display Subtotals if Group02 is rendered -->
+					<!-- Display the group-group values but not the group-line values -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(doSubtotal02 && RenderGroup02,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!doSubtotal02 && RenderGroup02}"><div style="margin-left: 40px;">{!previousLineGroup02}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(doSubtotal02 && RenderGroup02,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(doSubtotal02 && RenderGroup02,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02}"><apex:param value="{!rowSubtotalGroup02ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Reset the subtotals for Group02 -->
+					<apex:variable value="{!0}" var="rowSubtotalGroup02ColumnA" rendered="{!doSubtotal02 && RenderGroup02}"/>
+					<!-- Do we want to process a (mid-row) subtotal line for Group01? -->
+					<apex:variable var="doSubtotal01" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01)}"/>
+					<!-- Display Subtotals if Group01 is rendered -->
+					<!-- Display the group-group values but not the group-line values -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(doSubtotal01 && RenderGroup01,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!doSubtotal01 && RenderGroup01}"><div style="margin-left: 20px;">{!previousLineGroup01}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(doSubtotal01 && RenderGroup01,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(doSubtotal01 && RenderGroup01,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01}"><apex:param value="{!rowSubtotalGroup01ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Reset the subtotals for Group01 -->
+					<apex:variable value="{!0}" var="rowSubtotalGroup01ColumnA" rendered="{!doSubtotal01 && RenderGroup01}"/>
+					<!-- Line setup -->
+					<!-- For Column A only, add the column value to the sub-total -->
+					<!-- Subtotals for Groups 01 to 03 -->
+					<apex:variable value="{!rowSubtotalGroup01ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup01ColumnA"/>
+					<apex:variable value="{!rowSubtotalGroup02ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup02ColumnA"/>
+					<apex:variable value="{!rowSubtotalGroup03ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup03ColumnA"/>
+					<!-- Display the line - only for rows between 11 and 70-->
+					<apex:variable value="{!if(RenderGroup01 && RenderGroup02 && RenderGroup03,'80px',if(RenderGroup01 && RenderGroup02,'60px',if(RenderGroup01,'40px','20px')))}" var="indentingLevel"/>
+					<apex:variable var="lineValuesNotZero" value="{!(line.columns['A'].values['A']!=0)}"/>
+					<!-- Display the grouping values based on render settings -->
+					<!-- Group Lines for groups 1-3 (with sub-totals) are hidden - only the Subtotal Line will be displayed -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71 && lineValuesNotZero,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(RenderGroup10,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup10}"><div style="margin-left: {!indentingLevel};">{!line.groups['10']}</div></apex:outputPanel></td>
+						<td class="{!if(RenderGroup11,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup11}">{!line.groups['11']}</apex:outputPanel></td>
+						<td class="{!if(RenderGroup12,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup12}">{!line.groups['12']}</apex:outputPanel></td>
+						<td class="{!if(RenderGroup13,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup13}">{!line.groups['13']}</apex:outputPanel></td>
+						<td class="{!if(RenderGroup14,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup14}">{!line.groups['14']}</apex:outputPanel></td>
+						<td class="{!if(RenderGroup15,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup15}">{!line.groups['15']}</apex:outputPanel></td>
+						<td class="ffrgridspacerd"/>
+						<!-- Display the line value, formatted using OUTPUTTEXT  with the pattern defined above -->
+						<td class="ffrgridrowd">
+							<apex:outputText value="{!if(line.columns['A'].values['A']==0,VZ,RowNumberPattern)}">
+								<apex:param value="{!line.columns['A'].values['A']}"/>
+							</apex:outputText>
+						</td>
+					</tr>
+					<!-- Setup for next line -->
+					<!-- Record the group values as "previous" for comparison on the next line -->
+					<apex:variable var="previousLineGroup01" value="{!currentLineGroup01}"/>
+					<apex:variable var="previousLineGroup02" value="{!currentLineGroup02}"/>
+					<apex:variable var="previousLineGroup03" value="{!currentLineGroup03}"/>
+					<!-- If this was the first line, it was completed, so set first line to false -->
+					<apex:variable var="firstLine" value="{!false}" rendered="{!firstLine}" />
+					<!-- Add the values to the row-column totals -->
+					<apex:variable value="{!rowTotalColumnA+line.columns['A'].values['A']}" var="rowTotalColumnA"/>
+				</apex:repeat>
+				<!-- Go to next line -->
+				<!-- Do we want to process an end-of-row subtotal line? (only required for rows 11-70) -->
+				<apex:outputPanel layout="none" rendered="{!RenderGroupSubtotals}">
+					<!-- Display the group-group values but not the group-line values if Group03 is rendered -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(RenderGroup03,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!RenderGroup03}"><div style="margin-left: 60px;">{!previousLineGroup03}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(RenderGroup03,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(RenderGroup03,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03}"><apex:param value="{!rowSubtotalGroup03ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Display the group-group values but not the group-line values if Group02 is rendered -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(RenderGroup02,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!RenderGroup02}"><div style="margin-left: 40px;">{!previousLineGroup02}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(RenderGroup02,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(RenderGroup02,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02}"><apex:param value="{!rowSubtotalGroup02ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Display the group-group values but not the group-line values if Group01 is rendered -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(RenderGroup01,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!RenderGroup01}"><div style="margin-left: 20px;">{!previousLineGroup01}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(RenderGroup01,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(RenderGroup01,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01}"><apex:param value="{!rowSubtotalGroup01ColumnA}"/></apex:outputText></td>
+					</tr>
+				</apex:outputPanel>
+				<!-- Setup for end of row -->
+				<!-- Add the row-total to the relevant variables so it accumulates across all the rows -->
+				<!-- Note that the row-totals are reset for each successive row -->
+				<!-- Accumulate Profit Before Interest & Tax if the row is in the range 01-10 -->
+				<apex:variable value="{!pbitColumnA+rowTotalColumnA}" var="pbitColumnA" rendered="{!rowKeyNum<11}"/>
+				<!-- Accumulate P&L Adjustments From Operating Activities if the row is in the range 11-20 -->
+				<apex:variable value="{!adjOperatingActivitiesPLColumnA+rowTotalColumnA}" var="adjOperatingActivitiesPLColumnA" rendered="{!rowKeyNum>10 && rowKeyNum<21}"/>
+				<!-- Accumulate Other Adjustments From Operating Activities if the row is in the range 21-30 -->
+				<apex:variable value="{!adjOperatingActivitiesOtherColumnA+rowTotalColumnA}" var="adjOperatingActivitiesOtherColumnA" rendered="{!rowKeyNum>20 && rowKeyNum<31}"/>
+				<!-- Display the row totals -->
+				<!--Display the title for the row-total - which is the row label -->
+				<!-- The td tag needs to span the number of groups being rendered -->
+				<tr>
+					<td class="{!if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotallabeld','ffrcalcsumlabeld')}" colspan="{!totalDisplayGroupsAvailable}">{!row.label}</td>
+					<td class="ffrgridspacerd"/>
+					<td class="{!if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd')}"><apex:outputText value="{!if(rowTotalColumnA==0,VZ,RowNumberPattern)}">
+						<apex:param value="{!rowTotalColumnA}"/>
+					</apex:outputText></td>
+				</tr>
+				<!-- Make some vertical space before the next row -->
+				<tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+			</apex:repeat>
+			<!-- Go to the next row -->
+			<!-- Calculate variables for Net Cash From Operating Activities -->
+			<apex:variable value="{!(pbitColumnA-adjOperatingActivitiesPLColumnA+adjOperatingActivitiesOtherColumnA)}" var="netFromOperatingActivitiesColumnA"/>
+			<!-- Display Net Cash from Operating Activities -->
+			<!-- The td tag needs to span the number of groups being rendered -->
+			<tr>
+				<td class="ffrsubtotallabeld" colspan="{!totalDisplayGroupsAvailable}">{!label['L10']}</td>
+				<td class="ffrgridspacerd"/>
+				<td class="ffrsubtotald"><apex:outputText value="{!if(netFromOperatingActivitiesColumnA==0,VZ,VR)}"><apex:param value="{!netFromOperatingActivitiesColumnA}"/></apex:outputText></td>
+			</tr>
+			<!-- Make some vertical space -->
+			<tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+			<!-- DATA RANGE 1: END-->
+			<!-- DATA RANGE 2: START-->
+			<apex:variable var="dataRange" value="{!reportingData['DR02']}"/>
+			<!-- Configuration of columns and groups (elastic template responds dynamically to existence of groups and columns -->
+			<!-- Column setup: this template is fixed to work with Column A only -->
+			<!-- Group setup-->
+			<!-- Set the default group value rendering state variables to "false" -->
+			<apex:variable var="RenderGroup01" value="{!false}"/>
+			<apex:variable var="RenderGroup02" value="{!false}"/>
+			<apex:variable var="RenderGroup03" value="{!false}"/>
+			<apex:variable var="RenderGroup10" value="{!false}"/>
+			<apex:variable var="RenderGroup11" value="{!false}"/>
+			<apex:variable var="RenderGroup12" value="{!false}"/>
+			<apex:variable var="RenderGroup13" value="{!false}"/>
+			<apex:variable var="RenderGroup14" value="{!false}"/>
+			<apex:variable var="RenderGroup15" value="{!false}"/>
+			<!-- We need to know whether to keep group subtotals. Default condition is false -->
+			<apex:variable var="RenderGroupSubtotals" value="{!false}"/>
+			<!-- Now set the group rendering state variables according to which group values have been used -->
+			<!-- Additionally, if we have any of groups 01-03 we need to maintain group subtotals -->
+			<apex:repeat var="groupKey" value="{!dataRange.groupKeyList}">
+				<!-- group-groups -->
+				<apex:outputPanel layout="none" rendered="{!groupKey=='01'}">
+					<apex:variable var="RenderGroup01" value="{!true}"/>
+					<apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+				</apex:outputPanel>
+				<apex:outputPanel layout="none" rendered="{!groupKey=='02'}">
+					<apex:variable var="RenderGroup02" value="{!true}"/>
+					<apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+				</apex:outputPanel>
+				<apex:outputPanel layout="none" rendered="{!groupKey=='03'}">
+					<apex:variable var="RenderGroup03" value="{!true}"/>
+					<apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+				</apex:outputPanel>
+				<!-- Line-groups -->
+				<apex:variable var="RenderGroup10" value="{!true}" rendered="{!groupKey=='10'}"/>
+				<apex:variable var="RenderGroup11" value="{!true}" rendered="{!groupKey=='11'}"/>
+				<apex:variable var="RenderGroup12" value="{!true}" rendered="{!groupKey=='12'}"/>
+				<apex:variable var="RenderGroup13" value="{!true}" rendered="{!groupKey=='13'}"/>
+				<apex:variable var="RenderGroup14" value="{!true}" rendered="{!groupKey=='14'}"/>
+				<apex:variable var="RenderGroup15" value="{!true}" rendered="{!groupKey=='15'}"/>
+			</apex:repeat>
+			<!-- Set all relevant variables to zero (if the column is in use - determined by column render state variables) -->
+			<!-- We need to track Net Cash from Investing and Financing Activities -->
+			<apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnA"/>
+			<!-- We need to track Other Cash Flows -->
+			<apex:variable value="{!0}" var="otherCashFlowsColumnA"/>
+			<!-- We need to track Opening Balance for Cash and Equivalents -->
+			<apex:variable value="{!0}" var="openingCashColumnA"/>
+			<!-- Display the header for the second section: Investing Activities (Label L06) -->
+			<tr><td class="ffrcalcsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L06']}</td></tr>
+			<!-- Spacer -->
+			<tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+			<!-- We need to track whether or not various calculations and headers have been displayed - this defaults to false -->
+			<apex:variable value="{!false}" var="netCashMovementCalculationsDisplayed"/>
+			<apex:variable value="{!false}" var="sectionThreeHeaderDisplayed"/>
+			<apex:variable value="{!false}" var="sectionFourHeaderDisplayed"/>
+			<!-- Iterate over the Rows -->
+			<apex:repeat value="{!dataRange.rowList}" var="row" >
+				<!-- Setup for start of row -->
+				<apex:variable var="rowKeyNum" value="{!VALUE(row.key)}"/>
+				<!-- Row-sensitive number format -->
+				<apex:variable var="RowNumberPattern" value="{!if((rowKeyNum>10 && rowKeyNum<21) || rowKeyNum>50,VN,VR)}"/>
+				<!-- Display the header for the third section: Financing Activities (Label L07) if it has not been displayed and rows 01 to 40 have been processed -->
+				<apex:outputPanel layout="none" rendered="{!!sectionThreeHeaderDisplayed && rowKeyNum>40}">
+					<tr><td class="ffrcalcsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L07']}</td></tr>
+					<!-- Spacer -->
+					<tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+					<!-- Set the flag to indicate that we have displayed the header for the third section -->
+					<apex:variable value="{!true}" var="sectionThreeHeaderDisplayed"/>
+				</apex:outputPanel>
+				<!-- Display the header for the fourth section: Other Cash Flows (Label L08) if it has not been displayed and row 51 has been selected -->
+				<apex:outputPanel layout="none" rendered="{!!sectionFourHeaderDisplayed && rowKeyNum=46}">
+					<tr><td class="ffrcalcsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L08']}</td></tr>
+					<!-- Spacer -->
+					<tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+					<!-- Set the flag to indicate that we have displayed the header for the third section -->
+					<apex:variable value="{!true}" var="sectionFourHeaderDisplayed"/>
+				</apex:outputPanel>
+				<!-- Display the Net Cash Movement Calculations if it has not been displayed and rows 01 to 70 have been processed -->
+				<apex:outputPanel layout="none" rendered="{!!netCashMovementCalculationsDisplayed && rowKeyNum>70}">
+					<tr>
+						<td class="ffrgridsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!label['L11']}</td>
+						<td class="ffrgridspacerd"/>
+						<td class="ffrgridsumd"><apex:outputText value="{!if((netFromOperatingActivitiesColumnA+netFromInvFinanActivitiesColumnA-otherCashFlowsColumnA)==0,VZ,VR)}"><apex:param value="{!(netFromOperatingActivitiesColumnA+netFromInvFinanActivitiesColumnA-otherCashFlowsColumnA)}"/></apex:outputText></td>
+					</tr>
+					<!-- Spacer -->
+					<tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+					<!-- Set the flag to indicate that we have displayed Net Cash Movement calculations -->
+					<apex:variable value="{!true}" var="netCashMovementCalculationsDisplayed"/>
+				</apex:outputPanel>
+				<!-- For each row, reset all column row-totals and subtotals to zero (only required for Column A) -->
+				<!-- It calculates one Row Subtotal per Group (01 to 03), so we need rowSubtotal variables for each group (ie, rowSubtotalGroup01) -->
+				<apex:variable value="{!0}" var="rowTotalColumnA"/>
+				<apex:variable value="{!0}" var="rowSubtotalGroup01ColumnA"/>
+				<apex:variable value="{!0}" var="rowSubtotalGroup02ColumnA"/>
+				<apex:variable value="{!0}" var="rowSubtotalGroup03ColumnA"/>
+				<!-- These variables are used to determine when to print a subtotal -->
+				<apex:variable var="previousLineGroup01" value=""/>
+				<apex:variable var="previousLineGroup02" value=""/>
+				<apex:variable var="previousLineGroup03" value=""/>
+				<apex:variable var="currentLineGroup01" value=""/>
+				<apex:variable var="currentLineGroup02" value=""/>
+				<apex:variable var="currentLineGroup03" value=""/>
+				<!-- This variable is used to determine whether the line is the first line in the row - to prevent a subtotal being printed before the first line -->
+				<apex:variable var="firstLine" value="{!true}"/>
+				<!-- Iterate over the Lines -->
+				<apex:repeat value="{!row.lineList}" var="line" >
+					<!-- Display the line and process subtotals - only for rows between 11 and 70 -->
+					<!-- Set the variables representing the groups for the current line for comparison with the previous line -->
+					<apex:variable value="{!line.groups['01']}" var="currentLineGroup01" rendered="{!RenderGroup01}"/>
+					<apex:variable value="{!line.groups['02']}" var="currentLineGroup02" rendered="{!RenderGroup02}"/>
+					<apex:variable value="{!line.groups['03']}" var="currentLineGroup03" rendered="{!RenderGroup03}"/>
+					<!-- Mid-row subtotal line -->
+					<!-- Do we want to process a (mid-row) subtotal line for Group03? -->
+					<apex:variable var="doSubtotal03" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02 || currentLineGroup03!=previousLineGroup03)}"/>
+					<!-- Process a subtotal line - only for rows between 11 and 70 -->
+					<!-- Display Subtotals if Group03 is rendered -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(doSubtotal03 && RenderGroup03,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!doSubtotal03 && RenderGroup03}"><div style="margin-left: 60px;">{!previousLineGroup03}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(doSubtotal03 && RenderGroup03,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(doSubtotal03 && RenderGroup03,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03}"><apex:param value="{!rowSubtotalGroup03ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Reset the subtotals for Group03 -->
+					<apex:variable value="{!0}" var="rowSubtotalGroup03ColumnA" rendered="{!doSubtotal03 && RenderGroup03}"/>
+					<!-- Do we want to process a (mid-row) subtotal line for Group02? -->
+					<apex:variable var="doSubtotal02" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02)}"/>
+					<!-- Display Subtotals if Group02 is rendered -->
+					<!-- Display the group-group values but not the group-line values -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(doSubtotal02 && RenderGroup02,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!doSubtotal02 && RenderGroup02}"><div style="margin-left: 40px;">{!previousLineGroup02}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(doSubtotal02 && RenderGroup02,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(doSubtotal02 && RenderGroup02,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02}"><apex:param value="{!rowSubtotalGroup02ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Reset the subtotals for Group02 -->
+					<apex:variable value="{!0}" var="rowSubtotalGroup02ColumnA" rendered="{!doSubtotal02 && RenderGroup02}"/>
+					<!-- Do we want to process a (mid-row) subtotal line for Group01? -->
+					<apex:variable var="doSubtotal01" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01)}"/>
+					<!-- Display Subtotals if Group01 is rendered -->
+					<!-- Display the group-group values but not the group-line values -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(doSubtotal01 && RenderGroup01,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!doSubtotal01 && RenderGroup01}"><div style="margin-left: 20px;">{!previousLineGroup01}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(doSubtotal01 && RenderGroup01,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(doSubtotal01 && RenderGroup01,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01}"><apex:param value="{!rowSubtotalGroup01ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Reset the subtotals for Group01 -->
+					<apex:variable value="{!0}" var="rowSubtotalGroup01ColumnA" rendered="{!doSubtotal01 && RenderGroup01}"/>
+					<!-- Line setup -->
+					<!-- For Column A only, add the column value to the sub-total -->
+					<!-- Subtotals for Groups 01 to 03 -->
+					<apex:variable value="{!rowSubtotalGroup01ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup01ColumnA"/>
+					<apex:variable value="{!rowSubtotalGroup02ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup02ColumnA"/>
+					<apex:variable value="{!rowSubtotalGroup03ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup03ColumnA"/>
+					<!-- Display the line - only for rows between 11 and 70-->
+					<apex:variable value="{!if(RenderGroup01 && RenderGroup02 && RenderGroup03,'80px',if(RenderGroup01 && RenderGroup02,'60px',if(RenderGroup01,'40px','20px')))}" var="indentingLevel"/>
+					<apex:variable var="lineValuesNotZero" value="{!(line.columns['A'].values['A']!=0)}"/>
+					<!-- Display the grouping values based on render settings -->
+					<!-- Group Lines for groups 1-3 (with sub-totals) are hidden - only the Subtotal Line will be displayed -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71 && lineValuesNotZero,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(RenderGroup10,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup10}"><div style="margin-left: {!indentingLevel};">{!line.groups['10']}</div></apex:outputPanel>
+					</td>
+					<td class="{!if(RenderGroup11,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup11}">{!line.groups['11']}</apex:outputPanel></td>
+					<td class="{!if(RenderGroup12,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup12}">{!line.groups['12']}</apex:outputPanel></td>
+					<td class="{!if(RenderGroup13,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup13}">{!line.groups['13']}</apex:outputPanel></td>
+					<td class="{!if(RenderGroup14,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup14}">{!line.groups['14']}</apex:outputPanel></td>
+					<td class="{!if(RenderGroup15,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup15}">{!line.groups['15']}</apex:outputPanel></td>
+					<td class="ffrgridspacerd"/>
+					<!-- Display the line value, formatted using OUTPUTTEXT  with the pattern defined above -->
+					<td class="ffrgridrowd">
+						<apex:outputText value="{!if(line.columns['A'].values['A']==0,VZ,RowNumberPattern)}">
+							<apex:param value="{!line.columns['A'].values['A']}"/>
+						</apex:outputText></td>
+					</tr>
+					<!-- Setup for next line -->
+					<!-- Record the group values as "previous" for comparison on the next line -->
+					<apex:variable var="previousLineGroup01" value="{!currentLineGroup01}"/>
+					<apex:variable var="previousLineGroup02" value="{!currentLineGroup02}"/>
+					<apex:variable var="previousLineGroup03" value="{!currentLineGroup03}"/>
+					<!-- If this was the first line, it was completed, so set first line to false -->
+					<apex:variable var="firstLine" value="{!false}" rendered="{!firstLine}" />
+					<!-- Add the values to the row-column totals -->
+					<apex:variable value="{!rowTotalColumnA+line.columns['A'].values['A']}" var="rowTotalColumnA"/>
+				</apex:repeat>
+				<!-- Go to next line -->
+				<!-- Do we want to process an end-of-row subtotal line? (only required for rows 11-70) -->
+				<apex:outputPanel layout="none" rendered="{!RenderGroupSubtotals}">
+					<!-- Display the group-group values but not the group-line values if Group03 is rendered -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(RenderGroup03,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!RenderGroup03}"><div style="margin-left: 60px;">{!previousLineGroup03}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(RenderGroup03,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(RenderGroup03,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03}"><apex:param value="{!rowSubtotalGroup03ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Display the group-group values but not the group-line values if Group02 is rendered -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(RenderGroup02,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!RenderGroup02}"><div style="margin-left: 40px;">{!previousLineGroup02}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(RenderGroup02,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(RenderGroup02,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02}"><apex:param value="{!rowSubtotalGroup02ColumnA}"/></apex:outputText></td>
+					</tr>
+					<!-- Display the group-group values but not the group-line values if Group01 is rendered -->
+					<tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+						<td class="{!if(RenderGroup01,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+							<apex:outputPanel layout="none" rendered="{!RenderGroup01}"><div style="margin-left: 20px;">{!previousLineGroup01}</div></apex:outputPanel>
+						</td>
+						<td class="{!if(RenderGroup01,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+						<td class="{!if(RenderGroup01,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01}"><apex:param value="{!rowSubtotalGroup01ColumnA}"/></apex:outputText></td>
+					</tr>
+				</apex:outputPanel>
+				<!-- Setup for end of row -->
+				<!-- Add the row-total to the relevant variables so it accumulates across all the rows -->
+				<!-- Note that the row-totals are reset for each successive row -->
+				<!-- Accumulate Adjustments From Investing and Financing Activities if the row is in the range 31-50 -->
+				<apex:variable value="{!netFromInvFinanActivitiesColumnA+rowTotalColumnA}" var="netFromInvFinanActivitiesColumnA" rendered="{!rowKeyNum>30 && rowKeyNum<51}"/>
+				<!-- Accumulate Adjustments From Other Cash Flows if the row is in the range 51-70 -->
+				<apex:variable value="{!otherCashFlowsColumnA+rowTotalColumnA}" var="otherCashFlowsColumnA" rendered="{!rowKeyNum>50 && rowKeyNum<71}"/>
+				<!-- Accumulate Opening Balance for Cash if the row is in the range 71-99 -->
+				<apex:variable value="{!openingCashColumnA+rowTotalColumnA}" var="openingCashColumnA" rendered="{!rowKeyNum>70}"/>
+				<!-- Display the row totals -->
+				<!--Display the title for the row-total - which is the row label -->
+				<!-- The td tag needs to span the number of groups being rendered -->
+				<tr>
+					<td class="{!if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotallabeld','ffrcalcsumlabeld')}" colspan="{!totalDisplayGroupsAvailable}">{!row.label}</td>
+					<td class="ffrgridspacerd"/>
+					<td class="{!if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd')}"><apex:outputText value="{!if(rowTotalColumnA==0,VZ,RowNumberPattern)}">
+						<apex:param value="{!rowTotalColumnA}"/>
+					</apex:outputText></td>
+				</tr>
+				<!-- Make some vertical space before the next row -->
+				<tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+			</apex:repeat>
+			<!-- Go to the next row -->
+			<!-- Display Closing Balance for Cash and Cash Equivalents -->
+			<!-- The td tag needs to span the number of groups being rendered -->
+			<tr>
+				<td class="ffrgridsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L12']}</td>
+				<td class="ffrgridspacerd"/>
+				<td class="ffrgridsumd"><apex:outputText value="{!if((netFromOperatingActivitiesColumnA+netFromInvFinanActivitiesColumnA-otherCashFlowsColumnA-openingCashColumnA)==0,VZ,VR)}">
+					<apex:param value="{!(netFromOperatingActivitiesColumnA+netFromInvFinanActivitiesColumnA-otherCashFlowsColumnA-openingCashColumnA)}"/></apex:outputText>
+				</td>
+			</tr>
+			<!-- DATA RANGE 2: END -->
+		</table>
+	</apex:outputpanel>
+	<!-- REGION 03: REPORT BODY END -->
+	<!-- REGION 06: REPORT CHATTER START -->
+	<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+	<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

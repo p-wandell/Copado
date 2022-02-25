@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>sfLma__Lead__c</columns>
+    <columns>sfLma__Package_Version__c</columns>
+    <columns>sfLma__Licensed_Seats__c</columns>
+    <columns>sfLma__Used_Licenses__c</columns>
+    <columns>sfLma__Install_Date__c</columns>
+    <columns>sfLma__Expiration_Date__c</columns>
+    <columns>sfLma__Status__c</columns>
+    <columns>sfLma__Is_Sandbox__c</columns>
+    <columns>sfLma__Subscriber_Org_ID__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CREATED_DATE</field>
+        <operation>equals</operation>
+        <value>THIS_WEEK</value>
+    </filters>
+    <label>New This Week</label>
+    <language>en_US</language>
+</ListView>

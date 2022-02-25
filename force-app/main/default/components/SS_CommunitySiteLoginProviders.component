@@ -1,0 +1,19 @@
+<apex:component layout="none">
+    <apex:stylesheet value="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/lib/bootstrap-social/assets/css/font-awesome.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/lib/bootstrap-social/bootstrap-social.css')}"/>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h5>{!$Label.loginWith3rdParty}</h5>
+        </div>
+        <div class="panel-body">
+            <!-- Change login to test for the sandbox -->
+            <a class="btn btn-social btn-block btn-facebook" href="https://login.salesforce.com/services/auth/sso/{!$Organization.Id}/Community?community={!URLENCODE($Site.CurrentSiteUrl)}&startURL=%2F"><i class="fa fa-facebook"></i>{!$Label.loginWithFacebook}</a>
+            <a class="btn btn-social btn-block btn-google-plus" href="https://login.salesforce.com/services/auth/sso/{!$Organization.Id}/Google?community={!URLENCODE($Site.CurrentSiteUrl)}&startURL=%2F"><i class="fa fa-google-plus"></i>{!$Label.loginWithGoogle}</a>         
+            <!--<a class="btn btn-social btn-block btn-google-plus" href="https://test.salesforce.com/services/auth/sso/{!$Organization.Id}/Salesforce?community={!$Site.CurrentSiteUrl}/"><i class="fa fa-google-plus"></i>Login with Salesforce</a>         -->           
+                    <!--<a class="btn btn-block btn-social btn-twitter">
+    <i class="fa fa-twitter"></i> Sign in with Twitter
+  </a>-->
+        </div>
+    </div>
+</apex:component>

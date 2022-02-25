@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>True</isExposed>
+    <masterLabel>7S Slack Feed</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default">
+            <property name="title" label="Title" type="String" />
+            <property name="description" label="Description" type="String" />
+            <property name="channelId" label="Channel Id" type="String" description="Enter the Slack channel ID.  The channel ID can be located in the URL when viewing Slack on the web." />
+            <property name="feedLimit" label="Number of items to load" type="String" description="Number of items to load" default="10" />
+            <property name="messageSort" label="Message Sort" type="String" datasource="Most Recent on Top, Most Recent on Bottom" default="Most Recent on Top" />
+            <property name="variant" label="Display Variant" type="String" datasource="default, featured" default="featured" description="Select the layout of the application.  Use default for no borders. Use Featured for borders." />
+            <property name="alignButton" label="Buttons Alignment" type="String" datasource="Left, Right" default="Right" />
+            <property name="userImgSize" label="User Image Size" type="String" datasource="Small, Medium, Large, None" default="Medium" description="Size of the user image from Slack.  Small, Medium, Large, None." />
+            <property name="showLaunch" label="Show Launch Slack Button?" type="Boolean" default="true" />
+            <property name="showImages" label="Show Image" type="Boolean" default="true" description="Select to display a placeholder instead of the image when an image exists for the Slack message.If unchecked, images will display.All images of a public channel will be displayed; only images in a private channel that have the proper visibility settings will be visible."/>
+            <property name="slackUrl" label="Slack URL" type="String" default="https://slack.com/signin#/" />
+            <property name="height" label="Pixel height of the control" type="String" default="600px" description="Pixel height of the control" />
+            <property name="customClass" label="Custom Class" type="String" description="Specify customClass" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,37 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits Inc.
+  -->
+
+<template>
+     <!-- Displays script to guide the agent's call -->
+   <div class="script-container" aria-label={label.labelAriaWrapper}>
+    <div class="slds-card__header slds-grid slds-p-bottom_small slds-m-bottom_none">
+       <div class="slds-media slds-media_center slds-has-flexi-truncate" >
+          <div class="slds-media__figure slds-align-top">
+             <h2><lightning-icon icon-name={slds_icon} title="Questionnaire Question" ></lightning-icon></h2>
+          </div>
+          <div class="slds-media__body">
+            <lightning-formatted-rich-text class="script" value={scriptText}></lightning-formatted-rich-text>
+          </div>
+       </div>
+    </div>
+   </div>
+     <!-- Buttons for the user or agent (according to the customer’s response) to click  -->
+     <div class="slds-p-top_large slds-p-bottom_large" aria-label={label.labelAriaWrapper}>
+        <p><template if:true={showGuidanceText}>
+            <lightning-formatted-text value={guidanceText} class="slds-text-body_small"></lightning-formatted-text></template></p>
+        <lightning-button-group >
+          <div data-id="actionButtonBar">
+            <lightning-button label={answer1} data-id="Choice_1" variant="neutral" onclick={handleChange}></lightning-button>
+            <lightning-button label={answer2} data-id="Choice_2" variant="neutral" onclick={handleChange}></lightning-button>
+           <template if:true={answer3Populated}>
+              <lightning-button label={answer3} data-id="Choice_3" variant="neutral" onclick={handleChange}></lightning-button>
+           </template> 
+            <template if:true={answer4Populated}>
+              <lightning-button label={answer4} data-id="Choice_4" variant="neutral" onclick={handleChange}></lightning-button>
+            </template>
+         </div>
+       </lightning-button-group>
+     </div>
+     <br />
+</template>

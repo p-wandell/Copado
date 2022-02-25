@@ -1,0 +1,81 @@
+<apex:page controller="pse.ExpenseReportGridController" showHeader="false" sidebar="false" tabStyle="pse__Expense__c" id="expenseReportgridPage" lightningStylesheets="true">
+   <style>
+		.rowPadding {
+		    padding-top:10px; padding-bottom:10px;
+		}
+		.resultTable th:not(:first-of-type) { 
+				border-left: 1px solid rgb(221, 219, 218) !important; 
+		}
+   </style>
+   <apex:outputPanel rendered="{!$User.UIThemeDisplayed!='Theme3'}" layout="none">
+   	<style>	
+  		.resultTable th:not(:first-of-type) { 
+				border-left: 1px solid rgb(221, 219, 218) !important; 
+		}
+  	 </style>
+   </apex:outputPanel>
+   <script>
+      //Added Script for Agile Task : AT26571 Dated 5 march, 2014 by Himanshu Jain
+      	document.addEventListener('DOMContentLoaded', updateAnchorTargetAttribute);
+          
+          function updateAnchorTargetAttribute() {
+      		_hasUnsavedChanges = false;
+      		// This is to set the anchor tag target as _blank to open in new tab.
+      		var parentDiv = document.getElementById('{!$Component.expenseReportgridPage.expReportForm.expReportPB.expReportPBS.expReportPBT}'); 
+      		var inputElem = parentDiv.getElementsByTagName("a"); 
+      	    for ( var i = 0; i < inputElem.length; i++) {
+      	        inputElem[i].target = '_blank';
+      	        inputElem[i].onmouseover = '';
+      	    } 
+      	 }
+   </script>
+   <c:WaitComponent />
+   <apex:form id="expReportForm" >
+      <apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+      <apex:pageBlock id="expReportPB" >
+         <apex:pageMessages id="erMessageSection" />
+         <apex:outputPanel rendered="{!isEverythingOk}" >
+            <apex:pageMessage summary="{!$Label.pse__expense_entry_info_no_expense_report_selected}" severity="info" strength="1" rendered="{!NOT(foundExpReportItems)}"/>
+            <apex:pageBlockSection columns="1" collapsible="false" id="expReportPBS" >
+               <apex:pageBlockTable value="{!expenseReports}" var="er" rendered="{!foundExpReportItems}" id="expReportPBT" styleClass="resultTable">
+                  <apex:column >
+                     <apex:facet name="header">
+                        <apex:outputText value="{!$ObjectType.pse__Expense_Report__c.Fields.Name.Label}" />
+                     </apex:facet>
+                     <apex:outputpanel >
+                        <a href="/{!er.id}" target="_blank">
+                           <apex:outputField value="{!er.Name}"/>
+                        </a>
+                     </apex:outputpanel>
+                  </apex:column>
+                  <apex:repeat value="{!eRGridColumns}" var="f" >
+                     <apex:column rendered="{!NOT(f.Label == $ObjectType.pse__Expense_Report__c.Fields.Name.Label)}" >
+                        <apex:facet name="header">
+                           <apex:outputText value="{!f.Label}" />
+                        </apex:facet>
+                        <apex:outputField value="{!er[f.fieldPath]}"/>
+                     </apex:column>
+                  </apex:repeat>
+               </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            
+            <apex:outputPanel rendered="{!foundExpReportItems}" >
+               <table class="list">
+                  <tfoot>
+                     <tr class="totalRow">
+                        <th class="totalRow rowPadding" scope="col" align="left">
+                           <apex:outputText value="{!recordStatusMessage}" />
+                           &nbsp;&nbsp;&nbsp;
+                           <apex:commandButton action="{!first}"  value="{!$Label.pse__common_label_first}" disabled="{!NOT(hasFirst)}" rerender="expReportPB" status="ajaxStatus" styleClass="btn"/>
+                           <apex:commandButton action="{!previous}"  value="{!$Label.pse__common_label_previous}" disabled="{!NOT(hasPrevious)}" rerender="expReportPB" status="ajaxStatus" styleClass="btn"/>
+                           <apex:commandButton action="{!next}"  value="{!$Label.pse__common_label_next}" disabled="{!NOT(hasNext)}" rerender="expReportPB" status="ajaxStatus" styleClass="btn"/>
+                           <apex:commandButton action="{!last}"  value="{!$Label.pse__common_label_last}" disabled="{!NOT(hasLast)}" rerender="expReportPB" status="ajaxStatus" styleClass="btn"/>
+                        </th>
+                     </tr>
+                  </tfoot>
+               </table>
+            </apex:outputPanel>
+         </apex:outputPanel>
+      </apex:pageBlock>
+   </apex:form>
+</apex:page>

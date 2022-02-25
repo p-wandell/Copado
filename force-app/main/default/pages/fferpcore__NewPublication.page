@@ -1,0 +1,34 @@
+<apex:page standardController="fferpcore__MessagingPublication__c" extensions="fferpcore.NewPublicationController" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+    <apex:sectionHeader title="{!$Label.fferpcore__erppublicationpageblocktitle}" subtitle="{!$Label.fferpcore__erppublicationsectionsubtitle}"/>
+    <apex:pageMessages rendered="{!canCreateLinkControl}"/>
+    <apex:form >
+        <apex:pageBlock title="{!$Label.fferpcore__erppublicationpageblocktitle}" rendered="{!canCreateLinkControl}" >
+            <apex:pageBlockButtons location="both" >
+                <apex:commandButton action="{!save}" value="{!$Label.fferpcore__erpvisualforcesavebutton}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.fferpcore__erpvisualforcecancelbutton}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.fferpcore__erppublicationpageblocksectionsubscriptioninformation}" collapsible="false" rendered="{!parentLinkControlDevNameNotSet}">
+                <apex:inputField value="{!parent.fferpcore__LinkControlDeveloperName__c}" required="true"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.fferpcore__erppublicationpageblocksectioninformation}" columns="2" collapsible="false">
+                <apex:inputField value="{!fferpcore__MessagingPublication__c.Name}" required="true"/>
+                <apex:inputField value="{!fferpcore__MessagingPublication__c.fferpcore__OwnerProduct__c}"/>
+                <apex:inputField value="{!fferpcore__MessagingPublication__c.fferpcore__MessageType__c}"/>
+                <apex:inputField value="{!fferpcore__MessagingPublication__c.fferpcore__DocumentationURL__c}"/>
+                <apex:inputTextarea value="{!fferpcore__MessagingPublication__c.fferpcore__Description__c}"/>
+                <apex:inputField value="{!fferpcore__MessagingPublication__c.fferpcore__LinkControlDeveloperName__c}" rendered="{!NOT(isLinkControl)}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.fferpcore__erppublicationpageblocksectionvdo}" collapsible="false">
+                <apex:inputField value="{!fferpcore__MessagingPublication__c.fferpcore__VirtualObject__c}" required="false"/>
+                <apex:inputField value="{!fferpcore__MessagingPublication__c.fferpcore__VirtualObjectProvider__c}" required="false"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!NOT(canCreateLinkControl)}">
+            <apex:pageMessages />
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!cancel}" value="{!$Label.fferpcore__erpvisualforceokbutton}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

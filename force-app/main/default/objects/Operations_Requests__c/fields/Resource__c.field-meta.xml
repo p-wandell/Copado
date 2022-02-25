@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resource__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>Which resource is the request pertaining to?</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Which resource is the request pertaining to?</inlineHelpText>
+    <label>Resource</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Operations Requests (Resource)</relationshipLabel>
+    <relationshipName>System_Requests1</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

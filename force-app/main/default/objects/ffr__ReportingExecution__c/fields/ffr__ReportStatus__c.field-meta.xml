@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__ReportStatus__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Report Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Not Started</fullName>
+                <default>false</default>
+                <label>Not Started</label>
+            </value>
+            <value>
+                <fullName>Creating Layout</fullName>
+                <default>false</default>
+                <label>Creating Layout</label>
+            </value>
+            <value>
+                <fullName>Getting Data</fullName>
+                <default>false</default>
+                <label>Getting Data</label>
+            </value>
+            <value>
+                <fullName>Waiting for Data and Layout Process</fullName>
+                <default>false</default>
+                <label>Waiting for Data and Layout Process</label>
+            </value>
+            <value>
+                <fullName>Launching Assembling Data and Layout Process</fullName>
+                <default>false</default>
+                <label>Launching Assembling Data and Layout Process</label>
+            </value>
+            <value>
+                <fullName>Waiting for Assembling Data Process</fullName>
+                <default>false</default>
+                <label>Waiting for Assembling Data Process</label>
+            </value>
+            <value>
+                <fullName>Completed</fullName>
+                <default>false</default>
+                <label>Completed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

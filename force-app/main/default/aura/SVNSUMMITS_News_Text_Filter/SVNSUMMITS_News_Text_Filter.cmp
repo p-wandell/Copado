@@ -1,0 +1,13 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global"
+                controller="SVNSUMMITS_NewsController">
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<aura:attribute name="searchText" type="String"/>
+	<aura:attribute name="sitePrefix" type="String"/>
+	<aura:attribute name="placeholderText" type="String" default="SEARCH" access="global"/>
+
+	<ui:inputText value="{!v.searchText}" placeholder="{!v.placeholderText}" keyup="{!c.clickSearchButton}"/>
+
+</aura:component>

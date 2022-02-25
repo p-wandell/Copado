@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>LOE &amp; SOW Review</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>LOE &amp; SOW Review</value>
+    </caseValues>
+    <recordTypes>
+        <label><!-- LOE Review --></label>
+        <name>LOE_Review</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- SOW Review --></label>
+        <name>SOW_Review</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- The opportunity MUST have an approved LOE Review before an SOW Review can be created --></errorMessage>
+        <name>LOE_Approved_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please populate the &quot;Approval Comments&quot; field with context for any approval questions that you answered NO to. --></errorMessage>
+        <name>No_Approval_Comments</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please populate a reason IP is not included. --></errorMessage>
+        <name>No_IP_Reason</name>
+    </validationRules>
+</CustomObjectTranslation>

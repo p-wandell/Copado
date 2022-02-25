@@ -1,0 +1,15 @@
+<apex:page standardController="fferpcore__ScheduledJob__c" extensions="fferpcore.ScheduledJobController" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+	<apex:sectionHeader title="{!$Label.fferpcore__erpscheduledjobrunnowtitle}"/>
+	<apex:form >
+		<apex:pageBlock >
+    		<apex:pageBlockButtons location="bottom">
+				<apex:commandButton rendered="{!canRunNow}" value="{!$Label.fferpcore__erpscheduledjobrunnowconfirmbutton}" action="{!runnow}" />
+				<apex:commandButton value="{!$Label.fferpcore__erpcancel}" action="{!cancel}" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection >
+				{!runnowmessage}
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

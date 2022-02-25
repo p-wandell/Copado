@@ -1,0 +1,37 @@
+<apex:page controller="fferpcore.ExportController" tabStyle="fferpcore__MessageType__c" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+	<apex:sectionHeader title="{!$Label.fferpcore__erpexportpagetitle}" help="{!helpUrl}"/>
+	<apex:form >
+		<apex:pageBlock >
+			<apex:pageMessages />
+			<apex:pageBlockButtons location="{!buttonLocation}">
+				<apex:commandButton action="{!export}" value="{!$Label.fferpcore__erpexportbutton}" rendered="{!showExport}"/>
+				<apex:commandButton action="{!cancel}" value="{!$Label.fferpcore__erpvisualforcecancelbutton}"/>
+			</apex:pageBlockButtons>
+			<apex:repeat value="{!messageTypeGroups}" var="messageTypeGroup" rendered="{!HasRecordsSelected}">
+				<apex:pageBlockSection columns="1" rendered="{!OR(messageTypeGroup.hasPublications, messageTypeGroup.hasSubscriptions)}" title="{!messageTypeGroup.DeveloperName}">
+					<apex:pageBlockSection columns="1" title="{!$Label.fferpcore__erpexportpublicationsheader}" collapsible="false" rendered="{!messageTypeGroup.hasPublications}" >
+						<apex:pageBlockTable title="Publications" value="{!messageTypeGroup.publications}" var="dto">
+							<apex:column style="width: 5%; text-align: center;" headerValue="{!$Label.fferpcore__erpexportexportcolumnheader}" rendered="{!showExport}">
+								<apex:inputCheckbox value="{!dto.doExport}" rendered="{!dto.canExport}"/>
+							</apex:column>
+							<apex:column style="width:30%" headerValue="{!$Label.fferpcore__erpexportnamecolumnheader}" value="{!dto.dto.Name}" />
+							<apex:column headerValue="{!$Label.fferpcore__erpexportdescriptioncolumnheader}" value="{!dto.dto.Description}" />
+							<apex:column headerValue="{!$Label.fferpcore__erpexporterrorscolumnheader}" value="{!dto.error}" rendered="{!hasErrors}"/>
+						</apex:pageBlockTable>
+					</apex:pageBlockSection>
+					<apex:pageBlockSection columns="1" title="{!$Label.fferpcore__erpexportsubscriptionsheader}" collapsible="false" rendered="{!messageTypeGroup.hasSubscriptions}" >
+						<apex:pageBlockTable value="{!messageTypeGroup.subscriptions}" var="dto">
+							<apex:column style="width:5%; text-align: center;" headerValue="{!$Label.fferpcore__erpexportexportcolumnheader}" rendered="{!showExport}">
+								<apex:inputCheckbox value="{!dto.doExport}" rendered="{!dto.canExport}"/>
+							</apex:column>
+							<apex:column style="width:30%" headerValue="{!$Label.fferpcore__erpexportnamecolumnheader}" value="{!dto.dto.Name}" />
+							<apex:column headerValue="{!$Label.fferpcore__erpexportdescriptioncolumnheader}" value="{!dto.dto.Description}" />
+							<apex:column headerValue="{!$Label.fferpcore__erpexporterrorscolumnheader}" value="{!dto.error}" rendered="{!hasErrors}"/>
+						</apex:pageBlockTable>
+					</apex:pageBlockSection>
+				</apex:pageBlockSection>
+			</apex:repeat>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

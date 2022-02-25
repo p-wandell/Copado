@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Task</fullName>
+    <active>true</active>
+    <label>Task</label>
+    <picklistValues>
+        <picklist>Priority</picklist>
+        <values>
+            <fullName>High</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Low</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Normal</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Status</picklist>
+        <values>
+            <fullName>Closed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Completed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Started</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Subject</picklist>
+        <values>
+            <fullName>Call</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Send Letter</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Send Quote</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Client Discovery%2FScoping Meeting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Customer Intro %2F Qualification Meeting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Delivered Close Plan</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Demo with Client or Prospect</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Demo with Salesforce</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Disqualified Passed to Sales Lead</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Email</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Meeting with IBM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Meeting with Salesforce</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other Meeting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Phone Call</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Relationship Building Extras</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

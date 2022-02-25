@@ -1,0 +1,30 @@
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.DefinitionConfirmImportController" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.ffr__front, 'base/style.css')}"/>
+
+	<apex:form > 
+		<apex:sectionHeader title="{!$Label.ffr__reportingdefinitionimporttitle}" help="{!helpLink}"/>
+
+		<apex:pageBlock mode="edit">
+			<apex:PageMessages id="messagesId"/>
+			<apex:pageBlockSection title="{!$Label.ffr__reportingdefinitionreportingdefinition}" collapsible="false">
+				<apex:pageBlockSectionItem >
+					<apex:outputText id="ImportedNameLabel" value="{!$Label.ffr__reportingdefinitionimportname}"/>
+					<apex:outputPanel styleClass="requiredInput">
+						<div class="requiredBlock"></div>
+						<apex:inputText id="ImportedName" value="{!ImportedName}"/>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockButtons id="buttons">
+				<apex:commandButton action="{!import}" styleClass="hidden importBtn" reRender="{!$Component.messagesId}" oncomplete="enableButtonsByClass('import', '{!JSENCODE($Label.ffr__reportingdefinitionimportsave)}'); enableButtonsByClass('cancel', '{!JSENCODE($Label.ffr__reportingdefinitionimportcancel)}');"/>
+				<input id="import" class="btn disable import" value="{!$Label.ReportingDefinitionImportSave}" type="button" onclick="disableButtonsByClass('disable', '{!JSENCODE($Label.ReportingDefinitionProcessing)}', 'importBtn');"/>
+
+				<apex:commandButton id="cancel" action="{!cancel}" styleClass="disable cancel" value="{!$Label.ffr__reportingdefinitionimportcancel}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+
+	<script src="{!URLFOR($Resource.front,'utils/radio.js')}"></script>
+	<script src="{!URLFOR($Resource.front,'utils/buttons.js')}"></script>
+</apex:page>

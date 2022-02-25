@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="audioPlayer">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Media Player</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage, lightning__AppPage, lightning__RecordPage, lightningCommunity__Default">
+            <property name="media" type="String" default="Audio" label="Media Type" datasource="Audio,Video"/>
+            <property name="title" type="String" default="" label="Title" description="Title that displays at the top of the application. If defined, this title will appear at the top of each step.  If empty, no application title will be displayed."/>
+            <property name="pagePosition" type="String" default="Center" label="Title Alignment" datasource="Left,Right,Center" description="Select the alignment for the title text.  Options are: Left, Right and Center."/>
+            <property name="mediaFiles" type="String" default="1" datasource="1,2,3,4,5,6" label="Number of Media Files"/>
+            <property name="description" type="String" default="" label="Description" description="Description for the collection of media files."/>
+            <property name="border" type="Boolean" default="false" label="Show Border/Opaque" description="Select to display a border in Communities and for an opaque background in LEX."/>
+            <property name="fileBorder" type="Boolean" default="false" label="Show Video File Borders" description="Select to display a border around the file."/>
+            <property name="recordIdValue" type="String" default="" label="Record ID" description="When this component is used on an object detail page, you can define a specific record to display.  To display the current record, enter {!recordId} in communities or recordId in LEX"/>
+            <property name="fieldApiName1" type="String" default="" label="Media URL 1 Field API Name" description="When this component is used on an object detail page, specify the API Name for the field where the media file URL is stored."/>
+            <property name="titleOne" type="String" default="" label="Media File 1 Title" description="Title for media file 1."/>
+            <property name="mediaFile" type="String" default="" label="Media File URL" description="URL for media file 1."/>
+            <property name="fieldApiName2" type="String" default="" label="Media URL 2 Field API Name" description="When this component is used on an object detail page, specify the API Name for the field where the media file URL is stored."/>
+            <property name="titleTwo" type="String" default="" label="Media File 2 Title" description="Title for media file 2."/>
+            <property name="mediaFileTwo" type="String" default="" label="Media File URL 2" description="URL for media file 2."/>
+            <property name="fieldApiName3" type="String" default="" label="Media URL 3 Field API Name" description="When this component is used on an object detail page, specify the API Name for the field where the media file URL is stored."/>
+            <property name="titleThree" type="String" default="" label="Media File 3 Title" description="Title for media file 3."/>
+            <property name="mediaFileThree" type="String" default="" label="Media File URL 3" description="URL for media file 3."/>
+            <property name="fieldApiName4" type="String" default="" label="Media URL 4 Field API Name" description="When this component is used on an object detail page, specify the API Name for the field where the media file URL is stored."/>
+            <property name="titleFour" type="String" default="" label="Media File 4 Title" description="Title for media file 4."/>
+            <property name="mediaFileFour" type="String" default="" label="Media File URL 4" description="URL for media file 4."/>
+            <property name="fieldApiName5" type="String" default="" label="Media URL 5 Field API Name" description="When this component is used on an object detail page, specify the API Name for the field where the media file URL is stored."/>
+            <property name="titleFive" type="String" default="" label="Media File 5 Title" description="Title for media file 5."/>
+            <property name="mediaFileFive" type="String" default="" label="Media File URL 5" description="URL for media file 5."/>
+            <property name="fieldApiName6" type="String" default="" label="Media URL 6 Field API Name" description="When this component is used on an object detail page, specify the API Name for the field where the media file URL is stored."/>
+            <property name="titleSix" type="String" default="" label="Media File 6 Title" description="Title for media file 6."/>
+            <property name="mediaFileSix" type="String" default="" label="Media File URL 6" description="URL for media file 6."/>
+            <property name="invalidBehavior" type="String" default="Show Message" label="Invalid Field Behavior" datasource="Show Nothing,Show Message" description="When a media player cannot be displayed due to a misconfiguration or error, specify how this should be handled.  Select from the following options:  Show nothing, Show message, Show Default"/>
+            <property name="invalidMessage" type="String" default="" label="Invalid Field Message" description="Specify the message to display when an media file is invalid or cannot be displayed. This message is used if “Show message” is selected in the Invalid Link Behavior field."/>
+            <property name="labelForAriaDiv" type="String" default="Media Player" label="ACCESSIBILITY: Label for ARIA landmark" description="ARIA label for outer component div."/>
+            <property name="ariaLandmarkRoleForComponent" label="ACCESSIBILITY: ARIA landmark role for component" type="String"
+                      description="HTML role of the outer div of the component."
+                      datasource="main,region,complementary"
+                      default="main"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

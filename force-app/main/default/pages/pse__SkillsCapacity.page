@@ -1,0 +1,238 @@
+<apex:page controller="pse.SkillsCapacityController" tabStyle="Skills_Capacity__tab" readonly="true" lightningStylesheets="true">
+<style>
+div#wait { width: 100%; height: 100%; position:{!IF($User.UIThemeDisplayed == 'Theme4d', 'fixed', '')}}
+div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+a.link { text-decoration: underline; cursor: pointer; }
+img.sortIndicator { padding-left: 5px; }
+img.warningImage {background-image: url({!URLFOR($Resource.pse__appirioCommon, 'warning.svg')}); background-size: 14px; background-repeat: no-repeat; background-position: center; width: 16px; height: 16px; }
+img.alert {margin-left: 5px; background-size: 12px; vertical-align: text-bottom;}
+.searchPanel {padding: 2px 0 10px 0;}
+.collapseExpandImg { vertical-align: bottom; cursor: pointer; width: 12px; height: {!IF($User.UIThemeDisplayed == 'Theme4d', '18px;', '14px;')}}
+.filterPanel {margin-top: 2px;}
+</style>
+<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+<script type="text/javascript">
+var prevSearchTerm = null;
+var timer = null;
+function setVisible(name, visible) {
+  var e = document.getElementById(name);
+  if (e != null) {
+    if (visible) {
+      e.setAttribute("style", "display: block");
+      e.style.cssText = "display: block";
+    } else {
+      e.setAttribute("style", "display: none");
+      e.style.cssText = "display: none";
+    }
+  }
+}
+function scroll() {
+  document.getElementById('anchor').scrollIntoView(true);
+}
+function wait(val) {
+  setVisible('loading', val);
+  setVisible('wait', val);
+}
+function sanitize(val) {
+  val = val.replace(/'/g, "\'");
+  val = val.replace(/\"/g, "\'");
+  return val;
+}
+function searchTermChanged(term) {
+  if (term.value.length >= 2 && prevSearchTerm != term.value) {
+    clearTimeout(timer);
+    timer = setTimeout("searchSkillDetails(\"" + sanitize(term.value) + "\")", 1000);
+    prevSearchTerm = term.value;
+  } else if (term.value.length == 0) {
+    clearTimeout(timer);
+    timer = setTimeout("searchSkillDetails(\"\")", 1000);
+    prevSearchTerm = null;
+  }
+}
+function showResource(resourceId) {
+  var win = window.open("/" + resourceId,
+    "ResourceDetail",
+    "menubar=no,width=1024,height=600,toolbar=no,scrollbars=yes");
+  win.focus();
+}
+</script>
+<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+<div id="loading" class="waitingSearchDiv" style="display: none">
+ <div id="waitingHolder" class="waitingHolder">
+  <img class="waitingImage" src="/img/loading.gif"/>
+  <span class="waitingDescription">{!$Label.common_loading_label}</span>
+ </div>
+</div>
+
+<apex:form id="form">
+<apex:actionFunction id="expandSkillType" name="expandSkillType" action="{!expandSkillType}" rerender="skillsSection" immediate="true" oncomplete="wait(false);">
+ <apex:param id="expandParam" name="expandParam" value="" assignTo="{!selectedSkillType}" />
+</apex:actionFunction>
+<apex:actionFunction id="collapseSkillType" name="collapseSkillType" action="{!collapseSkillType}" rerender="skillsSection" immediate="true" oncomplete="wait(false);">
+ <apex:param id="collapseParam" name="collapseParam" value="" assignTo="{!selectedSkillType}" />
+</apex:actionFunction>
+<apex:actionFunction id="collapseAll" name="collapseAll" action="{!collapseAll}" rerender="skillsSection" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="refresh" name="refresh" action="{!refresh}" immediate="true" oncomplete="wait(false);" rerender="filterPanel, skillsSection, skillDetailsSection, msgs">
+ <apex:param id="selectedUnitType" name="selectedUnitType" value="" assignTo="{!selectedUnitType}" />
+ <apex:param id="selectedUnitId" name="selectedUnitId" value="" assignTo="{!selectedUnitId}" />
+ <apex:param id="showFlaggedOnly" name="showFlaggedOnly" value="" assignTo="{!showFlaggedOnly}" />
+</apex:actionFunction>
+<apex:actionFunction id="selectSkill" name="selectSkill" action="{!selectSkill}" rerender="skillDetailsSection" immediate="true" oncomplete="wait(false); scroll();">
+ <apex:param id="selectedSkill" name="selectedSkill" value="" assignTo="{!selectedSkill}" />
+</apex:actionFunction>
+<apex:actionFunction id="sortSkills" name="sortSkills" action="{!sortSkills}" rerender="skillsSection" immediate="true" oncomplete="wait(false);">
+ <apex:param id="sortColumn" name="sortColumn" value="" assignTo="{!capacitySortState.sortColumn}" />
+</apex:actionFunction>
+<apex:actionFunction id="searchSkillDetails" name="searchSkillDetails" action="{!searchSkillDetails}" rerender="skillDetailsSection,msgs" immediate="true" status="searchStatus">
+ <apex:param id="searchTerm" name="searchTerm" value="" assignTo="{!searchTerm}" />
+</apex:actionFunction>
+<apex:actionFunction id="sortSkillDetail" name="sortSkillDetail" action="{!sortSkillDetail}" rerender="skillDetailsSection" immediate="true" oncomplete="wait(false);">
+ <apex:param id="detailSortColumn" name="detailSortColumn" value="" assignTo="{!detailSortState.sortColumn}" />
+</apex:actionFunction>
+
+<apex:sectionHeader title="{!$Label.pse__skills_capacity_section_header_title}" help="{!$Page.pse__SkillHelp}" />
+<apex:pageMessages id="msgs" />
+<apex:pageBlock id="main" title="{!$Label.pse__skills_capacity_section_header_title}" rendered="{!NOT isDisabled}">
+<apex:pageBlockButtons >
+<apex:commandButton onclick="wait(true);" action="{!expandAll}" value="{!$Label.pse__skills_capacity_btn_expand_all}" />
+<apex:commandButton onclick="wait(true); collapseAll(); return false;" value="{!$Label.pse__skills_capacity_btn_collapse_all}" oncomplete="wait(false);" />
+</apex:pageBlockButtons>
+
+<apex:outputPanel id="filterPanel" layout="block" styleClass="filterPanel">
+<apex:outputLabel value="{!$Label.pse__skills_capacity_label_filter_by + ' '}  " />
+<apex:selectList id="unitType" value="{!selectedUnitType}" title="{!$Label.pse__skill_capacity_section_unit_type}" size="1" onchange="wait(true); refresh(this.value, '', false);">
+<apex:selectOptions value="{!unitTypeOptions}" />
+</apex:selectList>
+<span style="padding-left: 5px;"></span>
+<c:UnitPicker unitTypeAttribute="{!selectedUnitType}" selectedUnitId="{!selectedUnitId}" showLabel="false" onchange="wait(true); refresh('{!selectedUnitType}', this.value, false);" />
+<apex:inputCheckbox value="{!showFlaggedOnly}" onchange="wait(true); refresh('{!JSINHTMLENCODE(selectedUnitType)}', '{!JSINHTMLENCODE(selectedUnitId)}', this.checked);" />
+<apex:image value="/s.gif" styleClass="warningImage"/>
+</apex:outputPanel>
+
+<p />
+<apex:outputPanel id="skillsSection">
+<table class="list" cellspacing="0" cellpadding="0" border="0">
+<tr class="headerRow">
+ <th>
+	<a class="link" onclick="wait(true); sortSkills('Skill');">{!$Label.skill_certification_skills_table_skill_header}
+		<apex:image styleClass="sortIndicator" value="/img/{!capacitySortState.sortIndicatorImage}" rendered="{!capacitySortState.sortColumn == 'Skill'}" />
+	</a>
+ </th>
+ <th>
+	<a class="link" onclick="wait(true); sortSkills('NumberWithSkill');">{!$Label.pse__skills_capacity_label_with_skill}
+		<apex:image styleClass="sortIndicator" value="/img/{!capacitySortState.sortIndicatorImage}" rendered="{!capacitySortState.sortColumn == 'NumberWithSkill'}" />
+	</a>
+ </th>
+ <th>
+ 	<a class="link" onclick="wait(true); sortSkills('HighValue');">{!$Label.pse__skills_capacity_label_high_value}
+		<apex:image styleClass="sortIndicator" value="/img/{!capacitySortState.sortIndicatorImage}" rendered="{!capacitySortState.sortColumn == 'HighValue'}" />
+ 	</a>
+ </th>
+ <th>
+ 	<a class="link" onclick="wait(true); sortSkills('AverageValue');">{!$Label.pse__skills_capacity_label_average_value}
+		<apex:image styleClass="sortIndicator" value="/img/{!capacitySortState.sortIndicatorImage}" rendered="{!capacitySortState.sortColumn == 'AverageValue'}" />
+	</a>
+ </th>
+ <th>
+ 	<a class="link" onclick="wait(true); sortSkills('OpenRequests');">{!$Label.pse__skills_capacity_label_open_requests}
+		<apex:image styleClass="sortIndicator" value="/img/{!capacitySortState.sortIndicatorImage}" rendered="{!capacitySortState.sortColumn == 'OpenRequests'}" />
+ 	</a>
+ </th>
+</tr>
+<apex:repeat value="{!skillTypes}" var="t">
+<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+ <td colspan="5">
+  <a href="" onclick="wait(true); collapseSkillType('{!t.escapedName}'); return false;"><apex:image styleClass="collapseExpandImg" url="{!URLFOR($Resource.pse__appirioCommon, 'chevrondown.svg')}" rendered="{!t.expanded}" /></a>
+  <a href="" onclick="wait(true); expandSkillType('{!t.escapedName}'); return false;"><apex:image styleClass="collapseExpandImg" url="{!URLFOR($Resource.pse__appirioCommon, 'chevronright.svg')}" rendered="{!NOT t.expanded}" /></a>
+  <apex:outputText value="{!t.name}" style="vertical-align: top; padding-left: 5px;" />
+ </td>
+</tr>
+<apex:repeat value="{!t.ratings}" var="r">
+<tr style="display: {!IF(t.expanded, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+<td class="dataCell" nowrap="true" style="padding-left: 50px;">
+<a class="link" onclick="wait(true); selectSkill('{!r.escapedName}');">{!r.name}</a>
+</td>
+<td class="dataCell" nowrap="true">
+ {!r.numberWithSkillString}
+ <apex:image styleClass="alert warningImage" value="/s.gif" rendered="{!r.alertLowNumberWithSkill}"
+   title="{!$Label.pse__skills_capacity_alert_low_number_skill_relative_to_open_requests}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+{!r.highValueString}
+<apex:image styleClass="alert warningImage" value="/s.gif" rendered="{!r.alertHighValue}"
+  title="{!$Label.pse__skills_capacity_alert_low_high_value}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+{!r.averageValueString}
+<apex:image styleClass="alert warningImage" value="/s.gif" rendered="{!r.alertAverageValue}"
+  title="{!$Label.pse__skills_capacity_alert_low_average_value}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+{!r.openRequestsString}</td>
+</tr>
+</apex:repeat>
+</apex:repeat>
+</table>
+</apex:outputPanel>
+</apex:pageBlock>
+
+<a id="anchor"></a>
+<apex:outputPanel id="skillDetailsSection">
+<apex:pageBlock title="{!SUBSTITUTE(($Label.pse__skills_capacity_label_skill_details),'{0}',selectedSkill)}"  rendered="{!selectedSkill != null}">
+<apex:outputPanel layout="block" styleClass="searchPanel">
+	<apex:outputLabel value="{!$Label.pse__skills_capacity_label_search + ' '}" />
+	<input type="text" id="searchTerm" style="margin-left: 5px; margin-right: 5px;" onkeyup="searchTermChanged(this);" value="{!searchTerm}" />
+	<apex:actionStatus id="searchStatus" startText="{!$Label.pse__common_label_please_wait}" stopText=""/>
+</apex:outputPanel>
+<table class="list" cellspacing="0" cellpadding="0" border="0">
+<tr class="headerRow">
+ <th>
+  <a class="link" onclick="wait(true); sortSkillDetail('Resource');">{!$Label.skills_capacity_label_resource}
+  	<apex:image styleClass="sortIndicator" value="/img/{!detailSortState.sortIndicatorImage}" rendered="{!detailSortState.sortColumn == 'Resource'}" />
+  </a>
+ </th>
+ <th>
+  <a class="link" onclick="wait(true); sortSkillDetail('Unit');"><apex:outputText value="{!IF(selectedUnitType=='Group',$Label.pse__common_label_group,IF(selectedUnitType=='Region',$Label.pse__common_label_region,$Label.pse__common_label_practice))}"  />
+  	<apex:image styleClass="sortIndicator" value="/img/{!detailSortState.sortIndicatorImage}" rendered="{!detailSortState.sortColumn == 'Unit'}" />
+  </a>
+ </th>
+ <th>
+  <a class="link" onclick="wait(true); sortSkillDetail('Rating');">{!$Label.pse__skills_capacity_label_value}
+  	<apex:image styleClass="sortIndicator" value="/img/{!detailSortState.sortIndicatorImage}" rendered="{!detailSortState.sortColumn == 'Rating'}" />
+  </a>
+ </th>
+ <th>
+  <a class="link" onclick="wait(true); sortSkillDetail('Notes');">{!$Label.pse__common_label_notes}
+  	<apex:image styleClass="sortIndicator" value="/img/{!detailSortState.sortIndicatorImage}" rendered="{!detailSortState.sortColumn == 'Notes'}" />
+  </a>
+ </th>
+ <th>
+  <a class="link" onclick="wait(true); sortSkillDetail('IsExternal');">{!$Label.pse__skills_capacity_label_external}
+  	<apex:image styleClass="sortIndicator" value="/img/{!detailSortState.sortIndicatorImage}" rendered="{!detailSortState.sortColumn == 'IsExternal'}" />
+  </a>
+ </th>
+ <th>
+  <a class="link" onclick="wait(true); sortSkillDetail('EvalDate');">{!$Label.pse__skills_capacity_label_evaluation_date}
+  	<apex:image styleClass="sortIndicator" value="/img/{!detailSortState.sortIndicatorImage}" rendered="{!detailSortState.sortColumn == 'EvalDate'}" />
+  </a>
+ </th>
+</tr>
+<apex:repeat value="{!skillsDetailData.details}" var="s">
+<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+ <td class="dataCell" nowrap="true"><a class="link" onclick="showResource('{!s.resourceId}'); return false;">{!s.resource}</a></td>
+ <td class="dataCell" nowrap="true">{!s.unit}</td>
+ <td class="dataCell" nowrap="true">{!s.value}</td>
+ <td class="dataCell" >{!s.notes}</td>
+ <td class="dataCell" nowrap="true">
+   <apex:image styleClass="checkImg" value="/img/checkbox_{!IF(s.isExternal,'','un')}checked.gif" title="{!IF(s.isExternal,'','Not ')}Checked"/>
+ </td>
+ <td class="dataCell" nowrap="true">{!s.evaluationDate}</td>
+</tr>
+</apex:repeat>
+</table>
+</apex:pageBlock>
+</apex:outputPanel>
+
+</apex:form>
+</apex:page>

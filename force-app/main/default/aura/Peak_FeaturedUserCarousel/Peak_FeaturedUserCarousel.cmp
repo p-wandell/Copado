@@ -1,0 +1,34 @@
+<!--
+ - Created by brianpoulsen on 3/16/17.
+ -->
+
+<aura:component description="featuredUserCarousel"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens"
+                access="global">
+
+    <ltng:require styles="{!join(',', $Resource.slickCarousel + '/slick.css', $Resource.slickCarousel + '/slick-theme.css')}" scripts="{!join(',', $Resource.jquery331, $Resource.slickCarousel + '/slick.min.js')}" afterScriptsLoaded="{!c.doInit}" />
+
+    <aura:attribute name="title" type="String" default="" access="global" />
+    <aura:attribute name="userIdsInput" type="String" default="" access="global" />
+    <aura:attribute name="userIds" type="String[]" default="" />
+    <aura:attribute name="showDots" type="Boolean" default="true" access="global" />
+
+    <aura:attribute name="CustomClassName" type="String" default="" access="global" />
+    <aura:attribute name="CustomIdName" type="String" default="" access="global" />
+
+    <section class="{!'peak-component ' + v.CustomClassName}" id="{!v.CustomIdName}">
+
+        <aura:if isTrue="{!v.title != ''}">
+            <h3>
+                <c:Peak_Base labelText="{!v.title}" />
+            </h3>
+        </aura:if>
+        <div aura:id="slider" class="slider">
+            <aura:iteration items="{!v.userIds}" var="userId">
+                <div class="slide">
+                    <c:Peak_FeaturedUser title="" userId="{!userId}" ctaText="" ctaLink="" />
+                </div>
+            </aura:iteration>
+        </div>
+    </section>
+</aura:component>

@@ -1,0 +1,21 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="true" title="{!$Label.site.page_not_found}">
+    <apex:composition template="{!$Site.Template}">
+        <apex:define name="body">
+            <title>{!$Label.site.page_not_found}</title>
+            <div id="content" class="full-width">
+                <div class="page-header"><h2>{!$Label.site.page_not_found}</h2></div>
+                <div class="row">
+                    <div class="error_page">
+                  <apex:outputText styleClass="title" value="{!$Label.site.page_not_found_detail}">
+                   <apex:param value="{!$Site.OriginalUrl}"/>
+                  </apex:outputText>
+                        <apex:outputText escape="false" value=" {!$Label.site.get_in_touch}">
+                         <apex:param value="mailto:{!$Site.AdminEmailAddress}"/>
+                         <apex:param value="{!$Label.site.email_us}"/>
+                        </apex:outputText>
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

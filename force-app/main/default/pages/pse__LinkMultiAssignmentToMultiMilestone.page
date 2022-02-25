@@ -1,0 +1,46 @@
+<apex:page standardController="pse__Assignment__c" title="{!$Label.pse__link_assignment_label_link_assignment}" recordSetVar="assign"
+ sidebar="false" tabStyle="pse__Assignment__c" id="multiAssignmilestonePage" extensions="pse.LinkMultiAssignmentToMilestone" lightningStylesheets="true">
+
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<c:WaitComponent />
+
+	<apex:PageMessages id="messageSection" />
+
+	<apex:form >
+		<c:BulkAssignAsmtToMilestone assignmentAttribute="{!assignmentsIds}" projectAttribute="{!projectId}" />
+	</apex:form>
+
+	<script>
+		prepareHeader();
+		function prepareHeader() {
+			var config = {
+				objectName: '{!JSENCODE($Label.link_assignment_linked_assignments_to_milestones_header)}',
+				helpUrl: '{!$Page.LinkMultiAssignmentToMultiMilestoneHelp}',
+				objectApiName: '{!$ObjectType["Assignment__c"].name}',
+				onRender: onHeaderLoadCallback,
+				buttons: []
+			};
+
+			if (renderSaveButton()) {
+				config.buttons.push({
+					id: 'save',
+					label: '{!JSENCODE($Label.common_label_save)}',
+					actionFn: 'doSave'
+				});
+			}
+
+			config.buttons.push({
+				id: 'done',
+				label: '{!JSENCODE($Label.common_label_done)}',
+				actionFn: 'doCancel'
+			});
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+	</script>
+</apex:page>

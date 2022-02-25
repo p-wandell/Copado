@@ -1,0 +1,28 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.card__title {
+  font-size: 1.25rem;
+  line-height: 1.15;
+  margin-top: 0.5rem;
+}
+.card__title:first-child {
+  margin-top: 0;
+}
+.card__title:last-child {
+  margin-bottom: 0;
+}
+.card_max-lines {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+}
+.card__description {
+  color: var(--lwc-colorTextWeak);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}

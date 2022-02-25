@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>Case(TEXT(Contact.Lead_Qualification_Status__c:UNIQUE), &quot;Pass Through&quot;, 1,0)</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <downGroupingContext>GRAND_SUMMARY</downGroupingContext>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>MQL</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_11308486</developerName>
+        <masterLabel>MQL Status</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Contact.Lead_Qualification_Status__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>MQL</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>TQL</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>SAL</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Pass Through</sourceValue>
+            </sourceValues>
+            <value>SDR Qualified</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>No Conversion</sourceValue>
+            </sourceValues>
+            <value>NonMktg</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>ACCOUNT.NAME</field>
+    </columns>
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>TITLE</field>
+    </columns>
+    <columns>
+        <field>Contact.Lead_Source__c</field>
+    </columns>
+    <columns>
+        <field>Contact.Lead_Source_Detail__c</field>
+    </columns>
+    <columns>
+        <field>CDF1</field>
+    </columns>
+    <currency>USD</currency>
+    <customDetailFormulas>
+        <calculatedFormula>IF(OR(ISPICKVAL(Contact.Lead_Qualification_Status__c,&quot;Pass Through&quot;),
+ISPICKVAL(Contact.Lead_Qualification_Status__c,&quot;TQL&quot;),ISPICKVAL(Contact.Lead_Qualification_Status__c,&quot;SAL&quot;),ISPICKVAL(Contact.Lead_Qualification_Status__c,&quot;MQL&quot;)),&quot;SDR&quot;,&quot;&quot;)</calculatedFormula>
+        <dataType>Text</dataType>
+        <developerName>CDF1</developerName>
+        <label>MQL</label>
+        <scale>0</scale>
+    </customDetailFormulas>
+    <filter>
+        <criteriaItems>
+            <column>CONTACT_RECORDTYPE</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Contact.Contact</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Contact.Lead_Source__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>AppExchange,Digital Marketing,Direct Inbound,Hosted Event,Sponsored Event,Website Conversion</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_11308486</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Contact.Lead_Qualification_Status__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>SDR Contacts</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>ContactList</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

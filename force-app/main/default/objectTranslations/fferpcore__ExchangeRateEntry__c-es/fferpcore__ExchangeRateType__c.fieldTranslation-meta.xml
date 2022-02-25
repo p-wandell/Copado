@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Tipos de cambio para utilizar con tipos de cambio ERP. Le recomendamos que no elimine los tipos de tasa administrada. Para más información, consulte la Ayuda de ERP.</help>
+    <label><!-- Exchange Rate Type --></label>
+    <name>fferpcore__ExchangeRateType__c</name>
+    <picklistValues>
+        <masterLabel>Average</masterLabel>
+        <translation>Promedio</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Budget</masterLabel>
+        <translation>Presupuesto</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Closing</masterLabel>
+        <translation>Clausura</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Commercial</masterLabel>
+        <translation>Comercial</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Historical</masterLabel>
+        <translation>Histórico</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Spot</masterLabel>
+        <translation>Lugar</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Translation</masterLabel>
+        <translation>Traducción</translation>
+    </picklistValues>
+</CustomFieldTranslation>

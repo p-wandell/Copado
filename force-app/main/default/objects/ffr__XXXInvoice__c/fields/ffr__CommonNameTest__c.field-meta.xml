@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__CommonNameTest__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Test common names for Dataview</description>
+    <externalId>false</externalId>
+    <label>Common Name Test</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>TestOne</fullName>
+                <default>false</default>
+                <label>TestOne</label>
+            </value>
+            <value>
+                <fullName>TestTwo</fullName>
+                <default>false</default>
+                <label>TestTwo</label>
+            </value>
+            <value>
+                <fullName>TestThree</fullName>
+                <default>false</default>
+                <label>TestThree</label>
+            </value>
+            <value>
+                <fullName>TestFour</fullName>
+                <default>false</default>
+                <label>TestFour</label>
+            </value>
+            <value>
+                <fullName>Account</fullName>
+                <default>false</default>
+                <label>Account</label>
+            </value>
+            <value>
+                <fullName>Opportunity</fullName>
+                <default>false</default>
+                <label>Opportunity</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

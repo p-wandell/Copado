@@ -1,0 +1,22 @@
+<apex:page standardController="pse__Billing_Event__c" 
+           extensions="pse.BillingEventsReleaseController" 
+           recordSetVar="events"
+           lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+    <apex:form >
+    	<apex:sectionHeader title="{!$Label.pse__billing_events_release_message}"/>
+        <c:Confirmation confirmAction="{!releaseEvents}" 
+                        cancelAction="{!cancel}" 
+                        infoMsg="{!SUBSTITUTE($Label.pse__billing_events_release_confirmation_message, '{0}', $Label.pse__billing_events_label_for_selected_billing_event_s)}" 
+                        rendered="{!showConfirmation}"
+                        confirmLabel="{!$Label.pse__common_label_confirm}"
+                        cancelLabel="{!$Label.pse__billing_events_button_go_back}" />
+
+        <apex:pageBlock rendered="{!NOT(showConfirmation)}">
+            <apex:pageMessages />
+            <apex:pageBlockButtons location="bottom">
+            	<apex:commandButton action="{!cancel}" value="{!$Label.pse__billing_events_button_go_back}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

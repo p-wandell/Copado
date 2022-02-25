@@ -1,0 +1,45 @@
+<messaging:emailTemplate recipientType="User" 
+        relatedToType="GoodwillRequest__c" 
+        subject="Goodwill Request for: {!relatedTo.Project__r.Name}">
+        
+    <messaging:htmlEmailBody >
+        <html>
+            <body>
+                <p>Please find a FOC request for your review. Please let us know if this is approved or if you have any questions.</p>
+                <br/>
+                <p style="font-weight: bold;">Project: <a href="{!relatedTo.Record_Link__c}">{!relatedTo.Project__r.Name}</a></p>
+                <br/>
+                <p style="font-weight: bold;">Resource Impacts</p>
+                <table width="75%" border="1" cellspacing="0" cellpadding="0">
+                    <tr style="background-color: lightgray;">
+                        <th>Role/Resource</th>
+                        <th>Hours</th>
+                        <th>Bill Rate</th>
+                        <th>Gross Rate</th>
+                        <th>Goodwill</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                    <tr>
+                    <apex:repeat value="{!relatedTo.Goodwill_Assignments__r}" var="g">
+                        <td>{!g.Resource__r.Name}</td>
+                        <td style="text-align: right;"><apex:outputText value="{0, number, ###,##0}"><apex:param value="{!g.Hours__c}" /></apex:outputText></td>
+                        <td style="text-align: right;"><apex:outputText value="{0, number, $###,##0}"><apex:param value="{!g.Rate__c}" /></apex:outputText></td>
+                        <td style="text-align: right;"><apex:outputText value="{0, number, $###,##0}"><apex:param value="{!g.Gross_Rate__c}" /></apex:outputText></td>
+                        <td style="text-align: right;"><apex:outputText value="{0, number, $###,##0}"><apex:param value="{!g.Goodwill__c}" /></apex:outputText></td>
+                        <td style="text-align: center;"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}"><apex:param value="{!g.Start_Date__c}" /></apex:outputText></td>
+                        <td style="text-align: center;"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}"><apex:param value="{!g.End_Date__c}" /></apex:outputText></td>
+                    </apex:repeat>
+                    </tr>
+                    <tr style="background-color: lightgray; font-weight: bold;">
+                        <td style="text-align: right;">Total FOC/Goodwill</td>
+                        <td style="text-align: right;"><apex:outputText value="{0, number, ###,##0}"><apex:param value="{!relatedTo.Total_Hours__c}" /></apex:outputText></td>
+                        <td colspan="2"></td>
+                        <td style="text-align: right;"><apex:outputText value="{0, number, $###,##0}"><apex:param value="{!relatedTo.Goodwill__c}" /></apex:outputText></td>
+                        <td colspan="2"></td>
+                    </tr>
+                </table>
+            </body>
+        </html>
+    </messaging:htmlEmailBody>
+</messaging:emailTemplate>

@@ -1,0 +1,24 @@
+<!--
+ - Created by kentheberling on 5/23/18.
+ -->
+
+<aura:component description="Peak_IconHeadline" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" extends="c:Peak_Base">
+    <aura:attribute access="global" default="Hello, world!" type="String"  name="headline"/>
+    <aura:attribute access="global" default="utility:settings" type="String" name="icon"/>
+    <aura:attribute access="global" default="Some additional info here!" type="String" name="helpText"/>
+
+    <lightning:layout verticalAlign="end">
+        <lightning:layoutItem class="slds-m-right_small">
+            <lightning:icon class="" iconName="{!v.icon}" size="small"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem class="slds-m-right_small">
+            <h2>{!v.headline}</h2>
+        </lightning:layoutItem>
+        <lightning:layoutItem>
+            <aura:if isTrue="{!v.helpText != ''}">
+                <c:Peak_Tooltip nubbinLocation="left" message="{!v.helpText}" saveText="{!v.saveText}" actionName="testTooltipFunction"/>
+            </aura:if>
+        </lightning:layoutItem>
+    </lightning:layout>
+
+</aura:component>

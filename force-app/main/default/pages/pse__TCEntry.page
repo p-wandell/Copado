@@ -1,0 +1,2719 @@
+<apex:page id="tcPage" title="{!$Label.pse__timecard_entry_label_title}" sidebar="false" action="{!init}" tabStyle="pse__Timecard_Header__c" standardController="pse__Timecard_Header__c" extensions="pse.TCController"> 
+<!-- CSS -->
+<apex:stylesheet value="{!URLFOR($Resource.pse__jsComponentsResources, 'componentStyles.css')}" />
+<style type="text/css"> 
+    .waitingSearchDivOpacity {
+        opacity: 0.90 !important;
+    }
+    .projAssigNameDiv{ 
+        width:{!config.ProjAssignDropDownWidth}px;
+        overflow:hidden;
+    } 
+     
+    .loadingImageStyle {background-image: url("{!URLFOR($Resource.appirioCommon, 'progress-rotation.gif')}");}
+    
+    .assigAccountTD{width: 30% !important} 
+
+    /*Notes popup styles*/
+    .dialogTableHeader {font-weight:bold;}
+    .dialogNotes {width:200px;}
+    
+    .popupInputField{width:150px;min-width:150px;}
+    .easyentryInputSelect{width:138px;min-width:138px;}
+    
+    .dialogNotesLoc {width:150px;}
+    .dialogTextArea {width:300px; height:60px;}
+    .notesRequired {border-left: 3px solid #CC0000;}
+    .notesNotRequired {border: 0;}
+    .myRequired {background-color: #CC0000;margin-right: 2px;display: inline;width: 3px;float: left;}
+    .myNotesRequired {background-color: #CC0000;margin-right: 2px;display: inline;width: 3px;float: left;}
+    .myRequiredHidden {background-color: #CC0000;margin-right: 2px;display: none; width: 3px;float: left;}
+    
+    /*the image useed in following style is not in right location...move it to some other loacation*/
+    .toolTipOverlay {color: #000; padding: .45em; background : url("{!URLFOR($Resource.jsComponentsResources, '/popupMenuBg.gif')}") repeat-x scroll left bottom #FFFFFF; border: 1px solid #7EABCD;/*margin-left : 25px;*/}
+    /*.toolTipOverlayOuterDiv {padding-left:14px;}
+    .tooltipLeftArrow{background:url("tooltipConnectorLeft.png") no-repeat scroll left top transparent; bottom:3px; height:14px; left:0; width:16px;}*/
+    
+    
+    /*Style related to the tc table*/
+    #tcTotalRow{background-color:#E3E3D7;}
+    .infoImage{margin-left: 2px; margin-right: 2px; height: 16px;}
+    .easyEntryImage{height: 15px; margin-left: -25px; opacity: 0; width: 25px;filter: alpha(opacity=0);}
+    .hrInputText{width: 36px;border-style:inset;border-width:thin;}
+    .hrInputTextError{border-color: red;}
+     select{border-style:inset;border-width:thin;}
+    .hrInputTextTH{width: 38px; text-align: center; white-space: normal !important; }
+    .hrSummaryTH{text-align: center;}
+        
+    body .bPageTitle {margin-bottom: 8px !important;}
+    
+    /*these stayle override can result in some free space*/
+    .bPageBlock .dataCol {padding:0px 0px 0px 0px;} 
+    .bPageBlock .dataCol {padding:0px 0px 0px 0px;}
+    .bPageBlock .pbBody {padding:6px 2px 4px;}
+    
+    /*Overlay for copy from previous week*/
+    .copyFromPrevWeekGrid {}
+    .copyFromPrevWeekGrid tr { border-bottom-style: solid; border-bottom-color: gray; border-bottom-width: thin;}
+    .copyFromPrevWeekGridCheckBoxWrapper{ white-space:nowrap;}
+    .copyFromPrevWeekGridFieldNameWrapper{ font-style: italic; color: gray;}
+    
+    /*======================================================================*/
+    /*===================Schedule grid related styles=======================*/
+    /*======================================================================*/
+    .schHrInputText{width: 36px;  border-style:inset; border-width:thin;}
+    .schHrInputTextTH{width: 38px; text-align: center;  white-space:normal !important;}
+    .schHrSummaryTH{}
+    .SGNotesRow{display : none;}
+    .SGNotesRowExpended{}
+    .SGNotesDiv{ overflow:hidden; height:0px; background: url("TCNotesBg.gif");}
+    .onSGRowHovered{ background:url("TCRowBottomImage.png") repeat-x scroll 0 25px #DBDBDB;}
+    .onSGRowSelected{ background:url("TCRowBottomImage.png") repeat-x scroll 0 25px #DBDBDB;}
+    .onSGRowHovered td{ border-bottom-color: #DBDBDB !important;}
+    .onSGRowSelected td{ border-bottom-color: #DBDBDB !important;}
+    .assigNotesLinkOverlay {height:19px; margin-top:-2px; width:145px; background-image:url("TCNotesLinkBg.png");}
+    .assigNotesLinkSpan {font-size:11px; text-decoration:none; margin-left: 37px; font-weight: bold; color: white; }
+    .SGtotalRow{background-color: #E3E3D7;}
+    .assigDailyNotesTextArea{width: 110px;}
+    /*This is to prevent line break in label, which leads to done button hide AT#000011089*/
+    .notesTable label {white-space: nowrap !important;}
+    .inactiveNotesImageOverlay { opacity:0.4;
+     	filter:alpha(opacity=40); /* For IE8 and earlier */ 
+     }
+    
+    
+    
+    ul#tabs { list-style-type: none; 
+    	margin: 20px 0 0 0; 
+    	padding: 0 2px 0.3em 0;
+    }
+    ul#tabs li { display: inline; margin-left:0px !important;
+    	width: 49.8%;
+    }
+    /*ul#tabs li a { color: #42454a; background-color: #dedbde; border: 1px solid #c9c3ba; border-bottom: none; padding: 0.3em; text-decoration: none; cursor: pointer;}*/
+    ul#tabs li a { 
+    	color: #42454a; 
+    	background-color: #dedbde; 
+    	/*padding: 0.3em;*/ text-decoration: none; cursor: pointer;
+        /*padding-right:130px;*/
+        /*padding: 5px;*/
+        border: 1px solid #c9c3ba; 
+        border-bottom: none; 
+        
+        
+        margin-top: 3px;
+    	padding: 4px;
+        
+        display: block;
+    }
+    ul#tabs li h2 {
+        font-family: Arial,Helvetica,sans-serif !important;
+    }
+    
+    ul#tabs li a:hover { background-color: #f1f0ee; }
+    /*ul#tabs li a.selected { color: #000; background-color: #f1f0ee; font-weight: bold; padding: 0.7em 0.3em 0.38em 0.3em; }*/
+    ul#tabs li a.selected { color: #000; background-color: #f1f0ee; font-weight: bold; 
+    	/*padding: 0.7em 130px 0.38em 0.3em;*/
+    	/*padding: 0.7em 0px 0.38em 0.3em;*/ 
+    	padding: 6px !important;
+    	margin : 0px !important;
+    	
+    	
+    
+    }
+    div.tabContent { border: 1px solid #c9c3ba; padding: 0.5em; background-color: #f1f0ee; }
+    div.tabContent.hide { display: none; }
+    #searchResultsLink{
+        /*padding-right: 208px !important;*/
+    }
+    
+    
+    .li_left{
+    	float: left;
+    }
+    .h2_left{}
+    #recentResultsLink{}
+    
+    .li_right{
+    	float: right;
+    }
+    .h2_right{}
+    #searchResultsLink{}
+    
+    /*@todo remove Scrollable class or merge it to main css files*/
+    .bottomScrollable{
+        max-height: 340px !important;
+        width: 613px !important;
+        position: static !important;
+        padding-right:3px !important;
+    }
+    .topScrollable{
+        max-height: 340px !important;
+        width: 613px !important;
+        padding-right:3px !important;
+    }
+    .descriptionText{
+		display: block;
+		font-size: 109%;
+		padding: 2px 3px 4px 3px;
+	   	margin: 15px 0;
+	}
+	.descriptionText-Encrypted{
+		color: red;
+	   	margin-top: -15px;
+	}
+	.scrollable-Encrypted{
+		max-height: 330px;
+	}
+	div#resourceOverlayContainer .yui3-overlay{top: 0px !important;}
+</style>
+<!--[if IE 8]>
+	<style>
+	select:focus { width:auto !important;
+		position:relative ;
+	}
+	</style>
+	<![endif]-->
+<!-- CSS ENDS-->
+
+<script type="text/javascript">
+// PAGE LEVEL VARIABLES START HERE///////////////////////////////
+////////////////////////////////////////////////////////////////
+//TODO
+/*Declared these here as intermediate script need a reference to these*/
+var _yui;
+/*@TODO may be it can remove*/
+var _hasUnsavedChanges ;
+//Modified as fix for agile task:  000010865 (Ref. Task ID: 000009297), Dated: Dec 15 2010, Added By: Nitin Jain
+//var _DEC_SEP = '.';
+var _DEC_SEP = '{!JSENCODE(GBL_DEC_SEP)}';
+
+var _hrTextValueBeforeGotFocus;
+var _CopyFromPreviousWeek = false;
+var _ajaxBrokerURL = "{!$Page.TCAjaxBroker}" ;
+
+// DECLARED HERE as its needed in intermediate scripts 
+// NOTE: avoid _yui usage here, as its used during page rendering 
+// Handles all the logic associated with milestones 
+//  AT19005 : updated to store milestone options on the basis of row id instead of assignment id 
+var _MilestonesHandler = {
+    cache : new Object(),
+    
+    toCache : function (rowId, mileStoneOptions)
+    {
+         _MilestonesHandler.cache [rowId] = mileStoneOptions;
+    },
+    
+    fromCache : function (rowId)
+    {
+         return _MilestonesHandler.cache [rowId];  
+    },
+
+    copyTo : function (rowId, domSelectReference, selectedMilestone) {
+        if (domSelectReference.options) domSelectReference.options.length = 0;
+        var milestoneOptions = _MilestonesHandler.fromCache(rowId);
+        //It should not happen
+        if(milestoneOptions != null){
+            for(idx = 0 ; idx < milestoneOptions.length ; idx++){
+               domSelectReference.options[idx] = new Option(milestoneOptions[idx].text, milestoneOptions[idx].value);
+               if(milestoneOptions[idx].value == selectedMilestone){
+                    domSelectReference.options[idx].selected = true;
+               }
+            }
+        }
+    },
+    
+    onMilestoneSelect : function (newSelectValue, hiddenMilestoneFieldID){
+        _yui.one(document.getElementById(hiddenMilestoneFieldID)).set('value',newSelectValue);
+    } 
+   
+}
+
+// added changes for agile task : AT1196
+var _MethodologyHandler = {
+    cache : new Object(),
+    
+    toCache : function (rowId, methodologyOptions)
+    {
+         _MethodologyHandler.cache [rowId] = methodologyOptions;
+    },
+    
+    fromCache : function (rowId)
+    {
+         return _MethodologyHandler.cache [rowId];  
+    },
+
+    copyTo : function (rowId, domSelectReference, selectedMethodology) {
+        if (domSelectReference.options) domSelectReference.options.length = 0;
+        var methodologyOptions = _MethodologyHandler.fromCache(rowId);
+        //It should not happen
+        if(methodologyOptions != null){
+            for(idx = 0 ; idx < methodologyOptions.length ; idx++){
+               domSelectReference.options[idx] = new Option(methodologyOptions[idx].text, methodologyOptions[idx].value);
+               if(methodologyOptions[idx].value == selectedMethodology){
+                    domSelectReference.options[idx].selected = true;
+               }
+            }
+        }
+    }
+}
+
+// added changes for agile task : AT1185
+var _PhaseHandler = {
+    cache : new Object(),
+    
+    toCache : function (rowId, phaseOptions)
+    {
+         _PhaseHandler.cache [rowId] = phaseOptions;
+    },
+    
+    fromCache : function (rowId)
+    {
+         return _PhaseHandler.cache [rowId];
+    },
+
+    copyTo : function (rowId, domSelectReference, selectedPhase) {
+        if (domSelectReference.options) domSelectReference.options.length = 0;
+        var phaseOptions = _PhaseHandler.fromCache(rowId);
+        //It should not happen
+        if(phaseOptions != null){
+            for(idx = 0 ; idx < phaseOptions.length ; idx++){
+               domSelectReference.options[idx] = new Option(phaseOptions[idx].text, phaseOptions[idx].value);
+               if(phaseOptions[idx].value == selectedPhase){
+                    domSelectReference.options[idx].selected = true;
+               }
+            }
+        }
+    }
+}
+
+// added changes for agile task : AT5203
+var _PrimaryLocationHandler = {
+    cache : new Object(),
+    
+    toCache : function (rowId, primaryLocationOptions)
+    {
+         _PrimaryLocationHandler.cache [rowId] = primaryLocationOptions;
+    },
+    
+    fromCache : function (rowId)
+    {
+         return _PrimaryLocationHandler.cache [rowId];
+    },
+
+    copyTo : function (rowId, domSelectReference, selectedPrimaryLoc) {
+        if (domSelectReference.options) domSelectReference.options.length = 0;
+        var primaryLocationOptions = _PrimaryLocationHandler.fromCache(rowId);
+        //It should not happen
+        if(primaryLocationOptions != null){
+            for(idx = 0 ; idx < primaryLocationOptions.length ; idx++){
+               domSelectReference.options[idx] = new Option(primaryLocationOptions[idx].text, primaryLocationOptions[idx].value);
+               if(primaryLocationOptions[idx].value == selectedPrimaryLoc){
+                    domSelectReference.options[idx].selected = true;
+               }
+            }
+        }
+    }
+}
+
+// Handler for controlling location dropdown on Easy Entry
+var _EasyEntryLocationHandler = {
+    cache : new Object(),
+    
+    toCache : function (rowId, dayLabel, dayLocationOptions)
+    {
+         if(_EasyEntryLocationHandler.cache [rowId] == null) {
+         	_EasyEntryLocationHandler.cache [rowId] = {};
+         }
+         _EasyEntryLocationHandler.cache [rowId][dayLabel] = dayLocationOptions;
+    },
+    
+    fromCache : function (rowId, dayLabel)
+    {
+         return _EasyEntryLocationHandler.cache [rowId][dayLabel];
+    },
+
+    copyTo : function (rowId, dayLabel, domSelectReference, selectedDayLoc) {
+        if (domSelectReference.options) domSelectReference.options.length = 0;
+        var dayLocationOptions = _EasyEntryLocationHandler.fromCache(rowId, dayLabel);
+        //It should not happen
+        if(dayLocationOptions != null){
+            for(idx = 0 ; idx < dayLocationOptions.length ; idx++){
+               domSelectReference.options[idx] = new Option(dayLocationOptions[idx].text, dayLocationOptions[idx].value);
+               if(dayLocationOptions[idx].value == selectedDayLoc){
+                    domSelectReference.options[idx].selected = true;
+               }
+            }
+        }
+    }
+}
+
+
+var _VFComponent = {
+    
+    nickNameSection_assignmentId : '{!$Component.tcForm.assignmentId}',
+    nickNameSection_nickName : '{!$Component.tcForm.nickName}',
+
+    tcForm_selectedResourceId : '{!$Component.tcForm.detailsBlock.selectedResourceId}',
+    tcForm_gotoDateField : '{!$Component.tcPage.tcForm.detailsBlock.gotoDateField}',
+    tcForm_resourceSelect : '{!$Component.tcForm.detailsBlock.resourceSelect}',
+
+    notesSection_sunNotesLoc : '{!$Component.tcPage.tcForm.sunNotesLoc}',
+    notesSection_monNotesLoc : '{!$Component.tcPage.tcForm.monNotesLoc}',
+    notesSection_tuesNotesLoc : '{!$Component.tcPage.tcForm.tuesNotesLoc}',
+    notesSection_wedNotesLoc : '{!$Component.tcPage.tcForm.wedNotesLoc}',
+    notesSection_thursNotesLoc : '{!$Component.tcPage.tcForm.thursNotesLoc}',
+    notesSection_friNotesLoc : '{!$Component.tcPage.tcForm.friNotesLoc}',
+    notesSection_satNotesLoc : '{!$Component.tcPage.tcForm.satNotesLoc}',
+    notesSection_phaseSelect : '{!$Component.tcPage.tcForm.phaseSelect}',
+    notesSection_methodologySelect : '{!$Component.tcPage.tcForm.methodologySelect}',
+    
+    notesSection_selectedTCLineID : '{!$Component.tcPage.tcForm.selectedTCLineID}',
+    notesSection_selectedLineToSaveNoteDataID : '{!$Component.tcPage.tcForm.selectedTCLineToSaveNotesData}',
+    
+    // Added code for agile task: 000011098  Dated : 22/09/2011  By:Aditi
+    recallSection_selectedTCId : '{!$Component.tcPage.tcForm.RecallOverlay_PageBlock.RecallOverlay_Timecard}',
+    recallSection_comment : '{!$Component.tcPage.tcForm.RecallOverlay_PageBlock.recallCommentTextArea}'
+}
+    
+var _Config = {
+    showMilestoneOnPopup : {!config.ShowMilestoneOnPopup},
+    showMilestoneOnFrontPage : {!config.ShowMilestoneOnFrontPage},
+    
+    showPhaseOnPopup : {!config.ShowPhaseOnPopup},
+    showPhaseOnFrontPage : {!config.ShowPhaseOnFrontPage},
+    // added code for agile task : AT1185
+    useProjectPhaseRecord : {!config.UseProjectPhaseRecord},
+    
+    showMethodologyOnPopup : {!config.ShowMethodologyOnPopup},
+    showMethodologyOnFrontPage : {!config.ShowMethodologyOnFrontPage},
+    // added code for agile task : AT1196
+    useProjectMethodologyRecord : {!config.UseProjectMethodologyRecord},
+     
+    showETC : {!config.ShowETC},
+    displayAccountOnResourcePopup : {!config.displayAccountOnResourcePopup},
+    
+    //Changes done as fix for agile task: 000005391   Dated: 05/13/2010   
+    billableOptionChangeAllowed : {!config.BillableOptionChangeAllowed},
+    
+    // added code for agile task: AT1148
+    noteLocationAllowed : {!config.NoteLocationAllowed},
+    notePrimaryLocationAllowed : {!config.NotePrimaryLocationAllowed},
+    useProjectLocationRecord : {!config.UseProjectLocationRecord},
+    // Added for AT5203  By:Aditi  Dated: 21 Aug, 2012
+    showPrimaryLocationOnPopup : {!config.ShowPrimaryLocationOnPopup},
+    showPrimaryLocationOnFrontPage : {!config.ShowPrimaryLocationOnFrontPage},
+    
+    // Done changes as fix for agile task: 000011086     Dated: 11-July-2011
+    dayHourAutoRevertFloor : {!config.DayHourAutoRevertFloor},
+    dayHourAutoRevertCeiling : {!config.DayHourAutoRevertCeiling},
+    
+    // Added as fix for agile task: 000011136    By: Ashok   Dated: 13 Sep, 2011
+    showAlertForNonZeroHolidayHours : {!config.ShowAlertForNonZeroHolidayHours},
+    showAlertForNonZeroWeekendHours : {!config.ShowAlertForNonZeroWeekendHours},
+    
+    namespacePrefix : '{!JSENCODE(pagedata.namespacePrefix)}',
+    // Added changes for AT2181  Dated: 26 July,2012  By: Aditi
+    nicknameEditable : {!config.NicknameEditable},
+    // Added as fix for Agile task: AT1612      Dated: 31 May, 2012
+    ShowScheduleGridExpandedByDefault : {!config.ShowScheduleGridExpandedByDefault},
+    defaultSingleResourceSearchResult : {!config.DefaultSingleResourceSearchResult},
+    
+    hideEditDetailsHover : {!config.HideEditDetailsHover},
+    hideNotes : {!config.HideNotes},
+    showEasyEntryPopup : {!config.ShowEasyEntryPopup},
+    projectLocationAddedOnEasyEntry : {!pageData.isProjectLocationAddedOnEasyEntry},
+    isSunProjectLocationAddedOnEE : {!pageData.isSunProjectLocationAddedOnEE},
+	isMonProjectLocationAddedOnEE : {!pageData.isMonProjectLocationAddedOnEE},
+	isTueProjectLocationAddedOnEE : {!pageData.isTueProjectLocationAddedOnEE},
+	isWedProjectLocationAddedOnEE : {!pageData.isWedProjectLocationAddedOnEE},
+	isThuProjectLocationAddedOnEE : {!pageData.isThuProjectLocationAddedOnEE},
+	isFriProjectLocationAddedOnEE : {!pageData.isFriProjectLocationAddedOnEE},
+	isSatProjectLocationAddedOnEE : {!pageData.isSatProjectLocationAddedOnEE},
+    
+    hasSundayColumns : {!pageData.hasSundayColumns},
+    hasMondayColumns : {!pageData.hasMondayColumns},
+    hasTuesdayColumns : {!pageData.hasTuesdayColumns},
+    hasWednesdayColumns : {!pageData.hasWednesdayColumns},
+    hasThursdayColumns : {!pageData.hasThursdayColumns},
+    hasFridayColumns : {!pageData.hasFridayColumns},
+    hasSaturdayColumns : {!pageData.hasSaturdayColumns},
+    
+    showMilestoneOnLeft : {!config.ShowMilestoneOnLeft},
+    showMethodologyOnLeft : {!config.ShowMethodologyOnLeft},
+    showPhaseOnLeft : {!config.ShowPhaseOnLeft},
+    showPriLocationOnLeft : {!config.ShowPriLocationOnLeft},
+    showBillableOnLeft : {!config.ShowBillableOnLeft}
+}
+
+var _Label = {
+    editDetails : "{!JSINHTMLENCODE($Label.common_label_edit_details)}",
+    viewDetails : "{!JSINHTMLENCODE($Label.common_label_view_details)}",
+    noResultsFound : "{!JSINHTMLENCODE($Label.timecard_entry_label_no_matching_results_found)}",
+    cancel : "{!JSINHTMLENCODE($Label.common_label_cancel)}",
+    save : "{!JSINHTMLENCODE($Label.common_label_save)}",
+    add : "{!JSINHTMLENCODE($Label.common_label_add)}",
+    myAssignments : "{!JSINHTMLENCODE($Label.timecard_entry_label_my_assignments)}",
+    globalProjects : "{!JSINHTMLENCODE($Label.timacard_entry_label_global_projects)}",
+    
+    nickName : "{!JSINHTMLENCODE($Label.timacard_entry_label_nick_name)}",
+    name : "{!JSINHTMLENCODE($Label.common_label_name)}",
+    account : "{!JSINHTMLENCODE($Label.common_label_account)}",
+    region : "{!JSINHTMLENCODE($Label.common_label_region)}",
+    practice : "{!JSINHTMLENCODE($Label.common_label_practice)}",
+    group : "{!JSINHTMLENCODE($Label.common_label_group)}",
+
+    copyFromPreviousWeek : "{!JSINHTMLENCODE($Label.timecard_entry_button_label_copy_from_previous_week)}",
+    unsavedNotesChanges : "{!JSINHTMLENCODE($Label.timecard_entry_label_unsave_notes_save_now)}",
+    confirmSubmitTC : "{!JSINHTMLENCODE($Label.timecard_entry_message_submit_timecards_for_approval_no_change_after_submit)}",
+    confirmClearRow : "{!JSINHTMLENCODE($Label.timecard_entry_message_delete_all_saved_and_unsaved_timecards_for_this_week)}",
+    copyScheduleFor : "{!JSINHTMLENCODE($Label.timecard_entry_message_copy_schedule_for_week_ending)}",
+    confirmDeleteRow : "{!JSINHTMLENCODE($Label.timecard_entry_message_delete_this_row)}",
+    confirmUnsavedChanges : "{!JSINHTMLENCODE($Label.timecard_entry_message_unsaved_changes_discard_changes_and_continue)}",
+    dailyNotesAlertMsg : "{!JSINHTMLENCODE($Label.timecard_entry_message_weekly_or_audit_notes_not_greater_than_255_chars)}",
+    nichNameLengthAlertMsg : "{!JSINHTMLENCODE($Label.timecard_entry_message_nickname_not_greater_than_30_chars)}",
+    confirmDeleteRows : "{!JSINHTMLENCODE($Label.expense_entry_label_confirm_delete)}",
+    noRowSelectedForDelete : "{!JSINHTMLENCODE($Label.expense_entry_label_no_row_selected_for_delete)}" ,
+    
+    hrValueLargeError : "{!JSINHTMLENCODE($Label.timecard_entry_error_day_hour_value_is_too_large_to_save)}",
+    saveTimecardsWindowTitle : "{!JSINHTMLENCODE($Label.timecard_entry_label_save_progress)}",
+    submitTimecardsWindowTitle : "{!JSINHTMLENCODE($Label.timecard_entry_label_submit_progress)}",
+    saveTimecardsWindowMsg : "{!JSINHTMLENCODE($Label.timecard_entry_label_save_timecard_rows)}",
+    submitTimecardsWindowMsg : "{!JSINHTMLENCODE($Label.timecard_entry_label_submit_timecard_rows)}",
+    loadingDetails : "{!JSINHTMLENCODE($Label.common_label_loading_details)}",
+    nonzeroHoursHolidayWarningMsg : "{!JSINHTMLENCODE($Label.timecard_entry_warning_entering_nonzero_hours_for_holiday)}",
+    nonzeroHoursWeekendWarningMsg : "{!JSINHTMLENCODE($Label.schedule_warning_entering_nonzero_hours_for_weekend)}",
+    statusToHideWindowTitle : "{!JSINHTMLENCODE($Label.timacard_entry_label_status_to_hide)}",
+    // Added as fix for Agile task: AT1612 	    Dated: 31 May, 2012
+    noScheduleSelectedWarningMsg : "{!JSINHTMLENCODE($Label.timacard_entry_message_no_schedules_selected)}",
+    noTimecardForPreviousWeek : "{!JSINHTMLENCODE($Label.timecard_ui_label_no_timecard_for_previous_week)}",
+    selectProjectAssignment : "{!JSINHTMLENCODE($Label.Timecard_entry_label_select_project_assignment)}",
+    recordSelectorSuffix :  "timecardSelector"  
+}
+
+
+////////////////////////////////////////////////////////////////
+// PAGE LEVEL VARIABLES END HERE///////////////////////////////
+////////////////////////////////////////////////////////////////
+
+</script>
+
+
+<c:WaitComponent />
+<script type="text/javascript">try{wait(true)}catch(e){};</script>
+<apex:sectionHeader title="{!$Label.pse__timecard_entry_label_title}" help="{!$Page.pse__TimecardEntryHelp}" />
+<apex:pageMessages id="messageSection" />
+
+<!-- @TODO see if scope of form can be limited -->
+<apex:form id="tcForm" rendered="{!isEverythingOk}" >
+
+<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+<apex:actionStatus id="saveStatus" onstart="javascript:_BatchProcessHandler.show();" onstop="" />
+     
+<apex:pageBlock mode="edit" rendered="{!displayTimecards}" id="detailsBlock">
+    <table width="100%" id="weekSelectionOuterTable">
+        <tr>
+            <td> 
+                <apex:outputPanel id="weekEndingPanel" layout="block">
+                    <table id="weekSelectionTable">
+                        <tr>
+                            <td>
+                                <a id="tc_PreviousWeek_Link" href="#" onclick="onPreviousWeekClick();return false;"><apex:image height="32" width="32" 
+                                    value="{!URLFOR($Resource.pse__appirioCommon, 'left.png')}" /></a>
+                            </td>
+                            <td>
+                                <apex:outputText value="{!$Label.pse__timecard_entry_label_week_ending_date}:" 
+                                    style="margin-right:10px;line-height:32px;vertical-align:middle;" />
+                            </td>
+                            <td>
+                                <apex:inputField value="{!dateHolderObject.pse__Start_Date__c}" onchange="onWeekPicked(this.value);" id="gotoDateField"/>
+                                <input id="currentWeekendInMillis" type="hidden" value="{!currentWeekendInMillis}" />
+                            </td>
+                            <td>
+
+                                <a id="tc_NextWeek_Link" href="#" onclick="onNextWeekClick();return false;"><apex:image height="32" width="32" 
+                                    value="{!URLFOR($Resource.pse__appirioCommon, 'right.png')}" /> </a>
+                            </td>
+                        </tr>
+                    </table>
+                </apex:outputPanel>
+            </td>
+            <td>
+            	<apex:outputPanel id="statusToHideMsgOP" >
+            		<a id="tc_StatusToHide_Link" href="" style="cursor: pointer;" onclick="onOpenTCStatusToHide();return false;" ><apex:outputText value="{!pageData.statusToHideDisplayMsg}" /></a>
+            	</apex:outputPanel>
+            </td>
+        
+            <td align="left">
+                 <span class="lookupInput"> 
+                <apex:outputLabel value="{!$Label.pse__timecard_entry_label_resource}" for="resourceSelect"/>
+                <apex:outputPanel id="resourceSelect" 
+                    styleClass="resourceNameDiv editableNameBox" 
+                    layout="block" onclick="javascript:_ResourceLookupHandler.show();">
+                    <apex:outputText value="{!resource.name}"/>
+                </apex:outputPanel>
+                <a href="#" id="resourceLookUpLink" onclick="_ResourceLookupHandler.show();return false;">
+                    <img id="resourceLookUpIconImageID" title="{!$Label.pse__timecard_entry_label_resource_lookup}" onmouseover="this.className = 'resourceLookUpIconOn';" onmouseout="this.className = 'resourceLookUpIcon';" onfocus="this.className = 'resourceLookUpIconOn';" onblur="this.className = 'resourceLookUpIcon';" class="resourceLookUpIcon" alt="{!$Label.pse__timecard_entry_label_resource_lookup}" src="/s.gif" />
+                </a>
+                 </span>
+                <apex:inputhidden value="{!selectedResourceId}" id="selectedResourceId"/>
+                <!--  Added Color code legend for holiday -->
+                <apex:outputPanel id="holidayLegendOP" >
+                        <div style="float:right;">
+                            <span style="padding-right: 14px;border:1px solid Silver;border-radius: 5px 5px 5px 5px;background-color:{!pageData.holidayColorCode}" ></span>&nbsp;= {!$Label.timecard_entry_label_color_legend_holiday}
+                            <span style="padding-right: 14px;border:1px solid Silver;border-radius: 5px 5px 5px 5px;background-color:{!pageData.weekendColorCodeValue}" ></span>&nbsp;= {!$Label.timecard_entry_label_color_legend_weekend}
+                        </div>
+                </apex:outputPanel>
+            </td>
+        </tr>
+    </table>
+</apex:pageBlock> 
+
+
+
+<apex:pageBlock id="tcBlock" mode="edit" rendered="{!displayTimecards}" >
+
+    <apex:pageBlockButtons >
+        <input type="button" id="deleteLinesButton" value="{!$Label.timecard_entry_label_delete_lines}" onclick="onClearRowClick()" class="btn"/>
+        <!--Below code added for agile task AT20630 -->
+        <apex:outputPanel id="buttonBlock" >
+        	<input type="button" id="addMultipleNewTimecardRows" value="{!$Label.timecard_entry_button_add_lines}" onclick="onMultipleNewRowClick()" class="btn" />
+        	<apex:selectList id="addRowQuantity" value="{!addMultipleRowSelection}" multiselect="false" size="1" onchange="javascript:updateRowQuantity(this.value)" styleClass="rowquantity">
+            		<apex:selectOptions value="{!addRowOptions}" />
+        	</apex:selectList>
+    	</apex:outputPanel> 
+        
+        <!-- Added changes to show/hide buttons on the bases of config. Changes related to AT9296  Dated: 29 Jan, 2013 -->
+        <apex:outputpanel rendered="{!NOT(config.HideCopySchedulesButton)}">
+            <input type="button" id="CFSButton" value="{!$Label.timecard_entry_button_label_copy_selected_schedules}" onclick="onCopyFromScheduleClick()" class="btn"/>
+        </apex:outputpanel>
+        <apex:outputpanel rendered="{!NOT(config.HideCopyPreviousWeekButton)}">
+            <input type="button" id="CFPWButton" value="{!$Label.pse__timecard_entry_button_label_copy_from_previous_week}" onclick="onCopyFromPreviousWeek()" class="btn"/>
+        </apex:outputpanel>
+        <apex:outputpanel rendered="{!NOT(config.HideSaveButton)}">
+            <input id="saveTCButton" type="button" value="{!$Label.timecard_entry_button_label_save}" onclick="onSaveClick()" class="btn"/>
+        </apex:outputpanel>
+        <apex:outputpanel rendered="{!NOT(config.HideSubmitButton)}">
+            <input id="submitTCButton" type="button" value="{!$Label.timecard_entry_button_label_submit}" onclick="onSubmitClick()" class="btn"/>
+        </apex:outputpanel>
+    </apex:pageBlockButtons>
+    
+    <apex:pageBlockSection collapsible="false" title="{!$Label.pse__timecard_entry_label_timecards}" id="tcPbs">
+        
+    <apex:outputPanel id="timecardPanel" layout="block">
+    
+    <!-- Added below hidden input to store timestamp when last "loadData" is called. Done as fix for agile task : AT1747  Dated : 23 May, 2012  -->
+    <input type="hidden" value="{!pageData.beanCreationTimestamp}" id="createBeanTimestampInMilliSec"/>
+    
+    <!-- Below code changes done by sumit for AT20889 -->
+    <!--  Added below variables as fix for agile task: 000011136    Dated: 9 Sep, 2011      By: Ashok -->
+    <!-- <apex:variable var="holidayStyle" value="padding-bottom:4px;border:1px solid Silver;border-radius: 5px 5px 5px 5px;background-color:{!pageData.holidayColorCode}" />
+    <apex:variable var="weekendStyle" value="padding-bottom:4px;border:1px solid Silver;border-radius: 5px 5px 5px 5px;background-color:{!pageData.weekendColorCodeValue}" /> -->
+    
+    <apex:variable var="holidayTableHeaderStyle" value="
+    		-webkit-border-left:1px solid Silver;
+    		-webkit-border-top:1px solid Silver;
+    		-webkit-border-right:1px solid Silver !important;
+    		-moz-border-left:1px solid Silver;
+    		-moz-border-top:1px solid Silver;
+    		-moz-border-right:1px solid Silver !important;
+    		border-left:1px solid Silver;
+    		border-top:1px solid Silver;
+    		border-right:1px solid Silver !important;
+    		background-color:{!pageData.holidayColorCode}" />
+    		
+	<apex:variable var="weekendTableHeaderStyle" value="
+    		-webkit-border-left:1px solid Silver;
+    		-webkit-border-top:1px solid Silver;
+    		-webkit-border-right:1px solid Silver !important;
+    		-moz-border-left:1px solid Silver;
+    		-moz-border-top:1px solid Silver;
+    		-moz-border-right:1px solid Silver !important;
+    		border-left:1px solid Silver;
+    		border-top:1px solid Silver;
+    		border-right:1px solid Silver !important;
+    	background-color:{!pageData.weekendColorCodeValue}" />
+    	
+   	<apex:variable var="holidayInputStyle" value="
+    		-webkit-border-left:1px solid Silver;
+    		-webkit-border-right:1px solid Silver !important;
+    		-moz-border-left:1px solid Silver;
+    		-moz-border-right:1px solid Silver !important;
+    		border-left:1px solid Silver;
+    		border-right:1px solid Silver !important;
+    		background-color:{!pageData.holidayColorCode};" />
+    		
+	<apex:variable var="weekendInputStyle" value="
+    		-webkit-border-left:1px solid Silver;
+    		-webkit-border-right:1px solid Silver !important;
+    		-moz-border-left:1px solid Silver;
+    		-moz-border-right:1px solid Silver !important;
+    		border-left:1px solid Silver;
+    		border-right:1px solid Silver !important;
+    		background-color:{!pageData.weekendColorCodeValue};" />
+    		
+	<apex:variable var="weekdayInputStyle" value="" />
+    
+    
+    <!-- variable to hold holiday constant. This must be same as TCPageBean.DAY_TYPE_HOLIDAY -->
+    <apex:variable var="holiday" value="h" />
+    <!-- variable to hold weekend constant. This must be same as TCPageBean.DAY_TYPE_WEEKEND -->
+    <apex:variable var="weekend" value="w" />
+    
+    <table border="0" cellspacing="0" id="timecardTable" class="list">
+    <thead id="timecardThead">
+        <tr id="timecardHeaderRow" class="headerRow dataRow">
+            <th></th>
+            <th><input type="checkbox" id="selectAllProjCheckbox" title="{!$Label.deletion_action_select_all_checkbox_hover_tooltip }" onclick="selectAllRecords(this, 'timecardSelector','assignmentnamePanel')"/></th>
+            <th style="text-align:left;">{!$Label.timecard_entry_label_proj_assign}</th>
+            <th></th>
+
+
+            <th style="text-align:left;">
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_milestone}" rendered="{!AND(config.ShowMilestoneOnFrontPage ,config.ShowMilestoneOnLeft) }" />
+            </th>
+            <th style="text-align:left;">
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_phase}" rendered="{!AND(config.ShowPhaseOnFrontPage ,config.ShowPhaseOnLeft)}" />
+            </th>
+            <th style="text-align:left;">
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_methodology}" rendered="{!AND(config.showMethodologyOnFrontPage ,config.ShowMethodologyOnLeft)}" />
+            </th>
+            
+            <th style="text-align:left;">
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_primary_location}" rendered="{!AND(config.ShowPrimaryLocationOnFrontPage ,config.ShowPriLocationOnLeft)}" />
+            </th>
+            <th style="text-align:left;">
+            	<apex:outputText value="{!$Label.pse__common_label_billable}" rendered="{!AND(NOT(config.HideBillableColumn) ,config.ShowBillableOnLeft)}" />
+            </th>
+            <apex:repeat value="{!TCHeaderLeftEditableFields}" var="f"  rendered="{!config.UseTimecardFieldsetOnTCUI}"> 
+            	<th>					
+					<apex:outputText value="{!f.label}" />
+				</th>
+			</apex:repeat> 
+
+
+                        
+            <th class="hrInputTextTH"  style="{!IF(pageData.dayType_1 == holiday,holidayTableHeaderStyle,IF(pageData.dayType_1 == weekend,weekendTableHeaderStyle,''))}"><div>{!pageData.dayLabel_1}</div></th>
+            <th class="hrInputTextTH"  style="{!IF(pageData.dayType_2 == holiday,holidayTableHeaderStyle,IF(pageData.dayType_2 == weekend,weekendTableHeaderStyle,''))}"><div>{!pageData.dayLabel_2}</div></th>
+            <th class="hrInputTextTH"  style="{!IF(pageData.dayType_3 == holiday,holidayTableHeaderStyle,IF(pageData.dayType_3 == weekend,weekendTableHeaderStyle,''))}"><div>{!pageData.dayLabel_3}</div></th>
+            <th class="hrInputTextTH"  style="{!IF(pageData.dayType_4 == holiday,holidayTableHeaderStyle,IF(pageData.dayType_4 == weekend,weekendTableHeaderStyle,''))}"><div>{!pageData.dayLabel_4}</div></th>
+            <th class="hrInputTextTH"  style="{!IF(pageData.dayType_5 == holiday,holidayTableHeaderStyle,IF(pageData.dayType_5 == weekend,weekendTableHeaderStyle,''))}"><div>{!pageData.dayLabel_5}</div></th>
+            <th class="hrInputTextTH"  style="{!IF(pageData.dayType_6 == holiday,holidayTableHeaderStyle,IF(pageData.dayType_6 == weekend,weekendTableHeaderStyle,''))}"><div>{!pageData.dayLabel_6}</div></th>
+            <th class="hrInputTextTH"  style="{!IF(pageData.dayType_7 == holiday,holidayTableHeaderStyle,IF(pageData.dayType_7 == weekend,weekendTableHeaderStyle,''))}"><div>{!pageData.dayLabel_7}</div></th>
+            <th>{!$Label.timecard_entry_label_sum}</th>
+            <th>
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_etc}" rendered="{!config.ShowETC}" />
+
+            </th>
+            <th>
+            	<apex:outputText value="{!$Label.pse__timecard_entry_label_notes}" rendered="{!!config.HideNotes}" />
+            	
+            </th>
+            <th style="text-align:left;">
+            	<apex:outputText value="{!$Label.pse__common_label_billable}" rendered="{!AND(NOT(config.HideBillableColumn), NOT(config.ShowBillableOnLeft))}" />
+
+
+            </th> 
+			<th style="text-align:left;">
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_milestone}" rendered="{!AND(config.ShowMilestoneOnFrontPage ,NOT(config.ShowMilestoneOnLeft) ) }" />
+            </th>
+            <th style="text-align:left;">
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_phase}" rendered="{!AND(config.ShowPhaseOnFrontPage ,NOT(config.ShowPhaseOnLeft) )}" />
+            </th>
+            <th style="text-align:left;">
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_methodology}" rendered="{!AND(config.showMethodologyOnFrontPage ,NOT(config.ShowMethodologyOnLeft) )}" />
+            </th>
+            <!-- Added for AT5203  Dated: 21 Aug, 2012  By: Aditi -->
+            <th style="text-align:left;">
+                <apex:outputText value="{!$Label.pse__timecard_entry_label_primary_location}" rendered="{!AND(config.ShowPrimaryLocationOnFrontPage ,NOT(config.ShowPriLocationOnLeft) )}" />
+            </th>
+            
+            <apex:repeat value="{!TCHeaderEditableFields}" var="f"  rendered="{!config.UseTimecardFieldsetOnTCUI}"> 
+            	<th>					
+					<apex:outputText value="{!f.label}" />
+				</th>
+			</apex:repeat> 
+			<apex:repeat value="{!TCHeaderReadonlyFields}" var="f" rendered="{!config.UseTimecardFieldsetOnTCUI}">  
+            	<th>				
+					<apex:outputText value="{!f.label}" />
+				</th>
+			</apex:repeat> 
+			<th align="center">{!$Label.common_label_status}</th>
+            <!-- Added code for Agile Task : 000011098  Dated : 22/09/2011  By: Aditi-->
+            <th align="center">
+                <apex:outputText value="{!$Label.pse__timacard_entry_label_recall_action}" rendered="{!config.ShowRecallOnTimecards}" />
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="editDetailRowParentTbody">
+    <apex:repeat value="{!pageData.timecardEntryRows}" var="tw">
+    
+        <apex:variable var="isHrsAndNotesEditable" value="{!tw.isHrsAndNotesEditable}" />
+        
+        <tr class="dataRow" id="tcRowID{!tw.rowIndex}">
+            <td>
+                <apex:image id="deleteIcon" style="margin-right:4px;" value="{!URLFOR($Resource.pse__appirioCommon, 'delete-icon.gif')}"
+                            height="15" width="15" rendered="{!isHrsAndNotesEditable}" onclick="deleteRow('{!$Component.markedForDelete}')"/>
+                <apex:image style="margin-right:4px;" value="/s.gif"
+                            height="15" width="15" rendered="{!NOT(isHrsAndNotesEditable)}"/>
+            </td>
+            <td>
+            <apex:inputcheckbox id="timecardSelector" title="{!$Label.deletion_action_select_checkbox_hover_tooltip }"  value="{!tw.isRowSelected}" styleClass="fakeClassForYUISelection" onclick="checkIsAllSelected('timecardSelector', 'assignmentnamePanel');"  disabled="{!NOT(tw.isRowDeletable)}"/>
+            </td>
+            <td>
+               <apex:outputPanel layout="block" id="assignmentnamePanel" 
+                                 onclick="{!IF(tw.isProjAssigEditable,'javascript:_AssignmentLookupHandler.show(this);','')}"
+                                 styleClass="{!IF(tw.isProjAssigEditable,'projAssigNameDiv editableNameBox','projAssigNameDiv')}">
+                    <apex:outputText value="{!tw.projectOrAssignmentName}" />   
+               </apex:outputPanel>
+            </td>
+            <td>
+                <div style="white-space:nowrap;" align="center">
+                    <apex:outputPanel rendered="{!tw.isProjAssigEditable}" layout="none">
+                    <apex:image title="{!$Label.pse__timecard_entry_label_choose_assignment}" id="poraLookup" 
+                        onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" 
+                        onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" 
+                        style="margin-left:1px;" 
+                        styleClass="lookupIcon" alt="{!$Label.pse__timecard_entry_label_assignment_lookup}" value="/s.gif" onclick="javascript:_AssignmentLookupHandler.show(this);"/>
+                    </apex:outputPanel>
+                    <!--TODO Style it later (remove s.gif) -->
+                    <apex:image style="margin-left:1px;" value="/s.gif"
+                            height="20" width="20" rendered="{!NOT(tw.isProjAssigEditable)}"/>
+                    <apex:image id="infoImage" 
+                        value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" styleClass="infoImage" 
+                        alt="{!IF(tw.tooltip = '',$Label.pse__timecard_entry_label_no_project_assignment_selected,tw.tooltip)}" />
+                </div>
+            </td>
+            
+			<td>
+                <apex:outputPanel style="float:left;white-space:nowrap;width:auto;" rendered="{!AND(config.ShowMilestoneOnFrontPage,isHrsAndNotesEditable,config.ShowMilestoneOnLeft)}" id="milestoneListLeftPanel">
+                     <span class="{!IF(requiredFixedLeftHeaderFields[NAME_SPACE_PREFIX+'Milestone__c'], 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+                     <select style="width:{!config.MilestoneDropDownWidth}px;min-width:{!config.MilestoneDropDownWidth}px;" size="1"
+                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); _MilestonesHandler.onMilestoneSelect(this.value,'{!$Component.hiddenMilestone}');">
+                    </select>
+                </apex:outputPanel>
+                <apex:outputText value="{!tw.milestoneName}" style="width:{!config.MilestoneDropDownWidth}px;" rendered="{!AND(config.ShowMilestoneOnFrontPage,config.ShowMilestoneOnLeft,NOT(isHrsAndNotesEditable),NOT(tw.timecard.pse__Milestone__c = ''))}"/>
+                <apex:outputText value="--" style="width:{!config.MilestoneDropDownWidth}px;" rendered="{!AND(config.ShowMilestoneOnFrontPage,config.ShowMilestoneOnLeft,NOT(isHrsAndNotesEditable),ISNULL(tw.timecard.pse__Milestone__c))}"/>
+            </td>          
+			
+			<td>
+                <apex:outputPanel rendered="{!AND(config.ShowPhaseOnFrontPage ,config.ShowPhaseOnLeft)}" >
+                	<apex:outputPanel rendered="{!AND(config.ShowPhaseOnFrontPage, NOT(config.UseProjectPhaseRecord))}" > 
+	                     <div style="float:left;white-space:nowrap;width:auto;">
+					     <span class="{!IF(AND(requiredFixedLeftHeaderFields[NAME_SPACE_PREFIX+'Project_Phase__c'],isHrsAndNotesEditable), 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                     <apex:inputField id="phaseLeft" value="{!tw.timecard.pse__Project_Phase__c}" rendered="{!isHrsAndNotesEditable}"
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+	                    </div>
+	                    <apex:outputText value="{!tw.timecard.pse__Project_Phase__c}" rendered="{!AND(NOT(isHrsAndNotesEditable),NOT(tw.timecard.pse__Project_Phase__c = ''))}"/>
+	                    <apex:outputText value="--" rendered="{!AND(NOT(isHrsAndNotesEditable),(tw.timecard.pse__Project_Phase__c = ''))}"/>
+                	</apex:outputPanel>
+                	
+                	<apex:outputPanel style="float:left;white-space:nowrap;width:auto;" rendered="{!AND(config.ShowPhaseOnFrontPage,config.ShowPhaseOnLeft,config.UseProjectPhaseRecord, isHrsAndNotesEditable)}" id="phaseListLeftPanel" >
+                		<span class="{!IF(requiredFixedLeftHeaderFields[NAME_SPACE_PREFIX+'Project_Phase_Object__c'], 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+                		<select style="width:150px;min-width:150px;" size="1" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); document.getElementById('{!$Component.hiddenProjectPhase}') != null ? document.getElementById('{!$Component.hiddenProjectPhase}').value=this.value : false;">
+                    	</select>
+					</apex:outputPanel>                	
+                	<apex:outputPanel rendered="{!AND(config.ShowPhaseOnFrontPage,config.ShowPhaseOnLeft, config.UseProjectPhaseRecord, NOT(isHrsAndNotesEditable))}" >
+                		<apex:outputText style="width:150px;" value="{!tw.phaseName}" rendered="{!NOT(tw.timecard.pse__Project_Phase_Object__c = '')}"/>
+	                    <apex:outputText style="width:150px;" value="--" rendered="{!tw.timecard.pse__Project_Phase_Object__c = ''}"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </td>
+
+            
+            <td>
+            	<apex:outputPanel rendered="{!AND(config.showMethodologyOnFrontPage ,config.ShowMethodologyOnLeft)}" >
+	                <apex:outputPanel rendered="{!NOT(config.UseProjectMethodologyRecord)}">  
+	                    <div style="float:left;white-space:nowrap;width:auto;">
+				  	     <span class="{!IF(AND(requiredFixedLeftHeaderFields[NAME_SPACE_PREFIX+'Project_Methodology__c'],isHrsAndNotesEditable), 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                    <apex:inputField id="methodologyLeft" style="width:70px;"  value="{!tw.timecard.pse__Project_Methodology__c}" 
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')" rendered="{!isHrsAndNotesEditable}" />
+	                    </div>
+	                    <apex:outputText value="{!tw.timecard.pse__Project_Methodology__c}" rendered="{!AND(NOT(isHrsAndNotesEditable),NOT(tw.timecard.pse__Project_Methodology__c = ''))}"/>
+	                    <apex:outputText value="--" rendered="{!AND(NOT(isHrsAndNotesEditable),(tw.timecard.pse__Project_Methodology__c = ''))}"/>
+	                </apex:outputPanel>
+	                <apex:outputPanel style="float:left;white-space:nowrap;width:auto;" rendered="{!AND(config.UseProjectMethodologyRecord, isHrsAndNotesEditable)}" id="methodologyListLeftPanel"> 
+	                    <span class="{!IF(requiredFixedLeftHeaderFields[NAME_SPACE_PREFIX+'Project_Methodology_Object__c'], 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                    <select style="width:150px;min-width:150px;" size="1" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); document.getElementById('{!$Component.hiddenProjectMethodology}') != null ? document.getElementById('{!$Component.hiddenProjectMethodology}').value=this.value : false;">
+                    	</select>
+					</apex:outputPanel>                	
+                	<apex:outputPanel rendered="{!AND(config.UseProjectMethodologyRecord, NOT(isHrsAndNotesEditable))}" >
+                		<apex:outputText style="width:150px;" value="{!tw.methodologyName}" rendered="{!NOT(tw.timecard.pse__Project_Methodology_Object__c = '')}"/>
+	                    <apex:outputText style="width:150px;" value="--" rendered="{!(tw.timecard.pse__Project_Methodology_Object__c = '')}"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </td>
+            
+            <td>
+            	<apex:outputPanel rendered="{!AND(config.ShowPrimaryLocationOnFrontPage ,config.ShowPriLocationOnLeft)}" >
+	                <apex:outputPanel rendered="{!NOT(config.UseProjectLocationRecord)}">  
+	                    <div style="float:left;white-space:nowrap;width:auto;">
+					    <span class="{!IF(AND(requiredFixedLeftHeaderFields[NAME_SPACE_PREFIX+'Primary_Location__c'],isHrsAndNotesEditable), 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                    <apex:inputField id="primaryLocationLeft" style="width:95px;"  value="{!tw.timecard.pse__Primary_Location__c}" 
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')" rendered="{!isHrsAndNotesEditable}" />
+	                    </div>
+	                    <apex:outputText value="{!tw.timecard.pse__Primary_Location__c}" rendered="{!AND(NOT(isHrsAndNotesEditable),NOT(tw.timecard.pse__Primary_Location__c = ''))}"/>
+	                    <apex:outputText value="--" rendered="{!AND(NOT(isHrsAndNotesEditable),(tw.timecard.pse__Primary_Location__c = ''))}"/>
+	                </apex:outputPanel>
+                
+	                <apex:outputPanel style="float:left;white-space:nowrap;width:auto;" rendered="{!AND(config.UseProjectLocationRecord, isHrsAndNotesEditable)}" id="primaryLocationListLeftPanel"> 
+	                    <span class="{!IF(requiredFixedLeftHeaderFields[NAME_SPACE_PREFIX+'Primary_Project_Location__c'], 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                    <select style="width:150px;min-width:150px;" size="1" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); document.getElementById('{!$Component.hiddenProjectPrimaryLocation}') != null ? document.getElementById('{!$Component.hiddenProjectPrimaryLocation}').value=this.value : false;">
+                    	</select>
+					</apex:outputPanel>                	
+
+
+                	<apex:outputPanel rendered="{!AND(config.UseProjectLocationRecord, NOT(isHrsAndNotesEditable))}" >
+                		<apex:outputText style="width:150px;" value="{!tw.primaryLocationName}" rendered="{!NOT(tw.timecard.pse__Primary_Project_Location__c = '')}"/>
+	                    <apex:outputText style="width:150px;" value="--" rendered="{!(tw.timecard.pse__Primary_Project_Location__c = '')}"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </td>
+            <td>
+	            <apex:inputCheckbox id="billableLeft" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')" value="{!tw.timecard.pse__Billable__c}" rendered="{!AND(NOT(config.HideBillableColumn) ,config.ShowBillableOnLeft)}"/>
+	            <apex:inputHidden id="hiddenBillableLeft" value="{!tw.timecard.pse__Billable__c}" rendered="{!AND(Config.HideBillableColumn,config.ShowBillableOnLeft)}"/>
+	            <script>
+	            		if({!AND(NOT(config.HideBillableColumn) ,config.ShowBillableOnLeft)})
+	            		document.getElementById('{!$Component.billableLeft}').disabled = {!IF(JSENCODE(tw.projOrAssig) == 'n',false,IF(isHrsAndNotesEditable,NOT(tw.isBillableOptionChangeAllowed),true))};
+	            </script>
+            </td>
+            
+            <apex:repeat value="{!TCHeaderLeftEditableFields}" var="f" rendered="{!config.UseTimecardFieldsetOnTCUI}">  
+            	<td>
+
+					<div style="float:left;white-space:nowrap;width:auto;">
+	            		<span class="{!IF(AND(OR(f.required,f.DBRequired),isHrsAndNotesEditable), 'myRequired' , 'myRequiredHidden')}" > &nbsp;</span>
+						<apex:inputField value="{!tw.timecard[f.fieldPath]}" rendered="{! f.type!='textarea' && isHrsAndNotesEditable}"  onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"  styleClass="disableAdditionalEditableFields" />
+						<apex:inputField value="{!tw.timecard[f.fieldPath]}" rendered="{! f.type='textarea' && isHrsAndNotesEditable}" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"  styleClass="disableAdditionalEditableFields" style="height: 30px;" />
+						<apex:outputField value="{!tw.timecard[f.fieldPath]}" rendered="{!NOT(isHrsAndNotesEditable)}" />
+					</div>
+				</td>
+			</apex:repeat>
+			
+            <td style="{!CASE(pageData.dayType_1, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+                <apex:inputField id="sunTime" value="{!tw.mockDayHoursTC.pse__Monday_Hours__c}" rendered="{!isHrsAndNotesEditable}" styleClass="hrInputText fakeSelectorClassForHrInput" 
+                    onfocus="javascript:onHrTextFocus(event, this);" onblur="javascript:onHrTextBlur(event, 1,this,'{!pageData.dayType_1}');" 
+                    onkeydown="javascript:return onHrKeyPress(event, this.name, 1, '{!JSINHTMLENCODE(pageData.dayLabel_1)}');" ondblclick="javascript: onHrdoubleClick(this.name, 1,'{!JSINHTMLENCODE(pageData.dayLabel_1)}');"/>
+                <apex:outputField id="sunTimeOutput" value="{!tw.mockDayHoursTC.pse__Monday_Hours__c}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="hrInputText"/>
+                <apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="easyEntryImage"
+                	ondblclick="javascript: onHrOutputClick('{!$Component.sunTimeOutput}', 1,'{!JSINHTMLENCODE(pageData.dayLabel_1)}');" />
+            </td>            
+            <td style="{!CASE(pageData.dayType_2, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+                <apex:inputField id="monTime" value="{!tw.mockDayHoursTC.pse__Tuesday_Hours__c}" rendered="{!isHrsAndNotesEditable}" styleClass="hrInputText fakeSelectorClassForHrInput"
+                    onfocus="javascript:onHrTextFocus(event, this);" onblur="javascript:onHrTextBlur(event, 2,this,'{!pageData.dayType_2}');" 
+                    onkeydown="javascript:return onHrKeyPress(event, this.name, 2, '{!JSINHTMLENCODE(pageData.dayLabel_2)}');" ondblclick="javascript: onHrdoubleClick(this.name, 2, '{!JSINHTMLENCODE(pageData.dayLabel_2)}');"/>
+                <apex:outputField id="monTimeOutput" value="{!tw.mockDayHoursTC.pse__Tuesday_Hours__c}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="hrInputText"/> 
+                <apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="easyEntryImage"
+                	ondblclick="javascript: onHrOutputClick('{!$Component.monTimeOutput}', 2, '{!JSINHTMLENCODE(pageData.dayLabel_2)}');" />                                
+            </td>
+            <td style="{!CASE(pageData.dayType_3, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+                <apex:inputField id="tuesTime" value="{!tw.mockDayHoursTC.pse__Wednesday_Hours__c}" rendered="{!isHrsAndNotesEditable}" styleClass="hrInputText fakeSelectorClassForHrInput"
+                    onfocus="javascript:onHrTextFocus(event, this);" onblur="javascript:onHrTextBlur(event, 3,this,'{!pageData.dayType_3}');" 
+                    onkeydown="javascript:return onHrKeyPress(event, this.name, 3, '{!JSINHTMLENCODE(pageData.dayLabel_3)}');" ondblclick="javascript: onHrdoubleClick(this.name, 3, '{!JSINHTMLENCODE(pageData.dayLabel_3)}');"/>
+                <apex:outputField id="tuesTimeOutput" value="{!tw.mockDayHoursTC.pse__Wednesday_Hours__c}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="hrInputText"/>     
+                <apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="easyEntryImage"
+                	ondblclick="javascript: onHrOutputClick('{!$Component.tuesTimeOutput}', 3, '{!JSINHTMLENCODE(pageData.dayLabel_3)}');" />               
+            </td>
+            <td style="{!CASE(pageData.dayType_4, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+                <apex:inputField id="wedTime" value="{!tw.mockDayHoursTC.pse__Thursday_Hours__c}" rendered="{!isHrsAndNotesEditable}" styleClass="hrInputText fakeSelectorClassForHrInput"
+                    onfocus="javascript:onHrTextFocus(event, this);" onblur="javascript:onHrTextBlur(event, 4,this,'{!pageData.dayType_4}');" 
+                    onkeydown="javascript:return onHrKeyPress(event, this.name, 4, '{!JSINHTMLENCODE(pageData.dayLabel_4)}');" ondblclick="javascript: onHrdoubleClick(this.name, 4, '{!JSINHTMLENCODE(pageData.dayLabel_4)}');"/>
+                <apex:outputField id="wedTimeOutput" value="{!tw.mockDayHoursTC.pse__Thursday_Hours__c}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="hrInputText"/>            
+                <apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="easyEntryImage"
+                	ondblclick="javascript: onHrOutputClick('{!$Component.wedTimeOutput}', 4, '{!JSINHTMLENCODE(pageData.dayLabel_4)}');" />        
+            </td>
+            <td style="{!CASE(pageData.dayType_5, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+                <apex:inputField id="thursTime" value="{!tw.mockDayHoursTC.pse__Friday_Hours__c}" rendered="{!isHrsAndNotesEditable}" styleClass="hrInputText fakeSelectorClassForHrInput"
+                    onfocus="javascript:onHrTextFocus(event, this);" onblur="javascript:onHrTextBlur(event, 5,this,'{!pageData.dayType_5}');" 
+                    onkeydown="javascript:return onHrKeyPress(event, this.name, 5, '{!JSINHTMLENCODE(pageData.dayLabel_5)}');" ondblclick="javascript: onHrdoubleClick(this.name, 5, '{!JSINHTMLENCODE(pageData.dayLabel_5)}');"/>
+                <apex:outputField id="thursTimeOutput" value="{!tw.mockDayHoursTC.pse__Friday_Hours__c}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="hrInputText"/>
+                <apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="easyEntryImage"
+                	ondblclick="javascript: onHrOutputClick('{!$Component.thursTimeOutput}', 5, '{!JSINHTMLENCODE(pageData.dayLabel_5)}');" />                    
+            </td>
+            <td style="{!CASE(pageData.dayType_6, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+                <apex:inputField id="friTime" value="{!tw.mockDayHoursTC.pse__Saturday_Hours__c}" rendered="{!isHrsAndNotesEditable}" styleClass="hrInputText fakeSelectorClassForHrInput"
+                    onfocus="javascript:onHrTextFocus(event, this);" onblur="javascript:onHrTextBlur(event, 6,this,'{!pageData.dayType_6}');" 
+                    onkeydown="javascript:return onHrKeyPress(event, this.name, 6, '{!JSINHTMLENCODE(pageData.dayLabel_6)}');" ondblclick="javascript: onHrdoubleClick(this.name, 6, '{!JSINHTMLENCODE(pageData.dayLabel_6)}');"/>
+                <apex:outputField id="friTimeOutput" value="{!tw.mockDayHoursTC.pse__Saturday_Hours__c}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="hrInputText"/>
+                <apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="easyEntryImage"
+                	ondblclick="javascript: onHrOutputClick('{!$Component.friTimeOutput}', 6, '{!JSINHTMLENCODE(pageData.dayLabel_6)}');" />                   
+            </td>
+            <td style="{!CASE(pageData.dayType_7, holiday, holidayInputStyle, weekend, weekendInputStyle, weekdayInputStyle )}">
+                <apex:inputField id="satTime" value="{!tw.mockDayHoursTC.pse__Sunday_Hours__c}" rendered="{!isHrsAndNotesEditable}" styleClass="hrInputText fakeSelectorClassForHrInput"
+                    onfocus="javascript:onHrTextFocus(event, this);" onblur="javascript:onHrTextBlur(event, 7,this,'{!pageData.dayType_7}');" 
+                    onkeydown="javascript:return onHrKeyPress(event, this.name, 7, '{!JSINHTMLENCODE(pageData.dayLabel_7)}');" ondblclick="javascript: onHrdoubleClick(this.name, 7, '{!JSINHTMLENCODE(pageData.dayLabel_7)}');"/>
+                <apex:outputField id="satTimeOutput" value="{!tw.mockDayHoursTC.pse__Sunday_Hours__c}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="hrInputText"/>
+                <apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'info_2.png')}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="easyEntryImage"
+                	ondblclick="javascript: onHrOutputClick('{!$Component.satTimeOutput}',7, '{!JSINHTMLENCODE(pageData.dayLabel_7)}');" />                  
+            </td>
+            <td>
+                <!-- Modified as fix for agile task:  000010865 (Ref. Task ID: 000009297), Dated: Dec 15 2010, Added By: Nitin Jain -->
+                <!--  <apex:outputPanel id="rowTotalHr"><apex:outputText value="{!tw.totalHours}"/></apex:outputPanel>  -->
+                <apex:outputPanel id="rowTotalHr"><apex:outputField value="{!tw.mockedTotalHours.pse__Monday_Hours__c}"/></apex:outputPanel>
+            </td> 
+                     
+            <td>
+            <apex:outputPanel rendered="{!config.ShowETC}">
+                <!-- Done changes(onblur added) as fix for agile task:000010315  dated: 12/07/2010 -->
+                <apex:inputField id="etcValue" onkeypress="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')"  styleClass="hrInputText"
+                    value="{!tw.timecard.pse__Estimated_Time_To_Completion__c}" style="width:35px" rendered="{!isHrsAndNotesEditable}" onblur="javascript:onEtcTextBlur(this)" />
+                <apex:outputField value="{!tw.timecard.pse__Estimated_Time_To_Completion__c}" rendered="{!NOT(isHrsAndNotesEditable)}" styleClass="hrInputText"/>
+            </apex:outputPanel>
+            </td>
+            
+            <td>
+            <apex:outputPanel rendered="{!!config.HideNotes}">
+            <!-- @TODO check if this can be minimized in the term of the DOM tags -->
+                <div align="center" style="white-space:nowrap;">
+                    <apex:outputPanel layout="block" id="dailyNotesRequiredDiv" styleClass="{!IF(tw.isDailyNotesReqired, 'myRequired' , 'myRequiredHidden')}" >&nbsp;</apex:outputPanel>
+                    <apex:image id="notesImage" value="{!URLFOR($Resource.pse__jsComponentsResources, 'Gedit_icon.png')}" height="19" width="19" />
+                </div>
+            </apex:outputPanel>
+            </td>
+            <td>
+				<!--  Changes done as fix for agile task: 000005391   Dated: 05/13/2010   
+					  Doing handling for disabling/enabling the billable flag as per the config value.  -->
+				<apex:inputCheckbox id="billable" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')" value="{!tw.timecard.pse__Billable__c}" rendered="{!AND(NOT(config.HideBillableColumn), NOT(config.ShowBillableOnLeft))}"/>
+				<apex:inputHidden id="hiddenBillable" value="{!tw.timecard.pse__Billable__c}" rendered="{!AND(Config.HideBillableColumn,NOT(config.ShowBillableOnLeft))}"/>
+				<!--  disabled="{!IF(tw.projOrAssig == 'n',false,IF(isHrsAndNotesEditable,NOT(tw.isBillableOptionChangeAllowed),true))}"  --> 
+				<!-- Added changes for AT3032 and AT3031   Dated: 28 Aug 2012 -->
+				<script>
+						if({!AND(NOT(Config.HideBillableColumn),NOT(config.ShowBillableOnLeft))})
+							document.getElementById('{!$Component.billable}').disabled = {!IF(JSENCODE(tw.projOrAssig) == 'n',false,IF(isHrsAndNotesEditable,NOT(tw.isBillableOptionChangeAllowed),true))};
+				</script>
+            </td>               
+            <td>
+                <apex:outputPanel style="float:left;white-space:nowrap;width:auto;" rendered="{!AND(config.ShowMilestoneOnFrontPage,isHrsAndNotesEditable,NOT(config.ShowMilestoneOnLeft))}" id="milestoneListPanel">
+					<span class="{!IF(requiredFixedHeaderField[NAME_SPACE_PREFIX+'Milestone__c'], 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+                    <select  id="tcMilestoneSelectList" style="width:{!config.MilestoneDropDownWidth}px;min-width:{!config.MilestoneDropDownWidth}px;" size="1"
+                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); _MilestonesHandler.onMilestoneSelect(this.value,'{!$Component.hiddenMilestone}');">
+                    </select>
+                </apex:outputPanel>
+                <!-- <apex:outputText value="{!tw.timecard.Milestone__r.name}" style="width:{!config.MilestoneDropDownWidth}px;" rendered="{!AND(config.ShowMilestoneOnFrontPage,NOT(isHrsAndNotesEditable),NOT(tw.timecard.Milestone__c = ''))}"/>-->
+                
+                <apex:outputText value="{!tw.milestoneName}" style="width:{!config.MilestoneDropDownWidth}px;" rendered="{!AND(config.ShowMilestoneOnFrontPage,NOT(config.ShowMilestoneOnLeft),NOT(isHrsAndNotesEditable),NOT(tw.timecard.pse__Milestone__c = ''))}"/>
+                <apex:outputText value="--" style="width:{!config.MilestoneDropDownWidth}px;" rendered="{!AND(config.ShowMilestoneOnFrontPage,NOT(config.ShowMilestoneOnLeft),NOT(isHrsAndNotesEditable),ISNULL(tw.timecard.pse__Milestone__c))}"/>
+            </td>          
+            <td>
+                <apex:outputPanel rendered="{!AND(config.ShowPhaseOnFrontPage ,NOT(config.ShowPhaseOnLeft) )}" >
+                	<!-- Changes done for agile task : AT1185 -->
+                	<apex:outputPanel rendered="{!AND(config.ShowPhaseOnFrontPage, NOT(config.UseProjectPhaseRecord))}" > 
+	                    <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.    
+	                    <apex:selectList id="phase" value="{!tw.timecard.pse__Project_Phase__c}" size="1" rendered="{!isHrsAndNotesEditable}"
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');">
+	                        <apex:selectOptions value="{!pageData.phaseOptions}"/>
+	                    </apex:selectList> 
+	                     -->
+	                     <div style="float:left;white-space:nowrap;width:auto;">	
+					     <span class="{!IF(AND(requiredFixedHeaderField[NAME_SPACE_PREFIX+'Project_Phase__c'],isHrsAndNotesEditable), 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+ 	                     <apex:inputField id="phase" value="{!tw.timecard.pse__Project_Phase__c}" rendered="{!isHrsAndNotesEditable}"
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');" />
+	                     </div>    
+	                     
+	                    <apex:outputText value="{!tw.timecard.pse__Project_Phase__c}" rendered="{!AND(NOT(isHrsAndNotesEditable),NOT(tw.timecard.pse__Project_Phase__c = ''))}"/>
+	                    <apex:outputText value="--" rendered="{!AND(NOT(isHrsAndNotesEditable),(tw.timecard.pse__Project_Phase__c = ''))}"/>
+                	</apex:outputPanel>
+                	
+					<!-- Added code for agile task : AT1185 -->
+                	<apex:outputPanel style="float:left;white-space:nowrap;width:auto;" rendered="{!AND(config.ShowPhaseOnFrontPage, config.UseProjectPhaseRecord, isHrsAndNotesEditable)}" id="phaseListPanel" >
+						<span class="{!IF(requiredFixedHeaderField[NAME_SPACE_PREFIX+'Project_Phase_Object__c'], 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+                		<select id="tcPhaseSelectList" style="width:150px;min-width:150px;" size="1" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); document.getElementById('{!$Component.hiddenProjectPhase}') != null ? document.getElementById('{!$Component.hiddenProjectPhase}').value=this.value : false;">
+                    	</select>
+					</apex:outputPanel>                	
+
+                	<apex:outputPanel rendered="{!AND(config.ShowPhaseOnFrontPage, config.UseProjectPhaseRecord, NOT(isHrsAndNotesEditable))}" >
+                		<apex:outputText style="width:150px;" value="{!tw.phaseName}" rendered="{!NOT(tw.timecard.pse__Project_Phase_Object__c = '')}"/>
+	                    <apex:outputText style="width:150px;" value="--" rendered="{!tw.timecard.pse__Project_Phase_Object__c = ''}"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </td>
+            <td>
+            	<apex:outputPanel rendered="{!AND(config.showMethodologyOnFrontPage ,NOT(config.ShowMethodologyOnLeft) )}" >
+            	
+	                <apex:outputPanel rendered="{!NOT(config.UseProjectMethodologyRecord)}">  
+	                    <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+	                    <apex:selectList id="methodology" style="width:70px;"  value="{!tw.timecard.pse__Project_Methodology__c}" size="1"
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')" rendered="{!isHrsAndNotesEditable}">
+	                        <apex:selectOptions value="{!pageData.methodologyOptions}"/>
+	                    </apex:selectList> 
+	                    -->
+	                     <div style="float:left;white-space:nowrap;width:auto;">	
+				  	     <span class="{!IF(AND(requiredFixedHeaderField[NAME_SPACE_PREFIX+'Project_Methodology__c'],isHrsAndNotesEditable), 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                     <apex:inputField id="methodology" style="width:70px;"  value="{!tw.timecard.pse__Project_Methodology__c}" 
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')" rendered="{!isHrsAndNotesEditable}" />
+	                     </div>
+	                    <apex:outputText value="{!tw.timecard.pse__Project_Methodology__c}" rendered="{!AND(NOT(isHrsAndNotesEditable),NOT(tw.timecard.pse__Project_Methodology__c = ''))}"/>
+	                    <apex:outputText value="--" rendered="{!AND(NOT(isHrsAndNotesEditable),(tw.timecard.pse__Project_Methodology__c = ''))}"/>
+	                
+	                </apex:outputPanel>
+                
+	                <!-- Added code for agile task : AT1196 -->
+	                <apex:outputPanel style="float:left;white-space:nowrap;width:auto;" rendered="{!AND(config.UseProjectMethodologyRecord, isHrsAndNotesEditable)}" id="methodologyListPanel"> 
+						<span class="{!IF(requiredFixedHeaderField[NAME_SPACE_PREFIX+'Project_Methodology_Object__c'], 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                    <select id="tcMethodologySelectList" style="width:150px;min-width:150px;" size="1" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); document.getElementById('{!$Component.hiddenProjectMethodology}') != null ? document.getElementById('{!$Component.hiddenProjectMethodology}').value=this.value : false;">
+                    	</select>
+					</apex:outputPanel>                	
+
+                	<apex:outputPanel rendered="{!AND(config.UseProjectMethodologyRecord, NOT(isHrsAndNotesEditable))}" >
+                		<apex:outputText style="width:150px;" value="{!tw.methodologyName}" rendered="{!NOT(tw.timecard.pse__Project_Methodology_Object__c = '')}"/>
+	                    <apex:outputText style="width:150px;" value="--" rendered="{!(tw.timecard.pse__Project_Methodology_Object__c = '')}"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </td>
+            <!-- Added for AT5203  Dated: 21 Aug, 2012  By: Aditi -->
+            <td>
+            	<apex:outputPanel rendered="{!AND(config.ShowPrimaryLocationOnFrontPage ,NOT(config.ShowPriLocationOnLeft) )}" >
+            	
+	                <apex:outputPanel rendered="{!NOT(config.UseProjectLocationRecord)}">  
+	                    <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+	                    <apex:selectList id="primaryLocation" style="width:95px;"  value="{!tw.timecard.pse__Primary_Location__c}" size="1"
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')" rendered="{!isHrsAndNotesEditable}">
+	                        <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+	                    </apex:selectList>
+	                    --> 
+	                    <div style="float:left;white-space:nowrap;width:auto;">	
+					    <span class="{!IF(AND(requiredFixedHeaderField[NAME_SPACE_PREFIX+'Primary_Location__c'],isHrsAndNotesEditable), 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                    <apex:inputField id="primaryLocation" style="width:95px;"  value="{!tw.timecard.pse__Primary_Location__c}" 
+	                         onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}')" rendered="{!isHrsAndNotesEditable}" />
+	                    </div>
+	                    <apex:outputText value="{!tw.timecard.pse__Primary_Location__c}" rendered="{!AND(NOT(isHrsAndNotesEditable),NOT(tw.timecard.pse__Primary_Location__c = ''))}"/>
+	                    
+	                    <apex:outputText value="--" rendered="{!AND(NOT(isHrsAndNotesEditable),(tw.timecard.pse__Primary_Location__c = ''))}"/>
+	                
+	                </apex:outputPanel>
+                
+	                <apex:outputPanel style="float:left;white-space:nowrap;width:auto;" rendered="{!AND(config.UseProjectLocationRecord, isHrsAndNotesEditable)}" id="primaryLocationListPanel"> 
+						<span class="{!IF(requiredFixedHeaderField[NAME_SPACE_PREFIX+'Primary_Project_Location__c'], 'myRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+	                    <select id="tcPrimaryLocationSelectList" style="width:150px;min-width:150px;" size="1" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}'); document.getElementById('{!$Component.hiddenProjectPrimaryLocation}') != null ? document.getElementById('{!$Component.hiddenProjectPrimaryLocation}').value=this.value : false;">
+                    	</select>
+					</apex:outputPanel>                	
+
+                	<apex:outputPanel rendered="{!AND(config.UseProjectLocationRecord, NOT(isHrsAndNotesEditable))}" >
+                		<apex:outputText style="width:150px;" value="{!tw.primaryLocationName}" rendered="{!NOT(tw.timecard.pse__Primary_Project_Location__c = '')}"/>
+	                    <apex:outputText style="width:150px;" value="--" rendered="{!(tw.timecard.pse__Primary_Project_Location__c = '')}"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </td>
+            
+            <apex:repeat value="{!TCHeaderEditableFields}" var="f" rendered="{!config.UseTimecardFieldsetOnTCUI}">  
+            	<td>					
+            	<div style="float:left;white-space:nowrap;width:auto;">				
+					<span class="{!IF(AND(OR(f.required,f.DBRequired),isHrsAndNotesEditable), 'myRequired' , 'myRequiredHidden')}" > &nbsp;</span>
+					<apex:inputField value="{!tw.timecard[f.fieldPath]}" rendered="{! f.type!='textarea' && isHrsAndNotesEditable}"  onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"  styleClass="disableAdditionalEditableFields" />
+					<apex:inputField value="{!tw.timecard[f.fieldPath]}" rendered="{! f.type='textarea' && isHrsAndNotesEditable}" onchange="setDirty('{!$Component.statusValue}', '{!$Component.dirtyHidden}');"  styleClass="disableAdditionalEditableFields" style="height: 30px;" />
+					<apex:outputField value="{!tw.timecard[f.fieldPath]}" rendered="{!NOT(isHrsAndNotesEditable)}" />
+				</div>	
+					
+				</td>
+			</apex:repeat> 
+           <apex:repeat value="{!TCHeaderReadonlyFields}" var="f" rendered="{!config.UseTimecardFieldsetOnTCUI}">  
+            	<td>					
+					<apex:outputField value="{!tw.timecard[f.fieldPath]}" />
+				</td>
+			</apex:repeat> 
+            
+            <td>
+                <div style="{!IF(tw.status=='Error','color:red;white-space:nowrap;','white-space:nowrap;')}">
+                    <apex:outputText id="statusValue" value="{!tw.status}" />
+                    <apex:outputPanel rendered="{!AND(tw.isMilestoneClosed)}">
+                        <img height="14px" style="padding-left: 2px;" src="/img/msg_icons/warning24.png" title="{!$Label.timecard_entry_label_saved_milestone_closed_and_not_visible}"/>
+                    </apex:outputPanel>
+                </div>
+            </td>
+             <!-- Added code for Agile Task : 000011098  Dated : 22/09/2011  By: Aditi -->
+            <td>
+                <apex:outputPanel rendered="{! AND(config.ShowRecallOnTimecards, tw.isSubmittedForApproval)}">
+                    <apex:commandlink value="{!$Label.pse__timacard_entry_label_recall}" onclick="OnRecallClick('{!tw.timecard.Id}'); return false;" />
+                </apex:outputPanel>
+            </td>
+
+            <td class="hiddenTCInputCell"> 
+            
+                <span class='fakeSelectorClassForRowBaseId'>
+                    <apex:inputHidden id="projectOrAssignmentId" value="{!tw.projectOrAssignmentId}"/>
+                    <apex:inputHidden id="projectOrAssignmentIdOld" value="{!tw.projectOrAssignmentIdOld}"/>
+                </span>
+                <!-- {IF(ISNULL(tw.timecard.id),'n','y')} -->
+                <input type="hidden" value="{!IF(ISNULL(tw.timecard.id),IF(NOT(tw.dirty),'n','y'),'y')}" class="fakeSelectorClassToDecideRowStatus"/>
+                
+                
+                <input type="hidden" id="timecardIDHiddentcRowID{!tw.rowIndex}" value="{!tw.timecard.id}" />
+                
+                <apex:inputHidden id="projectOrAssignmentNameHidden" value="{!tw.projectOrAssignmentName}"/>
+                <apex:inputHidden id="projOrAssig" value="{!tw.projOrAssig}" />
+                
+                <apex:inputHidden id="markedForDelete" value="{!tw.isMarkedForDelete}"/>
+                <apex:inputHidden id="dirtyHidden" value="{!tw.dirty}"/>
+                
+                <apex:inputHidden id="hiddenMilestone" value="{!tw.timecard.pse__Milestone__c}" />
+                
+                <apex:inputHidden id="hiddenIsMSClosed" value="{!tw.isMilestoneClosed}" />
+                <apex:inputHidden id="hiddenMilestoneName" value="{!tw.milestoneName}" />
+                
+                <apex:inputHidden id="isRowEditable" value="{!tw.isHrsAndNotesEditable}"/>
+                 
+                <!-- Added changes for agile task : AT1185 & AT1196 -->
+                <apex:inputHidden id="hiddenProjectPhase" value="{!tw.timecard.pse__Project_Phase_Object__c}" />
+                <apex:inputHidden id="hiddenProjectPhaseName" value="{!tw.phaseName}" />
+                <apex:inputHidden id="hiddenProjectMethodology" value="{!tw.timecard.pse__Project_Methodology_Object__c}" />
+                <apex:inputHidden id="hiddenProjectMethodologyName" value="{!tw.methodologyName}" />
+                <!-- Added changes for AT5203 -->
+                <apex:inputHidden id="hiddenProjectPrimaryLocation" value="{!tw.timecard.pse__Primary_Project_Location__c}" />
+                <apex:inputHidden id="hiddenProjectPrimaryLocationName" value="{!tw.primaryLocationName}" />
+                
+                <apex:inputHidden id="hiddenDay1AdditionalInformation" value="{!tw.day1AdditionalInformation}" />
+                <apex:inputHidden id="hiddenDay2AdditionalInformation" value="{!tw.day2AdditionalInformation}" />
+                <apex:inputHidden id="hiddenDay3AdditionalInformation" value="{!tw.day3AdditionalInformation}" />
+                <apex:inputHidden id="hiddenDay4AdditionalInformation" value="{!tw.day4AdditionalInformation}" />
+                <apex:inputHidden id="hiddenDay5AdditionalInformation" value="{!tw.day5AdditionalInformation}" />
+                <apex:inputHidden id="hiddenDay6AdditionalInformation" value="{!tw.day6AdditionalInformation}" />
+                <apex:inputHidden id="hiddenDay7AdditionalInformation" value="{!tw.day7AdditionalInformation}" />
+                
+                <!-- 
+                <apex:inputHidden id="tcAuditNotes" value="{!tw.timecard.Audit_Notes__c}"/>
+                <apex:inputHidden id="hiddenAdminGE" value="{!tw.timecard.Admin_Global_Edit__c}" />
+                <apex:outputPanel id="selectorDivToDecideDecideAdminGECheck">
+                    <input type="hidden" value="{!IF(AND(ISNULL(tw.timecard.id), ISNULL(tw.projectOrAssignmentId)),'false','true')}" class="fakeSelectorClassToDecideAdminGECheck"/>
+                </apex:outputPanel>
+                 -->
+               <!-- 
+               <apex:outputPanel rendered="{!config.ShowMilestone}">
+                    <script type="text/javascript">
+                        var milestoneOptions = new Array();
+                        <apex:repeat value="{!tw.projectMilestoneOptions}" var="milestoneOption">
+                            var value = "{!milestoneOption.value}";
+                            var label = "{!milestoneOption.label}";
+                            if(document.getElementById('{!$Component.hiddenMilestone}').value == value){
+                                o = new Option(label, value);
+                                o.selected = true;
+                                milestoneOptions.push(o);
+                            } else{
+                                milestoneOptions.push(new Option(label, value));
+                            }
+                        </apex:repeat>
+                        /*If milestone is close*/ 
+                        _MilestonesHandler.toCache('{!JSENCODE(tw.projectOrAssignmentId)}', milestoneOptions);
+                    </script> 
+               </apex:outputPanel>
+               -->
+               <apex:outputPanel rendered="{!config.ShowMilestone}">
+                    <script type="text/javascript">
+                            
+                        var milestoneOptions = new Array();
+                        <apex:repeat value="{!tw.projectMilestoneOptions}" var="milestoneOption" >
+                            var value = "{!JSENCODE(milestoneOption.value)}";
+                            var label = "{!JSENCODE(milestoneOption.label)}";
+                            if(document.getElementById('{!$Component.hiddenMilestone}').value == value){
+                                o = new Option(label, value);
+                                o.selected = true;
+                                milestoneOptions.push(o);
+                            } else{
+                                milestoneOptions.push(new Option(label, value));
+                            } 
+                        </apex:repeat> 
+                        if({!config.disableCache} && {!AND(NOT(config.ShowMilestoneOnFrontPage),NOT(isHrsAndNotesEditable))}){
+                            milestoneOptions = new Array();
+                            milestoneOptions.push(new Option('{!JSENCODE(tw.milestoneName)}', '{!tw.timecard.pse__Milestone__c}'));
+							
+							//Task changes done for AT31397 dated 3 June, 2014
+							//else case will work like milestoneOptions.selectedIndex = 0;							
+							if('{!JSENCODE(tw.milestoneName)}' =='' && '{!tw.timecard.pse__Milestone__c}' != '')
+								milestoneOptions.options[0].selected = true;																		
+                        } 
+                        
+                        /*If milestone is close*/
+                        //_MilestonesHandler.toCache('{!JSENCODE(tw.projectOrAssignmentId)}', milestoneOptions);
+                        _MilestonesHandler.toCache('tcRowID'+{!tw.rowIndex}, milestoneOptions);
+                	</script> 
+               </apex:outputPanel>        
+               <apex:outputPanel rendered="{!config.ShowMethodologyOnFrontPage}">
+                    <script type="text/javascript">
+                        // Added code for agle task : AT1196
+                        var methodologyOptions = new Array();
+                        <apex:repeat value="{!tw.projectMethodologyOptions}" var="methodologyOption" >
+                            var value = "{!JSENCODE(methodologyOption.value)}";
+                            var label = "{!JSENCODE(methodologyOption.label)}";
+                            
+                            // Update as a fix for agile task : AT13342		05-07-2013		shankar
+                            if(document.getElementById('{!$Component.hiddenProjectMethodology}') != null && document.getElementById('{!$Component.hiddenProjectMethodology}').value == value){
+                                o = new Option(label, value);
+                                o.selected = true;
+                                methodologyOptions.push(o);
+                            } else{
+                                methodologyOptions.push(new Option(label, value));
+                            } 
+                        </apex:repeat> 
+
+                        _MethodologyHandler.toCache('tcRowID'+{!tw.rowIndex}, methodologyOptions);
+                	</script> 
+               </apex:outputPanel>
+               <apex:outputPanel rendered="{!config.ShowPhaseOnFrontPage}">
+               		<script>
+                        // Added code for agle task : AT1185
+                        var phaseOptions = new Array();
+                        <apex:repeat value="{!tw.projectPhaseOptions}" var="phaseOption" >
+                            var value = "{!JSENCODE(phaseOption.value)}";
+                            var label = "{!JSENCODE(phaseOption.label)}";
+                            
+                            // Update as a fix for agile task : AT13342		05-07-2013		shankar
+                            if(document.getElementById('{!$Component.hiddenProjectPhase}') != null && document.getElementById('{!$Component.hiddenProjectPhase}').value == value){
+                                o = new Option(label, value);
+                                o.selected = true;
+                                phaseOptions.push(o);
+                            } else{
+                                phaseOptions.push(new Option(label, value));
+                            } 
+                        </apex:repeat> 
+
+                        _PhaseHandler.toCache('tcRowID'+{!tw.rowIndex}, phaseOptions);
+                    </script> 
+               </apex:outputPanel>
+               <apex:outputPanel rendered="{!config.showPrimaryLocationOnFrontPage}">
+               		<script>
+                        // Added code for agle task : AT5203
+                        var primaryLocationOptions = new Array();
+                        <apex:repeat value="{!tw.projectPrimaryLocationOptions}" var="primaryLocOption" >
+                            var value = "{!JSENCODE(primaryLocOption.value)}";
+                            var label = "{!JSENCODE(primaryLocOption.label)}";
+                            
+                            // Update as a fix for agile task : AT13342		05-07-2013		shankar
+                            if(document.getElementById('{!$Component.hiddenProjectPrimaryLocation}') != null && document.getElementById('{!$Component.hiddenProjectPrimaryLocation}').value == value){
+                                o = new Option(label, value);
+                                o.selected = true;
+                                primaryLocationOptions.push(o);
+                            } else{
+                                primaryLocationOptions.push(new Option(label, value));
+                            } 
+                        </apex:repeat> 
+
+                        _PrimaryLocationHandler.toCache('tcRowID'+{!tw.rowIndex}, primaryLocationOptions);
+                    </script> 
+               </apex:outputPanel>
+               <apex:outputPanel rendered="{!config.showEasyEntryPopup}">
+               		<script>
+                        <apex:repeat value="{!tw.projectLocationAllDaysOptions}" var="dayLabel" >
+                        var locationOptions = new Array();
+                        <apex:repeat value="{!tw.projectLocationAllDaysOptions[dayLabel]}" var="locationOptn" >
+                            var value = "{!JSENCODE(locationOptn.value)}";
+                            var label = "{!JSENCODE(locationOptn.label)}";
+                            
+                            locationOptions.push(new Option(label, value));
+                        </apex:repeat> 
+
+                        _EasyEntryLocationHandler.toCache('tcRowID'+{!tw.rowIndex}, '{!dayLabel}', locationOptions);
+                        </apex:repeat>
+               		</script> 
+               </apex:outputPanel>
+            </td>               
+        </tr>      
+       
+    </apex:repeat>
+    </tbody>
+    <tfoot id="">
+        <tr id="tcTotalRow">
+       		 <!-- Modified as fix for agile task: AT33317 , Dated: July 08 2014, Added By: Himanshu Jain-->
+            <th align="left" colspan="8">{!$Label.timecard_entry_label_total}</th>
+            <!-- Creating blank TH to keep in align -->
+            <th></th>
+            <apex:repeat value="{!TCHeaderLeftEditableFields}" var="f"  rendered="{!config.UseTimecardFieldsetOnTCUI}"> 
+             	<th></th>
+   			</apex:repeat>
+            <th class="hrSummaryTH"><apex:outputField id="summaryHrDay1" value="{!pageData.DaySummaryHours.pse__Monday_Hours__c}" /></th>
+            <th class="hrSummaryTH"><apex:outputField id="summaryHrDay2" value="{!pageData.DaySummaryHours.pse__Tuesday_Hours__c}" /></th>
+            <th class="hrSummaryTH"><apex:outputField id="summaryHrDay3" value="{!pageData.DaySummaryHours.pse__Wednesday_Hours__c}" /></th>
+            <th class="hrSummaryTH"><apex:outputField id="summaryHrDay4" value="{!pageData.DaySummaryHours.pse__Thursday_Hours__c}" /></th>
+            <th class="hrSummaryTH"><apex:outputField id="summaryHrDay5" value="{!pageData.DaySummaryHours.pse__Friday_Hours__c}" /></th>
+            <th class="hrSummaryTH"><apex:outputField id="summaryHrDay6" value="{!pageData.DaySummaryHours.pse__Saturday_Hours__c}" /></th>
+            <th class="hrSummaryTH"><apex:outputField id="summaryHrDay7" value="{!pageData.DaySummaryHours.pse__Sunday_Hours__c}" /></th>
+            <th class="hrSummaryTH"><apex:outputField id="summaryHrs" value="{!pageData.MockedTotalSummaryHours.pse__Monday_Hours__c}" /></th>
+            <th colspan="6"> </th>
+        </tr>
+    </tfoot>
+    </table>
+    <!-- This section is here so that each time timecard section is being rerendred some JS var can be reinit with new apex values -->
+    <script type="text/javascript">
+        _hasUnsavedChanges = {!pageData.hasUnsavedTimecards};
+    </script>
+    </apex:outputPanel>
+    </apex:pageBlockSection>
+</apex:pageBlock>
+<!-- This is to control the display of related records loading image. -->
+<apex:variable var="renderAnyAdditionalFields" value="{!OR(AND(config.ShowMethodologyOnPopup, config.UseProjectMethodologyRecord), AND(config.ShowPrimaryLocationOnPopup, config.UseProjectLocationRecord), AND(config.ShowPhaseOnPopup, config.UseProjectPhaseRecord))}" />
+<apex:actionFunction name="jsClearRow" reRender="timecardPanel,messageSection"
+    action="{!clearTimecards}" status="ajaxStatus" oncomplete="javascript:onClearRowDone();"/>    
+
+
+<apex:actionFunction name="jsBatchSave" reRender="batchResultPB,dirtyHidden,projectOrAssignmentNameHidden" action="{!doBatchSave}" immediate="true"/>
+
+<apex:actionFunction name="jsSubmitTimecards" reRender="timecardPanel,messageSection,batchResultPB,dirtyHidden,projectOrAssignmentNameHidden, selectedTCLineToSaveNotesData" action="{!submitTimecards}"/>
+
+<apex:actionFunction name="jsSaveTimecard" reRender="timecardPanel,messageSection,batchResultPB,dirtyHidden,projectOrAssignmentNameHidden, selectedTCLineToSaveNotesData" action="{!saveTimecards}"/>
+
+<apex:actionFunction name="jsResetTCBatchProcessor" reRender="timecardPanel,messageSection,batchResultPB,statusToHideMsgOP" 
+    action="{!resetTCBatchProcessor}" oncomplete="javascript:onResetTCBatchProcessorDone();" />
+    
+<apex:actionFunction name="jsChangeResource" reRender="timecardPanel, scheduleGridComponentPanel,messageSection, assigORProjLookupPB,assigORProjResultPB, auditNotesOuterPanel, gotoDateField,holidayLegendOP,statusToHideMsgOP" 
+    action="{!onResourceChanged}" immediate="false" status="ajaxStatus" oncomplete="javascript:onChangeResourceDone();"/>
+
+<apex:actionFunction name="jsDeleteRow" reRender="timecardPanel,messageSection" 
+    action="{!deleteRow}" status="ajaxStatus" oncomplete="javascript:onDeleteRowDone();"/>
+     
+<apex:actionFunction name="jsMultipleNewRows" reRender="timecardPanel,messageSection"  onbeforedomupdate="javascript:onNewRowBeforedomupdate();" action="{!newMultipleTimecardRows}" status="ajaxStatus" oncomplete="javascript:onNewRowDone();"/>
+
+<apex:actionFunction name="jsPreviousWeek" 
+    reRender="timecardPanel,scheduleGridComponentPanel,weekEndingPanel,messageSection,assigORProjLookupPB,assigORProjResultPB,holidayLegendOP,statusToHideMsgOP" 
+    action="{!gotoPreviousWeek}" status="ajaxStatus" oncomplete="javascript:onPreviousWeekDone();"/>
+
+<apex:actionFunction name="jsNextWeek" 
+    reRender="timecardPanel, scheduleGridComponentPanel,weekEndingPanel,messageSection,assigORProjLookupPB,assigORProjResultPB,holidayLegendOP,statusToHideMsgOP"
+    action="{!gotoNextWeek}" status="ajaxStatus" oncomplete="javascript:onJsNextWeekDone();"/> 
+    
+<apex:actionFunction name="jsGotoWeek" 
+    reRender="timecardPanel,scheduleGridComponentPanel,weekEndingPanel,messageSection,assigORProjLookupPB,assigORProjResultPB,holidayLegendOP,statusToHideMsgOP"
+    action="{!gotoDate}" status="ajaxStatus" oncomplete="javascript:onGotoWeekDone();"/>
+ 
+ <!--   Added code(Argument passed to onCopyFromScheduleDone) for agile task : 000011247   Dated: Feb 04 2012 -->
+<apex:actionFunction name="jsCopyFromSchedule" reRender="timecardPanel,messageSection"
+    action="{!copyFromSchedule}" status="ajaxStatus" oncomplete="javascript:onCopyFromScheduleDone({!isScheduleAvailable});" >
+    <!-- Added as fix for Agile task: AT1612 	    Dated: 31 May, 2012 -->
+    <apex:param name="selectedScheduleAssignIds" assignTo="{!pageData.selectedScheduleAssignmentIds}" value=""/>
+</apex:actionFunction>
+
+<!--   Added code(Argument passed to onCopyFromPreviousWeekDone) for agile task : AT0364   Dated: 07, March 2012 -->
+<apex:actionFunction name="jsCopyFromPreviousWeek" reRender="timecardPanel,weekEndingPanel,messageSection"
+    action="{!copyFromPreviousWeek}" status="ajaxStatus" oncomplete="javascript:onCopyFromPreviousWeekDone({!isTCAvailableFromPrevWeek});" />
+    
+<!-- Added as fix for agile task: 000011098  Dated: 23/09/2011  By: Aditi -->
+<apex:actionFunction name="jsRecallClicked" action="{!recallFromApproval}" status="ajaxStatus" reRender="timecardPanel, RecallOverlay_MessageSection, messageSection" oncomplete="javascript:recallWorkDone();">
+    <apex:param name="recallComment" assignTo="{!approverComment}" value=""/>
+    <apex:param name="recallTimecardId" assignTo="{!selectedRecallTimecardId}" value="" />
+</apex:actionFunction>
+
+<!--   Added as fix for agile task: AT0119   Dated: 3 April, 2012  -->
+<apex:actionFunction name="jsSaveTCStatusToHide" reRender="timecardPanel,weekEndingPanel,messageSection,statusToHideMsgOP"
+    action="{!saveTCStatusToHideConfigSetting}" status="ajaxStatus" oncomplete="javascript:onStatusToHideSaveDone();" />
+
+<!-- Easy Entry div for hours -->
+<div id="easyEntryNotesOverlay" class="toolTipOverlay" style="display:none; ">
+    <table width="100%">
+        <tr> 
+            <td><h1 style="font-size: small;" id="easyOverlayHeading"> </h1> </td> 
+            <td style="text-align: right;">
+                <a href="javascript:_EasyEntryNotesHandler.copy();" id="easyEntrySaveLink">{!$Label.common_label_save}</a>
+                <a href="javascript:_EasyEntryNotesHandler.hide();">{!$Label.common_label_close}</a> 
+            </td>
+        </tr>
+    </table>
+    <hr/>
+
+    <div id="sundayColumns" style="display: none;">
+    <apex:variable var="i" value="{!0}"/>
+    <table>
+    <apex:repeat value="{!$ObjectType.pse__Timecard_Header__c.FieldSets.pse__Sun_Easy_Entry_Fields}" var="f" >
+        <apex:outputPanel rendered="{!IF(f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Audit_Notes__c.Label, pageData.isAuditNotesEnable, true)}">
+        <apex:variable var="i" value="{!i+1}"/> 
+        <apex:variable var="valTDId" value="sunFieldVal{!i}" />
+        <apex:variable var="typeTDId" value="sunFieldType{!i}" />
+        <apex:variable var="apiNameTDId" value="sunFieldName{!i}" /> 
+        <tr> 
+        	<td>{!f.Label}</td> 
+        	<td id="{!apiNameTDId}" style="display: none;">{!f.fieldPath}</td>
+        	<td id="{!typeTDId}" style="display: none;">
+        		<apex:outputPanel rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Sun__c.Label}" >
+        			{!f.type}
+        		</apex:outputPanel>
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Sun__c.Label}" >
+        			manualPicklist
+        		</apex:outputPanel>
+        	</td> 
+        	<td id="{!valTDId}"> 
+        		<apex:inputField value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="selectorClassForEasyEntryInput" 
+        			rendered="{!f.Label != $ObjectType.Timecard_Header__c.Fields.Project_Location_Sun__c.Label && f.Label != $ObjectType.Timecard_Header__c.Fields.Sunday_Notes__c.Label }" />
+        		<apex:inputTextArea value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="dialogTextArea selectorClassForEasyEntryInput" rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Sunday_Notes__c.Label}" />  
+        	
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Sun__c.Label}" id="sunLocEasyEntryPanel">  
+                    <select id="sunLocEasyEntrySelect" class="selectorClassForEasyEntryInput easyentryInputSelect" onchange="onValueChange();">
+		            </select>
+				</apex:outputPanel>
+        	</td>
+        </tr>
+        </apex:outputPanel>
+    </apex:repeat> 
+    </table>
+    </div>
+    
+    <div id="mondayColumns" style="display: none;">
+    <apex:variable var="i" value="{!0}"/>
+    <table>
+    <apex:repeat value="{!$ObjectType.pse__Timecard_Header__c.FieldSets.pse__Mon_Easy_Entry_Fields}" var="f" >  
+    	<apex:outputPanel rendered="{!IF(f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Audit_Notes__c.Label, pageData.isAuditNotesEnable, true)}">
+        <apex:variable var="i" value="{!i+1}"/> 
+        <apex:variable var="valTDId" value="monFieldVal{!i}" />
+        <apex:variable var="typeTDId" value="monFieldType{!i}" />
+        <apex:variable var="apiNameTDId" value="monFieldName{!i}" /> 
+        <tr> 
+        	<td>{!f.Label}</td> 
+        	<td id="{!apiNameTDId}" style="display: none;">{!f.fieldPath}</td> 
+        	<td id="{!typeTDId}" style="display: none;">
+        		<apex:outputPanel rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Mon__c.Label}" >
+        			{!f.type}
+        		</apex:outputPanel>
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Mon__c.Label}" >
+        			manualPicklist
+        		</apex:outputPanel>
+        	</td> 
+        	<td id="{!valTDId}"> 
+        		<apex:inputField value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="selectorClassForEasyEntryInput" rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Mon__c.Label && f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Monday_Notes__c.Label}"/>
+        		<apex:inputTextArea value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="dialogTextArea selectorClassForEasyEntryInput" rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Monday_Notes__c.Label}" />
+        		
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Mon__c.Label}" id="monLocEasyEntryPanel">  
+                    <select id="monLocEasyEntrySelect" class="selectorClassForEasyEntryInput easyentryInputSelect" onchange="onValueChange();">
+		            </select>
+				</apex:outputPanel>
+        	</td> 
+        </tr>
+        </apex:outputPanel>
+    </apex:repeat> 
+    </table>
+    </div>
+    
+    <div id="tuesdayColumns" style="display: none;">
+    <apex:variable var="i" value="{!0}"/>
+    <table>
+    <apex:repeat value="{!$ObjectType.pse__Timecard_Header__c.FieldSets.pse__Tue_Easy_Entry_Fields}" var="f" >   
+        <apex:outputPanel rendered="{!IF(f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Audit_Notes__c.Label, pageData.isAuditNotesEnable, true)}">
+        <apex:variable var="i" value="{!i+1}"/> 
+        <apex:variable var="valTDId" value="tueFieldVal{!i}" />
+        <apex:variable var="typeTDId" value="tueFieldType{!i}" />
+        <apex:variable var="apiNameTDId" value="tueFieldName{!i}" />
+        <tr> 
+        	<td>{!f.Label}</td> 
+        	<td id="{!apiNameTDId}" style="display: none;">{!f.fieldPath}</td> 
+        	<td id="{!typeTDId}" style="display: none;">
+        		<apex:outputPanel rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Tue__c.Label}" >
+        			{!f.type}
+        		</apex:outputPanel>
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Tue__c.Label}" >
+        			manualPicklist
+        		</apex:outputPanel>
+        	</td> 
+        	<td id="{!valTDId}"> 
+        		<apex:inputField value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="selectorClassForEasyEntryInput" rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Tue__c.Label && f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Tuesday_Notes__c.Label}" /> 
+        		<apex:inputTextArea value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="dialogTextArea selectorClassForEasyEntryInput" rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Tuesday_Notes__c.Label}" />
+        		
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Tue__c.Label}" id="tueLocEasyEntryPanel">  
+                    <select id="tueLocEasyEntrySelect" class="selectorClassForEasyEntryInput easyentryInputSelect" onchange="onValueChange();">
+		            </select>
+				</apex:outputPanel>
+        	</td> 
+        </tr>
+        </apex:outputPanel>
+    </apex:repeat>
+    </table>
+    </div>
+    
+    <div id="wednesdayColumns" style="display: none;">
+    <apex:variable var="i" value="{!0}"/>
+    <table>
+    <apex:repeat value="{!$ObjectType.pse__Timecard_Header__c.FieldSets.pse__Wed_Easy_Entry_Fields}" var="f" > 
+    	<apex:outputPanel rendered="{!IF(f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Audit_Notes__c.Label, pageData.isAuditNotesEnable, true)}">
+        <apex:variable var="i" value="{!i+1}"/> 
+        <apex:variable var="valTDId" value="wedFieldVal{!i}" />
+        <apex:variable var="typeTDId" value="wedFieldType{!i}" />
+        <apex:variable var="apiNameTDId" value="wedFieldName{!i}" />  
+        <tr> 
+        	<td>{!f.Label}</td> 
+        	<td id="{!apiNameTDId}" style="display: none;">{!f.fieldPath}</td> 
+        	<td id="{!typeTDId}" style="display: none;">
+        		<apex:outputPanel rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Wed__c.Label}" >
+        			{!f.type}
+        		</apex:outputPanel>
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Wed__c.Label}" >
+        			manualPicklist
+        		</apex:outputPanel>
+        	</td> 
+        	<td id="{!valTDId}"> 
+        		<apex:inputField value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="selectorClassForEasyEntryInput" rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Wed__c.Label && f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Wednesday_Notes__c.Label}"/> 
+        		<apex:inputTextArea value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="dialogTextArea selectorClassForEasyEntryInput" rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Wednesday_Notes__c.Label}" />
+        		
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Wed__c.Label}" id="wedLocEasyEntryPanel">  
+                    <select id="wedLocEasyEntrySelect" class="selectorClassForEasyEntryInput easyentryInputSelect" onchange="onValueChange();">
+		            </select>
+				</apex:outputPanel>
+        	</td> 
+        </tr>
+        </apex:outputPanel>
+    </apex:repeat> 
+    </table>
+    </div>
+    
+    <div id="thursdayColumns" style="display: none;">
+    <apex:variable var="i" value="{!0}"/>
+    <table>
+    <apex:repeat value="{!$ObjectType.pse__Timecard_Header__c.FieldSets.pse__Thu_Easy_Entry_Fields}" var="f" >
+    	<apex:outputPanel rendered="{!IF(f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Audit_Notes__c.Label, pageData.isAuditNotesEnable, true)}">
+        <apex:variable var="i" value="{!i+1}"/> 
+        <apex:variable var="valTDId" value="thuFieldVal{!i}" />
+        <apex:variable var="typeTDId" value="thuFieldType{!i}" />
+        <apex:variable var="apiNameTDId" value="thuFieldName{!i}" />   
+        <tr> 
+        	<td>{!f.Label}</td> 
+        	<td id="{!apiNameTDId}" style="display: none;">{!f.fieldPath}</td> 
+        	<td id="{!typeTDId}" style="display: none;">
+        		<apex:outputPanel rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Thu__c.Label}" >
+        			{!f.type}
+        		</apex:outputPanel>
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Thu__c.Label}" >
+        			manualPicklist
+        		</apex:outputPanel>
+        	</td> 
+        	<td id="{!valTDId}"> 
+        		<apex:inputField value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="selectorClassForEasyEntryInput" rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Thu__c.Label && f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Thursday_Notes__c.Label}"/>
+        		<apex:inputTextArea value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="dialogTextArea selectorClassForEasyEntryInput" rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Thursday_Notes__c.Label}" />
+        		 
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Thu__c.Label}" id="thuLocEasyEntryPanel">  
+                    <select id="thuLocEasyEntrySelect" class="selectorClassForEasyEntryInput easyentryInputSelect" onchange="onValueChange();">
+		            </select>
+				</apex:outputPanel>
+        	</td> 
+        </tr>
+        </apex:outputPanel>
+    </apex:repeat> 
+    </table>
+    </div>
+    
+    <div id="fridayColumns" style="display: none;">
+    <apex:variable var="i" value="{!0}"/>
+    <table>
+    <apex:repeat value="{!$ObjectType.pse__Timecard_Header__c.FieldSets.pse__Fri_Easy_Entry_Fields}" var="f" >
+    	<apex:outputPanel rendered="{!IF(f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Audit_Notes__c.Label, pageData.isAuditNotesEnable, true)}">
+        <apex:variable var="i" value="{!i+1}"/> 
+        <apex:variable var="valTDId" value="friFieldVal{!i}" />
+        <apex:variable var="typeTDId" value="friFieldType{!i}" />
+        <apex:variable var="apiNameTDId" value="friFieldName{!i}" />
+        <tr> 
+        	<td>{!f.Label}</td> 
+        	<td id="{!apiNameTDId}" style="display: none;">{!f.fieldPath}</td> 
+        	<td id="{!typeTDId}" style="display: none;">
+        		<apex:outputPanel rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Fri__c.Label}" >
+        			{!f.type}
+        		</apex:outputPanel>
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Fri__c.Label}" >
+        			manualPicklist
+        		</apex:outputPanel>
+        	</td> 
+        	<td id="{!valTDId}"> 
+        		<apex:inputField value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="selectorClassForEasyEntryInput" rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Fri__c.Label && f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Friday_Notes__c.Label}"/> 
+        		<apex:inputTextArea value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="dialogTextArea selectorClassForEasyEntryInput" rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Friday_Notes__c.Label}" />
+        		
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Fri__c.Label}" id="friLocEasyEntryPanel">  
+                    <select id="friLocEasyEntrySelect" class="selectorClassForEasyEntryInput easyentryInputSelect" onchange="onValueChange();">
+		            </select>
+				</apex:outputPanel>
+        	</td> 
+        </tr>
+        </apex:outputPanel>
+    </apex:repeat> 
+    </table>
+    </div>
+    
+    <div id="saturdayColumns" style="display: none;">
+    <apex:variable var="i" value="{!0}"/>
+    <table>
+    <apex:repeat value="{!$ObjectType.pse__Timecard_Header__c.FieldSets.pse__Sat_Easy_Entry_Fields}" var="f" >  
+    	<apex:outputPanel rendered="{!IF(f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Audit_Notes__c.Label, pageData.isAuditNotesEnable, true)}">
+        <apex:variable var="i" value="{!i+1}"/> 
+        <apex:variable var="valTDId" value="satFieldVal{!i}" />
+        <apex:variable var="typeTDId" value="satFieldType{!i}" />
+        <apex:variable var="apiNameTDId" value="satFieldName{!i}" />
+        <tr> 
+        	<td>{!f.Label}</td> 
+        	<td id="{!apiNameTDId}" style="display: none;">{!f.fieldPath}</td> 
+        	<td id="{!typeTDId}" style="display: none;">
+        		<apex:outputPanel rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Sat__c.Label}" >
+        			{!f.type}
+        		</apex:outputPanel>
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Sat__c.Label}" >
+        			manualPicklist
+        		</apex:outputPanel>
+        	</td> 
+        	<td id="{!valTDId}"> 
+        		<apex:inputField value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="selectorClassForEasyEntryInput" rendered="{!f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Sat__c.Label && f.Label != $ObjectType.pse__Timecard_Header__c.Fields.pse__Saturday_Notes__c.Label}"/> 
+        		<apex:inputTextArea value="{!mockTCForNotes[f.fieldPath]}" onchange="onValueChange();" styleClass="dialogTextArea selectorClassForEasyEntryInput" rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Saturday_Notes__c.Label}" />
+        		
+        		<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Project_Location_Sat__c.Label}" id="satLocEasyEntryPanel">  
+                    <select id="satLocEasyEntrySelect" class="selectorClassForEasyEntryInput easyentryInputSelect" onchange="onValueChange();">
+		            </select>
+				</apex:outputPanel>	
+        	</td> 
+        </tr>
+        </apex:outputPanel>
+    </apex:repeat> 
+    </table>
+    </div>
+</div>
+
+<!-- 
+Copy from Previous Week Overlay STARTS
+ -->
+<div id="copyPrevWeekContainer" class="overlayContainer">
+    <div id="copyPrevWeekOverlay">
+        <div class="yui-widget-hd overlarCaptionBar" onclick="javascript:_CopyPrevWeekLookupHandler.hide();"></div>
+        <div class="yui-widget-bd overlayBody" >
+            <div id="copyPrevWeekOverlaySubContainer">
+                <apex:sectionHeader title="{!$Label.pse__timecard_entry_button_label_copy_from_previous_week}"/>
+                
+                <apex:pageBlock title="{!$Label.pse__timecard_entry_label_select_fields_to_copy}" id="copyPrevWeekOverlayPageBlock">
+                    <div id="copyPrevWeekOverlayErrorMsg" style="display: none;">
+                        <apex:pageMessage summary="{!$Label.pse__timecard_entry_label_atleast_select_one_filed_to_copy} !" severity="error" strength="2" />
+                    </div>
+    
+                        <apex:panelGrid styleClass="copyFromPrevWeekGrid" columns="2" id="copyFromPrevWeekGrid" width="100%" cellspacing="4" cellpadding="6" border="0">
+                            <apex:outputText value="{!$Label.pse__common_label_copy}" style="font-weight:bold;" />
+                            <apex:outputText value="{!$Label.pse__timecard_entry_label_fields_that_will_get_copied}" style="font-weight:bold;"/>
+                            
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper">
+                                <apex:inputCheckbox selected="{!config.CopyHoursFromPrevWeek}" value="{!config.CopyHoursFromPrevWeek}" id="configCopyHoursFromPrevWeek"/>
+                                <apex:outputLabel value="{!$Label.pse__common_label_hours}" for="configCopyHoursFromPrevWeek" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper">
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Monday_Hours__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Tuesday_Hours__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Wednesday_Hours__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Thursday_Hours__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Friday_Hours__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Saturday_Hours__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Sunday_Hours__c.label}
+                            </apex:outputPanel>
+    						
+    						<!-- Done changes for Agile task: AT9386 -->
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper" rendered="{!config.ShowTravelCheckbox}">
+                                <apex:inputCheckbox value="{!config.CopyTravelFromPrevWeek}" selected="{!config.CopyTravelFromPrevWeek}" id="prevWeekTravelInfo"/>
+                                <apex:outputLabel value="{!$Label.pse__timecard_entry_label_travel}" for="prevWeekTravelInfo" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper" rendered="{!config.ShowTravelCheckbox}" >
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Travel_Mon__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Travel_Tue__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Travel_Wed__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Travel_Thu__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Travel_Fri__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Travel_Sat__c.label},
+                                    {!$ObjectType.pse__Timecard_Header__c.fields.pse__Travel_Sun__c.label}
+                            </apex:outputPanel>
+								                           
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper">
+                                <apex:inputCheckbox value="{!config.CopyLocationsFromPrevWeek}" selected="{!config.CopyLocationsFromPrevWeek}" id="configCopyLocationsFromPrevWeek"/>
+                                <apex:outputLabel value="{!$Label.pse__timecard_entry_label_locations}" for="configCopyLocationsFromPrevWeek" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper">
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Location_Mon__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Location_Tue__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Location_Wed__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Location_Thu__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Location_Fri__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Location_Sat__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Location_Sun__c.label}
+                            </apex:outputPanel>
+    
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper">
+                                <apex:inputCheckbox value="{!config.CopyNotesFromPrevWeek}" selected="{!config.CopyNotesFromPrevWeek}" id="configCopyNotesFromPrevWeek"/>
+                                <apex:outputLabel value="{!$Label.pse__common_label_notes}" for="configCopyNotesFromPrevWeek" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper">
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Timecard_Notes__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Monday_Notes__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Tuesday_Notes__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Wednesday_Notes__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Thursday_Notes__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Friday_Notes__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Saturday_Notes__c.label},
+                                {!$ObjectType.pse__Timecard_Header__c.fields.pse__Sunday_Notes__c.label}
+                            </apex:outputPanel>
+    
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper">
+                                <apex:inputCheckbox value="{!config.CopyETCFromPrevWeek}" selected="{!config.CopyETCFromPrevWeek}" id="configCopyETCFromPrevWeek"/>
+                                <apex:outputLabel value="{!$ObjectType.pse__Timecard_Header__c.fields.pse__Estimated_Time_To_Completion__c.label}" for="configCopyETCFromPrevWeek" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper">
+                                &nbsp;
+                            </apex:outputPanel>
+    
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper" rendered="{!config.ShowMethodology}">
+                                <apex:inputCheckbox value="{!config.CopyMethodologyFromPrevWeek}" selected="{!config.CopyMethodologyFromPrevWeek}" 
+                                        id="configCopyMethodologyFromPrevWeek"/>
+                                <apex:outputLabel value="{!$ObjectType.pse__Timecard_Header__c.fields.pse__Project_Methodology__c.label}" for="configCopyMethodologyFromPrevWeek" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper" rendered="{!config.ShowMethodology}">
+                                &nbsp;
+                            </apex:outputPanel>
+    
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper" rendered="{!config.ShowMilestone}">
+                                <apex:inputCheckbox value="{!config.CopyMilestoneFromPrevWeek}"  
+                                    selected="{!config.CopyMilestoneFromPrevWeek}" id="configCopyMilestoneFromPrevWeek"  />
+                                <apex:outputLabel value="{!$ObjectType.pse__Timecard_Header__c.fields.pse__Milestone__c.label}" for="configCopyMilestoneFromPrevWeek" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper" rendered="{!config.ShowMilestone}">
+                                &nbsp;
+                            </apex:outputPanel>
+    
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper" rendered="{!config.ShowPhase}" >
+                                <apex:inputCheckbox value="{!config.CopyPhaseFromPrevWeek}" 
+                                     selected="{!config.CopyPhaseFromPrevWeek}" id="configCopyPhaseFromPrevWeek" />
+                                <apex:outputLabel value="{!$ObjectType.pse__Timecard_Header__c.fields.pse__Project_Phase__c.label}" for="configCopyPhaseFromPrevWeek" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper" rendered="{!config.ShowPhase}" >
+                                &nbsp;
+                            </apex:outputPanel>
+                            
+                            <apex:panelGroup styleClass="copyFromPrevWeekGridCheckBoxWrapper" >
+                                <apex:inputCheckbox selected="{!config.CopyAdditionalFieldsFromPrevWeek}" value="{!config.CopyAdditionalFieldsFromPrevWeek}" id="configAdditionalFieldsFromPrevWeek"/>
+                                <apex:outputLabel value="{!$Label.pse__timecard_entry_label_additional_fields}" for="configAdditionalFieldsFromPrevWeek" />
+                            </apex:panelGroup>
+                            <apex:outputPanel styleClass="copyFromPrevWeekGridFieldNameWrapper" >
+                                    <apex:outputText value="{!pageData.additionalFieldsToShow}" />
+                            </apex:outputPanel>
+
+                        </apex:panelGrid>
+    
+                    <apex:pageBlockButtons location="bottom">
+                        <input id="CFSOverlay_CFSButton" type="button" value="{!$Label.pse__timecard_entry_button_label_copy_from_previous_week}" onclick="javascript:_CopyPrevWeekLookupHandler.copy();" class="btn"/>
+                        <input id="CFSOverlay_CancelButton" type="button" value="{!$Label.common_label_cancel}" onclick="javascript:_CopyPrevWeekLookupHandler.hide();" class="btn"/>
+                    </apex:pageBlockButtons> 
+                </apex:pageBlock>
+            </div>
+        </div>
+    </div>          
+</div>
+
+<!-- 
+Copy from Schedule Overlay ENDS
+ -->
+
+<!-- 
+Tc Status to Hide Overlay STARTS
+Added this Overlay as fix for agile task: AT0119    Dated: 2 April, 2012 
+ -->
+<div id="statusToHideContainer" class="overlayContainer">
+    <div id="statusToHideOverlay">
+        <div class="yui-widget-hd overlarCaptionBar" onclick="javascript:_StatusToHideLookupHandler.hide();"></div>
+        <div class="yui-widget-bd overlayBody" >
+            <div id="statusToHideOverlaySubContainer">
+                <apex:sectionHeader title="{!$Label.pse__timacard_entry_label_status_to_hide}" help="{!$Page.pse__ShowHideTimecardbyStatusHelp}" />
+                
+                <apex:pageBlock title="Select status to hide" id="statusToHideOverlayPageBlock">
+                	<apex:pageBlockSection columns="1" >
+                	 <apex:repeat value="{!tcStatusToHideConfigWrapperList}" var="ct">
+                			<apex:pageBlockSectionItem >
+                                <apex:inputCheckbox value="{!ct.isStatusToHide}" selected="{!ct.isStatusToHide}" />
+                                <apex:outputLabel value="{!ct.statusLabel}" />
+                           </apex:pageBlockSectionItem>
+                	</apex:repeat>
+                	</apex:pageBlockSection>
+                    <apex:pageBlockButtons location="bottom">
+                        <input id="STHOverlay_SaveButton" type="button" value="{!$Label.common_label_done}" onclick="javascript:_StatusToHideLookupHandler.save();" class="btn"/>
+                        <input id="STHOverlay_CancelButton" type="button" value="{!$Label.common_label_cancel}" onclick="javascript:_StatusToHideLookupHandler.hide();" class="btn"/>
+                    </apex:pageBlockButtons> 
+                </apex:pageBlock>
+            </div>
+        </div>
+    </div>          
+</div>
+<!-- 
+TC Status to hide Overlay ENDS
+ -->
+
+    
+<!-- The notes pop up overlay -->
+<apex:actionRegion >
+    <apex:actionFunction name="jsGetNotesDetail" reRender="messageSection, notesContainerHolderPanel"  
+        action="{!getNotesDetail}"  oncomplete="_NotesHandler.onNotesDetailFetched();" />
+    <apex:inputHidden id="selectedTCLineID" value="{!pageData.selectedTCLine}" />
+
+</apex:actionRegion>
+
+<apex:actionRegion >
+<apex:inputHidden id="selectedTCLineToSaveNotesData" value="{!pageData.selectedTCLineToSaveNotesData}" />
+<apex:actionFunction name="jsSetNotesDetail" reRender="messageSection, notesContainerHolderPanel, selectedTCLineToSaveNotesData"  
+        action="{!setNotesDetail}"  oncomplete="_NotesHandler.onNotesDetailSaved();" status="ajaxStatus"/>   
+
+<apex:outputPanel id="notesContainerHolderPanel" style="display:none">
+<apex:inputHidden value="{!pageData.projectOrAssignmentIdWhilePopupDetailsSaved}" id="hiddenProjectOrAssignmentIdWhilePopupDetailsSaved" />
+<div id="notesContainerHolder">  
+
+<div id="notesContainer" >
+     
+<table id="notesOuterTable">
+<tr><td>
+<!-- 
+STANDARD NOTES FIELDS, the first columns
+fakeSelectorClassForNotesInput
+ -->
+ 
+ <table cellspacing="1" class="notesTable" id="notesMainTable">
+    <thead>
+        <tr>
+            <td class="dialogTableHeader">{!$Label.timecard_entry_label_day}</td>
+            <td class="dialogTableHeader">{!$Label.pse__timecard_entry_label_notes}</td>
+            <!-- Done changes for Agile task: AT9386 -->
+            <td class="dialogTableHeader" style="{!IF(config.ShowTravelCheckbox,'','display:none;')}" >{!$Label.pse__timecard_entry_label_travel}</td>
+            
+            <td class="dialogTableHeader">
+            	<apex:outputText value="{!$Label.pse__timecard_entry_label_location}" rendered="{!config.NoteLocationAllowed}"/>
+            	<apex:image styleClass="loadingProjectRelatedDetails" value="/img/loading.gif" style="visibility:hidden;padding-left:5px;" rendered="{!AND(config.NoteLocationAllowed, config.UseProjectLocationRecord)}"/>
+            	
+           	</td> 
+        </tr>
+    </thead>
+    <tbody> 
+        <tr>
+            <td>{!$Label.pse__timecard_entry_label_sunday}</td> 
+            <td>
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Sunday_Notes__c}" styleClass="dialogNotes fakeSelectorClassForNotesInput" id="sunNotes"/>
+            </td>
+            <td align="center" style="{!IF(config.ShowTravelCheckbox,'','display:none;')}" >
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Travel_Sun__c}" styleClass="fakeSelectorClassForNotesInputCheckBox" id="sunTravel"/>
+            </td>
+            
+            <td>
+                <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+                <apex:selectList id="sunNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Sun__c}" size="1"    
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput">    
+                    <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+                </apex:selectList> 
+                -->
+                <apex:inputField id="sunNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Sun__c}"     
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput" />
+
+				<apex:outputPanel rendered="{!AND(config.NoteLocationAllowed, config.UseProjectLocationRecord)}">
+		            <select id="projectSunLocationSelect" class="fakeSelectorClassForNotesInput popupInputField" >
+		            </select>
+		            <apex:inputHidden value="{!pageData.selectedTimecard.pse__Project_Location_Sun__c}" id="hiddenSunProjectLocation" />
+	            </apex:outputPanel>
+
+            </td>
+        </tr>
+        
+        <tr>
+            <td>{!$Label.pse__timecard_entry_label_monday}</td>
+            <td>
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Monday_Notes__c}" styleClass="dialogNotes fakeSelectorClassForNotesInput" id="monNotes"/>
+            </td>
+            
+            <td align="center" style="{!IF(config.ShowTravelCheckbox,'','display:none;')}" >
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Travel_Mon__c}" styleClass="fakeSelectorClassForNotesInputCheckBox" id="monTravel"/>
+            </td>
+            <td>
+                <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+                <apex:selectList id="monNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Mon__c}" size="1"    
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput">    
+                    <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+                </apex:selectList>
+                -->
+                <apex:inputField id="monNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Mon__c}" 
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput" />
+                <apex:outputPanel rendered="{!AND(config.NoteLocationAllowed, config.UseProjectLocationRecord)}">
+		            <select id="projectMonLocationSelect" class="fakeSelectorClassForNotesInput popupInputField" >
+		            </select>
+		            <apex:inputHidden value="{!pageData.selectedTimecard.pse__Project_Location_Mon__c}" id="hiddenMonProjectLocation" />
+	            </apex:outputPanel>
+	             
+            </td>
+        </tr>
+        <tr>
+            <td>{!$Label.pse__timecard_entry_label_tuesday}</td>
+            <td>
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Tuesday_Notes__c}" styleClass="dialogNotes fakeSelectorClassForNotesInput" id="tueNotes"/>
+            </td>
+            <td align="center" style="{!IF(config.ShowTravelCheckbox,'','display:none;')}" >
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Travel_Tue__c}" styleClass="fakeSelectorClassForNotesInputCheckBox" id="tueTravel"/>
+            </td>
+            <td>
+            	<!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+                <apex:selectList id="tueNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Tue__c}" size="1"    
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput">    
+                    <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+                </apex:selectList> 
+                -->
+                <apex:inputField id="tueNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Tue__c}"
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput" />
+                <apex:outputPanel rendered="{!AND(config.NoteLocationAllowed, config.UseProjectLocationRecord)}">
+		            <select id="projectTueLocationSelect" class="fakeSelectorClassForNotesInput popupInputField" >
+		            </select>
+		            <apex:inputHidden value="{!pageData.selectedTimecard.pse__Project_Location_Tue__c}" id="hiddenTueProjectLocation" />
+	            </apex:outputPanel>
+	            
+            </td>
+        </tr>
+        
+        <tr>
+            <td>{!$Label.pse__timecard_entry_label_wednesday}</td>
+            <td>
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Wednesday_Notes__c}" styleClass="dialogNotes fakeSelectorClassForNotesInput" id="wedNotes"/>
+            </td>
+            <td align="center" style="{!IF(config.ShowTravelCheckbox,'','display:none;')}" >
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Travel_Wed__c}" styleClass="fakeSelectorClassForNotesInputCheckBox" id="wedTravel"/>
+            </td>
+            <td>
+            	<!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+                <apex:selectList id="wedNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Wed__c}" size="1"    
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput">    
+                    <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+                </apex:selectList>
+                -->
+                <apex:inputField id="wedNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Wed__c}" 
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput" />
+                <apex:outputPanel rendered="{!AND(config.NoteLocationAllowed, config.UseProjectLocationRecord)}">
+		            <select id="projectWedLocationSelect" class="fakeSelectorClassForNotesInput popupInputField" >
+		            </select>
+		            <apex:inputHidden value="{!pageData.selectedTimecard.pse__Project_Location_Wed__c}" id="hiddenWedProjectLocation" />
+	            </apex:outputPanel>
+	             
+            </td>
+        </tr>
+        <tr>
+            <td>{!$Label.pse__timecard_entry_label_thursday}</td>
+            <td>
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Thursday_Notes__c}" styleClass="dialogNotes fakeSelectorClassForNotesInput" id="thuNotes"/>
+            </td>
+            <td align="center" style="{!IF(config.ShowTravelCheckbox,'','display:none;')}" >
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Travel_Thu__c}" styleClass="fakeSelectorClassForNotesInputCheckBox" id="thuTravel"/>
+            </td>
+            <td>
+                <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+                <apex:selectList id="thuNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Thu__c}" size="1"    
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput">    
+                    <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+                </apex:selectList>
+                -->
+                <apex:inputField id="thuNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Thu__c}"
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput" />
+                <apex:outputPanel rendered="{!AND(config.NoteLocationAllowed, config.UseProjectLocationRecord)}">
+		            <select id="projectThuLocationSelect" class="fakeSelectorClassForNotesInput popupInputField" >
+		            </select>
+		            <apex:inputHidden value="{!pageData.selectedTimecard.pse__Project_Location_Thu__c}" id="hiddenThuProjectLocation" />
+	            </apex:outputPanel>
+	             
+            </td>
+        </tr>
+        <tr>
+            <td>{!$Label.pse__timecard_entry_label_friday}</td>
+            <td>
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Friday_Notes__c}" styleClass="dialogNotes fakeSelectorClassForNotesInput" id="friNotes"/>
+            </td>
+            <td align="center" style="{!IF(config.ShowTravelCheckbox,'','display:none;')}" >
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Travel_Fri__c}" styleClass="fakeSelectorClassForNotesInputCheckBox" id="friTravel"/>
+            </td>
+            <td>
+                <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.                
+                <apex:selectList id="friNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Fri__c}" size="1"    
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput">    
+                    <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+                </apex:selectList>
+                -->
+                <apex:inputField id="friNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Fri__c}"
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput" />
+                <apex:outputPanel rendered="{!AND(config.NoteLocationAllowed, config.UseProjectLocationRecord)}">
+		            <select id="projectFriLocationSelect" class="fakeSelectorClassForNotesInput popupInputField" >
+		            </select>
+		            <apex:inputHidden value="{!pageData.selectedTimecard.pse__Project_Location_Fri__c}" id="hiddenFriProjectLocation" />
+	            </apex:outputPanel>
+	             
+            </td>
+        </tr>
+        <tr>
+            <td>{!$Label.pse__timecard_entry_label_saturday}</td>
+            <td>
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Saturday_Notes__c}" styleClass="dialogNotes fakeSelectorClassForNotesInput" id="satNotes"/>
+            </td>
+            <td align="center" style="{!IF(config.ShowTravelCheckbox,'','display:none;')}" >
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Travel_Sat__c}" styleClass="fakeSelectorClassForNotesInputCheckBox" id="satTravel"/>
+            </td>
+            <td>
+            	<!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+                <apex:selectList id="satNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Sat__c}" size="1"    
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput">    
+                    <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+                </apex:selectList> 
+                -->
+                <apex:inputField id="satNotesLoc" style="width:150px;" value="{!pageData.selectedTimecard.pse__Location_Sat__c}" 
+                      rendered="{!AND(config.NoteLocationAllowed, NOT(config.UseProjectLocationRecord))}" styleClass="fakeSelectorClassForNotesInput" />
+                <apex:outputPanel rendered="{!AND(config.NoteLocationAllowed, config.UseProjectLocationRecord)}">
+		            <select id="projectSatLocationSelect" class="fakeSelectorClassForNotesInput popupInputField" >
+		            </select>
+		            <apex:inputHidden value="{!pageData.selectedTimecard.pse__Project_Location_Sat__c}" id="hiddenSatProjectLocation" />
+	            </apex:outputPanel>
+	            
+            </td>
+        </tr>
+        <!-- 
+        <apex:variable var="fkControl" value="fake" rendered="{!pageData.additionalFields.size >0}" > 
+            <tr>
+                <td colspan="4" style="background-color: lightgray;">
+                    <b>{!$Label.pse__timecard_entry_label_additional_fields}:</b>
+                </td>
+            </tr>
+        </apex:variable>
+        
+        <apex:repeat value="{!pageData.additionalFields}" var="af">
+        <tr>
+            <td colspan="1" align="left">{!af.label} </td>
+            <td colspan="3" align="left">
+                <apex:inputField value="{!pageData.selectedTimecard[af.fieldAPIName]}" styleClass="{!IF(af.isBooleanField, ' fakeSelectorClassForNotesInputCheckBox ', 'fakeSelectorClassForNotesInput dialogNotes')}" />
+            </td>
+        </tr>
+        </apex:repeat>
+          -->
+    </tbody>
+</table>
+</td>
+
+<td>
+    <table class="notesTable" id="notesRightTable">
+        <tr>
+            <td colspan="4" align="center">
+                {!$Label.timecard_entry_label_weekly_notes}<br />
+                <apex:inputField value="{!pageData.selectedTimecard.pse__Timecard_Notes__c}" styleClass="dialogTextArea fakeSelectorClassForNotesInput" id="weeklyNotes"/>
+            </td>
+        </tr>
+        
+        <!-- <apex:variable var="rcv1" value="v" rendered="{!pageData.isAuditNotesEnable}"> -->
+        <tr>
+            <td colspan="4" align="center">
+                <apex:outputPanel id="auditNotesOuterPanel"> 
+                <apex:outputPanel id="auditNotesPanel" rendered="{!pageData.isAuditNotesEnable}">
+                    {!$Label.timecard_entry_label_audit_notes}<br />
+                    <apex:inputField value="{!pageData.selectedTimecard.pse__Audit_Notes__c}" styleClass="dialogTextArea fakeSelectorClassForNotesInput" id="auditNotes"/>
+                </apex:outputPanel>
+                </apex:outputPanel>
+                    
+            </td>
+        </tr>
+        
+        <!-- </apex:variable> -->
+  
+      <tr>
+        <td class="dialogTableHeader" colspan="4" align="left">
+            <apex:outputLabel rendered="{!OR(config.ShowMilestoneOnPopup, config.ShowPhaseOnPopup, config.ShowMethodologyOnPopup, config.NotePrimaryLocationAllowed, pageData.additionalFields.size>0 , AND(OR(TCNotesReadonlyFields.size>0, TCNotesEditableFields.size>0) , config.UseTimecardFieldsetOnTCUI))}">{!$Label.pse__timecard_entry_label_additional_fields}</apex:outputLabel>
+            
+            <apex:image styleClass="loadingProjectRelatedDetails" value="/img/loading.gif" style="visibility:hidden;padding-left:5px;" rendered="{!renderAnyAdditionalFields}"/> 
+        </td>
+      </tr>
+      <tr>
+          <td><apex:outputLabel rendered="{!config.ShowPrimaryLocationOnPopup}">{!$Label.pse__timecard_entry_label_primary_location}</apex:outputLabel></td> 
+           <td colspan="3">
+           		<!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+           		<apex:selectList id="priNotesLoc" value="{!pageData.selectedTimecard.pse__Primary_Location__c}" size="1"    
+                      rendered="{!AND(NOT(config.UseProjectLocationRecord), config.ShowPrimaryLocationOnPopup)}" styleClass="fakeSelectorClassForNotesInput popupInputField">    
+                    <apex:selectOptions value="{!pageData.noteLocationOptions}"/>
+                </apex:selectList> 
+                -->
+                	<span class="{!IF(AND(requiredFixedNotesField[NAME_SPACE_PREFIX+'Primary_Location__c'], !config.UseProjectLocationRecord), 'myNotesRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+                	<apex:inputField id="priNotesLoc" value="{!pageData.selectedTimecard.pse__Primary_Location__c}" 
+	                      rendered="{!AND(NOT(config.UseProjectLocationRecord), config.ShowPrimaryLocationOnPopup)}" styleClass="fakeSelectorClassForNotesInput popupInputField" onchange="_NotesHandler.currentNotesInEditingDirty = true;"/>
+                <apex:outputPanel rendered="{!AND(config.UseProjectLocationRecord, config.ShowPrimaryLocationOnPopup)}">
+             		<span class="{!IF(requiredFixedNotesField[NAME_SPACE_PREFIX+'Primary_Project_Location__c'], 'myNotesRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+ 		            <select id="projectPriLocationSelect" class="fakeSelectorClassForNotesInput popupInputField">
+		            </select>
+		            <!-- 
+		            <apex:inputHidden value="{!pageData.selectedTimecard.Primary_Project_Location__c}" id="hiddenPriProjectLocation" />
+		             -->
+	            </apex:outputPanel>
+            </td>
+           
+      </tr>
+      <tr>
+          <td><apex:outputLabel rendered="{!config.ShowPhaseOnPopup}">{!$Label.pse__timecard_entry_label_phase}</apex:outputLabel></td>
+          <td colspan="3" align="left">
+               <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+               <apex:selectList id="phaseSelect" value="{!pageData.selectedTimecard.pse__Project_Phase__c}" size="1" 
+               		 rendered="{!AND(config.ShowPhaseOnPopup, NOT(config.UseProjectPhaseRecord))}" styleClass="fakeSelectorClassForNotesInput popupInputField"> 
+                   <apex:selectOptions value="{!pageData.phaseOptions}"/>
+               </apex:selectList>
+               -->
+					<span class="{!IF(AND(requiredFixedNotesField[NAME_SPACE_PREFIX+'Project_Phase__c'], !config.UseProjectPhaseRecord), 'myNotesRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+ 	               <apex:inputField id="phaseSelect" value="{!pageData.selectedTimecard.pse__Project_Phase__c}"  
+	               		 rendered="{!AND(config.ShowPhaseOnPopup, NOT(config.UseProjectPhaseRecord))}" styleClass="fakeSelectorClassForNotesInput popupInputField" onchange="_NotesHandler.currentNotesInEditingDirty = true;"/>
+               <!-- Added code for agile task : AT1185 -->
+               <apex:outputPanel rendered="{!AND(config.ShowPhaseOnPopup, config.UseProjectPhaseRecord)}">
+               		<span class="{!IF(requiredFixedNotesField[NAME_SPACE_PREFIX+'Project_Phase_Object__c'], 'myNotesRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+               		<select id="projectPhaseSelect" class="fakeSelectorClassForNotesInput popupInputField">
+               		</select>
+               		
+               </apex:outputPanel>
+           </td>
+      </tr>
+      <tr>
+          <td><apex:outputLabel rendered="{!config.ShowMethodologyOnPopup}">{!$Label.pse__timecard_entry_label_methodology}</apex:outputLabel></td>
+          <td colspan="3" align="left">
+               <!--  Changed from selectlist to inputField as part of the AT AT2130 changes.
+               <apex:selectList id="methodologySelect" value="{!pageData.selectedTimecard.pse__Project_Methodology__c}" size="1" 
+               		 rendered="{!AND(config.ShowMethodologyOnPopup, NOT(config.UseProjectMethodologyRecord))}" styleClass="fakeSelectorClassForNotesInput popupInputField">    
+                   <apex:selectOptions value="{!pageData.methodologyOptions}"/>
+               </apex:selectList> 
+               -->
+					<span class="{!IF(AND(requiredFixedNotesField[NAME_SPACE_PREFIX+'Project_Methodology__c'], !config.UseProjectMethodologyRecord), 'myNotesRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+ 	               <apex:inputField id="methodologySelect" value="{!pageData.selectedTimecard.pse__Project_Methodology__c}"  
+	               		 rendered="{!AND(config.ShowMethodologyOnPopup, NOT(config.UseProjectMethodologyRecord))}" styleClass="fakeSelectorClassForNotesInput popupInputField" onchange="_NotesHandler.currentNotesInEditingDirty = true;"/>
+               <!-- Added code for agile task : AT1196 -->
+               <apex:outputPanel rendered="{!AND(config.ShowMethodologyOnPopup, config.UseProjectMethodologyRecord)}">
+               		<span class="{!IF(requiredFixedNotesField[NAME_SPACE_PREFIX+'Project_Methodology_Object__c'], 'myNotesRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+               		<select id="projectMethodologySelect" class="fakeSelectorClassForNotesInput popupInputField">
+               		</select>
+               </apex:outputPanel>
+           </td>
+    </tr>
+    <tr>
+          <td><apex:outputPanel rendered="{!config.ShowMilestoneOnPopup}">{!$Label.pse__timecard_entry_label_milestone}</apex:outputPanel></td>
+          <td colspan="3" align="left">
+          <apex:outputPanel rendered="{!config.ShowMilestoneOnPopup}">
+               <span class="{!IF(requiredFixedNotesField[NAME_SPACE_PREFIX+'Milestone__c'], 'myNotesRequired' , 'myRequiredHidden')}" >&nbsp;</span>
+               <select id="milestoneSelect" class="fakeSelectorClassForNotesInput popupInputField" >
+               </select>
+            </apex:outputPanel>
+           </td> 
+    </tr>
+    
+	 <apex:repeat value="{!TCNotesEditableFields}" var="f" rendered="{!config.UseTimecardFieldsetOnTCUI}">
+	 <tr>
+		<td colspan="1" align="left">{!f.label}</td>
+		<td colspan="3" align="left">
+			<span class="{!IF(OR(f.required,f.DBRequired), 'myNotesRequired' , 'myRequiredHidden')} ">&nbsp;</span>
+			<apex:inputField value="{!pageData.selectedTimecard[f.fieldPath]}" styleClass="{!IF(f.type == 'boolean', ' fakeSelectorClassForNotesInputCheckBox ', 'fakeSelectorClassForNotesInput dialogNotes')}" rendered="{! IF(f.label==$ObjectType.Timecard_Header__c.Fields.Approver__c.Label,false,true)}"/>
+			<apex:inputField value="{!pageData.selectedTimecard[f.fieldPath]}" styleClass="{!IF(f.type == 'boolean', ' fakeSelectorClassForNotesInputCheckBox ', 'fakeSelectorClassForNotesInput ')}" rendered="{! IF(f.label==$ObjectType.Timecard_Header__c.Fields.Approver__c.Label,true,false)}"/>
+		</td>
+	</tr>
+	</apex:repeat>
+	<apex:repeat value="{!pageData.additionalFields}" var="af" rendered="{!NOT(config.UseTimecardFieldsetOnTCUI)}" >
+    <tr>
+         <td colspan="1" align="left">{!af.label}</td>
+         <td colspan="3" align="left">
+             <apex:inputField value="{!pageData.selectedTimecard[af.fieldAPIName]}" styleClass="{!IF(af.isBooleanField, ' fakeSelectorClassForNotesInputCheckBox ', 'fakeSelectorClassForNotesInput dialogNotes')}" rendered="{! IF(af.label==$ObjectType.Timecard_Header__c.Fields.Approver__c.Label,false,true)}"/>
+             <apex:inputField value="{!pageData.selectedTimecard[af.fieldAPIName]}" styleClass="{!IF(af.isBooleanField, ' fakeSelectorClassForNotesInputCheckBox ', 'fakeSelectorClassForNotesInput ')}" rendered="{! IF(af.label==$ObjectType.Timecard_Header__c.Fields.Approver__c.Label,true,false)}"/>
+         </td>
+    </tr>
+    </apex:repeat>
+    <apex:repeat value="{!TCNotesReadonlyFields}" var="f" rendered="{!config.UseTimecardFieldsetOnTCUI}">  
+    	<tr>
+    		<td colspan="1" align="left">{!f.label}</td>
+          	<td colspan="3" align="left">					
+				<apex:outputField value="{!pageData.selectedTimecard[f.fieldPath]}" />
+			</td>
+		</tr>
+	</apex:repeat> 
+    </table>
+
+</td>
+</tr>
+    
+<tr>
+    <td colspan="2" align="center">
+        <button id="notesDivOKButton" type="button" class="btn" onclick="javascript:_NotesHandler.onOK();">{!$Label.common_label_done}</button>
+    </td>
+</tr>
+</table>
+</div>
+</div>
+</apex:outputPanel>
+</apex:actionRegion>
+<script>
+//Added as a fix for Agile Task : AT14223 
+var _notesPopupIds = {
+	projectPrimaryLocationId : "{!$Component.priNotesLoc}",
+	projectPhaseId : "{!$Component.methodologySelect}",
+	projectMethodologyId : "{!$Component.phaseSelect}"	
+}
+</script>
+ <!--Notes section ENDS--> 
+ 
+<div id="assigORProjOverlayContainer" class="overlayContainer">
+    <div id="assigORProjOverlay">
+        <div class="yui-widget-hd overlarCaptionBar" onclick="javascript:_AssignmentLookupHandler.hide();"></div>
+        <div class="yui-widget-bd overlayBody">
+            <apex:sectionHeader title="{!$Label.pse__timecard_entry_label_project_assignment_lookup}"/>
+            <apex:panelGrid columns="4">
+                        <label for="assigORProjSearchString">{!$Label.common_label_search}</label>
+                        <input type="text" id="assigORProjSearchString"/>
+                        <button id="assigOverlay_Go_Button" onclick="javascript:_AssignmentLookupHandler.search(true); return false;" class="btn"> {!$Label.expense_label_go} </button>
+                        <button id="assigOverlay_All_Button" onclick="javascript:_AssignmentLookupHandler.search(false); return false;" class="btn"> {!$Label.common_label_all} </button>                         
+                        <img align="middle" src="{!URLFOR($Resource.appirioCommon, 'progress-rotation.gif')}" height="24" width="24" style="visibility: hidden;" id='assignmentLoadWaitImageID'/>
+                <apex:facet name="footer">
+                    <div class="bDescription">{!$Label.pse__timecard_entry_message_search_description}</div> 
+                </apex:facet>
+            </apex:panelGrid>
+            
+            <ul id="tabs">
+              <li class="li_left"><h2 class="h2_left"><a class="selected" onclick="toggleAssigResultTabs(this)" id="recentResultsLink">{!$Label.timecard_entry_label_recent_project_assignment}</a></h2></li>
+              <li class="li_right"><h2 class="h2_right" ><a onclick="toggleAssigResultTabs(this)" id="searchResultsLink">{!$Label.timecard_entry_label_search_results}</a></h2></li>
+            </ul>
+            <div class="topScrollable tabContent" id="recentResultsTab"> 
+                <apex:pageBlock id="assigORProjLookupPB">
+                
+                    <apex:outputPanel rendered="{!AND(ISNULL(pageData.recentAssignments),ISNULL(pageData.recentProjects))}">
+                                <i>{!$Label.pse__timecard_entry_message_no_recent_project_assignment_available}</i>
+                    </apex:outputPanel>
+                    <!--  Block for rendering the recent assignments  -->
+                    <apex:actionRegion >
+                    <apex:outputPanel rendered="{!NOT(ISNULL(pageData.recentAssignments))}">
+                        <div style="overflow: auto !important;"><table width="100%" id="recentAssignmentTable" cellspacing="0" class="list">
+                            <thead>
+                                <tr class="projAssigDemarcation" >
+                                    <th colspan="{!pageData.assignmentColSpan+1}"> {!$Label.timecard_entry_label_my_assignments} </th>
+                                </tr>   
+                                <tr class="headerRow">
+                                	<th>{!$Label.common_label_name}</th>
+                                	<apex:repeat value="{!pageData.assignmentLookupFields}" var="assignField" >
+	                                    <th>{!assignField.label}</th>
+                                    </apex:repeat>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <apex:repeat value="{!pageData.recentAssignments}" var="assignmentDetail">
+                                    <tr class="dataRow" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}">
+                                        <!-- <td class="assigAccountTD">{!assignmentDetail.accountName}</td> -->
+                                        <td class="assigNameTD">
+                                             <apex:inputHidden id="hiddenTempAssigName" value="{!assignmentDetail.name}" />
+                                             <apex:inputHidden id="hiddenTempNickName" value="{!assignmentDetail.nickName}" />
+                                             <apex:inputHidden id="hiddenTempToolTip" value="{!assignmentDetail.tooltip}" />
+                                             <a href="#" onclick="_AssignmentLookupHandler.refreshAssigDependentDetails('{!assignmentDetail.id}',escape(document.getElementById('{!$Component.hiddenTempAssigName}').value), escape(document.getElementById('{!$Component.hiddenTempNickName}').value),{!assignmentDetail.isAssignment}, escape(document.getElementById('{!$Component.hiddenTempToolTip}').value), {!assignmentDetail.isBillable}, {!assignmentDetail.isDailyNotesRequired}, '{!assignmentDetail.projectId}','{!assignmentDetail.selectedMilestoneID}');return false;">
+                                             	<apex:outputText value="{!assignmentDetail.name}" /></a>
+                                        </td>
+                                        <apex:repeat value="{!pageData.assignmentLookupFields}" var="assignField" >
+                                        	<apex:variable rendered="{!assignField.localRelatedAPIName == 'Nick_Name__c'}" value="" var="tempOuter0">
+		                                        <td class="assigNickNameTD {!assignmentDetail.id}">
+		                                             <apex:outputPanel rendered="{!config.NicknameEditable}" >
+		                                             <div class="nickNameHolder" onmouseover="_AssignmentLookupHandler.onNickNameMouseOver(this)" onmouseout="_AssignmentLookupHandler.onNickNameMouseOut(this)">
+		                                                <div style="text-decoration:{!IF(assignmentDetail.isNickNameAdded,'none','underline')};" onclick="_AssignmentLookupHandler.doEnterNickName('{!assignmentDetail.id}', this);return false;">
+		                                                	<apex:outputText value="{!IF(assignmentDetail.isNickNameAdded,assignmentDetail.nickName,'Add')}" /><img class="nickNameImageHolder" title="{!$Label.timacard_entry_label_edit_nickname}" alt="{!$Label.timacard_entry_label_edit_nickname}" src="/s.gif" height="12" width="0"></img></div>
+		                                            </div>
+		                                            </apex:outputPanel>
+		                                            <apex:outputPanel rendered="{!NOT(config.NicknameEditable)}">
+		                                            <div class="nickNameHolder" >
+		                                                <div><apex:outputText value="{!assignmentDetail.nickName}" rendered="{!assignmentDetail.isNickNameAdded}" /></div>
+		                                            </div>
+		                                            </apex:outputPanel>
+		                                        </td>
+	                                        </apex:variable>
+	                                        <apex:variable rendered="{!NOT(assignField.localRelatedAPIName == 'Nick_Name__c')}" value="" var="tempOuter1" >
+		                                        <td >
+		                                             <apex:outputText value="{!assignmentDetail.assignment[assignField.relatedAPIName]}" rendered="{!AND(NOT(OR(assignField.fieldTypeString == 'DATETIME', assignField.fieldTypeString == 'DATE')), !ISBLANK(assignmentDetail.assignment[assignField.relatedAPIName]))}"/>
+		                                             <apex:outputField value=" {!assignmentDetail.assignment[assignField.relatedAPIName]}" rendered="{!AND(OR(assignField.fieldTypeString == 'DATETIME', assignField.fieldTypeString == 'DATE'), !ISBLANK(assignmentDetail.assignment[assignField.relatedAPIName]))}"/>
+		                                             <apex:outputText value="--" rendered="{!ISBLANK(assignmentDetail.assignment[assignField.relatedAPIName])}"/>
+		                                        </td>
+	                                        </apex:variable>
+	                                   </apex:repeat>
+                                    </tr>
+                                </apex:repeat>
+                                
+                            </tbody>
+                        </table></div>
+                    </apex:outputPanel>
+                    <!--  Block for rendering the recent global projects  -->
+                       <apex:outputPanel rendered="{!NOT(ISNULL(pageData.recentProjects))}">
+                         <div style="overflow: auto !important;"><table width="100%" id="recentProjectTable" cellspacing="0" class="list">
+                                <thead>
+	                                 <tr class="projAssigDemarcation" >
+	                                    <th colspan="{!pageData.projectColSpan+1}"> {!$Label.timacard_entry_label_global_projects} </th>
+	                                </tr>   
+	                                <tr class="headerRow">
+	                                	<th>{!$Label.common_label_name}</th>
+	                                	<apex:repeat value="{!pageData.projectLookupFields}" var="projField" >
+		                                    <th>{!projField.label}</th>
+	                                    </apex:repeat>
+	                                </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!pageData.recentProjects}" var="project">
+                                        <tr class="dataRow" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}">
+                                            <td>
+                                            <apex:inputHidden id="hiddenTempProjName" value="{!project.name}" />
+                                            <apex:inputHidden id="hiddenTempProjToolTip" value="{!project.tooltip}" />
+                                            <a href="#" onclick="_AssignmentLookupHandler.refreshAssigDependentDetails('{!project.id}',escape(document.getElementById('{!$Component.hiddenTempProjName}').value), null, {!project.isAssignment}, escape(document.getElementById('{!$Component.hiddenTempProjToolTip}').value), {!project.isBillable}, {!project.isDailyNotesRequired}, '{!JSENCODE(project.projectId)}','{!JSENCODE(project.selectedMilestoneID)}');return false;">{!project.name}</a>
+                                            </td>
+                                            
+                                            <apex:repeat value="{!pageData.projectLookupFields}" var="projField" >
+                                            <td >
+		                                     	<apex:outputText value="{!project.project[projField.relatedAPIName]}" rendered="{!AND(NOT(OR(projField.fieldTypeString == 'DATETIME', projField.fieldTypeString == 'DATE')), !ISBLANK(project.project[projField.relatedAPIName]))}"/>
+	                                            <apex:outputField value=" {!project.project[projField.relatedAPIName]}" rendered="{!AND(OR(projField.fieldTypeString == 'DATETIME', projField.fieldTypeString == 'DATE'), !ISBLANK(project.project[projField.relatedAPIName]))}"/>
+	                                            <apex:outputText value="--" rendered="{!ISBLANK(project.project[projField.relatedAPIName])}"/>
+		                                    </td>
+		                                    </apex:repeat>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table></div>
+                    </apex:outputPanel>                 
+                </apex:actionRegion>
+                </apex:pageBlock>
+            </div>
+                
+                <div class="bottomScrollable tabContent hide" id="searchResultsTab">
+                    <apex:pageBlock id="assigORProjResultPB">
+                    <div id="yuiAssigmentRequestResultPanel">
+                        <table id="assigORProjResultTable"><tr><td>
+                        <i>{!$Label.pse__timecard_entry_message_enter_project_assignment_name_to_search} !</i>
+                        </td></tr>
+                        </table>
+                    </div>
+                    </apex:pageBlock>
+                </div>
+        </div>
+    </div>         
+</div>
+
+<!-- The resource selection overlay  -->
+<div id="resourceOverlayContainer" class="overlayContainer" >
+    <div id="resourceOverlay">
+        <div class="yui-widget-hd overlarCaptionBar" onclick="javascript:_ResourceLookupHandler.hide();"></div>
+        <div class="yui-widget-bd overlayBody">
+                <apex:sectionHeader title="{!$Label.pse__timecard_entry_label_resource_lookup}"/>
+                <apex:panelGrid columns="4" >
+	                <label for="delegatedResSearchString">{!$Label.common_label_search}</label>
+	                <input type="text" id="delegatedResSearchString"/>
+	                <button id="resourceOverlay_Go_Button" onclick="_ResourceLookupHandler.search(true); return false;" class="btn"> {!$Label.expense_label_go} </button>
+	                <button id="resourceOverlay_All_Button" onclick="_ResourceLookupHandler.search(false); return false;" class="btn"> {!$Label.common_label_all} </button>                        
+	                <img align="middle" src="{!URLFOR($Resource.appirioCommon, 'progress-rotation.gif')}" height="24" width="24" style="visibility: hidden;" id='resourceLoadWaitImageID'/>
+                </apex:panelGrid>
+                <apex:outputText styleclass="descriptionText" value="{!$Label.pse__timecard_entry_message_search_description}"/>
+                <apex:outputText styleclass="descriptionText descriptionText-Encrypted" rendered="{!!$ObjectType.Contact.Fields.Name.filterable}" value="{!$Label.pse__common_text_to_refine_search_results_when_pe_is_enabled}"/>
+                <div class="{!if($ObjectType.Contact.Fields.Name.filterable, 'scrollable', 'scrollable-Encrypted')}"  style="overflow: auto !important;">
+                <div id="resLookupDelegatedResParent" class="scrollable">
+					<apex:pageBlock id="resLookupDelegatedRes">
+						<div id="yuiRequestResultPanel">
+						<table id="resourceResultsTable"><tr><td>
+						<i>{!$Label.pse__timecard_entry_message_enter_resource_name_to_search} !</i>
+						</td></tr>
+						</table>
+						</div>
+					</apex:pageBlock>
+				</div>
+			</div>
+        </div>
+    </div>          
+</div>
+
+<!-- The Batch process overlay  -->
+<div id="batchOverlayContainer" class="overlayContainer">
+    <div id="batchOverlay"> 
+        <div class="yui-widget-bd overlayBody" style="max-height:260px; min-height:250px;">
+                <apex:sectionHeader title="{!$Label.pse__timecard_entry_label_save_submit_progress}"/>
+                
+                <div class="scrollable">
+                <apex:pageBlock >
+                
+                <apex:pageBlockSection title="{!$Label.pse__timecard_entry_label_save_submit_timecard_rows} !" collapsible="false" columns="1">
+                <apex:pageBlockSectionItem > 
+                    <img align="middle" src="{!URLFOR($Resource.appirioCommon, 'progress-rotation.gif')}" height="24" width="24"  />
+                </apex:pageBlockSectionItem>
+                <apex:outputPanel layout="block" id="batchResultPB">
+                    <script type="text/javascript">
+                        if({!NOT(ISNULL(tcBatch))}){
+                            if({!tcBatch.isTCBatchComplete}){
+                                jsResetTCBatchProcessor();
+                            }else{
+                                jsBatchSave();
+                            }
+                        }else{
+                            if(typeof onResetTCBatchProcessorDone != 'undefined'){
+                                if(_BatchProcessHandler.overlayContainer.getStyle('display') == 'block'){
+                                    onResetTCBatchProcessorDone();
+                                }
+                            }
+                        }
+                    </script>
+                    <apex:pageMessage summary="{!tcBatch.batchStatusMessage.message}" severity="{!tcBatch.batchStatusMessage.severity}" strength="2" rendered="{!NOT(ISNULL(tcBatch))}"/>
+                </apex:outputPanel>
+                
+                </apex:pageBlockSection>
+                </apex:pageBlock> 
+                </div>
+        </div>
+    </div>         
+</div>
+
+<!-- Added new overlay section of Timecard Recall. Changes made for Agile Task : 000011098  Dated : 22/09/2011 --> 
+<div id="recallTimecardOverlayContainer" class="overlayContainer">
+    <div id="recallOverlay">
+        <div class="yui-widget-hd overlarCaptionBar" onclick="javascript:_RecallLookupHandler.hide()"></div>
+        <div class="yui-widget-bd overlayBody" style="max-height:350px; min-height:300px;">
+            <apex:sectionHeader title="{!$Label.pse__timacard_entry_label_recall_approval_request}" />
+            <apex:outputPanel id="RecallOverlay_MessageSection">
+            </apex:outputPanel>
+            <apex:pageblock id="RecallOverlay_PageBlock" rendered="{! IF(config.ShowRecallOnTimecards, true, false)}">
+                <apex:pageBlockButtons location="bottom">
+                    <input id="RecallOverlay_RecallButton" type="button" value="{!$Label.pse__timacard_entry_label_recall_approval_request}" onclick="javascript:recallFromApprovalClicked(document.getElementById('{!$Component.tcPage.tcForm.RecallOverlay_PageBlock.RecallOverlay_Timecard}').value); return false;" class="btn"/>
+                    <input id="RecallOverlay_CancelButton" type="button" value="{!$Label.common_label_cancel}" onclick="javascript:_RecallLookupHandler.hide();" class="btn"/>
+                </apex:pageBlockButtons>
+                
+                <div>
+                    <table>
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!$Label.pse__timacard_entry_label_related_to}"/>
+                            </td>
+                            <td>
+                                <apex:outputLink Id="RecallOverlay_Timecard" onClick="javascript: window.open('/' + this.value); return false" > </apex:outputLink>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!$Label.pse__common_label_comments}"/>
+                            </td>
+                            <td colspan="3">
+                                <apex:inputTextarea id="recallCommentTextArea" rows="5" cols="80"></apex:inputTextarea>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </apex:pageblock>
+        </div>
+    </div>
+</div>
+
+<apex:actionRegion id="nickNameUpdateSection">
+    <apex:inputhidden value="{!pageData.nickNameVO.assignmentId}" id="assignmentId"/>
+    <apex:inputhidden value="{!pageData.nickNameVO.nickName}" id="nickName"/>
+
+    <apex:actionFunction name="jsUpdateAssignmentNickName" reRender="nickNameUpdateSection" 
+        action="{!updateAssignmentNickName}" />
+</apex:actionRegion>
+
+<!-- Added showScheduleGrid to show hide schedule grid. Changes for agile task: 000000728    Dated: 12/04/2009 -->
+
+<apex:outputPanel rendered="{!AND(isEverythingOk,showScheduleGrid)}" id="scheduleGridComponentPanel">
+    <apex:actionRegion >    
+        <apex:actionFunction name="jsToggleScheduleGridExpansion" status="scheduleToggleStatus" reRender="fakePanelForAjaxSpeedup" 
+        action="{!toggleScheduleGridExpansion}" onComplete="togglingInProcess = false;" immediate="true"/>    
+        
+        <apex:actionFunction name="jsToggleScheduleGridCollapse"  reRender="fakePanelForAjaxSpeedup"
+        action="{!toggleScheduleGridExpansion}" onComplete="togglingInProcess = false;" immediate="true"/>
+    
+        <apex:outputPanel id="fakePanelForAjaxSpeedup"/>
+
+    </apex:actionRegion>
+    
+<div class="pbSubheader first tertiaryPalette">
+    <img title="{!$Label.timecard_entry_label_show_hide_schedules}" style="cursor: pointer;" onclick="twistScheduleGrid(this);" 
+     class="{!IF(config.ShowScheduleGridExpandedByDefault, 'hideListButton', 'showListButton')}" src="/s.gif" />
+        <h3>{!$Label.timecard_schedule_label_title}&nbsp;</h3>
+        <apex:actionStatus id="scheduleToggleStatus" >
+            <apex:facet name="start" >
+                - {!$Label.pse__timecard_entry_label_loading_schedules} ! 
+            </apex:facet>
+        </apex:actionStatus> 
+</div>  
+<apex:outputPanel rendered="{!config.ShowScheduleGridExpandedByDefault}">
+    <iframe id="scheduleFrame" src="{!$Page.TCScheduleGrid}?resourceId={!seed.selectedResourceId}&forWeekEnd={!seed.weekEndDateToString}&weekEndDay={!seed.weekEndDay}&isScheduleEditable={!seed.scheduleEditable}&wcId={!seed.selectedResourceWCId}" frameborder="0" width="100%" style="min-height:300px;"></iframe>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!NOT(config.ShowScheduleGridExpandedByDefault)}">
+    <iframe id="scheduleFrame" src="" frameborder="0" width="100%" style="min-height:300px;"></iframe>
+</apex:outputPanel>
+
+<script type="text/javascript">
+    var scheduleGridURL = '{!$Page.pse__TCScheduleGrid}?resourceId={!seed.selectedResourceId}&forWeekEnd={!seed.weekEndDateToString}&weekEndDay={!seed.weekEndDay}&isScheduleEditable={!seed.scheduleEditable}&wcId={!seed.selectedResourceWCId}';
+    var togglingInProcess = false;
+</script>
+
+</apex:outputPanel>
+
+<apex:inputhidden value="{!showPreviousWeekTimecardAlert}" id="showPrevWeekTcAlert"/>
+
+</apex:form>
+
+<!-- 
+ALL JS CODE RESIDE BELOW, PLEASE DON'T ADD ANY HTML HERE
+ -->
+
+
+<!-- 
+<script src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js" charset="utf-8"></script>
+
+-->
+<!-- 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?3.3.0/build/widget/assets/skins/sam/widget.css&3.3.0/build/widget/assets/skins/sam/widget-stack.css&3.3.0/build/overlay/assets/skins/sam/overlay.css"/>
+CSS -->
+<!-- JS -->
+<!--
+<script type="text/javascript" src="http://yui.yahooapis.com/combo?3.3.0/build/yui/yui-min.js&3.3.0/build/oop/oop-min.js&3.3.0/build/dom/dom-min.js&3.3.0/build/dom/dom-style-ie-min.js&3.3.0/build/event-custom/event-custom-min.js&3.3.0/build/event/event-min.js&3.3.0/build/pluginhost/pluginhost-min.js&3.3.0/build/node/node-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/node/align-plugin-min.js&3.3.0/build/classnamemanager/classnamemanager-min.js&3.3.0/build/attribute/attribute-min.js&3.3.0/build/base/base-min.js&3.3.0/build/widget/widget-min.js&3.3.0/build/widget/widget-base-ie-min.js&3.3.0/build/widget/widget-position-min.js&3.3.0/build/widget/widget-position-constrain-min.js&3.3.0/build/widget/widget-stack-min.js&3.3.0/build/widget/widget-position-align-min.js&3.3.0/build/widget/widget-stdmod-min.js&3.3.0/build/overlay/overlay-min.js&3.3.0/build/datatype/datatype-xml-min.js&3.3.0/build/queue-promote/queue-promote-min.js&3.3.0/build/anim/anim-min.js&3.3.0/build/querystring/querystring-stringify-simple-min.js&3.3.0/build/io/io-min.js"></script>
+-->
+<!-- CSS -->
+<!-- JS -->
+<!--<script type="text/javascript" src="http://yui.yahooapis.com/combo?3.3.0/build/yui/yui-min.js&3.3.0/build/oop/oop-min.js&3.3.0/build/dom/dom-min.js&3.3.0/build/dom/dom-style-ie-min.js&3.3.0/build/event-custom/event-custom-min.js&3.3.0/build/pluginhost/pluginhost-min.js&3.3.0/build/event/event-min.js&3.3.0/build/node/node-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/node/align-plugin-min.js&3.3.0/build/classnamemanager/classnamemanager-min.js&3.3.0/build/attribute/attribute-min.js&3.3.0/build/base/base-min.js&3.3.0/build/widget/widget-min.js&3.3.0/build/widget/widget-base-ie-min.js&3.3.0/build/widget/widget-position-min.js&3.3.0/build/widget/widget-position-constrain-min.js&3.3.0/build/widget/widget-stack-min.js&3.3.0/build/widget/widget-position-align-min.js&3.3.0/build/widget/widget-stdmod-min.js&3.3.0/build/overlay/overlay-min.js&3.3.0/build/datatype/datatype-xml-min.js&3.3.0/build/queue-promote/queue-promote-min.js&3.3.0/build/anim/anim-min.js&3.3.0/build/querystring/querystring-stringify-simple-min.js&3.3.0/build/io/io-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/event-simulate/event-simulate-min.js&3.3.0/build/widget/widget-base-ie-min.js"></script>
+-->
+<!--
+<apex:includeScript value="http://yui.yahooapis.com/combo?3.3.0/build/yui/yui-min.js&3.3.0/build/oop/oop-min.js&3.3.0/build/dom/dom-min.js&3.3.0/build/dom/dom-style-ie-min.js&3.3.0/build/event-custom/event-custom-min.js&3.3.0/build/pluginhost/pluginhost-min.js&3.3.0/build/event/event-min.js&3.3.0/build/node/node-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/node/align-plugin-min.js&3.3.0/build/classnamemanager/classnamemanager-min.js&3.3.0/build/attribute/attribute-min.js&3.3.0/build/base/base-min.js&3.3.0/build/widget/widget-min.js&3.3.0/build/widget/widget-base-ie-min.js&3.3.0/build/widget/widget-position-min.js&3.3.0/build/widget/widget-position-constrain-min.js&3.3.0/build/widget/widget-stack-min.js&3.3.0/build/widget/widget-position-align-min.js&3.3.0/build/widget/widget-stdmod-min.js&3.3.0/build/overlay/overlay-min.js&3.3.0/build/datatype/datatype-xml-min.js&3.3.0/build/queue-promote/queue-promote-min.js&3.3.0/build/anim/anim-min.js&3.3.0/build/querystring/querystring-stringify-simple-min.js&3.3.0/build/io/io-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/event-simulate/event-simulate-min.js&3.3.0/build/widget/widget-base-ie-min.js"/>
+-->
+<!-- CSS -->
+
+<!--
+<script src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js" charset="utf-8"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/combo?3.3.0/build/yui/yui-min.js&3.3.0/build/oop/oop-min.js&3.3.0/build/dom/dom-min.js&3.3.0/build/dom/dom-style-ie-min.js&3.3.0/build/pluginhost/pluginhost-min.js&3.3.0/build/event-custom/event-custom-min.js&3.3.0/build/event/event-min.js&3.3.0/build/node/node-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/node/align-plugin-min.js&3.3.0/build/classnamemanager/classnamemanager-min.js&3.3.0/build/attribute/attribute-min.js&3.3.0/build/base/base-min.js&3.3.0/build/widget/widget-min.js&3.3.0/build/widget/widget-base-ie-min.js&3.3.0/build/widget/widget-position-min.js&3.3.0/build/widget/widget-position-constrain-min.js&3.3.0/build/widget/widget-stack-min.js&3.3.0/build/widget/widget-position-align-min.js&3.3.0/build/widget/widget-stdmod-min.js&3.3.0/build/overlay/overlay-min.js&3.3.0/build/datatype/datatype-xml-min.js&3.3.0/build/queue-promote/queue-promote-min.js&3.3.0/build/querystring/querystring-stringify-simple-min.js&3.3.0/build/io/io-min.js&3.3.0/build/event-simulate/event-simulate-min.js&3.3.0/build/widget/widget-base-ie-min.js&3.3.0/build/dom/dom-style-ie-min.js&3.3.0/build/anim/anim-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/node/node-event-simulate-min.js&3.3.0/build/plugin/plugin-min.js&3.3.0/build/node-focusmanager/node-focusmanager-min.js"></script>
+
+-->
+<!--
+<script src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js" charset="utf-8"></script>
+-->
+
+<apex:stylesheet value="{!URLFOR($Resource.pse__yui3_1, 'YUIcombo_3_3_0.css')}"/>
+<!-- 
+<apex:includeScript value="{!$Resource.yui3_1}/YUIcombo_3_3_0.js"/>
+<apex:includeScript value="{!$Resource.yui3_1}/YUIcombo_3_3_0_loader.js"/>
+ -->
+
+<!--<apex:includeScript value="http://yui.yahooapis.com/combo?3.3.0/build/yui/yui-min.js&3.3.0/build/oop/oop-min.js&3.3.0/build/event-custom/event-custom-min.js&3.3.0/build/dom/dom-min.js&3.3.0/build/event/event-min.js&3.3.0/build/pluginhost/pluginhost-min.js&3.3.0/build/dom/dom-style-ie-min.js&3.3.0/build/node/node-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/queue-promote/queue-promote-min.js&3.3.0/build/datatype/datatype-xml-min.js&3.3.0/build/io/io-min.js&3.3.0/build/attribute/attribute-min.js&3.3.0/build/classnamemanager/classnamemanager-min.js&3.3.0/build/base/base-min.js&3.3.0/build/widget/widget-min.js&3.3.0/build/widget/widget-base-ie-min.js&3.3.0/build/widget/widget-stdmod-min.js&3.3.0/build/widget/widget-position-min.js&3.3.0/build/widget/widget-position-align-min.js&3.3.0/build/widget/widget-stack-min.js&3.3.0/build/widget/widget-position-constrain-min.js&3.3.0/build/overlay/overlay-min.js&3.3.0/build/anim/anim-min.js"/>
+-->
+
+<!-- 
+ 
+<apex:includeScript value="{!$Resource.jsComponents}"/>
+<apex:includeScript value="{!$Resource.timecard2pagejs}"/>
+ -->
+
+
+<script src="{!$Resource.yui_combo}/yui-min.js" type="text/javascript"></script>
+<script src="{!$Resource.yui_combo}/loader-min.js" type="text/javascript"></script>
+<script src="{!$Resource.yui_combo}/combo.js" type="text/javascript"></script>
+<script src="{!$Resource.jsComponents}" type="text/javascript"></script>
+<script src="{!$Resource.moment_min_js}" type="text/javascript"></script>
+<script src="{!$Resource.timecard2pagejs}" type="text/javascript"></script>
+<!--  
+<apex:includeScript value="{!$Resource.yui_combo}/yui-min.js"/>
+<apex:includeScript value="{!$Resource.yui_combo}/loader-min.js"/>
+<apex:includeScript value="{!$Resource.yui_combo}/combo.js"/>
+<apex:includeScript value="{!$Resource.jsComponents}"/>
+<apex:includeScript value="{!$Resource.timecard2pagejs}"/>
+-->
+<script type="text/javascript">
+var yuiControlledOnDomReady = function (){
+    
+    prepareOverlays();
+    bindAll();
+
+    document.body.className += " yui-skin-sam ";
+    // set Custom9Tab due to VF bug when page is embedded and showHeader=false
+    document.body.className += "Custom9Tab";
+    wait(false);
+}
+
+//YUI({combine: false, fetchCSS : false, timeout: 10000}).use("node", "NodeList", "io", "event-key", "overlay", "anim", function(Y) {
+//{combine: false}
+
+/*@temp change*/
+var RESTORE_ORIGINAL_XML_HTTP_REQUEST = function () {
+};
+
+YUI({fetchCSS : false}).use("node","event","event-key", "io",  "overlay", "anim", "node-event-simulate", function(Y) {
+    /*Recent release of Chrome (V7) have broken the UI. 
+      This is because YUI's NODE creation API is failing while creating some specific type of NODE. 
+      The cause of broken functionality is the YUI code [Y.Node.create()] which creates THEAD/TR/TD. 
+      In latest chrome release any call to Y.Node.create() which creates THEAD/TR/TD without TABLE tag fails.*/
+    Y.mix(Y.DOM.creators, {
+        tbody: function(html, doc) {
+            return Y.DOM.create('<table>' + html + '</table>', doc);
+        },
+        thead: function(html, doc) {
+            return Y.DOM.create('<table>' + html + '</table>', doc);
+        },
+        tr: function(html, doc) {
+            return Y.DOM.create('<tbody>' + html + '</tbody>', doc);
+        },
+        td: function(html, doc) {
+            return Y.DOM.create('<tr>' + html + '</tr>', doc);
+        },
+        th: function(html, doc) {
+            return Y.DOM.create('<tr>' + html + '</tr>', doc);
+        }
+        
+    });
+    
+    
+    
+    _yui = Y;
+    _yui.on('domready',yuiControlledOnDomReady,_yui);
+    
+    
+    
+    
+    
+    
+    
+    var onStart = function (){
+    if ((_yui.UA.ie > 0) && (typeof Sarissa != 'undefined')) {
+       var ORIGINAL_XML_HTTP_REQUEST = window.XMLHttpRequest;
+       RESTORE_ORIGINAL_XML_HTTP_REQUEST = function(original) {
+          return function() {
+             window.XMLHttpRequest = original;
+             //_yui.log('Restored Sarissa XMLHttpRequest override');
+          };
+       }(ORIGINAL_XML_HTTP_REQUEST);
+
+       //_yui.log('Removed Sarissa XMLHttpRequest override');
+       window.XMLHttpRequest = null;
+    }else{
+        //_yui.log('Not adding ');
+    }
+}
+
+var onEnd = function() {_yui.later(10, this, RESTORE_ORIGINAL_XML_HTTP_REQUEST)}
+
+_yui.on('io:start', onStart, _yui, "foo", "bar");
+_yui.on('io:end', onEnd, _yui, "foo", "bar");    
+
+
+
+});
+
+
+
+
+/*Code to move focus set by SFDC JS libs*/
+function setFocusOnLoad() {} 
+
+// script to hide easy entry box on click event other then popup
+document.onclick = function (e) {
+	if(_Config.showEasyEntryPopup) {
+		e = e || event
+		var target = e.target || e.srcElement ;
+		var easyEntryBox = document.getElementById("easyEntryNotesOverlay");
+		do {
+		      if (easyEntryBox == target) {
+		           // Click occured inside the box, do nothing.
+		           return
+		      }
+		      target = target.parentNode ;
+		 } while (target)
+		 // Click was outside the box, hide it.
+		 if(_GlobalVariables.easyEntrySectionRowId != null && _EasyEntryNotesHandler.currentPopupDirty) {
+			 if(!_EasyEntryNotesHandler.isRowNonEditable) {
+			 	_EasyEntryNotesHandler.setFocusOnCurrentElement = false ;
+			 	_EasyEntryNotesHandler.copy();
+			 }
+			 else {
+			 	_EasyEntryNotesHandler.hide();
+			 }
+		}
+	}
+}
+
+// Added for agile task AT20630
+function updateRowQuantity(rows) {
+_yui.all('.rowquantity').each(
+	function (){
+		this.set('value',rows);
+	});
+}
+			
+		
+</script>
+<!-- Block for showing load preavious week timecards alert message -->
+<apex:outputpanel rendered="{!showPreviousWeekTimecardAlert}" id="loadPreviousWeekTCAlertOP">
+    <script>
+        if (confirm(_Label.noTimecardForPreviousWeek)){
+            //beforeAjaxCall();
+            jsPreviousWeek();
+        }
+        document.getElementById('{!$Component.tcPage.tcForm.showPrevWeekTcAlert}').value = "false";
+    </script>
+</apex:outputpanel>
+</apex:page>

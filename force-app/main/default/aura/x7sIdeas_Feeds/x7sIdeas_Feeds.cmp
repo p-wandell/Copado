@@ -1,0 +1,53 @@
+<!--
+  - Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<aura:component description="x7sIdeas_Feeds"
+                implements="force:appHostable,forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:isUrlAddressable"
+                controller="x7sIdeasFeedPublishController"
+                access="global">
+
+	<!--Internal Attributes-->
+	<aura:attribute name="recordId" type="String" access="global"/>
+	<aura:attribute name="idea" type="Map" access="global"/>
+	<aura:attribute name="showFeed" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showPublisher" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="opaqueBackground" type="Boolean" default="false" access="global"/>
+	<aura:attribute name="totalRecords" type="integer" default="0" access="global"/>
+
+	<!--Label Attributes-->
+	<aura:attribute name="title" type="String" default="" access="global"/>
+
+	<!--Init Handler-->
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<!--BODY-->
+	<lightning:layout class= "{! 'slds-p-around--small ' + if(v.opaqueBackground, 'slds-card', '')}"
+	                  multipleRows="true">
+
+		<!--Title-->
+		<aura:if isTrue="{!v.title != ''}">
+			<lightning:layoutItem size="12">
+				<c:x7sIdeas_Heading tag="h2" size="medium">
+					<lightning:formattedText value="{!v.title}"/>
+				</c:x7sIdeas_Heading>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!--Idea Publisher-->
+		<aura:if isTrue="{!v.showPublisher}">
+			<lightning:layoutItem size="12">
+				<c:x7sIdeas_FeedPublisher idea="{!v.idea}"/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!--Idea Feed-->
+		<aura:if isTrue="{!v.showFeed}">
+			<lightning:layoutItem size="12"
+			                      class="slds-p-top_large">
+				<c:x7sIdeas_FeedItem idea="{!v.idea}"/>
+			</lightning:layoutItem>
+		</aura:if>
+	</lightning:layout>
+
+</aura:component>

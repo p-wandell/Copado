@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>限制此过滤器集将作为选项显示的位置。目前仅支持“资源规划师”和“项目规划师”。</help>
+    <label><!-- Available In --></label>
+    <name>pse__Feature__c</name>
+    <picklistValues>
+        <masterLabel>Project Planner</masterLabel>
+        <translation>项目策划人</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Resource Planner</masterLabel>
+        <translation>资源规划师</translation>
+    </picklistValues>
+</CustomFieldTranslation>

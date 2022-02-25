@@ -1,0 +1,44 @@
+<apex:page standardController="pse__Vendor_Invoice__c" 
+           extensions="pse.VendorInvoiceController" 
+           recordSetVar="invoices"
+           lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>	   
+	<apex:form >
+    	<apex:sectionHeader title="{!$Label.pse__vendor_invoice_recalculate_message}"/>
+        <apex:pageMessages />
+        
+        <apex:outputPanel layout="none" rendered="{!$User.UIThemeDisplayed=='Theme4d'}">
+			<style>
+				.headerRow th:not(:first-of-type) { border-left: 1px solid rgb(221, 219, 218); }
+			</style>
+		</apex:outputPanel>
+ 
+         <!-- This section renders when no vendor invoice record is selected from list view page before clicking Recalc Vendor Invoice button -->
+      	<apex:pageBlock rendered="{!selectedInvoices.size == 0}">
+			<apex:pageBlockButtons location="bottom">
+        		<apex:commandButton action="{!cancel}" value="{!$Label.pse__common_label_cancel}" />
+        	</apex:pageBlockButtons>
+        </apex:pageBlock>
+        
+        <apex:outputpanel rendered="{!selectedInvoices.size > 0}">
+        
+            <c:Confirmation confirmAction="{!recalcInvoices}" cancelAction="{!cancel}" rendered="{!NOT(isInvoiceItemsRecalculated)}"/>
+        
+        	<apex:pageBlock title="{!$Label.pse__vendor_invoice_label_items_recalculated}" rendered="{!isInvoiceItemsRecalculated}">
+            	<apex:pageBlockTable value="{!RecalcInvoices}" var="i" >
+                	<apex:column headerValue="{!$Label.pse__common_label_name}" value="{!i.Name}"/>
+                	<apex:column headerValue="{!$Label.pse__common_label_description}" value="{!i.pse__Description__c}"/>
+                	<apex:column headerValue="{!$Label.pse__vendor_invoice_label_amount}" value="{!i.pse__Amount__c}"/>
+                	<apex:column headerValue="{!$Label.pse__vendor_invoice_label_quantity}" value="{!i.pse__Quantity__c}"/>
+                	<apex:column headerValue="{!$Label.pse__common_label_unit_price}" value="{!i.pse__Unit_Price__c}"/>
+                	<apex:column headerValue="{!$Label.pse__vendor_invoice_label_vendor_invoice}" value="{!i.pse__Vendor_Invoice__c}"/>
+                	<apex:column headerValue="{!$Label.pse__common_label_resource}" value="{!i.pse__Resource__c}"/>
+                	<apex:column headerValue="{!$Label.pse__common_label_milestone}" value="{!i.pse__Milestone__c}"/>
+                	<apex:column headerValue="{!$Label.pse__vendor_invoice_label_misc_adj}" value="{!i.pse__Miscellaneous_Adjustment__c}"/>
+                	<apex:column headerValue="{!$Label.pse__common_label_expense}" value="{!i.pse__Expense__c}"/>
+                	<apex:column headerValue="{!$Label.pse__common_label_timecard}" value="{!i.pse__Timecard__c}"/>
+            	</apex:pageBlockTable>
+    		</apex:pageBlock>
+    	</apex:outputpanel>
+    </apex:form>
+</apex:page>

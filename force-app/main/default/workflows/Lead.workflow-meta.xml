@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>AppExchange_New_Lead_Assigned</fullName>
+        <description>AppExchange New Lead Assigned</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/AppExchange_Passed_to_Sales_Lead</template>
+    </alerts>
+    <alerts>
+        <fullName>LinkedIn_New_Lead_Assigned</fullName>
+        <description>LinkedIn New Lead Assigned</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/LinkedIn_PPC_Passed_to_Sales_Lead</template>
+    </alerts>
+    <alerts>
+        <fullName>Non_AppExchange_New_Lead_Assigned</fullName>
+        <description>Non AppExchange New Lead Assigned</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Non_AppExchange_Passed_to_Sales_Lead</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Converted</fullName>
+        <description>Checks the box for Converted?</description>
+        <field>Converted__c</field>
+        <literalValue>1</literalValue>
+        <name>Converted?</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Lead_Qualification_Status</fullName>
+        <description>New Leads from a marketing Lead Source are created with a Lead Qualification Status of MQL</description>
+        <field>Lead_Qualification_Status__c</field>
+        <literalValue>MQL</literalValue>
+        <name>Lead Qualification Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Left_Company_Checked</fullName>
+        <description>When a prospect chooses to opt out in Pardot, the &quot;Left Company&quot; field is checked.</description>
+        <field>Left_Company__c</field>
+        <literalValue>1</literalValue>
+        <name>Left Company Checked</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>MQL_Counter</fullName>
+        <field>MQL_Counter_YTD__c</field>
+        <formula>1</formula>
+        <name>MQL Counter</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>MQL_Date</fullName>
+        <field>MQL_Date__c</field>
+        <formula>CreatedDate</formula>
+        <name>MQL Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Total_MQL</fullName>
+        <field>Total_MQL__c</field>
+        <formula>1</formula>
+        <name>Total MQL</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>Email Bounce - Lead</fullName>
+        <actions>
+            <name>Left_Company_Checked</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Lead.pi__pardot_hard_bounced__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <description>If a prospect email hard bounces in Pardot, the &quot;Left Company&quot; field is checked.</description>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>New Lead Marketing Tracking Updates</fullName>
+        <actions>
+            <name>Converted</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Lead_Qualification_Status</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>MQL_Counter</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>MQL_Date</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Total_MQL</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Lead.Lead_Source__c</field>
+            <operation>equals</operation>
+            <value>AppExchange,Digital Marketing,Direct Inbound,Hosted Event,Sponsored Event,Website Conversion</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Lead.Email</field>
+            <operation>notContain</operation>
+            <value>@msn.com,@gmail.com,@hotmail.com,@yahoo.com,@aol.com,@live.com,@outlook.com</value>
+        </criteriaItems>
+        <description>When a new Lead is created from a Marketing Lead Source, updates fields associated with tracking marketing activity</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+</Workflow>

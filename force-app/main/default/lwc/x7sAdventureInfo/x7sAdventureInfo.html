@@ -1,0 +1,51 @@
+<!--
+  ~ Copyright (c) 2021. 7summits Inc. All rights reserved.
+-->
+
+<template>
+	<c-x7s-shr-component-wrapper 
+		custom-class={componentClass}
+		variant={variant}
+		title={titleText}
+		title-align={titleAlignment}
+		aria-label={labels.labelAria}
+		shaded-header>
+
+		<div class="slds-grid slds-grid_vertical slds-wrap slds-align_absolute-center">
+
+			<!--Task Progress Ring-->
+			<template if:true={displayProgressRing}>
+				<div class="slds-col slds-m-bottom_small">
+					<c-x7s-adventure-progress-ring value={adventureProgress}>
+					</c-x7s-adventure-progress-ring>
+				</div>
+			</template>
+
+			<!--Number of task remaining-->
+			<template if:true={showTaskRemaining}>
+				<div class="slds-col slds-m-bottom_small">
+					{tasksRemaining}
+				</div>
+			</template>
+
+			<!--Owner-->
+			<template if:true={showOwner}>
+				<div class="slds-col slds-m-bottom_small">
+					{labels.labelOwner}&nbsp;
+					<lightning-formatted-text value={owner} onclick={navigateToProfile} linkify class='slds-text-link'>
+					</lightning-formatted-text>
+				</div>
+			</template>
+
+			<!--Full Clone Button-->
+			<template if:true={displayCloneButton}>
+				<div class="slds-col">
+					<c-x7s-adventure-full-clone 
+						record-id={recordId}
+						clone-button-label={cloneButtonLabel}>
+					</c-x7s-adventure-full-clone>
+				</div>
+			</template>
+		</div>
+	</c-x7s-shr-component-wrapper>
+</template>

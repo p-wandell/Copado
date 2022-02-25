@@ -1,0 +1,94 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+	<aura:attribute name="defaultView" type="String" default="Tile" access="global" required="true"/>
+	<aura:attribute name="sortBy" type="String" default="Most Recent" access="global"/>
+	<aura:attribute name="showHeader" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showButton" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showAuthors" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showDates" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showTopics" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showSort" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="showLayout" type="Boolean" default="true" access="global"/>
+
+	<aura:attribute name="compactView" type="Boolean" default="false" access="global"/>
+
+    <aura:attribute name="headingTitle" type="String" default="Refine Results" access="global"/>
+
+	<lightning:layout multipleRows="true"
+	                  horizontalAlign="end"
+	                  verticalAlign="start">
+
+		<!-- LAYOUT BUTTONS -->
+
+		<lightning:layoutItem class="slds-p-around--small"
+		                      flexibility="grow"
+		                      size="12"
+		                      largeDeviceSize="7"
+		                      mediumDeviceSize="7"
+		                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.headingTitle != null}">
+					<div class="slds-text-heading--medium slds-text-align--left">
+							{!v.headingTitle}
+					</div>
+				</aura:if>
+		</lightning:layoutItem>
+
+		<lightning:layoutItem class="slds-text-align_right slds-p-around--small"
+		                      flexibility="grow"
+		                      size="12"
+		                      largeDeviceSize="5"
+		                      mediumDeviceSize="5"
+		                      smallDeviceSize="12">
+			<aura:if isTrue="{!v.showLayout}"><c:SVNSUMMITS_News_DisplayMode listViewMode="{!v.defaultView}"/></aura:if>
+		</lightning:layoutItem>
+
+	        <lightning:layoutItem class="slds-p-around--small"
+	                              flexibility="grow"
+	                              size="12"
+	                              largeDeviceSize="{! v.compactView ? 12 : 2}"
+	                              mediumDeviceSize="6"
+	                              smallDeviceSize="12">
+		        <aura:if isTrue="{!v.showSort}"><c:SVNSUMMITS_News_Sort_Filter sortBy="{!v.sortBy}"/></aura:if>
+            </lightning:layoutItem>
+
+
+
+
+        <aura:if isTrue="{!v.showTopics}">
+	        <lightning:layoutItem class="slds-p-around--small"
+	                              flexibility="grow"
+	                              size="12"
+	                              largeDeviceSize="{! v.compactView ? 12 : 3}"
+	                              mediumDeviceSize="6"
+	                              smallDeviceSize="12">
+                <c:SVNSUMMITS_News_Topic_Filter/>
+            </lightning:layoutItem>
+        </aura:if>
+
+		<aura:if isTrue="{!v.showAuthors}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      flexibility="grow"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 3}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<c:SVNSUMMITS_News_Author_Filter/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- DATE FILTER-->
+		<aura:if isTrue="{!v.showDates}">
+			<lightning:layoutItem class="slds-p-around--small"
+			                      flexibility="grow"
+			                      size="12"
+			                      largeDeviceSize="{! v.compactView ? 12 : 4}"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<c:SVNSUMMITS_News_Date_Filter/>
+			</lightning:layoutItem>
+		</aura:if>
+
+	</lightning:layout>
+</aura:component>

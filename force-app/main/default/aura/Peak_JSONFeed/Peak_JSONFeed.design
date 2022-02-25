@@ -1,0 +1,15 @@
+<!--
+ - Created by kentheberling on 5/7/18.
+ -->
+
+<design:component label="7S JSON Feed">
+    <design:attribute name="feedTitle" label="Component Title" />
+    <design:attribute name="feedType" label="Feed Type" description="This controls how the results are displayed. Note, your developer may need to do some additional work as you hook up to feeds of different formats." dataSource="Blog,Events,Test" />
+    <design:attribute name="feedUrlEndpoint" label="Provide the RSS Feed Url. Ensure a remote site setting record exists for the URL in salesforce."/>
+    <design:attribute name="recordsToShow" label="Number of records to show. We'll grab as many as returned if no limit is specified." />
+    <design:attribute name="emptyListText" label="Empty List Text: shown when the feed is empty." />
+
+    <design:attribute name="CustomClassName" label="Custom Class Name" description="Custom CSS class name. Usually remains blank." />
+    <design:attribute name="CustomIdName" label="Custom ID Name" description="Custom, distinct CSS ID name. Usually remains blank." />
+
+</design:component>

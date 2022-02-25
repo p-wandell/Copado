@@ -1,0 +1,5 @@
+<apex:page standardController="Case" docType="html-5.0">
+    <c:ConfigurationCheck isBox="true" needsIndex="true">
+        <c:Box name="PanelForCases" recordId="{!id}" />
+    </c:ConfigurationCheck>
+</apex:page>
