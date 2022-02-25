@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ss_int_NetSuite_Customer_ID__c</fullName>
+    <caseSensitive>true</caseSensitive>
+    <description>NetSuite Customer identifier synchronized as part of the 7Summits Boomi Salesforce/NetSuite integration.</description>
+    <externalId>true</externalId>
+    <label>NetSuite Customer ID</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

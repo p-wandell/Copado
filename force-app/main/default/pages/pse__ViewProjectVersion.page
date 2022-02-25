@@ -1,0 +1,153 @@
+<!--/*
+ * FinancialForce.com, inc. claims copyright in this software, its screen display designs and
+ * supporting documentation. FinancialForce and FinancialForce.com are trademarks of FinancialForce.com, inc.
+ * Any unauthorized use, copying or sale of the above may constitute an infringement of copyright and may
+ * result in criminal or other legal proceedings.
+ *
+ * Copyright FinancialForce.com, inc. All rights reserved.
+ */-->
+<apex:page sidebar="false"
+		   standardController="pse__Proj__c"
+		   tabStyle="pse__Version__c"
+		   extensions="pse.ViewProjectVersion">
+
+	<apex:pageMessages id="pageMessages"/>
+	<apex:outputPanel rendered="{!isAccessible}" layout="none">
+
+		<c:extjs_bootstrap staticResource="{!$Resource.pse__ViewProjectVersion}"
+							  applicationName="VPV"
+							  developmentPrefix="">
+
+			<script>
+
+				window.$Params = {
+					projectId: '{!projectId}',
+					projectPrefix: '{!projectPrefix}',
+					projectName: '{!JSENCODE(projectName)}', // HTML Encoded by each of the places it's used in the UI.
+					projectCurrency: '{!JSINHTMLENCODE(projectCurrencyISOCode)}',
+					versionItemRecordsToLoadPerRequest: {!versionItemRecordsToLoadPerRequest},
+					quickHelpResource: '{!quickHelpResourceLocation}',
+					salesforceURL: '{!salesforceURL}', 
+					hasConfigurePermission: {!userHasFullVersionConfigPermissions}
+				};
+
+				window.$Label = window.$Label || {};
+				$Label.VPV_Add_Config = '{!JSENCODE($Label.VPV_Add_Config)}';
+				$Label.VPV_App_Title = '{!JSINHTMLENCODE($Label.VPV_App_Title)}';
+				$Label.VPV_Back_To_Overview_Button = '{!JSENCODE($Label.VPV_Back_To_Overview_Button)}';
+				$Label.VPV_Back_To_Project_Button = '{!JSENCODE($Label.VPV_Back_To_Project_Button)}';
+				$Label.VPV_Back_To_Project_List_Button = '{!JSENCODE($Label.VPV_Back_To_Project_List_Button)}';
+				$Label.VPV_Capture_Configuration_Tab_Title = '{!JSENCODE($Label.VPV_Capture_Configuration_Tab_Title)}';
+				$Label.VPV_Compare_Button = '{!JSINHTMLENCODE($Label.VPV_Compare_Button)}';
+				$Label.VPV_Compare_Label = '{!JSENCODE($Label.VPV_Compare_Label)}'; // HTML encoded by SentenceContainer
+				$Label.VPV_Compare_Record_Deleted = '{!JSENCODE($Label.VPV_Compare_Record_Deleted)}';
+				$Label.VPV_Compare_Record_No = '{!JSENCODE($Label.VPV_Compare_Record_No)}'; // HTML Encoded by the column renderer that uses it.
+				$Label.VPV_Compare_Record_Not_Set = '{!JSENCODE($Label.VPV_Compare_Record_Not_Set)}';
+				$Label.VPV_Compare_Record_Yes = '{!JSENCODE($Label.VPV_Compare_Record_Yes)}'; // HTML Encoded by the column renderer that uses it.
+				$Label.VPV_Configure = '{!JSENCODE($Label.VPV_Configure)}';
+				$Label.VPV_Configure_Button = '{!JSINHTMLENCODE($Label.VPV_Configure_Button)}';
+				$Label.VPV_Configure_Details_Active_Label = '{!JSENCODE($Label.VPV_Configure_Details_Active_Label)}';
+				$Label.VPV_Configure_Details_Delete_Active_Warning = '{!JSENCODE($Label.VPV_Configure_Details_Delete_Active_Warning)}';
+				$Label.VPV_Configure_Details_Delete_Confirmation_Title = '{!JSENCODE($Label.VPV_Configure_Details_Delete_Confirmation_Title)}';
+				$Label.VPV_Configure_Details_Delete_Query = '{!JSENCODE($Label.VPV_Configure_Details_Delete_Query)}';
+				$Label.VPV_Configure_Details_Delete_Success = '{!JSENCODE($Label.VPV_Configure_Details_Delete_Success)}';
+				$Label.VPV_Configure_Details_Name_Label = '{!JSENCODE($Label.VPV_Configure_Details_Name_Label)}';
+				$Label.VPV_Configure_Details_Remove_Fields_Confirmation_Button = '{!JSENCODE($Label.VPV_Configure_Details_Remove_Fields_Confirmation_Button)}';
+				$Label.VPV_Configure_Details_Remove_Fields_Confirmation_Message = '{!JSENCODE($Label.VPV_Configure_Details_Remove_Fields_Confirmation_Message)}';
+				$Label.VPV_Configure_Details_Remove_Fields_Confirmation_Title = '{!JSENCODE($Label.VPV_Configure_Details_Remove_Fields_Confirmation_Title)}';
+				$Label.VPV_Configure_Details_Save_Success = '{!JSENCODE($Label.VPV_Configure_Details_Save_Success)}';
+				$Label.VPV_Configure_Details_Summary_Label = '{!JSENCODE($Label.VPV_Configure_Details_Summary_Label)}';
+				$Label.VPV_Configure_Details_Title = '{!JSENCODE($Label.VPV_Configure_Details_Title)}';
+				$Label.VPV_Configure_Details_Unsaved_Confirmation = '{!JSENCODE($Label.VPV_Configure_Details_Unsaved_Confirmation)}';
+				$Label.VPV_Configure_Details_Unsaved_Confirmation_Title = '{!JSENCODE($Label.VPV_Configure_Details_Unsaved_Confirmation_Title)}';
+				$Label.VPV_Configure_Icon_Tooltip = '{!JSINHTMLENCODE($Label.VPV_Configure_Icon_Tooltip)}';
+				$Label.VPV_Configure_List_Active_Column_Label = '{!JSENCODE($Label.VPV_Configure_List_Active_Column_Label)}';
+				$Label.VPV_Configure_List_Last_Modified_Column_Label = '{!JSENCODE($Label.VPV_Configure_List_Last_Modified_Column_Label)}';
+				$Label.VPV_Configure_List_Name_Column_Label = '{!JSENCODE($Label.VPV_Configure_List_Name_Column_Label)}';
+				$Label.VPV_Configure_Window_Title = '{!JSENCODE($Label.VPV_Configure_Window_Title)}';
+				$Label.VPV_Delete_Selected = '{!JSENCODE($Label.VPV_Delete_Selected)}';
+				$Label.VPV_Error_Loading_Detail_Records = '{!JSENCODE($Label.VPV_Error_Loading_Detail_Records)}';
+				$Label.VPV_Error_Occured_Loading_Version_View = '{!JSENCODE($Label.VPV_Error_Occured_Loading_Version_View)}';
+				$Label.VPV_Error_Unable_To_Load_Version = '{!JSENCODE($Label.VPV_Error_Unable_To_Load_Version)}';
+				$Label.VPV_Error_Unable_To_Load_View_Config = '{!JSENCODE($Label.VPV_Error_Unable_To_Load_View_Config)}';
+				$Label.VPV_Field_Details_Destination_Label = '{!JSENCODE($Label.VPV_Field_Details_Destination_Label)}';
+				$Label.VPV_Field_Details_Originator_Label = '{!JSENCODE($Label.VPV_Field_Details_Originator_Label)}';
+				$Label.VPV_Headline_Configuration_Tab_Title = '{!JSENCODE($Label.VPV_Headline_Configuration_Tab_Title)}';
+				$Label.VPV_No_Data_In_Table = '{!JSENCODE($Label.VPV_No_Data_In_Table)}';
+				$Label.VPV_No_Project_Error = '{!JSINHTMLENCODE($Label.VPV_No_Project_Error)}';
+				$Label.VPV_Not_Enough_Versions = '{!JSINHTMLENCODE($Label.VPV_Not_Enough_Versions)}';
+				$Label.VPV_Notes_Title = '{!JSINHTMLENCODE($Label.VPV_Notes_Title)}';
+				$Label.VPV_Object_Details_Destination_Label = '{!JSENCODE($Label.VPV_Object_Details_Destination_Label)}';
+				$Label.VPV_Object_Details_Destination_Lookup_Label = '{!JSENCODE($Label.VPV_Object_Details_Destination_Lookup_Label)}';
+				$Label.VPV_Object_Details_Original_Id_Label = '{!JSENCODE($Label.VPV_Object_Details_Original_Id_Label)}';
+				$Label.VPV_Object_Details_Originator_Label = '{!JSENCODE($Label.VPV_Object_Details_Originator_Label)}';
+				$Label.VPV_Object_Details_Project_Lookup_Label = '{!JSENCODE($Label.VPV_Object_Details_Project_Lookup_Label)}';
+				$Label.VPV_Object_List_Label = '{!JSENCODE($Label.VPV_Object_List_Label)}';
+				$Label.VPV_Please_Select_Versions = '{!JSINHTMLENCODE($Label.VPV_Please_Select_Versions)}';
+				$Label.VPV_Quick_Help_Icon_Tooltip = '{!JSINHTMLENCODE($Label.VPV_Quick_Help_Icon_Tooltip)}';
+				$Label.VPV_Quick_Help_Link_Text = '{!JSINHTMLENCODE($Label.VPV_Quick_Help_Link_Text)}';
+				$Label.VPV_Quick_Help_Window_Button_Done = '{!JSINHTMLENCODE($Label.VPV_Quick_Help_Window_Button_Done)}';
+				$Label.VPV_Quick_Help_Window_Button_Next = '{!JSINHTMLENCODE($Label.VPV_Quick_Help_Window_Button_Next)}';
+				$Label.VPV_Quick_Help_Window_Button_Prev = '{!JSINHTMLENCODE($Label.VPV_Quick_Help_Window_Button_Prev)}';
+				$Label.VPV_Quick_Help_Window_Title = '{!JSINHTMLENCODE($Label.VPV_Quick_Help_Window_Title)}';
+				$Label.VPV_Search_Box_Empty_Text = '{!JSENCODE($Label.VPV_Search_Box_Empty_Text)}'; // HTML Encoded by the base field.
+				$Label.VPV_Unsaved_Changes_Message = '{!JSENCODE($Label.VPV_Unsaved_Changes_Message)}';
+				$Label.VPV_Unsaved_Changes_Title = '{!JSENCODE($Label.VPV_Unsaved_Changes_Title)}';
+				$Label.VPV_Validate_Button = '{!JSENCODE($Label.VPV_Validate_Button)}';
+				$Label.VPV_Validation_Result_List_Location_Column = '{!JSENCODE($Label.VPV_Validation_Result_List_Location_Column)}';
+				$Label.VPV_Validation_Result_List_Msg_Column = '{!JSENCODE($Label.VPV_Validation_Result_List_Msg_Column)}';
+				$Label.VPV_Validation_Result_Title = '{!JSENCODE($Label.VPV_Validation_Result_Title)}';
+				$Label.VPV_Validation_Successful_Message = '{!JSENCODE($Label.VPV_Validation_Successful_Message)}';
+				$Label.VPV_View_Details_Link = '{!JSINHTMLENCODE($Label.VPV_View_Details_Link)}';
+				$Label.VPV_headline_form_action = '{!JSENCODE($Label.VPV_headline_form_action)}';
+				$Label.VPV_headline_form_action_value_average = '{!JSENCODE($Label.VPV_headline_form_action_value_average)}';
+				$Label.VPV_headline_form_action_value_count = '{!JSENCODE($Label.VPV_headline_form_action_value_count)}';
+				$Label.VPV_headline_form_action_value_max = '{!JSENCODE($Label.VPV_headline_form_action_value_max)}';
+				$Label.VPV_headline_form_action_value_min = '{!JSENCODE($Label.VPV_headline_form_action_value_min)}';
+				$Label.VPV_headline_form_action_value_sum = '{!JSENCODE($Label.VPV_headline_form_action_value_sum)}';
+				$Label.VPV_headline_form_action_value_value = '{!JSENCODE($Label.VPV_headline_form_action_value_value)}';
+				$Label.VPV_headline_form_field = '{!JSENCODE($Label.VPV_headline_form_field)}';
+				$Label.VPV_headline_form_headline_one = '{!JSENCODE($Label.VPV_headline_form_headline_one)}';
+				$Label.VPV_headline_form_headline_three = '{!JSENCODE($Label.VPV_headline_form_headline_three)}';
+				$Label.VPV_headline_form_headline_two = '{!JSENCODE($Label.VPV_headline_form_headline_two)}';
+				$Label.VPV_headline_form_label = '{!JSENCODE($Label.VPV_headline_form_label)}';
+				$Label.VPV_headline_form_saved = '{!JSENCODE($Label.VPV_headline_form_saved)}';
+				$Label.VPV_headline_form_use_field_label = '{!JSENCODE($Label.VPV_headline_form_use_field_label)}';
+				$Label.VPV_headline_no_value = '{!JSENCODE($Label.VPV_headline_no_value)}';
+				$Label.common_error_internal_error = '{!JSENCODE($Label.common_error_internal_error)}';
+				$Label.common_label_back = '{!JSENCODE($Label.common_label_back)}';
+				$Label.common_label_cancel = '{!JSENCODE($Label.common_label_cancel)}';
+				$Label.common_label_clear = '{!JSENCODE($Label.common_label_clear)}';
+				$Label.common_label_close = '{!JSENCODE($Label.common_label_close)}';
+				$Label.common_label_continue = '{!JSENCODE($Label.common_label_continue)}';
+				$Label.common_label_delete = '{!JSENCODE($Label.common_label_delete)}';
+				$Label.common_label_name = '{!JSENCODE($Label.common_label_name)}';
+				$Label.common_label_no = '{!JSENCODE($Label.common_label_no)}';
+				$Label.common_label_save = '{!JSENCODE($Label.common_label_save)}';
+				$Label.common_label_yes = '{!JSENCODE($Label.common_label_yes)}';
+
+				window.$RemoteAction = {
+					ViewProjectVersion : {
+						deleteVersionConfigDetails: '{!$RemoteAction.ViewProjectVersion.deleteVersionConfigDetails}',
+						getActiveCaptureConfig: '{!$RemoteAction.ViewProjectVersion.getActiveCaptureConfig}',
+						getAllVersionConfigDetails: '{!$RemoteAction.ViewProjectVersion.getAllVersionConfigDetails}',
+						getAllVersions: '{!$RemoteAction.ViewProjectVersion.getAllVersions}',
+						getProjectRelatedObjects: '{!$RemoteAction.ViewProjectVersion.getProjectRelatedObjects}',
+						getStandardHeadlineConfig: '{!$RemoteAction.ViewProjectVersion.getStandardHeadlineConfig}',
+						getVersionCaptureConfigById: '{!$RemoteAction.ViewProjectVersion.getVersionCaptureConfigById}',
+						getVersionItemHeaderFromConfig: '{!$RemoteAction.ViewProjectVersion.getVersionItemHeaderFromConfig}',
+						getVersionItemsRecordsOfType: '{!$RemoteAction.ViewProjectVersion.getVersionItemsRecordsOfType}',
+						getVersionRelatedObjects: '{!$RemoteAction.ViewProjectVersion.getVersionRelatedObjects}',
+						getVersionViewConfig: '{!$RemoteAction.ViewProjectVersion.getVersionViewConfig}',
+						populateVersionableSObjectFields: '{!$RemoteAction.ViewProjectVersion.populateVersionableSObjectFields}',
+						saveCaptureConfig: '{!$RemoteAction.ViewProjectVersion.saveCaptureConfig}',
+						saveVersionConfigDetails: '{!$RemoteAction.ViewProjectVersion.saveVersionConfigDetails}',
+						validateCaptureConfig: '{!$RemoteAction.ViewProjectVersion.validateCaptureConfig}'
+					}
+				};
+
+			</script>
+		</c:extjs_bootstrap>
+	</apex:outputPanel>
+	<apex:includeScript value="{!quickHelpResourceLocation + '/manifest.js'}"/>
+</apex:page>

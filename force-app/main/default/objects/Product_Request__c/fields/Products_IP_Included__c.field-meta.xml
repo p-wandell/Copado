@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Products_IP_Included__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>IP related to this request. Only select the exact accelerators that are to be directly associated with this request.</inlineHelpText>
+    <label>Products/IP Included</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Unmanaged_IP</valueSetName>
+    </valueSet>
+    <visibleLines>10</visibleLines>
+</CustomField>

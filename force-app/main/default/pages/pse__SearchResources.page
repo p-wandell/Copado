@@ -1,0 +1,2118 @@
+<apex:page sidebar="false" showHeader="true" action="{!init}" standardController="pse__Resource_Request__c" extensions="pse.SearchResourcesController" tabStyle="Search_Resources__tab">
+<style>
+    .x-panel-body{
+        overflow : auto !important;
+    }
+    
+    /* New changes to fix IE7 issues =START= */
+    html{
+        overflow: auto !important;     
+    }
+        
+    .bodyDiv{
+        height : auto !important;
+    }
+    #contentWrapper {
+        display : block !important;
+    }
+    /* New changes to fix IE7 issues =END= */
+    
+    .sidebarDiv {
+        padding:5px;
+    }
+    
+    .rowStyleDiv {
+        diaply:block;
+        margin-bottom:3px;
+    }
+    
+    .waitingSearchDivOpacitldy {  
+        opacity : 0.8;
+    }
+
+    .addIconExtjs { 
+        background-image:url("{!URLFOR($Resource.pse__Search_Resources_ExtJs_3_2_1, 'resources/css/../images/default/panel/tool-sprites.gif')}");
+        
+        background-position:0 -240px;
+        width:15px;
+        height:15px;
+        cursor:pointer;
+        float:left;
+        margin-right:3px;
+        overflow:hidden;
+        /*this is to place it inline anywhere
+        display:inline;
+        padding-right:12px;*/
+        
+    }
+    
+    /*SFDC styles ovrride*/
+    .mainTitle{
+        white-space:nowrap !important;
+    }
+    
+    .bDescription{
+        margin-top:5px !important;
+        margin-bottom:5px !important;
+    }
+    
+    .tertiaryPalette h3 {
+        color:black !important;
+        font-size:13px !important;
+    }
+    
+    /*This is to render extjs window's bottom right corner*/
+    .x-window-br {
+        background : url("/img/alohaSkin/overlay_crns_ext.png") no-repeat scroll right bottom transparent !important;
+    }
+    
+    .x-border-layout-ct {
+        background-color:white !important;
+    }
+    
+    span.modified { color: red; }
+    
+    .customFieldsTD {
+        display:block;
+        padding-top: 5px;
+    }
+    
+    .customFieldsSection {
+        max-height: 60px; 
+        overflow: hidden; 
+        display:block;
+    }
+
+</style>
+
+    <apex:stylesheet value="{!URLFOR($Resource.pse__Search_Resources_ExtJs_3_2_1, 'resources/css/ext-all.css')}" />
+    <script type="text/javascript" src="{!URLFOR($Resource.Search_Resources_ExtJs_3_2_1, 'adapter/ext/ext-base.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.Search_Resources_ExtJs_3_2_1, 'ext-all-debug-w-comments.js')}"></script>
+
+
+
+<style type="text/css">
+div#wait { width: 100%; height: 100% }
+div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+</style>
+
+<script type="text/javascript">
+
+/*Code to move focus set by SFDC JS libs*/
+function setFocusOnLoad() {} 
+
+function setVisible(name, visible) {
+  var e = document.getElementById(name);
+  if (e != null) {
+    if (visible) {
+      e.setAttribute("style", "display: block");
+      e.style.cssText = "display: block";
+    } else {
+      e.setAttribute("style", "display: none");
+      e.style.cssText = "display: none";
+    }
+  }
+}
+
+function wait(val) {
+  setVisible('loading', val);
+  setVisible('wait', val);
+}
+
+//Render the javascript function to create JS function to select all resources 
+ 
+function selectAllOptions(checkBoxObj, checkBoxIdPattern) {
+    var isChecked = checkBoxObj.checked;
+    var inputElem = document.getElementsByTagName("input");
+    for ( var i = 0; i < inputElem.length; i++) {
+        if (inputElem[i].id.indexOf(checkBoxIdPattern) != -1)
+            inputElem[i].checked = isChecked;
+    }
+}
+
+// Added new method for AT7382  Dated: 27 Dec, 2012
+function refreshSkillCertificationSection(skillCertFilter , skillCertCheckbox){ 
+    var elements = Ext.query(skillCertFilter);
+    for (var count = elements.length; count >= 2; count--) {    
+        var checkboxStyleClass = skillCertCheckbox + count ;
+        var isSelected = Ext.get(Ext.query(checkboxStyleClass)[0]).dom.checked;
+        var filterStyleClass = skillCertFilter + count ;
+        var filterList = Ext.query(filterStyleClass);
+        if(isSelected == false){
+          Ext.get(filterList[0]).setStyle({display:'none'});
+        } else {
+            Ext.get(filterList[0]).setStyle({display:'block'});
+        }
+    }  
+}
+</script>
+
+<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none;"></div>
+<div id="loading" class="waitingSearchDiv" style="display: none">
+ <div id="waitingHolder" class="waitingHolder">
+  <img class="waitingImage" src="/img/loading.gif"/>
+  <span class="waitingDescription">{!$Label.common_loading_label}</span>
+ </div>
+</div>
+
+<div style="text-align: right; width: 100%;">
+<a title="{!$Label.Common_Label_Help_For_This_Page_Tool_Tip}" href="javascript:openPopupFocus('{!$Page.SearchResourcesHelp}', 'Help', 1024, 768, 'width=1024,height=768,resizable=yes,toolbar=yes,status=yes,scrollbars=yes,menubar=yes,directories=no,location=yes,dependant=no', false, false);">
+<span class="helpLink">{!$Label.Common_Label_Help_For_This_Page}</span>
+<img class="helpIcon" title="" alt="" src="/s.gif" />
+</a>
+</div>
+<apex:pageMessages id="messageSection"/>
+<apex:form id="searchResourcesPage" >
+  
+<apex:actionRegion >
+    <apex:actionFunction name="jsGetPagedResult" reRender="resSearchResult,messageSection" action="{!getPagedResults}" status="ajaxStatus" oncomplete="onGetPagedResultDone()">
+         <apex:param name="pageToDisplay" assignto="{!pageToDisplay}" value=""/>
+    </apex:actionFunction>
+</apex:actionRegion>
+<apex:actionRegion >
+    <apex:actionFunction name="jsSelectResourceToDisplayPastJobs" reRender="pastJobsPopupOP,messageSection" action="{!selectResourceToDisplayPastJobs}" status="ajaxStatus" oncomplete="onSelectResourceToDisplayPastJobsDone();">
+         <apex:param name="srToDisplayJob" assignto="{!resourceToDisplayPastJobs}" value=""/>
+    </apex:actionFunction>
+</apex:actionRegion>
+
+<!-- Changes done for AT9293-->
+<apex:actionRegion > 
+    <apex:actionFunction name="jsSelectResourceToAssignOrHold" reRender="messageSection,holdAssignResPopupOP" action="{!selectResourcToAssign}" status="ajaxStatus" oncomplete="onSelectResourcToAssignOrHoldDone('{!isHold}', '{!JSENCODE(resourceToAssignName)}');">
+         <apex:param name="rsId" assignto="{!resourceToAssign}" value=""/>
+         <apex:param name="isHold" assignto="{!isHold}" value=""/>
+         <apex:param name="rsName" value="" assignto="{!resourceToAssignName}"/>
+    </apex:actionFunction>
+</apex:actionRegion>
+
+<apex:actionRegion >
+    <apex:actionFunction name="jsAssignResource" action="{!assignOrHoldResource}" status="ajaxStatus" rerender="messageSection">
+    </apex:actionFunction>
+</apex:actionRegion>
+
+
+<apex:actionFunction name="jsSendEmail" action="{!sendMail}" status="ajaxStatus" rerender="messageSection"></apex:actionFunction>
+
+<apex:actionRegion >
+    <apex:actionFunction name="jsSelectResourceToDisplaySC" reRender="resourceSkillsCompID" action="{!selectResourceToDisplaySC}" status="ajaxStatus" oncomplete="onSelectResourceToDisplaySCDone()">
+         <apex:param name="srToDisplaySC" assignto="{!resourceToDisplaySC}" value=""/>
+    </apex:actionFunction>
+</apex:actionRegion>
+
+<apex:inputHidden id="sortTypeParameter" value="{!selectedResSortType}"/>
+<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+
+<apex:actionFunction name="jsDoSearch" reRender="resSearchResult,messageSection,newMapItLinkGeneric " action="{!searchResources}" status="ajaxStatus"  oncomplete="onSearchResultDone()"/> 
+
+<apex:actionFunction name="jsAddSelectedSkills" reRender="skillsOP,messageSection" action="{!addSelectedSkills}" 
+            status="ajaxStatus" oncomplete="onAddSelectedSkillsDone();"/>
+<apex:actionFunction name="jsShowSkillPopup" reRender="skillpopupOP,messageSection" action="{!loadAllSkills}" 
+            status="ajaxStatus" oncomplete="javascript:hideAllPopups(); _skillPopup.show();"/>
+            
+<apex:actionFunction name="jsAddSelectedCertifications" reRender="certificationsOP,messageSection" action="{!addSelectedCertifications}" 
+            status="ajaxStatus" oncomplete="onAddSelectedCertificationsDone();"/>
+<apex:actionFunction name="jsShowCertificationPopup" reRender="certificationPopupOP,messageSection" action="{!loadAllCertification}" 
+            status="ajaxStatus" oncomplete="javascript:hideAllPopups(); _certificationPopup.show();"/>
+
+<apex:actionFunction name="jsSortResult" reRender="resSearchResult,messageSection" action="{!sortResSearchResult}" 
+            status="ajaxStatus" oncomplete="onSortResultDone()"/>            
+ 
+<div id="extjsOuterDiv" style="visibility:hidden"> 
+<div id="header"></div>
+<div id="mainBodyDiv" style="display:block; width: auto; height: auto; min-height: 500px;">
+<div id="rrDetailDiv" class="sidebarDiv">
+
+<apex:outputPanel rendered="{!AND(NOT(isCalledForGenericSearch),NOT(isRedirectFromSame))}">
+<div class="rowStyleDiv" >
+    <div style="display:inline;" >
+        <apex:outputText value="{!resourceRequest.Name}" rendered="{!NOT(isCalledForGenericSearch)}" style="font-weight: bold;"/>
+    </div>
+    <div style="float:right; padding-right:5px">
+        <apex:outputLink rendered="{!AND(NOT(ISNULL(resourceRequest.pse__Longitude_PSA__c)), NOT(ISNULL(resourceRequest.pse__Latitude_PSA__c)))}" 
+        	value="https://maps.google.com/maps?q={!resourceRequest.pse__Latitude_PSA__c},+{!resourceRequest.pse__Longitude_PSA__c}+(Location+Of+Resource+Request+[+{!resourceRequest.name}+])&iwloc=A&hl=en&ll={!resourceRequest.pse__Latitude_PSA__c},{!resourceRequest.pse__Longitude_PSA__c}&z=12" target="_blank">{!$Label.pse__common_label_show_on_map}</apex:outputLink>
+        &nbsp;&nbsp;
+		<apex:commandLink action="{!redirectToMapPage}" value="{!$Label.pse__common_label_show_results_on_map}" target="_blank" 
+			rendered="{!AND(NOT(ISNULL(resourceRequest.pse__Longitude_PSA__c)), NOT(ISNULL(resourceRequest.pse__Latitude_PSA__c)))}" />
+     </div> 
+</div>
+
+<div class="rowStyleDiv" >
+    <apex:outputlabel value="{!$ObjectType.pse__Resource_Request__c.fields.pse__Status__c.label}" style="margin-right:5px;"/>
+    <apex:outputText value="{!resourceRequest.pse__Status__c}" style="font-weight: bold;"/>
+    <div style="float:right;"> <apex:commandButton value="{!$Label.pse__common_label_close}" action="{!cancel}" style="width:60px;"/> </div>
+</div> 
+<div class="rowStyleDiv">
+    <apex:outputlabel value="{!$ObjectType.pse__Resource_Request__c.fields.pse__SOW_Hours__c.label}" style="margin-right:5px;"/>
+    <apex:outputText value="{!resourceRequest.pse__SOW_Hours__c}" style="font-weight: bold;"/>
+</div>
+<div class="rowStyleDiv">
+    <apex:outputlabel value="{!$ObjectType.pse__Resource_Request__c.fields.pse__Requested_Bill_Rate__c.label}" style="margin-right:5px;"/>
+    <apex:outputText value="{!resourceRequest.pse__Requested_Bill_Rate__c}" style="font-weight: bold;"/>&nbsp;<apex:outputText value="{!resourceRequest.CurrencyIsoCode}" style="font-weight: bold;"/>
+</div>
+<div class="rowStyleDiv" id="projectDetailDiv">
+    <apex:outputlabel value="{!$ObjectType.pse__Resource_Request__c.fields.pse__Project__c.label}" style="margin-right:5px;" rendered="{!NOT(ISNULL(resourceRequest.pse__Project__c))}" />
+    <apex:outputText value="{!resourceRequest.Project__r.Name}" rendered="{!NOT(ISNULL(resourceRequest.pse__Project__c))}" style="font-weight: bold;"/>
+	<script>
+		if ({!ISNULL(resourceRequest.Project__c)}) {
+			document.getElementById('projectDetailDiv').style.display = 'none';
+		}
+	</script>
+</div>
+<div class="rowStyleDiv" id="oppDetailDiv">
+    <apex:outputlabel value="{!$ObjectType.pse__Resource_Request__c.fields.pse__Opportunity__c.label}" style="margin-right:5px;" rendered="{!NOT(ISNULL(resourceRequest.pse__Opportunity__c))}" />
+    <apex:outputText value="{!resourceRequest.Opportunity__r.Name}" rendered="{!NOT(ISNULL(resourceRequest.pse__Opportunity__c))}" style="font-weight: bold;"/>
+	<script>
+		if ({!ISNULL(resourceRequest.Opportunity__c)}) {
+			document.getElementById('oppDetailDiv').style.display = 'none';
+		}
+	</script>
+</div>
+</apex:outputPanel>
+
+<apex:outputpanel rendered="{!isCalledForGenericSearch || isRedirectFromSame }" >
+<table>
+    <tr>
+        <td></td>
+        <td style="padding-left: 85px">
+            <apex:outputPanel id="newMapItLinkGeneric">
+            	 <apex:commandLink action="{!redirectToMapPage}" value="{!$Label.pse__common_label_show_results_on_map}" target="_blank" 
+            	 		rendered="{!AND(NOT(ISNULL(searchWrapper.resReqDates.pse__Longitude_PSA__c)), NOT(ISNULL(searchWrapper.resReqDates.pse__Latitude_PSA__c)) )}">
+            	 </apex:commandLink>
+            </apex:outputPanel>
+        </td>
+    </tr>
+    <tr class="rowStyleDiv">
+    <td><apex:outputlabel value="{!$Label.pse__common_label_street}" style="margin-right:5px;"/></td>
+    <td><apex:InputText value="{!searchWrapper.resReqDates.pse__Work_Street_PSA__c}"/></td>
+    </tr>
+    <tr class="rowStyleDiv">
+    <td><apex:outputlabel value="{!$Label.pse__common_label_city}" style="margin-right:5px;"/></td>
+    <td><apex:InputText value="{!searchWrapper.resReqDates.pse__Work_City_PSA__c}"/></td>
+    </tr>
+    <tr class="rowStyleDiv">
+    <td><apex:outputlabel value="{!$Label.pse__common_label_state_province}" style="margin-right:5px;"/></td>
+    <td><apex:InputText value="{!searchWrapper.resReqDates.pse__Work_State_PSA__c}"/></td>
+    </tr>
+    <tr class="rowStyleDiv">
+    <td><apex:outputlabel value="{!$Label.pse__common_label_country}" style="margin-right:5px;"/></td>
+    <td><apex:InputText value="{!searchWrapper.resReqDates.pse__Work_Country_PSA__c}"/></td>
+    </tr>
+    <tr class="rowStyleDiv">
+    <td><apex:outputlabel value="{!$Label.pse__common_label_zip_postal_code}" style="margin-right:5px;"/></td>
+    <td><apex:InputText value="{!searchWrapper.resReqDates.pse__Work_PostalCode_PSA__c}"/></td>
+    </tr>
+    <apex:variable value="latLanField" var="v" rendered="{!showLatLanFields}">
+        <tr>
+        <td><span id="hlpItm-_help" class="helpButton"><apex:outputlabel value="{!$Label.pse__common_label_latitude}" style="margin-right:5px;"/><img title="" class="helpOrb" alt="" src="/s.gif"/><script type="text/javascript">sfdcPage.setHelp('hlpItm', '{!JSINHTMLENCODE($Label.Common_Label_Help_Text_Range_Lantitude_Longitude)}');</script></span>
+        </td>
+        <td><apex:InputText value="{!searchWrapper.resReqDates.pse__Latitude_PSA__c}"/> 
+        </td>
+        </tr>
+        
+        <tr>
+        <td><apex:outputlabel value="{!$Label.pse__common_label_longitude}" style="margin-right:5px;"/></td>
+        <td><apex:InputText value="{!searchWrapper.resReqDates.pse__Longitude_PSA__c}"/></td>
+        </tr>
+    </apex:variable>
+</table>
+</apex:outputpanel>
+
+</div>
+
+<div id="rrResultDiv" >  
+    <apex:outputPanel id="resSearchResult">
+        <script>
+            var _pageSize = {!pageSize};
+            var _totalRecords = {!totalRecords};
+        </script>
+
+    <apex:repeat value="{!resourceResultsToDisplay}" var="result" id="resultSectionId">                
+        <table width="100%" >
+            <tr>
+                <td width="97%">    
+                    <table width="100%">
+                        <tr> 
+                            <td width="30%">
+                                <apex:outputLink value="/{!result.resource.Id}" id="resLink">
+                                    <apex:outputText value="{!result.resource.Name}" style="font-size:1.3em;font-weight:bold;" />
+                                </apex:outputLink>&nbsp;&nbsp;&nbsp;
+                                <apex:outputText value="{!result.resource.Phone}" style="color:blue;font-size:1.2em" />
+                                <apex:image value="/img/func_icons/util/mailCloseEnv16.gif" title="{!$Label.pse__search_resources_email_to_resource_tool_tip_label}" 
+                                            onclick="prepareEmailToSend(escape('{!JSINHTMLENCODE(result.resource.email)}'),escape('{!JSINHTMLENCODE(result.resource.Name)}'));" 
+                                            style="cursor:pointer;margin-top:2px;padding-left:5px;position:absolute;"
+                                            rendered="{!NOT(ISNULL(result.resource.email))}" width="20px" height="20px" /> 
+                                            
+                            </td>
+                            <td width="25%" rowspan="{!IF(displayResourceDesc,'3','1')}" valign="{!IF(displayResourceDesc,'top','')}">
+                                <!-- style="display: block; max-height: 60px; overflow: hidden; vertical-align: top;" -->
+                                <apex:outputPanel rendered="{!displayResourceDesc}">
+                                    <apex:outputText value="Description"  />:&nbsp; <apex:outputField value="{!result.resource.description}"/>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel rendered="{!AND(displayCustomFields,displayContactCustomField1)}" >
+                                    <!--  Added changes for AT9872  Dated: 23 Jan, 2013 -->
+                                    <apex:outputText value="{!contactCustomField1Label}: " /> {!result.resource[contactField1ToShow]}
+                                </apex:outputPanel>
+                            </td>
+                            <td width="20%"><apex:outputText value="{!$Label.pse__search_resources_availability_label}"  />:&nbsp;<apex:outputText value="{!result.availability}"  /></td>
+                            <td width="20%"><apex:outputText value="{!$Label.pse__common_label_distance}"  />: &nbsp;&nbsp;<apex:outputText value="{!result.distanceString}" /><apex:outputText value="{!result.distanceUnit}"></apex:outputText></td>
+                        </tr>
+                        <tr>
+                            <td width="30%">
+                                <apex:outputLink value="/{!result.resource.AccountId}" id="accLink">
+                                    <apex:outputText value="{!result.resource.Account.Name}" style="font-size:1.3em;font-weight:bold;" />
+                                </apex:outputLink>
+                            </td>
+                            <apex:variable value="" var="tempRenderingVar1"  rendered="{!NOT(displayResourceDesc)}">
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!displayContactCustomField2}">
+                                        <!--  Added changes for AT9872  Dated: 23 Jan, 2013 -->
+                                        <apex:outputText value="{!contactCustomField2Label}: " /> {!result.resource[contactField2ToShow]}
+                                    </apex:outputPanel>
+                                </td>
+                            </apex:variable>
+                            
+                            <td width="20%"><apex:outputText value="{!result.resExtIntType}"  /></td>
+                            <td style="{!IF(contactCostRateAccessible, "", "display:none")}" width="20%">
+                                <apex:outputText value="{!$Label.pse__common_label_cost}"  />
+                                : &nbsp;&nbsp;
+                                <apex:outputText value="{!result.costRateString}"  />
+                            	<apex:outputText rendered="{!NOT(result.resource.pse__Daily_Default_Cost_Rate__c)}" value="{!$Label.pse__search_resources_label_hr}" />
+                                <apex:outputText rendered="{!result.resource.pse__Daily_Default_Cost_Rate__c}" value="{!$Label.pse__search_resources_label_day}" />
+                                &nbsp;
+                                <apex:outputText value="{!result.resource.CurrencyIsoCode}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="30%">
+                            	<apex:outputLink value="#" id="skillsLink" onClick="jsSelectResourceToDisplaySC('{!result.resource.id}'); return false;">
+                            		{!$Label.pse__search_resources_skill_and_certification_link_label}
+                            	</apex:outputLink>&nbsp;&nbsp;
+                                <apex:outputLink value="#" id="pastLink" onClick="jsSelectResourceToDisplayPastJobs('{!result.resource.id}'); return false;">
+                                	{!$Label.pse__search_resources_past_assignments_link_label}
+                                </apex:outputLink>&nbsp;&nbsp;
+                            </td>
+                            <apex:variable value="" var="tempRenderingVar2"  rendered="{!NOT(displayResourceDesc)}">
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!displayContactCustomField3}" >
+                                        <!--  Added changes for AT9872  Dated: 23 Jan, 2013 -->
+                                        <apex:outputText value="{!contactCustomField3Label}: " /> {!result.resource[contactField3ToShow]}
+                                    </apex:outputPanel>
+                                </td>
+                            </apex:variable>
+                            <td width="20%"></td>
+                            <td width="20%">
+                            </td>
+                        </tr>
+                        
+                        
+                    </table>
+                </td>
+                <td>
+                    <apex:commandbutton value="{!$Label.pse__search_resources_assign_button_label}" disabled="{!OR(ISNULL(resourceRequest.pse__Project__c),NOT(ISNULL(resourceRequest.pse__Assignment__c)))}" 
+                    	onClick="jsSelectResourceToAssignOrHold('{!result.resource.id}', 'false', '{!JSENCODE(result.resource.Name)}'); return false;" style="width:50px;" rendered="{!NOT(isCalledForGenericSearch)}" />
+                    <br/>
+                    <apex:commandbutton value="{!$Label.pse__search_resources_hold_button_label}" disabled="{!NOT(ISNULL(resourceRequest.pse__Assignment__c))}" style="width:50px;" 
+                    	onClick="jsSelectResourceToAssignOrHold('{!result.resource.id}', 'true', '{!JSENCODE(result.resource.Name)}'); return false;" rendered="{!NOT(isCalledForGenericSearch)}"/>
+	                <br/>
+	                <!--  updated to show planners on new tab -->
+
+                    <!-- replaced "action" with "onclick" to avoid SF cross domain javascript error "The target origin provided ('https://c.eu11.visual.force.com') does not match the recipient window's origin ('https://eu11.salesforce.com')"
+                    The javascript error is still being thrown in console but it opens the ResourcePlannerForResource page in a new tab
+                    Case being raised to SF .
+                    -->
+                    <apex:commandButton onclick="window.open('{!$Page.pse__ResourcePlannerForResource}?id={!result.resource.id}', '_blank')" value="{!$Label.pse__search_resources_label_view_in_planners}"/>
+                </td>
+        	</tr> 
+        </table>
+        <!-- Added new tr to display the extra resource columns for result -->
+		<table cellspacing="5" style="width: 100%">
+		<apex:repeat value="{!resourceExtraResultFieldsList}" var="fieldsList">
+			<tr>
+				<apex:repeat value="{!fieldsList}" var="contactFM">
+					<td style="vertical-align: top;"> 
+						<B>{!contactFM.Label}: </B> 
+						
+						<apex:outputPanel rendered="{!UPPER(contactFM.type)!='REFERENCE' || (UPPER(contactFM.type)=='REFERENCE' && CONTAINS(contactFM.fieldPath, '.'))}">
+							<apex:outputText value=" {!result.resource[contactFM.fieldPath]}"  rendered="{! NOT(ISNULL(result.resource[contactFM.fieldPath])) }"/>
+						</apex:outputPanel>
+						
+						<apex:outputPanel rendered="{!UPPER(contactFM.type)=='REFERENCE' && !CONTAINS(contactFM.fieldPath, '.')}">
+							<apex:variable value="{!SUBSTITUTE(SUBSTITUTE(contactFM.fieldPath, 'Id', ''), '__c', '__r')}.name" var="fName" />
+							<apex:outputLink value="/{!result.resource[contactFM.fieldPath]}" >
+								<apex:outputText value="{!result.resource[fName]}" />
+							</apex:outputLink>
+						</apex:outputPanel>
+					</td>
+				</apex:repeat>
+			</tr>
+		</apex:repeat>
+		</table>
+        <hr/>
+    </apex:repeat>
+	</apex:outputPanel>
+</div>
+
+<div id="searchDiv">
+    <table>
+        <tr>
+            <td><apex:outputText value="{!searchWrapper.resReqName}" rendered="{!AND (NOT(isCalledForGenericSearch),NOT(isRedirectFromSame))}"/></td>
+            <td align="right"><input type="button"  value="{!$Label.common_label_search}"  class="btn" onclick="jsDoSearch();" style="margin-top:0px; margin-bottom:0px;"/></td>
+        </tr>
+        <tr>
+            <td><apex:outputText value="{!$Label.pse__common_label_start_date}" /></td>
+            <td><apex:inputField value="{!searchWrapper.resReqDates.pse__Start_Date__c}" required="false"/></td>
+        </tr>  
+        <tr>
+            <td><apex:outputText value="{!$Label.pse__common_label_end_date}" /></td>
+            <td><apex:inputField value="{!searchWrapper.resReqDates.pse__End_Date__c}" /></td>
+        </tr>       
+        <tr>
+            <td><apex:outputText value="{!$Label.pse__common_label_name}" /></td>
+            <td><apex:inputText value="{!searchWrapper.resourceName}"/></td>
+        </tr>
+		<tr>
+			<td><apex:outputText value="{!$Label.pse__common_label_resource_request}" rendered="{!OR(isCalledForGenericSearch,isRedirectFromSame)}"/></td>
+			<td><apex:inputField value="{!searchResourceRequest.pse__Staffed_Related_Resource_Request__c}" rendered="{!OR(isCalledForGenericSearch,isRedirectFromSame)}"/>  
+			</td>
+		</tr>
+	
+   </table>
+</div>
+
+<div id="additionalFilterSection" class="sidebarDiv" >
+	<table cellspacing="5">
+	<apex:variable var="additionalFilterCount" value="{!searchWrapper.additionalSearchFields.size}"/>
+	<apex:repeat value="{!searchWrapper.additionalSearchFields}" var="filter"  >
+    <apex:variable var="isEncryptionSupported" value="{!!areEncryptionSupportedFieldsFilterable && searchWrapper.encryptionValueByFieldPath[filter.field.fieldPath]}"/>
+		<tr>
+			<td> {!filter.field.Label} </td>
+			<td>
+				<apex:selectlist value="{!filter.operator}" size="1" style="width: 90px;" rendered="{!UPPER(filter.field.type)=='BOOLEAN'}" styleClass="additionalFilterPicklist{!ROUND(additionalFilterCount, 0)}"
+					onchange="showAdditionalFilterSearchLogic({!ROUND(additionalFilterCount,0)} , {!ROUND(searchWrapper.additionalSearchFields.size , 0)} , '.additionalFilter' , '.additionalFilterPicklist');" >
+					<apex:selectOption itemvalue="" itemlabel="--" />
+					<apex:selectOption itemvalue="eq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_equals}" />
+					<apex:selectOption itemvalue="neq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_equals}"/>
+				</apex:selectlist>
+				
+				<apex:selectlist value="{!filter.operator}" size="1" style="width: 90px;" rendered="{!UPPER(filter.field.type)=='REFERENCE'}" styleClass="additionalFilterPicklist{!ROUND(additionalFilterCount, 0)}"
+					onchange="showAdditionalFilterSearchLogic({!ROUND(additionalFilterCount,0)} , {!ROUND(searchWrapper.additionalSearchFields.size , 0)} , '.additionalFilter' , '.additionalFilterPicklist');">
+					<apex:selectOption itemvalue="" itemlabel="--" />
+					<apex:selectOption itemvalue="isn" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_is_null}" />
+					<apex:selectOption itemvalue="nisn" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_is_null}"/>
+					<apex:selectOption itemvalue="eq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_equals}" />
+					<apex:selectOption itemvalue="neq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_equals}"/>
+				</apex:selectlist>
+				
+				<apex:selectlist value="{!filter.operator}" size="1" style="width: 90px;" styleClass="additionalFilterPicklist{!ROUND(additionalFilterCount, 0)}"
+					rendered="{!UPPER(filter.field.type)=='DATE' || UPPER(filter.field.type)=='DATETIME' || UPPER(filter.field.type)=='INTEGER' || UPPER(filter.field.type)=='INT' || UPPER(filter.field.type)=='DOUBLE' || UPPER(filter.field.type)=='CURRENCY' || UPPER(filter.field.type)=='PERCENT'}"
+					onchange="showAdditionalFilterSearchLogic({!ROUND(additionalFilterCount,0)} , {!ROUND(searchWrapper.additionalSearchFields.size , 0)} , '.additionalFilter' , '.additionalFilterPicklist');">
+					<apex:selectOption itemvalue="" itemlabel="--" /> 
+					<apex:selectOption itemvalue="isn" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_is_null}" />
+					<apex:selectOption itemvalue="nisn" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_is_null}"/>
+					<apex:selectOption itemvalue="eq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_equals}" />
+					<apex:selectOption itemvalue="neq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_equals}"/>
+					<apex:selectOption itemvalue="gt" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_greater}" 		/>
+					<apex:selectOption itemvalue="gte" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_greater_or_equals}" />
+					<apex:selectOption itemvalue="lt" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_less}" />
+					<apex:selectOption itemvalue="lte" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_less_or_equals}"/>
+				</apex:selectlist>
+				
+				<apex:selectlist value="{!filter.operator}" size="1" style="width: 90px;" rendered="{!UPPER(filter.field.type)=='PICKLIST' || UPPER(filter.field.type)=='MULTIPICKLIST'}" styleClass="additionalFilterPicklist{!ROUND(additionalFilterCount, 0)}"
+					onchange="showAdditionalFilterSearchLogic({!ROUND(additionalFilterCount,0)} , {!ROUND(searchWrapper.additionalSearchFields.size , 0)} , '.additionalFilter' , '.additionalFilterPicklist');">
+					<apex:selectOption itemvalue="" itemlabel="--" />
+					<apex:selectOption itemvalue="isn" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_is_null}" />
+					<apex:selectOption itemvalue="nisn" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_is_null}"/>
+					<apex:selectOption itemvalue="eq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_equals}" />
+					<apex:selectOption itemvalue="neq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_equals}"/>
+				</apex:selectlist>
+				
+				<apex:selectlist value="{!filter.operator}" size="1" style="width: 90px;" styleClass="additionalFilterPicklist{!ROUND(additionalFilterCount, 0)}"
+					onchange="showAdditionalFilterSearchLogic({!ROUND(additionalFilterCount,0)} , {!ROUND(searchWrapper.additionalSearchFields.size , 0)} , '.additionalFilter' , '.additionalFilterPicklist');" 
+					rendered="{!UPPER(filter.field.type)=='STRING' || UPPER(filter.field.type)=='EMAIL' || UPPER(filter.field.type)=='TEXTAREA' || UPPER(filter.field.type)=='PHONE'}" disabled="{!isEncryptionSupported}" >
+					<apex:selectOption itemvalue="" itemlabel="--" />
+					<apex:selectOption itemvalue="isn" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_is_null}" />
+					<apex:selectOption itemvalue="nisn" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_is_null}"/>
+					<apex:selectOption itemvalue="eq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_equals}" />
+					<apex:selectOption itemvalue="neq" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_equals}"/>
+					<apex:selectOption itemvalue="ct" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_contains}"/>
+					<apex:selectOption itemvalue="nct" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_not_contains}"/>
+					<apex:selectOption itemvalue="sw" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_starts_with}"/>
+					<apex:selectOption itemvalue="ew" itemlabel="{!$Label.pse__search_resources_additional_filters_operator_label_ends_with}"/>
+				</apex:selectlist>
+			</td>
+			<td> 
+				<apex:outputPanel rendered="{! (UPPER(filter.field.type)=='DATE' && (filter.isNotUpdatableField || filter.isReferenceField) )}" >
+					<apex:inputField value="{!filter.dummyForNonUpdatableField.Birthdate}" />
+				</apex:outputPanel>
+				
+				<apex:outputPanel rendered="{! (UPPER(filter.field.type)=='DATETIME' && (filter.isNotUpdatableField || filter.isReferenceField) )}" >
+					<apex:inputField value="{!filter.dummyForNonUpdatableField.pse__Actuals_Last_Update_Date__c}" />
+				</apex:outputPanel>
+				
+				<apex:outputPanel rendered="{! (UPPER(filter.field.type)=='CURRENCY' && (filter.isNotUpdatableField || filter.isReferenceField) )}" >
+					<apex:inputField value="{!filter.dummyForNonUpdatableField.pse__Default_Cost_Rate__c}" />
+				</apex:outputPanel>
+				
+				<apex:outputPanel rendered="{! (UPPER(filter.field.type)=='BOOLEAN' && (filter.isNotUpdatableField || filter.isReferenceField) )}" >
+					<apex:inputField value="{!filter.dummyForNonUpdatableField.pse__External_Resource__c}" />
+				</apex:outputPanel> 
+				
+				<apex:outputPanel rendered="{! ( (UPPER(filter.field.type)=='INTEGER' || UPPER(filter.field.type)=='INT') && (filter.isNotUpdatableField || filter.isReferenceField) )}" >
+					<apex:inputText value="{!filter.dummyForInteger}" />
+				</apex:outputPanel> 
+				
+				<apex:outputPanel rendered="{! ((UPPER(filter.field.type)=='DOUBLE' || UPPER(filter.field.type)=='PERCENT') && (filter.isNotUpdatableField || filter.isReferenceField))}" >
+					<apex:inputText value="{!filter.dummyForNumberOrPercent}" />
+				</apex:outputPanel>
+				
+				<apex:outputPanel rendered="{! (UPPER(filter.field.type)=='STRING' || UPPER(filter.field.type)=='TEXTAREA' || UPPER(filter.field.type)=='PHONE') && (filter.isNotUpdatableField || filter.isReferenceField)}" >
+					<apex:inputText value="{!filter.dummyForText}" />
+				</apex:outputPanel>
+				
+				<apex:outputPanel rendered="{! UPPER(filter.field.type)=='EMAIL'}" >
+					<apex:inputText value="{!filter.dummyForText}" />
+				</apex:outputPanel>
+				<apex:inputField value="{!filter.fieldValue[filter.field.fieldPath]}" required="false" rendered="{! !filter.isNotUpdatableField && UPPER(filter.field.type)!='EMAIL' && !filter.isReferenceField}" />
+			</td>
+			
+			<td>
+            	<apex:selectList value="{!additionalFilterSearchLogic}" size="1" onchange="changeAdditionalFilter(this.value);jsSetDistanceSelectedOptn();return false;" styleClass="additionalFilter additionalFilter{!ROUND(additionalFilterCount, 0)}" style="display: {!IF(isEncryptionSupported && additionalFilterCount > 1, 'block', 'none')};"  >
+               		<apex:selectOptions value="{!SearchLogicList}" />
+               	</apex:selectList>
+            </td>
+            <apex:variable var="additionalFilterCount" value="{!additionalFilterCount - 1}"/>
+		</tr>
+	</apex:repeat>
+	</table>
+</div>
+
+<div id="filterByRolesDiv" class="sidebarDiv" >
+	<div class="rowStyleDiv">
+		<apex:inputCheckbox value="{!searchWrapper.isResourceRoleFilterSelected}" style="margin-right:5px; vertical-align: top;" />
+		<apex:selectList value="{!searchWrapper.selectedRoles}" size="5" multiselect="true" title="{!$Label.pse__assign_resource_search_by_role_block}">
+			<apex:selectOptions value="{!searchWrapper.resourceRoleOptions}" />
+		</apex:selectList>
+	</div>
+</div>
+
+<div id="filterBySkillsDiv" class="sidebarDiv" >
+<apex:outputPanel id="skillsOP">
+    <table>
+    	<apex:variable var="skillCount" value="{!searchWrapper.skills.size}"/>
+        <apex:repeat value="{!searchWrapper.skills}" var="sk" id="skillId">
+            <tr>
+                <td><apex:inputCheckbox value="{!sk.isChecked}" onclick="showSkillCertificationFilter({!ROUND(skillCount,0)} , {!ROUND(searchWrapper.skills.size , 0)} , '.skillFilter' , '.skillCheckbox')" styleClass="skillCheckbox{!ROUND(skillCount, 0)}"/></td>
+                <td width="80px;"><div style="word-wrap: break-word; width: 80px;">{!sk.uniqueName}</div></td>
+                <td><apex:inputField value="{!sk.skill.pse__Minimum_Rating__c}" id="minimumRatingPicklist"/></td>
+                <td>
+                	<apex:selectList value="{!skillSearchLogic}" size="1"  onchange="changeSkillFilter(this.value);jsSetDistanceSelectedOptn();return false;" styleClass="skillFilter skillFilter{!ROUND(skillCount, 0)}" style="display:none;"  >
+                		<apex:selectOptions value="{!SearchLogicList}" />
+                	</apex:selectList>
+                </td>
+                <apex:variable var="skillCount" value="{!skillCount - 1}"/>
+            </tr>
+        </apex:repeat>   
+   </table>
+   <script type="text/javascript">
+	refreshSkillCertificationSection('.skillFilter' , '.skillCheckbox');
+   </script> 
+   
+</apex:outputPanel>
+<a id="addMoreSkillTrigger" href="javascript:void(0)"><div class="addIconExtjs"> &nbsp;</div>{!$Label.Common_Label_Add_More}</a>
+</div>
+
+<div id="filterByCertificationsDiv" class="sidebarDiv">
+<apex:outputPanel id="certificationsOP">
+    <table>
+    	<apex:variable var="certCount" value="{!searchWrapper.certifications.size}"/>
+        <apex:repeat value="{!searchWrapper.certifications}" var="ct" id="certId">
+            <tr>
+                <td><apex:inputCheckbox value="{!ct.isChecked}" onclick="showSkillCertificationFilter({!ROUND(certCount,0)} , {!ROUND(searchWrapper.certifications.size , 0)} , '.certFilter' , '.certCheckbox')" styleClass="certCheckbox{!ROUND(certCount, 0)}"/></td>
+                <td width="130px;"><div style="word-wrap: break-word; width: 130px;">{!ct.uniqueName}</div></td>
+                <td>
+                	<apex:selectList id="certOption" value="{!certSearchLogic}" size="1"  onchange="changeCertFilter(this.value);jsSetDistanceSelectedOptn();return false;" styleClass="certFilter certFilter{!ROUND(certCount, 0)}" style="display:none;" >
+                		<apex:selectOptions value="{!SearchLogicList}" />
+                	</apex:selectList>
+                </td>
+                <apex:variable var="certCount" value="{!certCount - 1}"/>
+            </tr>
+        </apex:repeat>
+        <tr><td colspan="2"></td></tr>
+   </table>
+   <script type="text/javascript">
+    refreshSkillCertificationSection('.certFilter' , '.certCheckbox');
+   </script> 
+</apex:outputPanel>
+<a id="addMoreCertificationTrigger" href="javascript:void(0)"><div class="addIconExtjs"> &nbsp;</div>{!$Label.Common_Label_Add_More}</a>
+</div>
+
+<div id="filterByAttributesDiv" class="sidebarDiv">
+    <table >
+    	<apex:actionFunction name="jsSetDistanceSelectedOptn" action="{!selectResourceToDisplaySC}" rerender="messageSection"/>
+        <apex:repeat value="{!searchWrapper.attributes}" var="at" id="attributeId">
+            <tr>
+                <td><apex:inputCheckbox value="{!at.isChecked}" rendered="{!NOT(at.attributeKey == 'Distance_Unit')}"/></td>
+                <td><apex:outputText value="{!at.attributeName}" /></td>                
+                <td>
+                    <apex:outputPanel rendered="{!NOT(ISNULL(at.options))}" >
+                        <apex:outputPanel rendered="{!NOT(at.isDistanceAttribute)}">
+                            <apex:selectList value="{!at.selectedOption}" size="1">
+                                <apex:selectOptions value="{!at.options}"/>
+                            </apex:selectList>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!at.isDistanceAttribute}">
+                            <apex:actionRegion >
+                            <apex:selectList value="{!at.distanceSelectedOption}" size="1" onChange="jsSetDistanceSelectedOptn(); return false;">
+                                <apex:selectOptions value="{!at.options}"/>
+                            </apex:selectList>
+                            
+                            </apex:actionRegion>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </td>
+            </tr>
+        </apex:repeat>
+   </table>
+</div>
+
+</div>
+</div>
+
+<div id="addMoreSkillWindowMarkupDiv" class="x-hidden">
+    <div class="x-window-header">{!$Label.pse__common_label_select} {!$Label.pse__search_resources_skill_label}</div> 
+    <div class="x-window-body">
+    <apex:outputPanel id="skillpopupOP" >
+        <apex:actionRegion >    
+        <apex:actionFunction name="jsSearchAllSkills" reRender="skillSelector,messageSection" action="{!searchAllSkills}"  />
+        <apex:actionFunction name="jsSearchSkill"  reRender="skillSelector,messageSection" action="{!searchSkillBySearchParameter}" />
+        <apex:panelGrid columns="4">
+                     <label for="skillSearchString">{!$Label.pse__common_label_search}</label>
+                     <apex:inputText value="{!skillSearchParam}" id="skillSearchString" />
+                     <button id="skillOverlay_Go_Button" onclick="searchSkillByParam(); return false;" class="btn">{!$Label.common_label_go}!</button>
+                     <button id="skillOverlay_All_Button" onclick="searchAllSkills(); return false;" class="btn"> {!$Label.common_label_all} </button>                         
+                     <img align="middle" src="{!URLFOR($Resource.appirioCommon, 'progress-rotation.gif')}" height="24" width="24" style="visibility: hidden;" id='skillLoadWaitImageID'/>
+            <apex:facet name="footer">
+                <div class="bDescription">{!$Label.pse__search_resource_display_one_thousand_results}</div>  
+            </apex:facet>
+         </apex:panelGrid>
+         </apex:actionRegion>
+        
+        <apex:pageBlock title="{!$Label.pse__common_label_select} {!$Label.pse__search_resources_skill_label}" id="skillSelector" >
+        <div style="max-height :200px;overflow:auto;">
+            <apex:pageBlockSection columns="1" id="availableSkills">
+                <apex:pageBlockTable value="{!availableSkills}" var="sw">
+                    <apex:column >
+                        <apex:facet name="header">
+                            <input type="checkbox"
+                                onclick="selectAllOptions(this, 'matchingSkillSelector')" />
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!sw.selected}"
+                            id="matchingSkillSelector" />
+                    </apex:column>
+                    
+                    <apex:column style="width:125px">
+                        <apex:facet name="header">
+                            <apex:outputPanel >{!$Label.pse__common_label_name}</apex:outputPanel>
+                        </apex:facet>
+                        <a href="/{!sw.skill.Id}" target="_blank"> {!sw.skill.Name}</a>
+                    </apex:column>
+    
+    
+                    <apex:column value="{!sw.skill.pse__Type__c}">
+                        <apex:facet name="header">
+                            <apex:outputPanel >{!$Label.pse__common_label_type}</apex:outputPanel>
+                        </apex:facet>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </div>
+        </apex:pageBlock>
+
+        </apex:outputPanel>
+    </div>
+</div>
+
+
+<div id="addMoreCertificationWindowMarkupDiv" class="x-hidden">
+    <div class="x-window-header">{!$Label.pse__common_label_select} {!$Label.pse__search_resources_certification_label}</div> 
+    <div class="x-window-body">
+    <apex:outputPanel id="certificationPopupOP" >
+        <apex:actionRegion >    
+        <apex:actionFunction name="jsSearchAllCertifications" reRender="certificationSelector,messageSection" action="{!searchAllCertifications}"  />
+        <apex:actionFunction name="jsSearchCertification"  reRender="certificationSelector,messageSection" action="{!searchCertificationBySearchParameter}" />
+        <apex:panelGrid columns="4">
+                     <label for="certificationSearchString">{!$Label.pse__common_label_search}</label>
+                     <apex:inputText value="{!certificationSearchParam}" id="certificationSearchString" />
+                     <button id="certificationOverlay_Go_Button" onclick="searchCertificationByParam(); return false;" class="btn">{!$Label.common_label_go}!</button>
+                     <button id="certificationOverlay_All_Button" onclick="searchAllCertifications(); return false;" class="btn"> {!$Label.common_label_all} </button>                         
+                     <img align="middle" src="{!URLFOR($Resource.appirioCommon, 'progress-rotation.gif')}" height="24" width="24" style="visibility: hidden;" id='certificationLoadWaitImageID'/>
+            <apex:facet name="footer">
+                <div class="bDescription">{!$Label.pse__search_resource_display_one_thousand_results}</div>  
+            </apex:facet>
+         </apex:panelGrid>
+         </apex:actionRegion>
+    
+    
+        <apex:pageBlock title="{!$Label.pse__common_label_select} {!$Label.pse__search_resources_certification_label}" id="certificationSelector">
+        <div style="max-height :200px;overflow:auto;">        
+            <apex:pageBlockSection columns="1" id="availableCertifications">
+                <apex:pageBlockTable value="{!availableCertifications}" var="cw">
+                    <apex:column >
+                        <apex:facet name="header"> 
+                            <input type="checkbox"
+                                onclick="selectAllOptions(this, 'matchingCertificationSelector')" />
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!cw.selected}" id="matchingCertificationSelector" />
+                    </apex:column>
+
+                    <apex:column style="width:125px">
+                        <apex:facet name="header">
+                            <apex:outputPanel >{!$Label.pse__common_label_name}</apex:outputPanel>
+                        </apex:facet>
+                         <a href="/{!cw.skill.Id}" target="_blank"> {!cw.skill.Name}</a>
+                    </apex:column>
+    
+    
+                    <apex:column value="{!cw.skill.pse__Type__c}">
+                        <apex:facet name="header">
+                            <apex:outputPanel >{!$Label.pse__common_label_type}</apex:outputPanel>
+                        </apex:facet>
+                    </apex:column> 
+                    <apex:column value="{!cw.skill.pse__Certification_Source__c}">
+                        <apex:facet name="header">
+                            <apex:outputPanel >{!$Label.pse__search_resources_label_qualifications_source}</apex:outputPanel>
+                        </apex:facet>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </div>
+        </apex:pageBlock>
+        </apex:outputPanel>
+    </div>
+</div>
+
+
+<!-- Past Job popup markup -->
+<div id="showPastJobsWindowMarkupDiv" class="x-hidden"> 
+    <div class="x-window-header">{!$Label.Search_Resources_Label_Past_Jobs}</div>  
+    <div class="x-window-body">
+    <apex:outputPanel id="pastJobsPopupOP" >
+        <apex:pageBlock id="resPastJob" >
+        <div style="max-height :280px;overflow:auto;">        
+                <apex:pageBlockTable value="{!resourcePastJobs}" var="a" width="100%" rendered="{!isPastJobsFoundForSelectedResource}">
+                    <apex:column headerValue="{!$Label.pse__common_label_account}" value="{!a.Account}" />
+                    <apex:column headerValue="{!$Label.pse__common_label_project}" value="{!a.Project}" />
+                    <apex:column headerValue="{!$Label.pse__common_label_start_date}" value="{!a.StartDate}" />
+                    <apex:column headerValue="{!$Label.pse__common_label_end_date}" value="{!a.EndDate}" />
+                    <apex:column headerValue="{!$Label.pse__common_label_status}" value="{!a.status}" />
+                    <apex:column headerValue="{!$Label.pse__common_label_role}" value="{!a.role}" style="padding-right:20px;" />
+                </apex:pageBlockTable>
+                <apex:outputPanel rendered="{!NOT(isPastJobsFoundForSelectedResource)}"> <b>{!$Label.pse__search_resources_past_jobs_window_no_assignments_message_label}</b></apex:outputPanel>
+            </div>
+        </apex:pageBlock>
+    </apex:outputPanel>
+    </div>
+</div>
+
+<!-- Assign/Hold Resource Popup -->
+<div id="holdAndAssignResWindowMarkupDiv" class="x-hidden"> 
+    <div class="x-window-header" id="holdAndAssignPopupHeaderDiv"></div> 
+    <div class="x-window-body" id="holdAndAssignPopupBodyDiv">
+    <apex:outputPanel id="holdAssignResPopupOP" >
+        <apex:outputPanel rendered="{!NOT(ISNULL(resourceToAssign))}" id="scheduleBuilderSection">
+            <c:ScheduleBuilder resourceIdAttribute="{!resourceToAssign}" resourceListWrapper="{!resourceResultListWrapper}" isEditModeAttribute="true" autoChangeStrategyAttribute="true" isCalledFromSearchResourcesAttribute="true"/>
+        </apex:outputPanel>
+        <script>
+            var doesWrkCalExist = {!isWorkCalendarExistForSelectedRes};
+        </script>
+	</apex:outputPanel>
+    </div>
+</div>
+
+<!-- Resource skill/certification popup markup -->
+<div id="showSCWindowMarkupDiv" class="x-hidden">
+    <div class="x-window-header">{!$Label.search_resources_skill_label} {!$Label.Common_Label_And} {!$Label.search_resources_certification_label}</div> 
+    <div class="x-window-body">
+    <apex:outputPanel id="SCPopupOP" >
+        <c:SearchResourcesSkills resourceID="{!resourceToDisplaySC}" id="resourceSkillsCompID"/>
+    </apex:outputPanel>
+    </div>
+</div>
+
+
+<!-- Resource skill/certification popup markup -->
+<div id="showEmailWindowMarkupDiv" class="x-hidden">
+    <div class="x-window-header">{!$Label.Search_Resources_Label_Send_Email_Pop_Up_Window_Header}</div> 
+    <div class="x-window-body">
+    <apex:outputPanel id="emailPopupOP" >
+        <apex:pageBlock >
+        <apex:pageBlockSection columns="1">
+            <apex:outputPanel >
+            <apex:outPutLabel value="{!$Label.pse__common_label_to}" for="toEmailAdd" style="font-weight:bold;padding-left:28px;padding-right:5px;"></apex:outPutLabel>
+             <apex:inputText value="{!toEmailAddress}" id="toEmailAdd" style="width:200px;"></apex:inputText>
+             <script>
+                var _toEmailAddFieldID = "{!$Component.toEmailAdd}";
+             </script>
+             <span style="padding-left:5px; font-weight: bold;" id="sendMailToNameSpan"></span>
+             </apex:outputPanel>
+             <apex:outputPanel >
+             <apex:outPutLabel value="{!$Label.pse__common_label_subject}" for="emailSubject" style="font-weight:bold; padding-right:5px;"></apex:outPutLabel>
+            <apex:inputText value="{!emailSubject}" id="emailSubject" style="width:250px;"></apex:inputText>
+            </apex:outputPanel>
+            <apex:inputTextArea value="{!emailBodyContent}" style="height:200px;width:98%;"></apex:inputTextArea>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:outputPanel>
+    </div>
+</div>
+
+
+<script>
+wait(true);
+
+Ext.layout.mLayout = Ext.extend(Ext.layout.FitLayout, {
+    
+	/**
+     * @cfg {Boolean} fill
+     * True to adjust the active item's height to fill the available space in the container, false to use the
+     * item's current height, or auto height if not explicitly set (defaults to true).
+     */
+    fill : true,
+    
+	/**
+     * @cfg {Boolean} autoWidth
+     * True to set each contained item's width to 'auto', false to use the item's current width (defaults to true).
+     * Note that some components, in particular the {@link Ext.grid.GridPanel grid}, will not function properly within
+     * layouts if they have auto width, so in such cases this config should be set to false.
+     */
+    autoWidth : true,
+    
+	/**
+     * @cfg {Boolean} titleCollapse
+     * True to allow expand/collapse of each contained panel by clicking anywhere on the title bar, false to allow
+     * expand/collapse only when the toggle tool button is clicked (defaults to true).  When set to false,
+     * {@link #hideCollapseTool} should be false also.
+     */
+    titleCollapse : true,
+    
+	/**
+     * @cfg {Boolean} hideCollapseTool
+     * True to hide the contained panels' collapse/expand toggle buttons, false to display them (defaults to false).
+     * When set to true, {@link #titleCollapse} should be true also.
+     */
+    hideCollapseTool : false,
+    
+	/**
+     * @cfg {Boolean} collapseFirst
+     * True to make sure the collapse/expand toggle button always renders first (to the left of) any other tools
+     * in the contained panels' title bars, false to render it last (defaults to false).
+     */
+    collapseFirst : false,
+    
+	/**
+     * @cfg {Boolean} animate
+     * True to slide the contained panels open and closed during expand/collapse using animation, false to open and
+     * close directly with no animation (defaults to false).  Note: to defer to the specific config setting of each
+     * contained panel for this property, set this to undefined at the layout level.
+     */
+    animate : false,
+    
+	/**
+     * @cfg {Boolean} sequence
+     * Experimental. If animate is set to true, this will result in each animation running in sequence.
+     */
+    sequence : false,
+    
+	/**
+     * @cfg {Boolean} activeOnTop
+     * True to swap the position of each panel as it is expanded so that it becomes the first item in the container,
+     * false to keep the panels in the rendered order. This is NOT compatible with "animate:true" (defaults to false).
+     */
+    activeOnTop : false,
+
+    type: 'accordion',
+
+    renderItem : function(c){
+        if(this.animate === false){
+            c.animCollapse = false;
+        }
+        c.collapsible = true;
+        if(this.autoWidth){
+            c.autoWidth = true;
+        }
+        if(this.titleCollapse){
+            c.titleCollapse = true;
+        }
+        if(this.hideCollapseTool){
+            c.hideCollapseTool = true;
+        }
+        if(this.collapseFirst !== undefined){
+            c.collapseFirst = this.collapseFirst;
+        }
+        if(!this.activeItem && !c.collapsed){
+           //this.setActiveItem(c, true);
+        }else if(this.activeItem && this.activeItem != c){
+            c.collapsed = true;
+        }
+        Ext.layout.mLayout.superclass.renderItem.apply(this, arguments);
+        c.header.addClass('x-accordion-hd');
+        c.on('beforeexpand', this.beforeExpand, this);
+    },
+
+    onRemove: function(c){
+        Ext.layout.mLayout.superclass.onRemove.call(this, c);
+        if(c.rendered){
+            c.header.removeClass('x-accordion-hd');
+        }
+        c.un('beforeexpand', this.beforeExpand, this);
+    },
+
+    // private
+    beforeExpand : function(p, anim){
+        var ai = this.activeItem;
+        this.setActive(p);
+        if(this.activeOnTop){
+            p.el.dom.parentNode.insertBefore(p.el.dom, p.el.dom.parentNode.firstChild);
+        }
+        // Items have been hidden an possibly rearranged, we need to get the container size again.
+        this.layout();
+    },
+
+    // private
+    setItemSize : function(item, size){
+        if(this.fill && item){
+            var hh = 0, i, ct = this.getRenderedItems(this.container), len = ct.length, p;
+            // Add up all the header heights
+            for (i = 0; i < len; i++) {
+                if((p = ct[i]) != item && !p.hidden){
+                    hh += p.header.getHeight();
+                }
+            };
+            // Subtract the header heights from the container size
+            size.height -= hh;
+            // Call setSize on the container to set the correct height.  For Panels, deferedHeight
+            // will simply store this size for when the expansion is done.
+            item.setSize(size);
+        }
+    },
+
+    
+	/**
+     * Sets the active (expanded) item in the layout.
+     * @param {String/Number} item The string component id or numeric index of the item to activate
+     */
+    setActiveItem : function(item){
+        this.setActive(item, true);
+    },
+
+    // private
+    setActive : function(item, expand){
+       var ai = this.activeItem;
+        item = this.container.getComponent(item);
+        if(ai != item){
+            if(item.rendered && item.collapsed && expand){
+                item.expand();
+            }else{
+                if(ai){
+                   ai.fireEvent('deactivate', ai);
+                }
+                this.activeItem = item;
+                item.fireEvent('activate', item);
+            }
+        }
+    }
+});
+
+Ext.Container.LAYOUTS.maccordion = Ext.layout.mLayout;
+
+
+
+
+/*
+ * @constructor Create a new PagingToolbar
+ * @param {Object} config The config object
+ * @xtype paging
+ */
+Ext.ns('Ext.ux.PSE');
+var T = Ext.Toolbar;
+Ext.ux.PSE.PagingToolbar = Ext.extend(Ext.Toolbar, {
+    
+    displayInfo: true,
+    displayUserItems : false,
+    store : null,
+    displayMsg : '{!JSINHTMLENCODE($Label.Search_Resources_Label_Number_Of_Search_Results)}',
+    emptyMsg : '{!JSINHTMLENCODE($Label.Search_Resources_Label_No_Search_Result)}',
+    beforePageText : '{!JSINHTMLENCODE($Label.common_label_page)}',
+    afterPageText : '{!JSINHTMLENCODE($Label.Search_Resources_Label_After_Page_Text)}',
+    firstText : '{!JSINHTMLENCODE($Label.Common_Label_First_Page)}',
+    prevText : '{!JSINHTMLENCODE($Label.Common_Label_Previous_Page)}',
+    nextText : '{!JSINHTMLENCODE($Label.Common_Label_Next_Page)}',
+    lastText : '{!JSINHTMLENCODE($Label.Common_Label_Last_Page)}',
+    refreshText : '{!JSINHTMLENCODE($Label.common_label_refresh)}',
+    
+    initComponent : function(){
+        var pagingItems = [this.first = new T.Button({
+            tooltip: this.firstText,
+            overflowText: this.firstText,
+            iconCls: 'x-tbar-page-first',
+            disabled: true,
+            handler: this.moveFirst,
+            scope: this
+        }), this.prev = new T.Button({
+            tooltip: this.prevText,
+            overflowText: this.prevText,
+            iconCls: 'x-tbar-page-prev',
+            disabled: true,
+            handler: this.movePrevious,
+            scope: this
+        }), '-', this.beforePageText,
+        this.inputItem = new Ext.form.NumberField({
+            cls: 'x-tbar-page-number',
+            allowDecimals: false,
+            allowNegative: false,
+            enableKeyEvents: true,
+            selectOnFocus: true,
+            submitValue: false,
+            listeners: {
+                scope: this,
+                keydown: this.onPagingKeyDown,
+                blur: this.onPagingBlur
+            }
+        }), this.afterTextItem = new T.TextItem({
+            text: String.format(this.afterPageText, 1)
+        }), '-', this.next = new T.Button({
+            tooltip: this.nextText,
+            overflowText: this.nextText,
+            iconCls: 'x-tbar-page-next',
+            disabled: true,
+            handler: this.moveNext,
+            scope: this
+        }), this.last = new T.Button({
+            tooltip: this.lastText,
+            overflowText: this.lastText,
+            iconCls: 'x-tbar-page-last',
+            disabled: true,
+            handler: this.moveLast,
+            scope: this
+        }), '-', this.refresh = new T.Button({
+            tooltip: this.refreshText,
+            overflowText: this.refreshText,
+            iconCls: 'x-tbar-loading',
+            handler: this.doRefresh,
+            scope: this
+        })];
+
+        var userItems = this.items || this.buttons || [];
+        delete this.buttons;
+        this.items = [];
+        if(this.displayUserItems){
+            this.items = userItems;
+        }
+        
+        if(this.displayInfo){
+            this.items.push(this.displayItem = new T.TextItem({}));
+        }
+        
+        this.items.push('->');
+        this.items = this.items.concat(pagingItems);
+        
+
+        
+        Ext.PagingToolbar.superclass.initComponent.call(this);
+        
+        this.addEvents(
+            
+			/**
+             * @event change
+             * Fires after the active page has been changed.
+             * @param {Ext.PagingToolbar} this
+             * @param {Object} pageData An object that has these properties:
+
+
+    *              * total : Number
+      The total number of records in the dataset as
+                   * returned by the server
+
+    *              * activePage : Number
+      The current page number
+
+    *              * pages : Number
+      The total number of pages (calculated from
+                   * the total number of records in the dataset as returned by the server and the current {@link #pageSize})
+
+                   * 
+
+
+             */
+            'change',
+            
+			/**
+             * @event beforechange
+             * Fires just before the active page is changed.
+             * Return false to prevent the active page from being changed.
+             * @param {Ext.PagingToolbar} this
+             * @param {Object} params An object hash of the parameters which the PagingToolbar will send when
+             * loading the required page. This will contain:
+
+
+    *              * start : Number
+      The starting row number for the next page of records to
+                   * be retrieved from the server
+
+    *              * limit : Number
+      The number of records to be retrieved from the server
+
+                   * 
+
+
+             * 
+
+(note: the names of the start and limit properties are determined
+             * by the store's {@link Ext.data.Store#paramNames paramNames} property.)
+
+             * 
+
+Parameters may be added as required in the event handler.
+
+             */
+            'beforechange'
+        );
+        this.on('afterlayout', this.onLoad, this, {single: true});
+        this.cursor = 0;
+        
+    },
+
+   
+
+    // private
+    updateInfo : function(){
+        if(this.displayItem){
+            
+            var msg = this.store.getFrom() == 0 ?
+                this.emptyMsg :
+                String.format(
+                    this.displayMsg,
+                    this.store.getFrom(), this.store.getTo(), this.store.getTotalRecords(), '<b>', '</b>'
+                );
+ 
+                this.displayItem.setText(msg);
+            
+        }
+    },
+
+    // private
+    onLoad : function(){
+        this.afterTextItem.setText(String.format(this.afterPageText, this.store.getTotalPages()));
+        ap = this.store.getCurrentPage();
+        ps = this.store.getTotalPages();
+
+        this.inputItem.setValue(ap);
+        this.first.setDisabled(ap == 1);
+        this.prev.setDisabled(ap == 1);
+        this.next.setDisabled(ap == ps);
+        this.last.setDisabled(ap == ps);
+        this.refresh.enable();
+        this.updateInfo();
+        //this.fireEvent('change', this, d);
+    },
+
+    // private
+    getPageData : function(){
+        var total = this.store.getTotalRecords();
+        return {
+            total : total,
+            activePage : this.store.getCurrentPage() ,
+            pages :  total < this.store.getPageSize() ? 1 : Math.ceil(total/this.store.getPageSize())
+        };
+    },
+
+    
+	/**
+     * Change the active page
+     * @param {Integer} page The page to display
+     */
+    changePage : function(page){
+        this.doLoad(((page-1) * this.store.getPageSize()).constrain(0, this.store.getTotalRecords()));
+    },
+
+    // private
+    onLoadError : function(){
+        if(!this.rendered){
+            return;
+        }
+        this.refresh.enable();
+    },
+
+    // private
+    readPage : function(){
+        var v = this.inputItem.getValue(), pageNum;
+        
+        if (!v || isNaN(pageNum = parseInt(v, 10))) {
+            this.inputItem.setValue(this.store.getCurrentPage());
+            return false;
+        }
+        return pageNum;
+    },
+
+    onPagingFocus : function(){
+        this.inputItem.select();
+    },
+
+    //private
+    onPagingBlur : function(e){
+        this.inputItem.setValue(this.store.getCurrentPage());
+    },
+
+    // private
+    onPagingKeyDown : function(field, e){
+        var k = e.getKey(),pageNum;
+        if (k == e.RETURN) {
+            e.stopEvent();
+            pageNum = this.readPage();
+            if(pageNum !== false){
+                if(pageNum <= 0 || pageNum > this.store.getTotalPages() || pageNum == this.store.getCurrentPage()){
+                    this.inputItem.setValue(this.store.getCurrentPage());
+                    return false;
+                }
+                this.doLoad(pageNum );
+            }
+        }else if (k == e.HOME || k == e.END){
+            e.stopEvent();
+            pageNum = k == e.HOME ? 1 : this.store.getTotalPages();
+            field.setValue(pageNum);
+        }else if (k == e.UP || k == e.PAGEUP || k == e.DOWN || k == e.PAGEDOWN){
+            e.stopEvent();
+            if((pageNum = this.readPage())){
+                var increment = e.shiftKey ? 10 : 1;
+                if(k == e.DOWN || k == e.PAGEDOWN){
+                    increment *= -1;
+                }
+                pageNum += increment;
+                if(pageNum >= 1 & pageNum <= this.store.getTotalPages()){
+                    field.setValue(pageNum);
+                }
+            }
+        }
+    },
+
+    // private
+    getParams : function(){
+        //retain backwards compat, allow params on the toolbar itself, if they exist.
+        return this.paramNames || this.paramNames;
+    },
+
+    // private
+    beforeLoad : function(){
+        if(this.rendered && this.refresh){
+            this.refresh.disable();
+        }
+    },
+
+    // private
+    doLoad : function(pageNo){
+        this.store.loadPage(pageNo);
+    },
+
+    
+	/**
+     * Move to the first page, has the same effect as clicking the 'first' button.
+     */
+    moveFirst : function(){
+        this.doLoad(1);
+    },
+
+    
+	/**
+     * Move to the previous page, has the same effect as clicking the 'previous' button.
+     */
+    movePrevious : function(){
+        this.doLoad(this.store.getCurrentPage()-1);
+    },
+
+    
+	/**
+     * Move to the next page, has the same effect as clicking the 'next' button.
+     */
+    moveNext : function(){
+        this.doLoad(this.store.getCurrentPage() + 1);
+    },
+
+    
+	/**
+     * Move to the last page, has the same effect as clicking the 'last' button.
+     */
+    moveLast : function(){
+        this.doLoad(this.store.getTotalPages());
+    },
+
+    
+	/**
+     * Refresh the current page, has the same effect as clicking the 'refresh' button.
+     */
+    doRefresh : function(){
+    	//Refreshing the whole with current search criterion
+        jsDoSearch();
+    }
+
+   
+});
+
+
+Ext.reg('pagingtoolbar', Ext.ux.PSE.PagingToolbar);
+
+/*============================Paging toolbar end here===================================*/
+
+
+
+
+
+
+
+
+
+
+
+/*!
+ * Ext JS Library 3.2.1
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+var _viewport;
+Ext.onReady(function(){
+    init();
+    
+});
+
+function init(){
+    //renderLayout();
+    applyIEFixes();
+    Ext.QuickTips.init();
+    
+    createPopups();
+    bindPopupHandlers();
+    createDataGrid(_totalRecords,_pageSize);
+    initUI();
+    resizeViewport();
+}
+
+var _skillPopup;
+var _certificationPopup;
+var _resourceJobsPopup;
+var _resourceSCPopup;
+var _sendEmailPopup;
+var _resourceAssignAndHoldPopup;
+
+var _pagingStore;
+var _pagingToolbarTop, _pagingToolbarBottom;
+
+function createPopups(){
+    _skillPopup = _skillPopup == null ? createPopup('addMoreSkillWindowMarkupDiv',450,460,addSelectedSkills,null) : _skillPopup;
+    _certificationPopup = _certificationPopup == null ? createPopup('addMoreCertificationWindowMarkupDiv',450,460,addSelectedCertifications, null) : _certificationPopup;
+    _resourceJobsPopup = _resourceJobsPopup == null ? createPopupWithOnlyClose('showPastJobsWindowMarkupDiv',750,450) : _resourceJobsPopup;
+    _resourceSCPopup = _resourceSCPopup == null ? createPopupWithOnlyClose('showSCWindowMarkupDiv',700,600) : _resourceSCPopup;
+    _resourceAssignAndHoldPopup = _resourceAssignAndHoldPopup == null ? createPopup('holdAndAssignResWindowMarkupDiv',750,220,assignOrHoldResource,'{!JSENCODE($Label.Search_Resources_Assign_Hold_Button_Label)}') : _resourceAssignAndHoldPopup;
+    _sendEmailPopup = _sendEmailPopup == null ? createPopup('showEmailWindowMarkupDiv',500,400,sendEmail, '{!JSINHTMLENCODE($Label.Common_Send_Button_Label)}') : _sendEmailPopup;
+    
+}
+// Changes done for AT9293
+function hideAllPopups() {
+	_skillPopup.hide();
+	_certificationPopup.hide();
+	_resourceJobsPopup.hide();
+	_resourceSCPopup.hide();
+	_resourceAssignAndHoldPopup.hide();
+	_sendEmailPopup.hide();
+}
+
+function bindPopupHandlers(){
+    Ext.get('addMoreSkillTrigger').on('click', function (){showSkillPopup();return false;});
+    Ext.get('addMoreCertificationTrigger').on('click', function (){showCertificationPopup();return false;});
+} 
+
+function createDataGrid(totalRecords, pageSize){
+    _pagingStore.initStore(totalRecords, pageSize);
+    
+    var sortByOptions = [new Ext.form.ComboBox({
+                tpl: '<tpl for="."><div ext:qtip="{sortTip:htmlEncode}" class="x-combo-list-item">{sortByLabel:htmlEncode}</div></tpl>',
+                store: new Ext.data.ArrayStore({
+                        fields: ['sortByKey', 'sortByLabel', 'sortTip'],
+                        data : [
+                                    ['Cost_L_H', '{!JSENCODE($Label.Search_Resources_Sort_Option_Label_Cost_Low_To_High)}', '{!JSINHTMLENCODE($Label.Search_Resources_Sort_Tip_Cost_Low_To_High)}'],
+                                    ['Cost_H_L', '{!JSENCODE($Label.Search_Resources_Sort_Option_Label_Cost_High_To_Low)}', '{!JSINHTMLENCODE($Label.Search_Resources_Sort_Tip_Cost_High_To_Low)}'],
+                                    ['Distance', '{!JSENCODE($Label.Search_Resources_Sort_Option_Label_Distance)}', '{!JSINHTMLENCODE($Label.Search_Resources_Sort_Tip_Distance)}'],
+                                    ['Availability', '{!JSENCODE($Label.Search_Resources_Sort_Option_Label_Availability)}', '{!JSINHTMLENCODE($Label.Search_Resources_Sort_Tip_Availability)}'],
+                                    ['internalFirst', '{!JSENCODE($Label.Search_Resources_Sort_Option_Label_Internal_First)}', '{!JSINHTMLENCODE($Label.Search_Resources_Sort_Tip_Internal_First)}'],
+                                    ['externalFirst', '{!JSENCODE($Label.Search_Resources_Sort_Option_Label_External_First)}', '{!JSINHTMLENCODE($Label.Search_Resources_Sort_Tip_External_First)}']
+                                ]
+                    }),
+                valueField: 'sortByKey',
+                displayField:'sortByLabel',
+                editable : false,
+
+                mode: 'local',
+                triggerAction: 'all',
+                emptyText:'{!JSENCODE($Label.Search_Resources_Sort_Result_Placeholder_Label)}',
+                listeners: 
+                  { select: { fn:function(combo, record, index)
+                                {
+                                  sortResults(combo.getValue());
+                                }
+                          }  
+                  }
+                  
+            })]
+        
+            
+    _pagingToolbarTop = new Ext.ux.PSE.PagingToolbar({ store:_pagingStore,displayInfo : false,displayUserItems : true, items : ['{!JSINHTMLENCODE($Label.Search_Resources_Label_Sort)} : ', sortByOptions] }); 
+    _pagingToolbarBottom = new Ext.ux.PSE.PagingToolbar({ store:_pagingStore });
+}
+
+
+_pagingStore = {
+        pageSize : 10,
+        currentPage : 1,
+        totalRecords : 0,
+        
+        initStore : function(totalRecords, pageSize){
+            this.totalRecords = totalRecords;
+            this.pageSize = pageSize;
+        },
+        
+        refreshStatus : function(pageToLoad){
+            this.currentPage = pageToLoad;
+            _pagingToolbarTop.onLoad();
+            _pagingToolbarBottom.onLoad();
+        },
+        getPageSize : function(){ return this.pageSize; },
+        getCurrentPage : function(){ return this.currentPage; },
+        getTotalRecords : function(){ return this.totalRecords; },
+        
+        loadPage : function(pageToLoad){
+            this.refreshStatus(pageToLoad);
+            /*Call sfdc action function to load results*/
+            doLoadResultBySFDCAjaxForPage(pageToLoad);
+        },
+        getFrom : function(){
+            return this.currentPage == 1 ? (this.totalRecords == 0 ? 0 :1 ) : (this.pageSize * (this.currentPage -1))+1;
+        },
+        getTo : function(){
+            return this.totalRecords < this.pageSize ? this.totalRecords : 
+                ((this.currentPage * this.pageSize) > this.totalRecords ? this.totalRecords : 
+                    (this.currentPage * this.pageSize));
+        },
+        getTotalPages : function(){
+            return this.totalRecords < this.pageSize ? 1 : Math.ceil(this.totalRecords/this.pageSize);
+        }
+}
+
+
+// Made changes for skill and certification label  Dated: 22 Nov,2011  By:aditi
+function initUI(){
+	
+	var isAdditionalFilterFieldExist = {!If(searchWrapper.additionalSearchFields.size > 0 , 'true', 'false')} ;
+	
+	var accordion ;
+	if(isAdditionalFilterFieldExist || isAdditionalFilterFieldExist == 'true') {
+	    accordion = {
+	        id: 'accordion-panel',
+	        layout: 'maccordion',
+	        bodyBorder: false,  // useful for accordion containers since the inner panels have borders already
+	        bodyStyle: 'background-color:#DFE8F6',  // if all accordion panels are collapsed, this looks better in this layout
+	        //bodyStyle: 'padding-bottom:15px;background:#eee;',
+	        //defaults: {bodyStyle: 'padding:15px'},
+	        region: 'center',
+	        minSize: 100,
+	        height:100,
+	        autoScroll: true,
+	
+	        
+	         layoutConfig: {
+	            // layout-specific configs go here
+	            animate: true,
+	            autoWidth : false,
+	            fill : false
+	            
+	        },
+	        
+	        items: [
+	        {
+	        	title: '{!JSINHTMLENCODE($Label.Search_Resources_Additional_Filters_Title_Label)}',
+	        	collapseFirst: false,
+	        	contentEl : 'additionalFilterSection'
+	        },{
+	            title: '{!JSINHTMLENCODE($Label.Search_Resources_Label_Title_Roles)}',
+	            contentEl : 'filterByRolesDiv'
+	            
+	        },{
+	            title: '{!JSINHTMLENCODE($Label.search_resources_skill_label)}',
+	            contentEl : 'filterBySkillsDiv'       
+	        },{
+	            title: '{!JSINHTMLENCODE($Label.search_resources_certification_label)}',
+	            contentEl : 'filterByCertificationsDiv'
+	        },{
+	            title: '{!JSINHTMLENCODE($Label.Search_Resources_Attributes_Title_Label)}',
+	            contentEl : 'filterByAttributesDiv'
+	        }]
+		};
+	
+	} else {
+	
+		accordion = {
+	        id: 'accordion-panel',
+	        layout: 'maccordion',
+	        bodyBorder: false,  // useful for accordion containers since the inner panels have borders already
+	        bodyStyle: 'background-color:#DFE8F6',  // if all accordion panels are collapsed, this looks better in this layout
+	        //bodyStyle: 'padding-bottom:15px;background:#eee;',
+	        //defaults: {bodyStyle: 'padding:15px'},
+	        region: 'center',
+	        minSize: 100,
+	        height:100,
+	        autoScroll: true,
+	
+	        
+	         layoutConfig: {
+	            // layout-specific configs go here
+	            animate: true,
+	            autoWidth : false,
+	            fill : false
+	            
+	        },
+	        
+	        items: [
+	        {
+	            title: '{!JSINHTMLENCODE($Label.Search_Resources_Label_Title_Roles)}',
+	            contentEl : 'filterByRolesDiv'
+	            
+	        },{
+	            title: '{!JSINHTMLENCODE($Label.search_resources_skill_label)}',
+	            contentEl : 'filterBySkillsDiv'       
+	        },{
+	            title: '{!JSINHTMLENCODE($Label.search_resources_certification_label)}',
+	            contentEl : 'filterByCertificationsDiv'
+	        },{
+	            title: '{!JSINHTMLENCODE($Label.Search_Resources_Attributes_Title_Label)}',
+	            contentEl : 'filterByAttributesDiv'
+	        }]
+		};
+	}
+	
+
+
+
+
+/*
+ * ================  BorderLayout config  =======================
+ */
+ 
+ 
+ 
+var border = {
+    id:'border-panel',
+    layout: 'border',
+    bodyBorder: false,
+    border :false,
+    defaults: {
+        header: true,
+        collapsible: true,
+        split: true
+    },
+    
+    items: [
+    {
+        header : false,
+        collapsible: false,
+        region: 'center',
+        margins: '0 0 0 0',
+        contentEl: 'rrResultDiv',
+        tbar: _pagingToolbarTop,
+        bbar :_pagingToolbarBottom
+    }]
+};
+
+
+
+
+
+    
+    // This is the main content center region that will contain each example layout panel.
+    // It will be implemented as a CardLayout since it will contain multiple panels with
+    // only one being visible at any given time.
+    var contentPanel = {
+        id: 'content-panel',
+        region: 'center', // this is what makes this panel into a region within the containing layout
+        layout: 'card',
+        margins: '2 5 5 0',
+        activeItem: 0,
+        border: false,
+        bodyBorder: false,
+        listeners : {
+                afterrender : function(){
+                  document.getElementById('extjsOuterDiv').style.visibility = 'visible';
+                  wait(false);
+                }
+            },
+        items: [
+            border
+        ]
+    };
+
+var isGeneric = {!isCalledForGenericSearch};
+var isSame = {!isRedirectFromSame};
+var isShowingLatLan = {!showLatLanFields};
+var detailSectionTitle;
+
+//detailSectionTitle will be rendered as part of the title of an Ext panel. 
+//ExtJS does not do HTML encoding. So use JSINHTMLENCODE instead of JSENCODE
+if (isGeneric) {
+    detailSectionTitle = '{!JSINHTMLENCODE($Label.Common_Label_Address_Details)}';
+} 
+else {
+	if(isSame){
+		detailSectionTitle = '{!JSINHTMLENCODE($Label.Common_Label_Address_Details)}';
+	}
+	else{
+    detailSectionTitle = '{!JSINHTMLENCODE($Label.Common_Label_Resource_Request_Details)}';
+    }
+}
+
+var calHeight = isGeneric ? (isShowingLatLan ? 315 : 300 ): (isSame ? 300 :260);
+
+var leftTopSection = {
+    id:'leftTopSection',
+    region: 'north',
+    height: calHeight,
+    bodyBorder: true,
+    
+    defaults: {
+        bodyBorder: false,
+        border: false
+    },
+    
+    items: [{
+        id: 'eeDetails-panel',
+        title: detailSectionTitle,
+        autoScroll: true,
+        contentEl: 'rrDetailDiv'
+    },{
+        id: 'search-panel',
+        title: '{!JSINHTMLENCODE($Label.Search_Resources_Label_Title_Search_Resources)}',
+        autoScroll: true,
+        contentEl: 'searchDiv'
+    }]
+};
+
+        
+    // Finally, build the main layout once all the pieces are ready.  This is also a good
+    // example of putting together a full-screen BorderLayout within a Viewport.
+    _viewport = new Ext.Viewport({
+        layout: 'border',
+        title: 'Ext Layout Browser',
+
+        defaults: {
+            collapsible: true,
+            header: false,
+            collapseMode:'mini',
+            animate:false,
+            autoScroll:true,
+            autoShow:true
+            
+                        
+      },
+        items: [{
+            layout: 'border',
+            id: 'layout-browser',
+            region:'west',
+            border: false,
+            split:true,
+            width: 338,
+            items: [leftTopSection,accordion]
+ 
+        },
+            contentPanel
+        ],
+        applyTo: 'mainBodyDiv'
+    });
+}   
+    
+
+
+
+
+//=================================================================================//
+//*===========================Visualforce action helper===========================*//
+//=================================================================================//
+
+function sortResults(sortByValue) {
+    if(sortByValue != "None" ){ 
+        document.getElementById('{!$Component.searchResourcesPage.sortTypeParameter}').value = sortByValue;
+        jsSortResult();
+    }
+}
+
+function showSkillPopup() {
+    jsShowSkillPopup();
+}
+function addSelectedSkills() {
+    jsAddSelectedSkills();
+    _skillPopup.hide();
+}
+function onAddSelectedSkillsDone(){
+    resizeViewport();
+    
+}
+
+// added method as a fix for AT9293  Dated: 8 Jan, 2013
+function assignOrHoldResource(){
+    jsUpdateCustomStrategy();
+}
+
+function searchAllSkills() {
+    jsSearchAllSkills();
+}
+
+function searchSkillByParam() {
+    jsSearchSkill();
+}
+function showCertificationPopup() {
+    jsShowCertificationPopup();
+}
+
+function addSelectedCertifications() {
+    jsAddSelectedCertifications();
+    _certificationPopup.hide();
+}
+function onAddSelectedCertificationsDone(){
+    resizeViewport();
+}
+
+function onSelectResourceToDisplayPastJobsDone(){
+    hideAllPopups();
+    _resourceJobsPopup.show();
+}
+function onSelectResourceToDisplaySCDone(){
+    hideAllPopups();
+    _resourceSCPopup.show();
+}
+
+// Added new method as fix for AT9293  Date: 2 Jan, 2013
+function onSelectResourcToAssignOrHoldDone(isHold, resName){
+    if(doesWrkCalExist){
+    	if (isHold == 'true') {
+    		document.getElementById('holdAndAssignPopupHeaderDiv').innerHTML = '<div id="ext-gen80" class="x-tool x-tool-close" onclick="_resourceAssignAndHoldPopup.hide();"> </div>' 
+    																		 + '<span class="x-window-header-text">{!JSENCODE($Label.Search_Resources_Hold_Button_Label)} ' + resName + ' </span>' ;
+    		Ext.getCmp('assign_hold_ButtonID').setText('{!JSENCODE($Label.Search_Resources_Hold_Button_Label)}');
+    	} else {
+    		document.getElementById('holdAndAssignPopupHeaderDiv').innerHTML = '<div id="ext-gen80" class="x-tool x-tool-close" onclick="_resourceAssignAndHoldPopup.hide();"> </div>' 
+    																		 + '<span class="x-window-header-text">{!JSENCODE($Label.Search_Resources_Assign_Button_Label)} ' + resName + ' </span>' ;
+    		Ext.getCmp('assign_hold_ButtonID').setText('{!JSENCODE($Label.Search_Resources_Assign_Button_Label)}');
+    	}
+    	hideAllPopups();
+    	_resourceAssignAndHoldPopup.show();
+    	Ext.getCmp('assign_hold_WindowId').setZIndex('1');
+    	
+    }
+}
+
+function setPopupWidthAndHeight(isSetToOriginal) {
+	var holdAssignWindow = Ext.getCmp('assign_hold_WindowId') ;
+	
+	if(!isSetToOriginal) {
+		holdAssignWindow.setWidth('795');
+		holdAssignWindow.setHeight('378');
+	} else {
+		holdAssignWindow.setWidth('750');
+		holdAssignWindow.setHeight('220');
+	}
+}
+
+function increaseAndDecreasePopupHeight(isDecrease) {
+	var orgHeight = Ext.getCmp('assign_hold_WindowId').getHeight();
+	if(!isDecrease) {
+		orgHeight += 35 ;
+	} else {
+		if(orgHeight > 378) {
+			orgHeight -= 35 ;
+		}
+	}
+	Ext.getCmp('assign_hold_WindowId').setHeight(orgHeight);
+}
+
+// Added new method as fix for AT9293  Date: 2 Jan, 2013
+function onAssignOrHoldResourceDone(){
+	jsAssignResource();
+	_resourceAssignAndHoldPopup.hide();
+}
+function searchAllCertifications() {
+    jsSearchAllCertifications();
+}
+
+function searchCertificationByParam() {
+    jsSearchCertification();
+}
+
+function doLoadResultBySFDCAjaxForPage(pageToLoad){
+    jsGetPagedResult(pageToLoad);
+}
+
+function prepareEmailToSend(rEmailE, rNameE){
+    Ext.get(_toEmailAddFieldID).dom.value = unescape(rEmailE);
+    Ext.get('sendMailToNameSpan').update('('+unescape(rNameE)+')');
+    hideAllPopups();
+    _sendEmailPopup.show();
+}
+function sendEmail(){
+    _sendEmailPopup.hide();
+    jsSendEmail();
+}
+
+//*=================After action function complets methods================*//
+function onSortResultDone(){
+    _pagingStore.initStore(_totalRecords, _pageSize);
+    _pagingStore.refreshStatus(1);
+}
+function onSearchResultDone(){
+	hideAllPopups();
+    _pagingStore.initStore(_totalRecords, _pageSize);
+    _pagingStore.refreshStatus(1);
+}
+function onGetPagedResultDone(){}
+
+//*====================== UI Utility method ===============================*//
+var isAdditionalFilterFieldExist = {!If(searchWrapper.additionalSearchFields.size > 0 , 'true', 'false')} ;
+var completecalHeight ;
+if(isAdditionalFilterFieldExist || isAdditionalFilterFieldExist == 'true') { 
+	completecalHeight = {!isCalledForGenericSearch} ? ({!showLatLanFields} ? 360 : 325 ): 305;
+} else  {
+	var completecalHeight = {!isCalledForGenericSearch} ? ({!showLatLanFields} ? 310 : 275 ): 255;
+}
+
+function resizeViewport(){
+    var tHeight = Ext.get('additionalFilterSection').dom.scrollHeight
+    + Ext.get('filterByRolesDiv').dom.scrollHeight
+    + Ext.get('filterBySkillsDiv').dom.scrollHeight
+    + Ext.get('filterByCertificationsDiv').dom.scrollHeight
+    + Ext.get('filterByAttributesDiv').dom.scrollHeight
+    + (23*4) + completecalHeight;
+    
+    Ext.get('mainBodyDiv').setHeight(tHeight);
+    _viewport.doLayout();
+}
+
+
+function createPopup(applyToDiv,pWidth,pHeight,onOk,okBtnLabel){
+    var okButtonLabel = okBtnLabel == null ? '{!JSINHTMLENCODE($Label.common_label_add)}' : okBtnLabel;
+    var buttonID = (okButtonLabel != null && okButtonLabel == 'Assign/Hold') ? 'assign_hold_ButtonID' : (Date.now() + '');
+    var windowID = (okButtonLabel != null && okButtonLabel == 'Assign/Hold') ? 'assign_hold_WindowId' : (Date.now() + 'WindowId');
+    
+    var pWindow = new Ext.Window({
+                applyTo : applyToDiv,
+                //contentEl: contentPanel,
+                layout:'fit',
+                width: pWidth,
+                height: pHeight,
+                closeAction:'hide',
+                plain: false,
+                resizable : false,
+                id : windowID,
+                autoScroll : true,
+
+                buttons: [{
+                    text:okButtonLabel,
+                    id:buttonID,
+                     handler: function(){
+                        onOk();
+                    }
+                },{
+                    text: '{!JSINHTMLENCODE($Label.common_label_close)}',
+                    handler: null
+                }]
+                
+            });
+    pWindow.buttons[1].handler = function(){pWindow.hide();}
+    pWindow.on('show',function(){
+  	  	pWindow.alignTo( 'content-panel' , 'c-c?' );
+	});
+    return pWindow;
+} 
+function createPopupWithOnlyClose(applyToDiv,pWidth,pHeight){
+    var pWindow = new Ext.Window({
+                applyTo : applyToDiv,
+                //contentEl: contentPanel,
+                layout:'fit',
+                width: pWidth,
+                height: pHeight,
+                //autoHeight : true,
+                closeAction:'hide',
+                plain: false,
+                resizable : false,
+
+
+                buttons: [{
+                    text: '{!JSINHTMLENCODE($Label.common_label_close)}',
+                    handler: null
+                }]
+                
+            });
+    pWindow.buttons[0].handler = function(){pWindow.hide();}
+    pWindow.on('show',function(){
+  	  	pWindow.alignTo( 'content-panel' , 'c-c?' );
+	});
+    return pWindow;
+}
+
+
+var cImage = "{!URLFOR($Resource.appirioCommon, 'collapse.gif')}";
+var eImage = "{!URLFOR($Resource.appirioCommon, 'expand.gif')}";
+
+function toggleSCSection(triggerImage, elID){
+    var el = Ext.get(elID);
+    var triggerImageE = document.getElementById(triggerImage);
+    if(el.getHeight() > 0){
+        el.animate({height: {to: 0, from: el.getHeight()}}, .30, null, 'easeIn', 'run' );
+        triggerImageE.src = eImage;
+    }else{
+        el.animate({height: {to: el.dom.scrollHeight, from: 0}}, .30, null, 'easeIn', 'run' );
+        triggerImageE.src = cImage;
+    }
+    
+}
+
+function applyIEFixes(){
+    if (Ext.isIE7) {
+        Ext.getBody().setStyle('overflow', 'hidden');       
+        Ext.get('rrDetailDiv').setStyle('padding','0');
+    }else{
+        Ext.getBody().setStyle('overflow', 'auto');     
+    }
+    
+    if (Ext.isIE) {
+        /*
+            Extjs have bug for IE9
+            Error:- Object doesn't support property or method 'createContextualFragment'
+            Fix-- below
+        */
+        if ((typeof Range !== 'undefined') && !Range.prototype.createContextualFragment) {
+            Range.prototype.createContextualFragment = function(html) {
+                var frag = document.createDocumentFragment(); 
+                var div = document.createElement('div');
+                frag.appendChild(div);
+                div.outerHTML = html;
+                return frag;
+            };
+        }
+    }
+}
+
+// Added new method for AT7382  Dated: 26 Dec, 2012
+function changeSkillFilter(v){
+	var elements = Ext.query(".skillFilter");
+    Ext.each(elements , function(item,index){
+        Ext.get(item).set({value:v},false);
+    });
+}
+
+function changeCertFilter(v){
+	var elements = Ext.query(".certFilter");
+    Ext.each(elements , function(item,index){
+        Ext.get(item).set({value:v},false);
+    });
+}
+
+function changeAdditionalFilter(v){
+	var elements = Ext.query(".additionalFilter");
+    Ext.each(elements , function(item,index){
+        Ext.get(item).set({value:v},false);
+    });
+}
+
+function showSkillCertificationFilter(val , size , skillCertFilter , skillCertCheckbox){
+    
+	var isNextChecked = false;
+	var isChecked = false;
+	var currentFilterList = Ext.query(skillCertFilter+val);
+	var currentElement = Ext.query(skillCertCheckbox+val);
+	isChecked = Ext.get(currentElement[0]).dom.checked;
+	
+	
+	for (var count = val-1; count >= 1; count--) {
+        var styleclassName = skillCertCheckbox + count ;
+        var nextElements = Ext.query(styleclassName);
+        if(Ext.get(nextElements[0]).dom.checked == true){
+          isNextChecked = true; 
+          break; 
+        }
+    }
+    
+    if(currentFilterList.length != 0){
+       if(Ext.get(currentElement[0]).dom.checked == false){
+        Ext.get(currentFilterList[0]).setStyle({display:'none'});
+        }else if(Ext.get(currentElement[0]).dom.checked == true & isNextChecked == true){
+            Ext.get(currentFilterList[0]).setStyle({display:'block'});
+        }
+    }
+    
+    if(isNextChecked == false){
+        for (var count = val+1; count <= size; count++) {
+	        var styleclassName = skillCertCheckbox + count ;
+	        var prevElement = Ext.query(styleclassName);
+	        
+	        if(Ext.get(prevElement[0]).dom.checked == true){
+	            var prevFilterList = Ext.query(skillCertFilter+count);
+	            if(isChecked){
+	               Ext.get(prevFilterList[0]).setStyle({display:'block'});
+	            }else{
+	               Ext.get(prevFilterList[0]).setStyle({display:'none'});
+	            }   
+	            break; 
+	        }
+        }
+    }
+}
+
+function showAdditionalFilterSearchLogic(val , size , additionalFilter , additionalFilterSelect){
+    
+	var isNextSelected = false;
+	var isSelected = false;
+	var currentFilterList = Ext.query(additionalFilter+val);
+	var currentElement = Ext.query(additionalFilterSelect+val);
+	isSelected = Ext.get(currentElement[0]).dom.value != "" ;
+	
+	for (var count = val-1; count >= 1; count--) {
+        var styleclassName = additionalFilterSelect + count ;
+        var nextElements = Ext.query(styleclassName);
+        if(Ext.get(nextElements[0]).dom.value != ""){
+          isNextSelected = true; 
+          break; 
+        }
+    }
+    
+    if(currentFilterList.length != 0){
+       if(Ext.get(currentElement[0]).dom.value == ""){
+        Ext.get(currentFilterList[0]).setStyle({display:'none'});
+        }else if(Ext.get(currentElement[0]).dom.value != "" & isNextSelected == true){
+            Ext.get(currentFilterList[0]).setStyle({display:'block'});
+        }
+    }
+    
+    if(isNextSelected == false){
+        for (var count = val+1; count <= size; count++) {
+	        var styleclassName = additionalFilterSelect + count ;
+	        var prevElement = Ext.query(styleclassName);
+	        
+	        if(Ext.get(prevElement[0]).dom.value != ""){
+	            var prevFilterList = Ext.query(additionalFilter+count);
+	            if(isSelected){
+	               Ext.get(prevFilterList[0]).setStyle({display:'block'});
+	            }else{
+	               Ext.get(prevFilterList[0]).setStyle({display:'none'});
+	            }   
+	            break; 
+	        }
+        }
+    }
+}
+
+</script>
+</apex:form> 
+</apex:page>

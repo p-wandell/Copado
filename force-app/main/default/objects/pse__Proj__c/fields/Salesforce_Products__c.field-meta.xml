@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Salesforce_Products__c</fullName>
+    <description>Choose every cloud associated with the project.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Choose every cloud associated with the project.</inlineHelpText>
+    <label>Salesforce Products</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>B2B Commerce Cloud</fullName>
+                <default>false</default>
+                <label>B2B Commerce Cloud</label>
+            </value>
+            <value>
+                <fullName>B2C Commerce Cloud</fullName>
+                <default>false</default>
+                <label>B2C Commerce Cloud</label>
+            </value>
+            <value>
+                <fullName>Banking Cloud</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Banking Cloud</label>
+            </value>
+            <value>
+                <fullName>Collaboration (Quip)</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Collaboration (Quip)</label>
+            </value>
+            <value>
+                <fullName>Community Cloud</fullName>
+                <default>false</default>
+                <label>Community Cloud</label>
+            </value>
+            <value>
+                <fullName>Data Management (DMP)</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Data Management (DMP)</label>
+            </value>
+            <value>
+                <fullName>Education Cloud</fullName>
+                <default>false</default>
+                <label>Education Cloud</label>
+            </value>
+            <value>
+                <fullName>Einstein Analytics</fullName>
+                <default>false</default>
+                <label>Einstein Analytics</label>
+            </value>
+            <value>
+                <fullName>Field Service Lightning</fullName>
+                <default>false</default>
+                <label>Field Service Lightning</label>
+            </value>
+            <value>
+                <fullName>Financial Services Cloud</fullName>
+                <default>false</default>
+                <label>Financial Services Cloud</label>
+            </value>
+            <value>
+                <fullName>Government Cloud</fullName>
+                <default>false</default>
+                <label>Government Cloud</label>
+            </value>
+            <value>
+                <fullName>Healthcare Cloud</fullName>
+                <default>false</default>
+                <label>Healthcare Cloud</label>
+            </value>
+            <value>
+                <fullName>Heroku</fullName>
+                <default>false</default>
+                <label>Heroku</label>
+            </value>
+            <value>
+                <fullName>Identity</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Identity</label>
+            </value>
+            <value>
+                <fullName>Integration Cloud (Mulesoft)</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Integration Cloud (Mulesoft)</label>
+            </value>
+            <value>
+                <fullName>IoT Cloud</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>IoT Cloud</label>
+            </value>
+            <value>
+                <fullName>Live Message / Live Agent</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Live Message / Live Agent</label>
+            </value>
+            <value>
+                <fullName>Marketing Cloud</fullName>
+                <default>false</default>
+                <label>Marketing Cloud</label>
+            </value>
+            <value>
+                <fullName>Non Profit Cloud</fullName>
+                <default>false</default>
+                <label>Non Profit Cloud</label>
+            </value>
+            <value>
+                <fullName>Pardot</fullName>
+                <default>false</default>
+                <label>Pardot</label>
+            </value>
+            <value>
+                <fullName>PDO: AppExchange App Development</fullName>
+                <default>false</default>
+                <label>PDO: AppExchange App Development</label>
+            </value>
+            <value>
+                <fullName>Philanthropy Cloud</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Philanthropy Cloud</label>
+            </value>
+            <value>
+                <fullName>Platform</fullName>
+                <default>false</default>
+                <label>Platform</label>
+            </value>
+            <value>
+                <fullName>CPQ</fullName>
+                <default>false</default>
+                <label>Revenue Cloud (CPQ)</label>
+            </value>
+            <value>
+                <fullName>Sales Cloud</fullName>
+                <default>false</default>
+                <label>Sales Cloud</label>
+            </value>
+            <value>
+                <fullName>Sales Cloud Einstein (IQ)</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Sales Cloud Einstein (IQ)</label>
+            </value>
+            <value>
+                <fullName>Service Cloud</fullName>
+                <default>false</default>
+                <label>Service Cloud</label>
+            </value>
+            <value>
+                <fullName>Shield</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Shield</label>
+            </value>
+            <value>
+                <fullName>Success Packs</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Success Packs</label>
+            </value>
+            <value>
+                <fullName>Wave</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Wave</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

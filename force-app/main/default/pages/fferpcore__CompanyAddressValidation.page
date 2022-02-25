@@ -1,0 +1,13 @@
+<apex:page standardController="fferpcore__Company__c" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+	<apex:form >
+		<apex:sectionHeader title="Validate Address"/>
+		<apex:pageMessages />
+        <apex:variable var="dummy1" value="{!fferpcore__Company__c.fferpcore__Street__c}"/>
+        <apex:variable var="dummy2" value="{!fferpcore__Company__c.fferpcore__City__c}"/>
+        <apex:variable var="dummy3" value="{!fferpcore__Company__c.fferpcore__State__c}"/>
+        <apex:variable var="dummy4" value="{!fferpcore__Company__c.fferpcore__Country__c}"/>
+        <apex:variable var="dummy5" value="{!fferpcore__Company__c.fferpcore__Zip__c}"/>
+		<c:AddressValidation validationRecord="{!fferpcore__Company__c}" validationAddressType="company"/>
+	</apex:form>
+</apex:page>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Email to be sent when the field IP Installation URL is populated.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>IP Installation URL Populated</name>
+    <style>none</style>
+    <subject>IP Installation Link ready for {!Opportunity.Name}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

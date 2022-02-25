@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Case transferred email notification for support requests.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Transferred Support Request Notification</name>
+    <style>none</style>
+    <subject>Case {!Case.CaseNumber} has been Transferred to You</subject>
+    <textOnly>The following support request from {!Case.Contact} has been transferred to you.
+
+Case Reason:  {!Case.Reason}
+Case subject:  {!Case.Subject}
+Case Description:  {!Case.Description}
+Case Link:  {!Case.Link}</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

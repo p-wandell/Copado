@@ -1,0 +1,72 @@
+.THIS {
+
+}
+.THIS .peak-checklist-item {
+        padding: 5px 0;
+}
+
+.THIS .peak-checklist-item .slds-checkbox--faux {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+
+
+/*unchecked boxes*/
+.THIS .slds-checkbox .slds-checkbox_faux::after,
+.THIS .slds-checkbox .slds-checkbox--faux::after,
+.THIS .slds-checkbox .slds-checkbox_faux::after,
+.THIS .slds-checkbox .slds-checkbox--faux::after,
+.THIS .slds-checkbox .slds-checkbox__label .slds-checkbox_faux::after,
+.THIS .slds-checkbox .slds-checkbox__label .slds-checkbox--faux::after {
+    display: block;
+    content: "";
+    height: 0.35rem;
+    width: 0.7rem;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0px) rotate(-45deg);
+    border-bottom: 3px solid #eeeeee;
+    border-left: 3px solid #eeeeee;
+}
+
+.THIS .slds-checkbox [type="checkbox"]:checked + .slds-checkbox_faux::after,
+.THIS .slds-checkbox [type="checkbox"]:checked + .slds-checkbox--faux::after,
+.THIS .slds-checkbox [type="checkbox"]:checked ~ .slds-checkbox_faux::after,
+.THIS .slds-checkbox [type="checkbox"]:checked ~ .slds-checkbox--faux::after,
+.THIS .slds-checkbox [type="checkbox"]:checked + .slds-checkbox__label .slds-checkbox_faux::after,
+.THIS .slds-checkbox [type="checkbox"]:checked + .slds-checkbox__label .slds-checkbox--faux::after {
+    display: block;
+    content: "";
+    height: 0.35rem;
+    width: 0.7rem;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0px) rotate(-45deg);
+    border-bottom: 3px solid #ffffff;
+    border-left: 3px solid #ffffff;
+}
+
+.THIS .peak-checklist-item .slds-checkbox .slds-checkbox_faux:hover,
+.THIS .peak-checklist-item .slds-checkbox .slds-checkbox--faux:hover,
+.THIS .peak-checklist-item .slds-checkbox .slds-checkbox_faux:hover,
+.THIS .peak-checklist-item .slds-checkbox .slds-checkbox--faux:hover {
+
+    background-color: #aaaaaa;
+}
+
+
+.THIS .peak-checklist-item.checked .slds-checkbox .slds-checkbox_faux,
+.THIS .peak-checklist-item.checked .slds-checkbox .slds-checkbox--faux,
+.THIS .peak-checklist-item.checked .slds-checkbox .slds-checkbox_faux,
+.THIS .peak-checklist-item.checked .slds-checkbox .slds-checkbox--faux,
+.THIS .peak-checklist-item.checked .slds-checkbox .slds-checkbox_faux:hover,
+.THIS .peak-checklist-item.checked .slds-checkbox .slds-checkbox--faux:hover,
+.THIS .peak-checklist-item.checked .slds-checkbox .slds-checkbox_faux:hover,
+.THIS .peak-checklist-item.checked .slds-checkbox .slds-checkbox--faux:hover {
+
+    background-color: green;
+}

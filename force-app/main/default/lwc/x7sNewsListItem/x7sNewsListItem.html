@@ -1,0 +1,58 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc. All rights reserved.
+  -->
+
+<template>
+	<c-x7s-shr-card title={newsName}
+	                record-id={news.Id}
+	                topics={news.topics}
+	                custom-class={customClass}
+	                image-src={imageUrl}
+	                image-height="140px"
+	                layout={layout}
+	                variant={tileVariant}
+	                text-align={textAlign}
+	                hide-image={hide_image}
+	                use-avatar={useAvatar}>
+
+		<slot>
+			<div if:true={limitToSpecificGroups}>
+				<template if:true={news.groupName}>
+					<lightning-formatted-text value={labels.labelGroupName}>
+					</lightning-formatted-text>&nbsp;
+					<a onclick={navigateToGroup}>
+						{news.groupName}
+					</a>
+				</template>
+			</div>
+			<template if:true={showComments}>
+				<c-x7s-shr-meta icon="utility:comments"
+				                count={news.commentCount}>
+				</c-x7s-shr-meta>
+			</template>
+			<template if:true={news.Show_Author__c}>
+				<c-x7s-shr-meta icon="utility:date_time"
+				                hide-count>
+					<lightning-relative-date-time value={publishedDate}>
+
+					</lightning-relative-date-time>&nbsp;
+					{labels.labelAuthorBy}&nbsp;
+					<a href={profileUrl}>
+						{publishedBy}
+					</a>
+				</c-x7s-shr-meta>
+			</template>
+		</slot>
+		<div slot="footer">
+			<template if:true={showLikes}>
+				<div class={newsLikeRowClass}>
+					<c-x7s-news-like-button record-id={news.Id}
+					                        like-count={news.Like_Count__c}
+					                        is-liking={news.isLiking}
+					>
+					</c-x7s-news-like-button>
+				</div>
+			</template>
+		</div>
+	</c-x7s-shr-card>
+</template>

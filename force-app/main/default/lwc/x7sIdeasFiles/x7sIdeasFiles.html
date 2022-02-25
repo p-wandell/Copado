@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<lightning-layout multiple-rows="true">
+
+		<!--Title-->
+		<template if:true={showTitle}>
+			<lightning-layout-item size="12" padding="around-small">
+				<c-x7s-shr-component-wrapper title={titleText}></c-x7s-shr-component-wrapper>
+			</lightning-layout-item>
+		</template>
+
+		<!--File Uploader-->
+		<template if:true={showFileUploader}>
+			<lightning-layout-item size="12" padding="around-small">
+				<lightning-file-upload name="fileUploader"
+				                       label={labels.labelFileUploader}
+				                       multiple={multiple}
+				                       accept={accept}
+				                       disabled={disabled}
+				                       record-id={idea.extension}
+				                       onuploadfinished={handleUploadFinished}>
+				</lightning-file-upload>
+			</lightning-layout-item>
+		</template>
+
+		<!--File List View-->
+		<div if:true={showFilesViewer} class="slds-p-around_small">
+			<lightning-layout-item size="12">
+				<template for:each={files} for:item="file">
+					<article class="slds-tile slds-media slds-m-vertical_medium" key={file.Id}>
+						<div class="slds-media__figure">
+                            <span class="slds-icon_container" style="padding-left:5px">
+                                <lightning-icon icon-name={file.iconName} size="x-small"></lightning-icon>
+                            </span>
+						</div>
+						<div class="slds-media__body">
+							<h5 class="slds-tile__title">
+								<a href="javascript:void(0)" data-id={file.Id} onclick={handlePreview}
+								   title="Click to see preview of the file.">{file.Title}</a>
+							</h5>
+						</div>
+					</article>
+				</template>
+			</lightning-layout-item>
+		</div>
+	</lightning-layout>
+</template>

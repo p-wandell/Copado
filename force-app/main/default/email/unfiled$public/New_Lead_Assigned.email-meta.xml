@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>An email alert is sent to the user assigned to the Lead</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>New Lead Assigned</name>
+    <style>none</style>
+    <subject>You&apos;ve been assigned a new Lead</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Closed_resource_added_to_project</fullName>
+        <description>Closed resource to project</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Project_Manager_Email__c</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>PSA_Email_Templates/Closed_resource_notification_to_Project</template>
+    </alerts>
+    <alerts>
+        <fullName>New_resource_added_to_project</fullName>
+        <description>New resource added to project</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Project_Manager_Email__c</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>PSA_Email_Templates/New_resource_added_to_Project</template>
+    </alerts>
+    <alerts>
+        <fullName>PSA_Assigned_To_Project_Email_Alert</fullName>
+        <description>PSA Assigned To Project Email Alert</description>
+        <protected>false</protected>
+        <recipients>
+            <field>pse__Resource__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>PSA_Email_Templates/PSA_Resource_Assigned_To_Project</template>
+    </alerts>
+    <alerts>
+        <fullName>Updated_resource_added_to_project</fullName>
+        <description>Updated resource to project</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Project_Manager_Email__c</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>PSA_Email_Templates/Update_resource_notification_to_Project</template>
+    </alerts>
+    <alerts>
+        <fullName>Used_to_notify_Project_Manager_when_a_Fully_Staffed_Project_assigned</fullName>
+        <description>Used to notify Project Manager when a Fully Staffed Project assigned</description>
+        <protected>false</protected>
+        <recipients>
+            <field>pse__Resource__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>PSA_Email_Templates/PSA_Project_Fully_Staffed_Notification</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>PSA_Default_Assignment_Name</fullName>
+        <field>Name</field>
+        <formula>IF(
+NOT(ISBLANK(Assignment_Name_Override__c)),Assignment_Name_Override__c,
+  If(
+  AND(
+    ISPICKVAL(pse__Resource__r.Resource_Type__c, &quot;Generic&quot;),
+    pse__Is_Billable__c = TRUE),
+    Text(pse__Role__c),
+    IF(
+    AND(
+      ISPICKVAL(pse__Resource__r.Resource_Type__c, &quot;Generic&quot;),
+      pse__Is_Billable__c = FALSE),
+      Text(pse__Role__c)+&quot;-&quot;+&quot;NB&quot;,
+    IF(
+    AND(
+      ISPICKVAL(pse__Resource__r.Resource_Type__c, &quot;Internal&quot;),
+      pse__Is_Billable__c = FALSE),
+      pse__Resource__r.PSA_Assignment_Name__c+&quot;-&quot;+Text(pse__Role__c)+&quot;-&quot;+&quot;NB&quot;,
+      IF(
+        AND(
+          ISPICKVAL(pse__Resource__r.Resource_Type__c,&quot;External&quot;), 
+          CONTAINS(pse__Resource__r.LastName, &quot;MTX&quot;),
+          pse__Is_Billable__c = FALSE),
+          Text(pse__Role__c)+&quot;-&quot;+&quot;NB&quot;,
+          IF(
+            AND(
+              ISPICKVAL(pse__Resource__r.Resource_Type__c,&quot;External&quot;), 
+              CONTAINS(pse__Resource__r.LastName, &quot;MTX&quot;),
+              pse__Is_Billable__c = TRUE),
+            Text(pse__Role__c),
+            IF(
+              AND(
+                ISPICKVAL(pse__Resource__r.Resource_Type__c,&quot;External&quot;), 
+                CONTAINS(pse__Resource__r.LastName, &quot;Offshore&quot;),
+                pse__Is_Billable__c = FALSE),
+                Text(pse__Role__c)+&quot;-&quot;+&quot;NB&quot;,
+             IF(
+               AND(
+                 ISPICKVAL(pse__Resource__r.Resource_Type__c,&quot;External&quot;), 
+                 CONTAINS(pse__Resource__r.LastName, &quot;Offshore&quot;),
+                 pse__Is_Billable__c = TRUE),
+                 Text(pse__Role__c),
+              IF(
+                AND(
+                  ISPICKVAL(pse__Resource__r.Resource_Type__c,&quot;External&quot;), 
+                  NOT(CONTAINS(pse__Resource__r.LastName, &quot;MTX&quot;)),
+                  pse__Is_Billable__c = FALSE),
+                  pse__Resource__r.PSA_Assignment_Name__c+&quot;-&quot;+Text(pse__Role__c)+&quot;-&quot;+&quot;NB&quot;,
+                IF(
+                  AND(
+                    ISPICKVAL(pse__Resource__r.Resource_Type__c,&quot;External&quot;), 
+                    NOT(CONTAINS(pse__Resource__r.LastName, &quot;MTX&quot;)),
+                    pse__Is_Billable__c = TRUE),
+                    pse__Resource__r.PSA_Assignment_Name__c+&quot;-&quot;+Text(pse__Role__c),
+                    pse__Resource__r.PSA_Assignment_Name__c+&quot;-&quot;+Text(pse__Role__c))
+                )
+              )
+            )
+          )
+        )
+      ) 
+    )
+  ) +&quot;-&quot;+pse__Project__r.PSA_Assignment_Name__c
+)</formula>
+        <name>PSA Default Assignment Name</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PSA_Set_Assignment_Status_to_Scheduled</fullName>
+        <description>Sets Assignment Status to Scheduled</description>
+        <field>pse__Status__c</field>
+        <literalValue>Scheduled</literalValue>
+        <name>PSA Set Assignment Status to Scheduled</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PSA_Update_Bill_Rate_Rate_Card</fullName>
+        <field>pse__Bill_Rate__c</field>
+        <formula>pse__Suggested_Bill_Rate_Number__c</formula>
+        <name>PSA Update Bill Rate Rate Card</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PSA_Use_Default_Cost_Rate_False</fullName>
+        <field>pse__Use_Resource_Default_Cost_Rate__c</field>
+        <literalValue>0</literalValue>
+        <name>PSA Use Default Cost Rate False</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PSA_Use_Resource_Default_Cost_Rate_TRUE</fullName>
+        <field>pse__Use_Resource_Default_Cost_Rate__c</field>
+        <literalValue>1</literalValue>
+        <name>PSA Use Resource Default Cost Rate TRUE</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Time_Credited</fullName>
+        <description>Time Credited should be checked if the assignment is nonbill on a customer project.</description>
+        <field>pse__Time_Credited__c</field>
+        <literalValue>1</literalValue>
+        <name>Time Credited</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>PSA Assignment Creation Defaults</fullName>
+        <actions>
+            <name>PSA_Set_Assignment_Status_to_Scheduled</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>PSA_Use_Resource_Default_Cost_Rate_TRUE</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Defaults on every Assignment Creation</description>
+        <formula>true</formula>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>PSA Assignment Name</fullName>
+        <actions>
+            <name>PSA_Default_Assignment_Name</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Assignment name update</description>
+        <formula>TRUE&amp;&amp; $Setup.rh2__PS_Settings__c.rh2__Run_Validation_Rule__c</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>PSA Assignment Set Bill Rate from Rate Card For Non-Fixed Price Projects</fullName>
+        <actions>
+            <name>PSA_Update_Bill_Rate_Rate_Card</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>PSA Assignment Set Bill Rate from Rate Card For Non-Fixed Price</description>
+        <formula>pse__Project__r.pse__Is_Billable__c = TRUE &amp;&amp; NOT(ISPICKVAL(pse__Project__r.pse__Billing_Type__c, &apos;Fixed Price&apos;)) &amp;&amp; pse__Is_Billable__c &amp;&amp; Not(ISBLANK(pse__Rate_Card__c))</formula>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>PSA Time Credited</fullName>
+        <actions>
+            <name>Time_Credited</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Time Credited is checked if the assignment is nonbill on a customer project.</description>
+        <formula>AND( pse__Is_Billable__c = FALSE, TEXT( pse__Project__r.pse__Project_Type__c)=&quot;Customer Project&quot;)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+</Workflow>

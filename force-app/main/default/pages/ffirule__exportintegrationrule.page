@@ -1,0 +1,25 @@
+<apex:page standardController="ffirule__IntegrationRule__c" recordSetVar="var" extensions="ffirule.ExportIntegrationRuleController" lightningStylesheets="true">
+    <apex:sectionHeader title="{!$Label.ffirule__irexporttitle}" help="{!URLFOR('/apex/helploader?topicid=1073')}"  />
+    <apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}" layout="none">
+      <style>
+          .pageTitleIcon {
+              border-radius: .25rem;
+              background-color: #f87d76;
+              background-image: url("{!URLFOR($Asset.SLDS, 'assets/icons/custom/custom67.svg')}");
+              background-repeat: no-repeat;
+              background-position: center;
+              background-size: 2rem;
+              display: block !important;
+          }
+      </style>
+    </apex:outputPanel>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageMessages escape="false" />
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="{!$Label.ffirule__irexportbackbtn}" action="{!cancel}"/>
+                <apex:commandButton value="{!$Label.ffirule__irexportdownloadbtn}" action="{!downloadJSON}" rendered="{!IsJSONReady}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

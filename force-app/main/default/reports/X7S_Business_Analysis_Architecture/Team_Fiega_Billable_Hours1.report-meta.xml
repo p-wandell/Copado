@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Timecard_Header__c.pse__Total_Hours__c</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Total billable hours from the timecard report type.</description>
+    <filter>
+        <criteriaItems>
+            <column>pse__Timecard_Header__c.pse__Resource__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Joe Fiega,Marci Nuckolls,Jenn Romaniszak Kant,Elliott Johnson,Renee Melant,JD Griffis,Gloria Ramchandani,Jason Gibbs,Christine Hancock,Chris Bonanne,Amy Barts,Tim Darwick,Mishaal Jamil,Tyler Trepton,Dale Ziegler,Laura McCullum,James Griffis,Jawad Hasan,Caitlin Marshall,Elizabeth McGovern,Joseph Schacht,Aaron Schacht,Misty Fierro,Susan Vincler,Stephanie Akin,John Coultis,Casey Wells</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Timecard_Header__c.pse__Billable__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Timecard_Header__c.pse__Status__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Approved</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>pse__Timecard_Header__c.pse__End_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Timecard_Header__c.pse__Resource__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Team Fiega - Billable Hours</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>CustomEntity$pse__Timecard_Header__c@pse__Timecard_Header__c.pse__Assignment__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Timecard_Header__c.pse__End_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,561 @@
+<apex:page controller="pse.ActualsVerifierController" tabStyle="Actuals_Verifier__tab" sidebar="false" lightningStylesheets="true">
+	<style>
+        a.actionLink { text-decoration: underline; }
+        div#wait { width: 100%; height: 100% }
+        div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+        div#waitingHolder { width: 113px; }
+        table#results td { white-space: nowrap; }
+        tr:not(:hover) td.diff { color: #fff !important; background-color: #007add; }
+        .lookupInput img { vertical-align: bottom; }
+        .td-align { text-align: right; padding-right: 15px; }
+        .check-align { vertical-align: middle; }
+        .right-margin { margin-right: 3px; }
+        .left-margin { margin-left: 5px; }
+        .radio-align td input { vertical-align: bottom; }
+    </style>
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<script type="text/javascript">
+        function setVisible(name, visible) {
+          var e = document.getElementById(name);
+          if (e != null) {
+            if (visible) {
+              e.setAttribute("style", "display: block");
+              e.style.cssText = "display: block";
+            } else {
+              e.setAttribute("style", "display: none");
+              e.style.cssText = "display: none";
+            }
+          }
+        }
+        function wait(val) {
+          setVisible('loading', val);
+          setVisible('wait', val);
+        }
+        function confirmDeleteAll() {
+            if (confirm('{!JSINHTMLENCODE($Label.actuals_verifier_confirm_msg_to_delete_all_actuals)}')) {
+              wait(true);
+              return true;
+            }
+            return false;
+        }
+        function precancel() {
+            if (confirm('{!JSINHTMLENCODE($Label.actuals_verifier_confirm_msg_to_cancel_seleted_task)}')) {
+              wait(true);
+              return true;
+            }
+            return false;
+        }
+    </script>
+	<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+	<div id="loading" class="waitingSearchDiv" style="display: none">
+		<div id="waitingHolder" class="waitingHolder">
+			<img class="waitingImage" src="/img/loading.gif"/>
+			<span class="waitingDescription">{!$Label.common_loading_label}</span>
+		</div>
+	</div>
+	<apex:variable var="isLightningView" value="{!$User.UIThemeDisplayed=='Theme4d'}" />
+	<apex:outputPanel layout="none" rendered="{!isLightningView}">
+		<style>
+			.headerRow th:not(:first-of-type) { border-left: 1px solid rgb(221, 219, 218); }
+			.radio-align { margin-top: 3px; }
+			.table-margin { margin-bottom: 10px; }
+			.right-margin { margin-right: 10px; }
+			.left-margin { margin-left: 10px; }
+		</style>
+	</apex:outputPanel>
+	<apex:form id="form">
+		<apex:actionFunction name="refreshParams" action="{!refreshParams}" oncomplete="wait(false);" rerender="verifyParams, msgs" immediate="true">
+			<apex:param name="param1" value="" assignTo="{!selectedUnitType}" />
+		</apex:actionFunction>
+		<apex:sectionHeader title="{!$Label.pse__actuals_verifier_title}" help="{!$Page.pse__ActualsVerifierHelp}"/>
+		<apex:pageMessages id="msgs" />
+		<apex:pageBlock id="params" title="{!$Label.pse__actuals_verifier_verification_options}" rendered="{!NOT hasResults && NOT isProcessing && NOT hasDeltas && NOT hasNoActuals}">
+			<apex:pageBlockButtons id="buttons">
+				<apex:commandButton action="{!checkVerificationScope}" value="{!$Label.pse__actuals_verifier_btn_check_verification_scope}" onclick="wait(true);" rerender="msgs" oncomplete="wait(false);" />&nbsp;&nbsp;
+				<apex:commandButton action="{!lock}" value="{!$Label.pse__actuals_verifier_btn_lock_actuals}" onclick="wait(true);" rendered="{!NOT isLocked}" />&nbsp;&nbsp;
+				<apex:commandButton action="{!unlock}" value="{!$Label.pse__actuals_verifier_btn_unlock_actuals}" onclick="wait(true);" rendered="{!isLocked}" />&nbsp;&nbsp;
+				<apex:commandButton action="{!start}" value="{!$Label.pse__actuals_verifier_btn_start_verification}" onclick="wait(true);" />&nbsp;&nbsp;
+				<apex:commandButton action="{!createBlanks}" value="{!$Label.pse__actuals_verifier_btn_create_blank_actuals}" onclick="wait(true);" />
+			</apex:pageBlockButtons>
+			<table cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td>
+						<apex:outputLabel value="{!$Label.pse__actuals_verifier_label_varify_actuals}" for="unitType" />
+					</td>
+					<td>
+						<apex:selectRadio id="unitType" value="{!selectedUnitType}" onclick="wait(true); return refreshParams(this.value);" styleClass="radio-align">
+							<apex:selectOption value="{!regionOption}" />
+							<apex:selectOption value="{!practiceOption}" />
+							<apex:selectOption value="{!groupOption}" />
+							<apex:selectOption value="{!projectOption}" />
+							<apex:selectOption value="{!resourceOption}" />
+						</apex:selectRadio>
+					</td>
+				</tr>
+			</table>
+			<p />
+			<apex:outputPanel id="verifyParams">
+				<div>
+					<apex:outputPanel id="unitSelector" rendered="{!selectedUnitType != 'Project' && selectedUnitType != 'Resource'}">
+						<table cellpadding="5" cellspacing="0" border="0" class="table-margin">
+							<tr>
+								<td width="{!IF(isLightningView,'105','72')}" class="td-align">
+									<apex:outputLabel value="{!IF(selectedUnitType=='Group',$Label.pse__actuals_verifier_chk_group,IF(selectedUnitType=='Region',$Label.pse__actuals_verifier_chk_region,$Label.pse__actuals_verifier_chk_practice))}:" for="unitPicker"  />
+								</td>
+								<td>
+									<c:UnitPicker id="unitPicker" unitTypeAttribute="{!selectedUnitType}" selectedUnitId="{!selectedUnitId}" showLabel="false" />
+								</td>
+								<td>
+									<apex:outputPanel styleClass="right-margin left-margin">({!$Label.pse__actuals_verifier_label_and_its_children})</apex:outputPanel>
+								</td>
+							</tr>
+						</table>
+					</apex:outputPanel>
+					<apex:outputPanel id="projectSelector" rendered="{!selectedUnitType == 'Project'}">
+						<table cellpadding="5" cellspacing="0" border="0" class="table-margin">
+							<tr>
+								<td width="{!IF(isLightningView,'105','72')}" class="td-align">
+									<apex:outputLabel value="{!$Label.pse__actuals_verifier_chk_project}:" for="project" />
+								</td>
+								<td>
+									<apex:inputField id="project" value="{!selectedProject.pse__Project__c}" required="false"  />
+								</td>
+								<td>
+									<apex:outputPanel styleClass="left-margin">({!$Label.pse__actuals_verifier_label_and_its_children})</apex:outputPanel>
+									<apex:outputPanel styleClass="right-margin left-margin">{!$Label.pse__actuals_verifier_label_or}</apex:outputPanel>
+									<apex:inputCheckbox id="allProjects" value="{!includeAllProjects}" styleClass="check-align" />
+									<apex:outputLabel value="{!$Label.pse__actuals_verifier_label_include_all_projects}" for="allProjects" />
+								</td>
+							</tr>
+						</table>
+					</apex:outputPanel>
+					<apex:outputPanel id="resourceSelector" rendered="{!selectedUnitType == 'Resource'}">
+						<table cellpadding="5" cellspacing="0" border="0" class="table-margin">
+							<tr>
+								<td width="{!IF(isLightningView,'105','72')}" class="td-align">
+									<apex:outputLabel value="{!$Label.pse__actuals_verifier_chk_resource}:" for="resource" />
+								</td>
+								<td>
+									<apex:inputField id="resource" value="{!selectedResource.pse__Resource__c}" required="false"  />
+								</td>
+								<td>
+									<apex:outputPanel styleClass="right-margin left-margin">{!$Label.pse__actuals_verifier_label_or}</apex:outputPanel>
+									<apex:inputCheckbox id="allResources" value="{!includeAllResources}" styleClass="check-align" />
+									<apex:outputLabel value="{!$Label.pse__actuals_verifier_label_include_all_resources}" for="allResources" />
+								</td>
+							</tr>
+						</table>
+					</apex:outputPanel>
+					<table cellpadding="5" cellspacing="0" border="0">
+						<tr>
+							<td width="{!IF(isLightningView,'105','72')}" class="td-align">
+								<apex:outputLabel value="{!$Label.pse__actuals_verifier_label_time_period}:" for="selectedPeriod" />
+							</td>
+							<td>
+								<apex:inputField id="selectedPeriod" value="{!selectedPeriod.pse__Time_Period__c}" required="false" />
+							</td>
+							<td>
+								<apex:inputCheckbox id="includeSubPeriods" value="{!includeSubPeriods}" styleClass="check-align left-margin" />
+								<apex:outputLabel value="{!$Label.pse__actuals_verifier_checkbox_label_include_subperiods}" for="includeSubPeriods" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" height="{!IF(isLightningView,'20','')}"></td>
+						</tr>
+						<tr>
+							<td colspan="3" >
+	                            {!$Label.actuals_verifier_label_note}: 
+								<apex:outputPanel style="color:red;">
+									{!SUBSTITUTE(($Label.pse__actuals_verifier_label_verification_scope_count),'{0}',queryRowLimitString)}
+								</apex:outputPanel>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</apex:outputPanel>
+		</apex:pageBlock>
+		<apex:pageBlock id="results" title="{!$Label.pse__actuals_verifier_verification_results_title}" rendered="{!hasResults && NOT isProcessing && NOT hasDeltas}">
+			<apex:pageBlockButtons id="buttons">
+				<apex:commandButton action="{!cancel}" value="{!$Label.pse__actuals_verifier_btn_start_over}" immediate="true" onclick="wait(true);" />&nbsp;
+				<apex:commandButton action="{!deleteAll}" value="{!$Label.pse__actuals_verifier_btn_delete_all_actuals}" immediate="true" onclick="return confirmDeleteAll();" rendered="{!diffCount > 0}" />
+			</apex:pageBlockButtons>
+			<apex:outputPanel rendered="{!totalActualCount == 9999}">
+				<p>{!$Label.pse__actuals_verifier_info_msg_for_forcecom_governor_limits}</p>
+			</apex:outputPanel>
+			<apex:outputPanel rendered="{!diffCount > 0}">
+				<p>A total of {!diffCount} actuals record(s) were found to contain differences. Click&nbsp;
+					<apex:commandLink value="here" action="{!showErrorResults}" styleClass="actionLink2" rerender="errorResultOP" onclick="wait(true);" immediate="true" oncomplete="wait(false);" />
+                    to view error details.
+				</p>
+				<p>
+					<apex:outputText value="{!SUBSTITUTE(($Label.pse__actuals_verifier_label_total_actuals_found),'{0}',successCountString)}" />
+				</p>
+				<p>
+					<apex:outputText value="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__actuals_verifier_label_to_remove_actuals_recalculate),'{0}',$Label.pse__actuals_verifier_btn_delete_all_actuals),'{1}', $Label.pse__actuals_verifier_btn_calculate_all_actuals)}"  />
+				</p>
+				<p />
+			</apex:outputPanel>
+			<apex:outputPanel rendered="{!diffCount == 0}">
+				<p>{!$Label.pse__actuals_verifier_label_no_actuals_found_containing_differences}</p>
+				<p>
+					<apex:outputText value="{!SUBSTITUTE(($Label.pse__actuals_verifier_label_total_actuals_were_found_to_be_correct),'{0}',diffCountString)}" />
+				</p>
+			</apex:outputPanel>
+			<apex:outputPanel id="errorResultOP" >
+				<apex:outputPanel id="innerErrResultOP" rendered="{!showErrorResult}">
+					<p>{!$Label.pse__actuals_verifier_info_msg_for_error_result_block}</p>
+					<apex:repeat value="{!errorResults}" var="r">
+						<table class="list" width="100%" cellspacing="0" cellpadding="0" border="0">
+							<tr class="headerRow">
+								<th colspan="21">{!r.Name}</th>
+							</tr>
+							<tr>
+								<td colspan="21">
+									<table id="results" class="list slds-table slds-table_bordered slds-table_cell-buffer" width="100%" cellspacing="0" cellpadding="0" border="0">
+										<tr class="headerRow">
+											<th></th>
+											<th>{!$Label.actuals_verifier_result_table_booking_column_header}</th>
+											<th>{!$Label.actuals_verifier_result_table_internal_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_budget_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_expense_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_budget_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_prebilled_column_header}</th>
+											<th>{!$Label.actuals_verifier_result_table_billings_column_header}</th>
+											<th>{!$Label.actuals_verifier_result_table_passthrough_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_billings_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_billed_column_header}</th>
+											<th>{!$Label.actuals_verifier_result_table_invoiced_column_header}</th>
+											<th>{!$Label.actuals_verifier_result_table_revenue_column_header}</th>
+											<th>{!$Label.actuals_verifier_result_table_internal_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_costs_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_external_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_costs_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_expense_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_costs_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_total_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_costs_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_other_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_costs_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_internal_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_billable_hours_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_internal_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_non_billable_hours_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_created_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_hours_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_external_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_billable_hours_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_external_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_non_billable_hours_column_header}
+											</th>
+											<th>{!$Label.actuals_verifier_result_table_excluded_column_header}
+												<br/>{!$Label.actuals_verifier_result_table_hours_column_header}
+											</th>
+										</tr>
+										<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+											<td class="dataCell" nowrap="true">{!$Label.actuals_verifier_result_table_billable_current_column} ({!r.CurrencyIsoCode})</td>
+											<td class="{!r.BookingsClass}">
+												<apex:outputText value="{!r.Bookings}" />
+											</td>
+											<td class="{!r.Internal_BudgetClass}">
+												<apex:outputText value="{!r.Internal_Budget}" />
+											</td>
+											<td class="{!r.Expense_BudgetClass}">
+												<apex:outputText value="{!r.Expense_Budget}" />
+											</td>
+											<td class="{!r.Pre_BilledClass}">
+												<apex:outputText value="{!r.Pre_Billed}" />
+											</td>
+											<td class="{!r.BillingsClass}">
+												<apex:outputText value="{!r.Billings}" />
+											</td>
+											<td class="{!r.Pass_Through_BillingsClass}">
+												<apex:outputText value="{!r.Pass_Through_Billings}" />
+											</td>
+											<td class="{!r.BilledClass}">
+												<apex:outputText value="{!r.Billed}" />
+											</td>
+											<td class="{!r.InvoicedClass}">
+												<apex:outputText value="{!r.Invoiced}" />
+											</td>
+											<td class="{!r.RevenueClass}">
+												<apex:outputText value="{!r.Revenue}" />
+											</td>
+											<td class="{!r.Internal_CostsClass}">
+												<apex:outputText value="{!r.Internal_Costs}" />
+											</td>
+											<td class="{!r.External_CostsClass}">
+												<apex:outputText value="{!r.External_Costs}" />
+											</td>
+											<td class="{!r.Expense_CostsClass}">
+												<apex:outputText value="{!r.Expense_Costs}" />
+											</td>
+											<td class="{!r.Total_CostsClass}">
+												<apex:outputText value="{!r.Total_Costs}" />
+											</td>
+											<td class="{!r.Other_CostsClass}">
+												<apex:outputText value="{!r.Other_Costs}" />
+											</td>
+											<td class="{!r.Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Billable_Internal_Hours}" />
+											</td>
+											<td class="{!r.Non_Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Non_Billable_Internal_Hours}" />
+											</td>
+											<td class="{!r.Credited_Non_Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Credited_Non_Billable_Internal_Hours}" />
+											</td>
+											<td class="{!r.Billable_External_HoursClass}">
+												<apex:outputText value="{!r.Billable_External_Hours}" />
+											</td>
+											<td class="{!r.Non_Billable_External_HoursClass}">
+												<apex:outputText value="{!r.Non_Billable_External_Hours}" />
+											</td>
+											<td class="{!r.Excluded_HoursClass}">
+												<apex:outputText value="{!r.Excluded_Hours}" />
+											</td>
+										</tr>
+										<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+											<td class="dataCell" nowrap="true">{!$Label.actuals_verifier_result_table_billable_verified_column} ({!r.CurrencyIsoCodeVerified})</td>
+											<td class="{!r.BookingsClass}">
+												<apex:outputText value="{!r.BookingsVerified}" />
+											</td>
+											<td class="{!r.Internal_BudgetClass}">
+												<apex:outputText value="{!r.Internal_BudgetVerified}" />
+											</td>
+											<td class="{!r.Expense_BudgetClass}">
+												<apex:outputText value="{!r.Expense_BudgetVerified}" />
+											</td>
+											<td class="{!r.Pre_BilledClass}">
+												<apex:outputText value="{!r.Pre_BilledVerified}" />
+											</td>
+											<td class="{!r.BillingsClass}">
+												<apex:outputText value="{!r.BillingsVerified}" />
+											</td>
+											<td class="{!r.Pass_Through_BillingsClass}">
+												<apex:outputText value="{!r.Pass_Through_BillingsVerified}" />
+											</td>
+											<td class="{!r.BilledClass}">
+												<apex:outputText value="{!r.BilledVerified}" />
+											</td>
+											<td class="{!r.InvoicedClass}">
+												<apex:outputText value="{!r.InvoicedVerified}" />
+											</td>
+											<td class="{!r.RevenueClass}">
+												<apex:outputText value="{!r.RevenueVerified}" />
+											</td>
+											<td class="{!r.Internal_CostsClass}">
+												<apex:outputText value="{!r.Internal_CostsVerified}" />
+											</td>
+											<td class="{!r.External_CostsClass}">
+												<apex:outputText value="{!r.External_CostsVerified}" />
+											</td>
+											<td class="{!r.Expense_CostsClass}">
+												<apex:outputText value="{!r.Expense_CostsVerified}" />
+											</td>
+											<td class="{!r.Total_CostsClass}">
+												<apex:outputText value="{!r.Total_CostsVerified}" />
+											</td>
+											<td class="{!r.Other_CostsClass}">
+												<apex:outputText value="{!r.Other_CostsVerified}" />
+											</td>
+											<td class="{!r.Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Billable_Internal_HoursVerified}" />
+											</td>
+											<td class="{!r.Non_Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Non_Billable_Internal_HoursVerified}" />
+											</td>
+											<td class="{!r.Credited_Non_Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Credited_Non_Billable_Internal_HoursVerified}" />
+											</td>
+											<td class="{!r.Billable_External_HoursClass}">
+												<apex:outputText value="{!r.Billable_External_HoursVerified}" />
+											</td>
+											<td class="{!r.Non_Billable_External_HoursClass}">
+												<apex:outputText value="{!r.Non_Billable_External_HoursVerified}" />
+											</td>
+											<td class="{!r.Excluded_HoursClass}">
+												<apex:outputText value="{!r.Excluded_HoursVerified}" />
+											</td>
+										</tr>
+										<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+											<td class="dataCell" nowrap="true">{!$Label.actuals_verifier_result_table_billable_difference_column} ({!r.CurrencyIsoCode})</td>
+											<td class="{!r.BookingsClass}">
+												<apex:outputText value="{!r.BookingsDiff}" />
+											</td>
+											<td class="{!r.Internal_BudgetClass}">
+												<apex:outputText value="{!r.Internal_BudgetDiff}" />
+											</td>
+											<td class="{!r.Expense_BudgetClass}">
+												<apex:outputText value="{!r.Expense_BudgetDiff}" />
+											</td>
+											<td class="{!r.Pre_BilledClass}">
+												<apex:outputText value="{!r.Pre_BilledDiff}" />
+											</td>
+											<td class="{!r.BillingsClass}">
+												<apex:outputText value="{!r.BillingsDiff}" />
+											</td>
+											<td class="{!r.Pass_Through_BillingsClass}">
+												<apex:outputText value="{!r.Pass_Through_BillingsDiff}" />
+											</td>
+											<td class="{!r.BilledClass}">
+												<apex:outputText value="{!r.BilledDiff}" />
+											</td>
+											<td class="{!r.InvoicedClass}">
+												<apex:outputText value="{!r.InvoicedDiff}" />
+											</td>
+											<td class="{!r.RevenueClass}">
+												<apex:outputText value="{!r.RevenueDiff}" />
+											</td>
+											<td class="{!r.Internal_CostsClass}">
+												<apex:outputText value="{!r.Internal_CostsDiff}" />
+											</td>
+											<td class="{!r.External_CostsClass}">
+												<apex:outputText value="{!r.External_CostsDiff}" />
+											</td>
+											<td class="{!r.Expense_CostsClass}">
+												<apex:outputText value="{!r.Expense_CostsDiff}" />
+											</td>
+											<td class="{!r.Total_CostsClass}">
+												<apex:outputText value="{!r.Total_CostsDiff}" />
+											</td>
+											<td class="{!r.Other_CostsClass}">
+												<apex:outputText value="{!r.Other_CostsDiff}" />
+											</td>
+											<td class="{!r.Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Billable_Internal_HoursDiff}" />
+											</td>
+											<td class="{!r.Non_Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Non_Billable_Internal_HoursDiff}" />
+											</td>
+											<td class="{!r.Credited_Non_Billable_Internal_HoursClass}">
+												<apex:outputText value="{!r.Credited_Non_Billable_Internal_HoursDiff}" />
+											</td>
+											<td class="{!r.Billable_External_HoursClass}">
+												<apex:outputText value="{!r.Billable_External_HoursDiff}" />
+											</td>
+											<td class="{!r.Non_Billable_External_HoursClass}">
+												<apex:outputText value="{!r.Non_Billable_External_HoursDiff}" />
+											</td>
+											<td class="{!r.Excluded_HoursClass}">
+												<apex:outputText value="{!r.Excluded_HoursDiff}" />
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</apex:repeat>
+				</apex:outputPanel>
+			</apex:outputPanel>
+		</apex:pageBlock>
+		<!-- Processing Status -------------------------------------------------------------->
+		<apex:outputPanel id="processingStatus">
+			<apex:outputPanel layout="none" rendered="{!refreshRequired}">
+				<script>
+					// create function context for checking if application run in lightning mode.
+					(function(myContext){
+						myContext.ForceUI = myContext.ForceUI || {};
+						myContext.ForceUI.isSalesforce1 = function() {
+							return((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+						}
+					})(this);
+					if (ForceUI.isSalesforce1()) {
+						sforce.one.navigateToURL('{!$Page.ActualsVerifier}', true);
+				 	} else {
+						window.top.location = '{!$Page.ActualsVerifier}';
+					}
+            	</script>
+			</apex:outputPanel>
+			<apex:pageBlock title="{!$Label.pse__actuals_verifier_processing_status_title}" rendered="{!isProcessing}">
+				<table class="list slds-table slds-table_bordered slds-table_cell-buffer" width="100%" cellspacing="0" cellpadding="0" border="0">
+					<tr class="headerRow">
+						<th>{!$Label.actuals_verifier_processing_status_table_description_header}</th>
+						<th>{!$Label.actuals_verifier_processing_status_table_status_header}</th>
+						<th>{!$Label.actuals_verifier_processing_status_table_user_header}</th>
+						<th>{!$Label.actuals_verifier_processing_status_table_startdate_header}</th>
+					</tr>
+					<apex:repeat value="{!processingStatus}" var="s">
+						<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+							<td class="dataCell" nowrap="true">
+								<apex:outputText value="{!s.description}" />
+							</td>
+							<td class="dataCell" nowrap="true">
+								<apex:outputText value="{!s.status}" />
+							</td>
+							<td class="dataCell" nowrap="true">
+								<apex:outputField value="{!s.logEntry.CreatedBy.Name}" />
+							</td>
+							<td class="dataCell" nowrap="true">
+								<apex:outputField value="{!s.logEntry.CreatedDate}" />
+							</td>
+						</tr>
+						<tr style="display: {!IF(s.hasErrors, '', 'none')}">
+							<td colspan="4">
+								<table class="list slds-table slds-table_bordered slds-table_cell-buffer" width="100%" cellspacing="0" cellpadding="0" border="0" style="padding-left: 50px;">
+									<tr class="headerRow">
+										<th>{!$Label.actuals_verifier_processing_status_table_action_header}</th>
+										<th>{!$Label.actuals_verifier_processing_status_table_serror_detail_header}</th>
+									</tr>
+									<apex:repeat value="{!s.errors}" var="e">
+										<tr>
+											<td class="actionColumn" nowrap="true">
+												<apex:commandLink value="{!$Label.pse__actuals_verifier_processing_status_table_retry_link}" action="{!retryTask}" styleClass="actionLink2" onclick="wait(true);">
+													<apex:param name="taskId" value="{!s.Id}" assignTo="{!selectedTaskId}" />
+													<apex:param name="errorId" value="{!e.Id}" assignTo="{!selectedErrorId}" />
+												</apex:commandLink>&nbsp;|&nbsp;
+   
+												<apex:commandLink value="{!$Label.pse__actuals_verifier_processing_status_table_cancel_link}" action="{!cancelTask}" styleClass="actionLink2" onclick="return precancel();">
+													<apex:param name="taskId" value="{!s.Id}" assignTo="{!selectedTaskId}" />
+													<apex:param name="errorId" value="{!e.Id}" assignTo="{!selectedErrorId}" />
+												</apex:commandLink>
+											</td>
+											<td>
+												<apex:outputPanel layout="inline">
+													<apex:outputText value="{!e.error}" />
+													<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(e.erroredRecordId))}">
+                                                        (<apex:outputLink value="/{!e.erroredRecordId}" >{!e.erroredRecordId}</apex:outputLink>)
+													</apex:outputPanel>
+												</apex:outputPanel>
+											</td>
+										</tr>
+									</apex:repeat>
+								</table>
+							</td>
+						</tr>
+					</apex:repeat>
+				</table>
+			</apex:pageBlock>
+		</apex:outputPanel>
+		<apex:actionPoller action="{!refreshProcessingStatus}" interval="50" enabled="{!autoRefresh}" rerender="processingStatus" onsubmit="wait(true);" oncomplete="wait(false);" />
+		<apex:pageBlock title="{!$Label.pse__actuals_verifier_feature_unavailable_title}" rendered="{!hasDeltas && NOT isProcessing}">
+			<apex:outputText value="{!$Label.pse__actuals_verifier_info_msg_for_feature_unavailable_block_para1}" />
+			<p>
+				<apex:outputText value="{!SUBSTITUTE(($Label.pse__actuals_verifier_info_msg_for_feature_unavailable_block_para2),'{0}',$Label.pse__actuals_verifier_btn_process_deltas)}" />
+			</p>
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!processDeltas}" value="{!$Label.pse__actuals_verifier_btn_process_deltas}" immediate="true" onclick="wait(true);" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		<apex:pageBlock title="{!$Label.pse__actuals_verifier_no_actuals_title}" rendered="{!hasNoActuals && NOT isProcessing && NOT hasDeltas}">
+			<apex:pageBlockButtons id="buttons">
+				<apex:commandButton action="{!calcAll}" value="{!$Label.pse__actuals_verifier_btn_calculate_all_actuals}" immediate="true" onclick="wait(true);" />
+			</apex:pageBlockButtons>
+			<p>
+				<apex:outputText value="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__actuals_verifier_info_msg_for_noactuals_block),'{0}',$Label.pse__actuals_verifier_btn_calculate_all_actuals),'{1}', $Label.pse__actuals_verifier_btn_create_blank_actuals)}"  />
+			</p>
+			<p />
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

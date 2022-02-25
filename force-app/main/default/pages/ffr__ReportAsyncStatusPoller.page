@@ -1,0 +1,20 @@
+<apex:page showHeader="true" sidebar="false" controller="ffr.ReportAsyncStatusPollerController">
+	<apex:stylesheet value="{!URLFOR($Resource.ffr__EnhancedEngine, '/css/ReportAsyncPages.css')}"/>
+
+	<c:fflib_LoadIndicator id="fullScreenLoadIndicator" startLoadFn="startLoadFs" stopLoadFn="stopLoadFs" asSlds="true"/>
+	<apex:form id="poller">
+		<apex:actionPoller action="{!doPoll}" reRender="poller" interval="5"/>
+	</apex:form>
+	<apex:form >
+		<apex:actionFunction name="doPoll" action="{!doPoll}"/>
+	</apex:form>
+
+	<apex:outputPanel id="pageStyle" layout="block" styleClass="processing-text"></apex:outputPanel>
+
+	<script src="{!URLFOR($Resource.front,'utils/pages.js')}" type="text/javascript"/>
+	<script>
+		var processingLabel = '{!JSINHTMLENCODE($Label.ReportingDefinitionProcessing)}';
+		setupLoadIndicator(processingLabel);
+		window.onload = doPoll;
+	</script>
+</apex:page>

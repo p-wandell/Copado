@@ -1,0 +1,153 @@
+/**
+ * Hive_Lightning - Generates the assets used for 7S Hive Migration Lightning
+ * @version 1.0.0
+ * @author 7Summits
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+/*
+ * Copyright (c) 2019. 7Summits Inc.
+ * Created by 7Summits - Joe Callin on 2019-04-11.
+*/
+h2 {
+  font-size: 1.5rem;
+}
+.refresh-icon {
+  min-height: 4.5rem;
+}
+/*******************/
+/* Common CSS here */
+/*******************/
+@keyframes fadeIn {
+  0% {
+    z-index: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 0;
+  }
+  100% {
+    z-index: 1;
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    z-index: 1;
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    z-index: -1;
+    opacity: 0;
+  }
+}
+.table .row {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+.table .row .column {
+  word-break: break-word;
+  font-size: 1rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+.table .row .column.column-grow-1 {
+  flex-grow: 1;
+}
+.table .row .column.column-grow-2 {
+  flex-grow: 2;
+}
+.table .row .column.column-grow-3 {
+  flex-grow: 3;
+}
+.table .row .column.column-grow-4 {
+  flex-grow: 4;
+}
+.table .row .column a:focus {
+  outline: none;
+  box-shadow: none;
+}
+@media only screen and (max-width: 47.9375em) {
+  .table .row .column .slds-grid_align-center {
+    justify-content: flex-start;
+  }
+}
+.table .row .column div p {
+  display: inline-flex;
+}
+.table .row .column div:before {
+  content: attr(data-header) ':';
+  padding-right: 0.5rem;
+}
+@media only screen and (min-width: 48em) {
+  .table .row .column div:before {
+    content: none;
+  }
+}
+@media only screen and (min-width: 550px) {
+  .table .row .column {
+    margin-right: 2.5%;
+    margin-left: 2.5%;
+  }
+}
+@media only screen and (min-width: 48em) {
+  .table .row .column {
+    display: flex;
+    width: auto;
+    margin-right: auto;
+    margin-left: auto;
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+  .table .row .column.favorite {
+    flex-grow: 0;
+  }
+  .table .row .column:before {
+    content: none;
+  }
+}
+@media only screen and (min-width: 48em) {
+}
+@media only screen and (min-width: 48em) {
+}
+@media only screen and (max-width: 47.9375em) {
+  .table .row .column:last-of-type {
+    flex-shrink: 1;
+  }
+}
+.table .row.header {
+  display: none;
+}
+@media only screen and (min-width: 48em) {
+  .table .row.header {
+    display: flex;
+  }
+}
+.table .row.header .column {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin: 0;
+}
+@media only screen and (min-width: 48em) {
+  .table .row.header .column:first-of-type {
+    padding-left: 0;
+  }
+}
+.table .row.header .column:last-of-type {
+  margin: 0;
+}
+@media only screen and (min-width: 48em) {
+  .table .row.header {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+}
+@media only screen and (min-width: 48em) {
+  .table .row {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+}

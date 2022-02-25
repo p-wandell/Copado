@@ -1,0 +1,7 @@
+<!--
+ - Created by kentheberling on 3/28/18.
+ -->
+
+<aura:component description="Peak_Redirect"  implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" extends="c:Peak_Base">
+    <aura:attribute name="redirectURL" default="/" type="String" access="global" />
+</aura:component>

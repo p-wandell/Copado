@@ -1,0 +1,442 @@
+<!-- Copyright (c) 2015-2019 FinancialForce.com, inc.  All rights reserved. -->
+<apex:page title="{!$Label.pse__time_entry_label_title}" sidebar="false" showHeader="true" tabStyle="pse__Timecard_Header__c" standardController="pse__Timecard_Header__c" extensions="pse.SenchaTCController,pse.SenchaResourceSelector,pse.SenchaProjAssignmentSelector,pse.CustomSettingsController,pse.PSAScheduleGridController,pse.ProjectTaskSelector"  action="{!init}" >
+	<apex:pageMessages id="messageSection" />
+	<apex:outputPanel rendered="{!isEverythingOk}">
+
+		<c:extjs_bootstrap staticResource="{!$Resource.pse__TimecardEntry}"
+		  applicationName="TC"
+		  developmentPrefix="">
+
+		<script>
+		// Globally set timeout value for remoting methods
+		Visualforce.remoting.timeout = 120000;
+
+		//All remote actions will start from here
+		window['$RemoteAction'] = window['$RemoteAction'] || {};
+
+		window.$RemoteAction = {
+			SenchaTCController: {
+				gotoDate: '{!$RemoteAction.SenchaTCController.gotoDate}',
+				readTimecards: '{!$RemoteAction.SenchaTCController.readTimecards}',
+				fetchLookupDetails: '{!$RemoteAction.SenchaTCController.fetchLookupDetails}',
+				getCopyFromPreviousWeekSetting: '{!$RemoteAction.SenchaTCController.getCopyFromPreviousWeekSetting}',
+				copyFromPreviousWeek: '{!$RemoteAction.SenchaTCController.copyFromPreviousWeek}',
+				getHolidayWeekendInfo: '{!$RemoteAction.SenchaTCController.getHolidayWeekendInfo}',
+				loadResourceAndHolidayData: '{!$RemoteAction.SenchaTCController.loadResourceAndHolidayData}',
+				loadWeekendDateAndHolidayData: '{!$RemoteAction.SenchaTCController.loadWeekendDateAndHolidayData}',
+				saveTaskTimeColumnPreferences: '{!$RemoteAction.SenchaTCController.saveTaskTimeColumnPreferences}',
+				saveProjAssignColumnWidth: '{!$RemoteAction.SenchaTCController.saveProjAssignColumnWidth}',
+				getAssignmentDetails: '{!$RemoteAction.SenchaTCController.getAssignmentDetails}',
+				saveTimecard: '{!$RemoteAction.SenchaTCController.saveTimecard}',
+				submitTimecard: '{!$RemoteAction.SenchaTCController.submitTimecard}',
+				recallApprovalRequest: '{!$RemoteAction.SenchaTCController.recallFromApproval}',
+				deleteTimecard: '{!$RemoteAction.SenchaTCController.deleteTimecard}',
+				getTCHideStatus: '{!$RemoteAction.SenchaTCController.getTCHideStatus}',
+				saveTCHideStatus: '{!$RemoteAction.SenchaTCController.saveTCHideStatus}',
+				getTCHideStatusToolTipAndCountInfo: '{!$RemoteAction.SenchaTCController.getTCHideStatusToolTipAndCountInfo}',
+				copyFromSchedule: '{!$RemoteAction.SenchaTCController.copyFromSchedule}',
+				loadTaskTimeDetails: '{!$RemoteAction.SenchaTCController.populateTaskTimeDetails}',
+				prepareNewTaskTimeRows: '{!$RemoteAction.SenchaTCController.prepareNewTaskTimeRows}',
+				deleteTaskTimes:  '{!$RemoteAction.SenchaTCController.deleteTaskTimes}',
+				updateAssignmentNickName: '{!$RemoteAction.SenchaTCController.updateAssignmentNickName}',
+				loadMinMaxRulesForResource:  '{!$RemoteAction.SenchaTCController.loadMinMaxRulesForResource}',
+
+				submit: '{!$RemoteAction.SenchaTCController.submit}',
+				getSObjectForPicklist: '{!$RemoteAction.SenchaTCController.getSObjectForPicklist}',
+				saveTCColumnPreferences: '{!$RemoteAction.SenchaTCController.saveTCColumnPreferences}',
+				loadColumnPreferences: '{!$RemoteAction.SenchaTCController.loadColumnPreferences}',
+				saveColumnPreferences: '{!$RemoteAction.SenchaTCController.saveColumnPreferences}'
+			},
+			ProjAssignmentSelector: {
+				getRecentProjectAssignemnts: '{!$RemoteAction.SenchaProjAssignmentSelector.getRecentProjectAssignemnts}',
+				getProjAssignment: '{!$RemoteAction.SenchaProjAssignmentSelector.getProjectAssignments}'
+			},
+			ResourceSelector: {
+				getResources: '{!$RemoteAction.SenchaResourceSelector.getResources}'
+			},
+			CustomSettingsController : {
+				serializeCustomSettingGroup: '{!$RemoteAction.CustomSettingsController.serializeCustomSettingGroup}',
+				updateCustomSettingGroup: '{!$RemoteAction.CustomSettingsController.updateCustomSettingGroup}'
+			},
+			SenchaScheduleGridController: {
+				readSchedules: '{!$RemoteAction.PSAScheduleGridController.readSchedules}',
+				saveSchedule: '{!$RemoteAction.PSAScheduleGridController.saveSchedule}'
+            },
+            ProjectTaskSelector: {
+            	getTaskHierarchy: '{!$RemoteAction.ProjectTaskSelector.getTaskHierarchySenchaTC}'
+            }
+		};
+
+	  	window.TCConfig = {
+	  	    salesforceBaseUrl: '{!JSENCODE($Site.BaseUrl)}',
+	  		weekEndDate: '{!JSINHTMLENCODE(weekEndDate)}',
+	  		currentDate: '{!JSINHTMLENCODE(currentDate)}',
+	  		currentResourceId: '{!JSINHTMLENCODE(resource.id)}',
+	  		currentResourceName: '{!JSINHTMLENCODE(resource.name)}',
+	  		currentResourceCostRate: '{!JSINHTMLENCODE(resourceDefaultCostRate)}',
+	  		namespacePrefix: '{!JSINHTMLENCODE(NAME_SPACE_PREFIX)}',
+	  		isAuditNotesEnable: {!isAuditNotesEnable},
+	  		leftEditableColumns: JSON.parse('{!JSENCODE(tcHeaderLeftEditableColumns)}'),
+	  		editableColumns: JSON.parse('{!JSENCODE(tcHeaderEditableColumns)}'),
+	  		readOnlyColumns: JSON.parse('{!JSENCODE(tcHeaderReadOnlyColumns)}'),
+	  		editableNotesFields: JSON.parse('{!JSENCODE(editableNotesFields)}'),
+	  		readOnlyNotesFields: JSON.parse('{!JSENCODE(readOnlyNotesFields)}'),
+	  		requiredFixedNotesField: JSON.parse('{!JSENCODE(requiredFixedNotesField)}'),
+	  		easyEntryFieldsetFields: JSON.parse('{!JSENCODE(easyEntryFieldsetFields)}'),
+	  		isTimecardForEdit: {!isTimecardForEdit},
+	  		resourceWorkCalendarWeekEndDate: '{!JSINHTMLENCODE(resourceWorkCalendarWeekEndDate)}',
+	  		featureCodes: JSON.parse('{!JSENCODE(featureCodes)}'),
+	  		
+	  		//Copy Previousweek Setting config
+	  		showTravelCheckbox: {!config.ShowTravelCheckbox},
+	  		showMethodology: {!config.ShowMethodology},
+	  		showMilestone: {!config.ShowMilestone},
+	  		showPhase: {!config.ShowPhase},
+	  		emptyRowToAddByDefault: JSON.parse('{!config.EmptyTCRowsToAddByDefault}'),
+	  		emptyTCRowsToAdd: JSON.parse('{!config.EmptyTCRowsToAdd}'),
+	  		dayHourAutoRevertFloor: '{!config.DayHourAutoRevertFloor}',
+	  		dayHourAutoRevertCeiling: '{!config.DayHourAutoRevertCeiling}',
+ 			showAlertForNonZeroHolidayHours: {!config.showAlertForNonZeroHolidayHours},
+ 			showAlertForNonZeroWeekendHours: {!config.showAlertForNonZeroWeekendHours},
+ 			showEasyEntryPopup: {!config.ShowEasyEntryPopup},
+			noteLocationAllowed: {!config.NoteLocationAllowed},
+			useProjectLocationRecord: {!config.UseProjectLocationRecord},
+			useProjectMethodologyRecord: {!config.UseProjectMethodologyRecord},
+			useProjectPhaseRecord: {!config.UseProjectPhaseRecord},
+			holidayColorCodeValue: '{!config.holidayColorCodeValue}',
+			weekendColorCodeValue: '{!config.weekendColorCodeValue}',
+			showPrimaryLocationOnPopup: {!config.showPrimaryLocationOnPopup},
+            isCheckForPreviousWeekTimecard: {!isCheckForPreviousWeekTimecard},
+            showMethodologyOnPopup: {!config.showMethodologyOnPopup},
+            showMilestoneOnPopup: {!config.showMilestoneOnPopup},
+            showPhaseOnPopup: {!config.showPhaseOnPopup},
+            hideNotesColumn: {!config.HideNotes},
+            billableOptionChangeAllowed: {!config.BillableOptionChangeAllowed},
+            showMilestoneAsFieldValue: '{!config.ShowMilestoneAsFieldValue}',
+            combineSimilarTimecards: {!config.CombineSimilarTimecards},
+
+
+			// Header column width
+	  		projectAssignmentLookUpWidth: {!config.ProjAssignDropDownWidth},
+	  		hoursCellPixelWidth: {!config.HoursCellPixelWidth},
+
+	  		//Recall column visibility
+	  		showRecallOnTimecards: {!config.ShowRecallOnTimecards},
+	  		timecardSaveStatus: '{!config.TimecardSaveButtonAction}',
+	  		timecardSubmitStatus: '{!config.TimecardSubmitButtonAction}',
+
+	  		//Task Time related configs
+	  		allowTaskTimeEntry: {!config.AllowTaskTimeEntry},
+	  		allowTaskRestrictionOnMilestone: {!config.AllowTaskRestrictionOnMilestone},
+	  		allowTaskRestrictionOnAssignment: {!config.AllowTaskRestrictionOnAssignment},
+	  		allowTaskPrePopulate: {!config.allowTaskPrePopulate},
+	  		taskTimeEditableFields: JSON.parse('{!JSENCODE(taskTimeEditableFields)}'),
+	  		taskTimeReadOnlyFields: JSON.parse('{!JSENCODE(taskTimeReadOnlyFields)}'),
+	  		taskTimeEntryMode: '{!config.TaskTimeEntryMode}',
+	  		userCurrencyCode: '{!JSINHTMLENCODE(userCurrency)}',
+	  		hideTimeCardHoursInCalculateMode: {!config.HideTimeCardHoursInCalculateMode},
+	  		isTaskTimeEntryModeCalculated: {!config.IsTaskTimeEntryModeCalculated},
+	  		taskTimeEntryDateFilter:  '{!JSINHTMLENCODE(config.TaskTimeEntryDateFilter)}',
+  			// Project / Assignment nickname Editable
+	  		nicknameEditable: {!config.NicknameEditable},
+	  		minMaxRules: JSON.parse('{!JSENCODE(minMaxRules)}'),
+	  		statusRecallColumnNotFixed: {!config.StatusRecallColumnNotFixed},
+            taskTimeEntryAssignmentFilter: {!config.TaskTimeEntryAssignmentFilter},
+            hideExpandTasks: {!config.HideExpandTasks},
+            allowZeroEntry: {!config.AllowZeroEntry},
+            hideShowAllTasksAndMyTasks: {!config.HideShowAllTasksAndMyTasks},
+            tcEntrySaveBatchSize: {!config.tcEntrySaveBatchSize},
+            enforceSubmitAllTimecards: {!config.enforceSubmitAllTimecards},
+            useLocalStorage: {!config.useLocalStorageForColumnPreferences}
+	  	};
+
+		window.data = {
+			standardPicklistValues: JSON.parse("{!JSENCODE(standardPicklistValues)}")
+		};
+	  	// json columns for resource lookup
+		window.ResourceLookupSetting = {
+			resourceColumns: JSON.parse('{!JSENCODE(ResourceLookupColumnsToDisplay)}'),
+			isDefaultSingleResource: JSON.parse('{!JSENCODE(DefaultSingleResourceSearchResult)}')
+		};
+
+		// json columns for project/assignment lookup
+		window.ProjectAssignmentLookupSetting = {
+			assignmentColumns: JSON.parse('{!JSENCODE(AssignmentfieldsToDisplay)}'),
+			projectColumns: JSON.parse('{!JSENCODE(ProjectfieldsToDisplay)}')
+		};
+
+		// Custom setting values for Schedule Grid section
+		window.ScheduleGridSetting = {
+			showScheduleGrid: {!config.ShowScheduleGrid},
+			showScheduleGridExpandedByDefault: {!config.ShowScheduleGridExpandedByDefault},
+			showScheduleGridTooltips: {!config.ShowScheduleTooltips},
+            scheduleGridWeekendDelta: {!config.ScheduleGridWeekendDelta},
+            selfAssignmentLink: '{!JSENCODE(URLFOR($Page.selfAssignment))}',
+            isScheduleEditableForCurrentResource: {!isScheduleEditableForThisResource}
+        };
+
+		// Custom setting values for Timecard Grid Header section
+		window.TimecardButtonsSetting = {
+			hideSaveButton: {!config.HideSaveButton},
+			hideSubmitButton: {!config.HideSubmitButton},
+			hideCopySchedulesButton: {!config.HideCopySchedulesButton},
+            hideCopyPreviousWeekButton: {!config.HideCopyPreviousWeekButton},
+            showBillableNonBillableHours: {!config.showBillableNonBillableHours}
+		};
+
+		//All custom labels will start from here
+		window['$Label'] = window['$Label'] || {};
+		/**
+         * Please keep these labels sorted alphabetically. Sublime has a sort lines action in the command pallete to do this.
+         **/
+         	$Label.timecard_entry_button_label_copy_from_previous_week = '{!JSINHTMLENCODE($Label.timecard_entry_button_label_copy_from_previous_week)}';
+	        $Label.timecard_entry_button_label_copy_selected_schedules = '{!JSINHTMLENCODE($Label.timecard_entry_button_label_copy_selected_schedules)}';
+	        $Label.timecard_entry_button_label_save = '{!JSINHTMLENCODE($Label.timecard_entry_button_label_save)}';
+	        $Label.timecard_entry_button_label_submit = '{!JSINHTMLENCODE($Label.timecard_entry_button_label_submit)}';
+	        $Label.timecard_entry_label_proj_assign = '{!JSINHTMLENCODE($Label.timecard_entry_label_proj_assign)}';
+	        $Label.timecard_entry_label_resource = '{!JSINHTMLENCODE($Label.timecard_entry_label_resource)}';
+	        $Label.timecard_entry_label_sun = '{!JSINHTMLENCODE($Label.timecard_entry_label_sun)}';
+	        $Label.timecard_entry_label_mon = '{!JSINHTMLENCODE($Label.timecard_entry_label_mon)}';
+	        $Label.timecard_entry_label_tue = '{!JSINHTMLENCODE($Label.timecard_entry_label_tue)}';
+	        $Label.timecard_entry_label_wed = '{!JSINHTMLENCODE($Label.timecard_entry_label_wed)}';
+	        $Label.timecard_entry_label_thu = '{!JSINHTMLENCODE($Label.timecard_entry_label_thu)}';
+	        $Label.timecard_entry_label_fri = '{!JSINHTMLENCODE($Label.timecard_entry_label_fri)}';
+	        $Label.timecard_entry_label_sat = '{!JSINHTMLENCODE($Label.timecard_entry_label_sat)}';
+	        $Label.timecard_entry_label_delete_selected_lines = '{!JSINHTMLENCODE($Label.timecard_entry_label_delete_selected_lines)}';
+			$Label.time_entry_label_title = '{!JSINHTMLENCODE($Label.time_entry_label_title)}';
+			$Label.timecard_entry_label_notes = '{!JSINHTMLENCODE($Label.timecard_entry_label_notes)}';
+			$Label.timecard_entry_label_location = '{!JSINHTMLENCODE($Label.timecard_entry_label_location)}';
+			$Label.timecard_entry_label_travel = '{!JSINHTMLENCODE($Label.timecard_entry_label_travel)}';
+			$Label.timecard_entry_label_characters_remaining = '{!JSINHTMLENCODE($Label.timecard_entry_label_characters_remaining)}';
+			$Label.timecard_entry_label_weekly_notes_title = '{!JSINHTMLENCODE($Label.timecard_entry_label_weekly_notes_title)}';
+			$Label.timecard_entry_label_daily_notes = '{!JSINHTMLENCODE($Label.timecard_entry_label_daily_notes)}';
+			$Label.timecard_entry_label_daily_location = '{!JSINHTMLENCODE($Label.timecard_entry_label_daily_location)}';
+			$Label.timecard_entry_label_weekly_additional_notes = '{!JSINHTMLENCODE($Label.timecard_entry_label_weekly_additional_notes)}';
+			$Label.timecard_entry_message_unsaved_changes = '{!JSINHTMLENCODE($Label.timecard_entry_message_unsaved_changes_discard_changes_and_continue)}';
+			$Label.timacard_entry_label_saved_timecard = '{!JSINHTMLENCODE($Label.timacard_entry_label_saved_timecard)}';
+			$Label.timecard_info_rows_deleted_successfully = '{!JSINHTMLENCODE($Label.timecard_info_rows_deleted_successfully)}';
+			$Label.timecard_entry_label_deleted_timecard = '{!JSINHTMLENCODE($Label.timecard_entry_label_deleted_timecard)}';
+			$Label.timecard_entry_label_deleted_timecard_line_error = '{!JSINHTMLENCODE($Label.delete_timecard_line_error)}';
+			$Label.timecard_entry_label_milestone = '{!JSINHTMLENCODE($Label.timecard_entry_label_milestone)}';
+            $Label.timecard_entry_label_phase = '{!JSINHTMLENCODE($Label.timecard_entry_label_phase)}';
+            $Label.timecard_entry_label_methodology = '{!JSINHTMLENCODE($Label.timecard_entry_label_methodology)}';
+            $Label.timecard_entry_label_primary_location = '{!JSINHTMLENCODE($Label.timecard_entry_label_primary_location)}';
+            $Label.timecard_entry_label_audit_notes = '{!JSINHTMLENCODE($Label.timecard_entry_label_audit_notes)}';
+            $Label.timecard_status_unsaved = '{!JSINHTMLENCODE($Label.timecard_status_unsaved)}';
+            $Label.timecard_entry_warning_entering_nonzero_hours_for_holiday = '{!JSINHTMLENCODE($Label.timecard_entry_warning_entering_nonzero_hours_for_holiday)}';
+    		$Label.schedule_warning_entering_nonzero_hours_for_weekend = '{!JSINHTMLENCODE($Label.schedule_warning_entering_nonzero_hours_for_weekend)}';
+            $Label.timecard_entry_label_undo = '{!JSINHTMLENCODE($Label.timecard_entry_label_undo)}';
+            $Label.daily_notes_required_message_on_notes = '{!JSINHTMLENCODE($Label.daily_notes_required_message_on_notes)}';
+            $Label.timecard_ui_label_no_timecard_for_previous_weekeek = '{!JSINHTMLENCODE($Label.timecard_ui_label_no_timecard_for_previous_week)}';
+            $Label.timecard_warning_resource_work_calendar_out_of_sync = '{!JSINHTMLENCODE($Label.timecard_warning_resource_work_calendar_out_of_sync)}';
+
+			$Label.common_label_done = '{!JSINHTMLENCODE($Label.common_label_done)}';
+	        $Label.common_label_cancel = '{!JSINHTMLENCODE($Label.common_label_cancel)}';
+	        $Label.common_label_continue = '{!JSINHTMLENCODE($Label.common_label_continue)}';
+	        $Label.common_label_action = '{!JSINHTMLENCODE($Label.common_label_action)}';
+	        $Label.common_label_week_ending = '{!JSINHTMLENCODE($Label.common_label_week_ending)}';
+	        $Label.common_label_status = '{!JSINHTMLENCODE($Label.common_label_status)}';
+	        $Label.common_label_none = '{!JSINHTMLENCODE($Label.common_label_none)}';
+	        $Label.common_label_billable = '{!JSINHTMLENCODE($Label.common_label_billable)}';
+	        $Label.common_label_non_billable = '{!JSINHTMLENCODE($Label.common_label_non_billable)}';
+	        $Label.common_label_yes = '{!JSINHTMLENCODE($Label.common_label_yes)}';
+			$Label.common_label_no = '{!JSINHTMLENCODE($Label.common_label_no)}';
+
+			$Label.common_label_viewall = '{!JSINHTMLENCODE($Label.common_label_viewall)}';
+			$Label.common_label_go = '{!JSINHTMLENCODE($Label.common_label_go)}';
+			$Label.common_label_account = '{!JSINHTMLENCODE($Label.common_label_account)}';
+			$Label.common_label_region = '{!JSINHTMLENCODE($Label.common_label_region)}';
+			$Label.common_label_practice = '{!JSINHTMLENCODE($Label.common_label_practice)}';
+			$Label.common_label_group = '{!JSINHTMLENCODE($Label.common_label_group)}';
+			$Label.common_label_phase = '{!JSINHTMLENCODE($Label.common_label_phase)}';
+			$Label.common_label_name = '{!JSINHTMLENCODE($Label.common_label_name)}';
+			$Label.common_label_close = '{!JSINHTMLENCODE($Label.common_label_close)}';
+			$Label.common_label_timecard = '{!JSINHTMLENCODE($Label.common_label_timecard)}';
+			$Label.common_label_search = '{!JSINHTMLENCODE($Label.common_label_search)}';
+			$Label.common_label_resourcelookup = '{!JSINHTMLENCODE($Label.common_label_resourcelookup)}';
+			$Label.common_label_please_wait =  '{!JSINHTMLENCODE($Label.common_label_please_wait)}';
+            $Label.common_text_to_refine_search_results_when_PE_is_enabled = '{!JSINHTMLENCODE($Label.common_text_to_refine_search_results_when_PE_is_enabled)}';
+			$Label.timecard_entry_label_no_matching_results_found = '{!JSINHTMLENCODE($Label.timecard_entry_label_no_matching_results_found)}';
+			$Label.timecard_entry_label_none = '{!JSINHTMLENCODE($Label.timecard_entry_value_none)}';
+			$Label.closed_milestone_found_within_saved_timecard = '{!JSINHTMLENCODE($Label.closed_milestone_found_within_saved_timecard)}';
+			$Label.timecard_entry_label_saved_milestone_closed_and_not_visible = '{!JSINHTMLENCODE($Label.timecard_entry_label_saved_milestone_closed_and_not_visible)}';
+			$Label.message_type_min_three_characters = '{!JSINHTMLENCODE($Label.message_type_min_three_characters)}';
+			$Label.ProjAsnLookup_assignments = '{!JSINHTMLENCODE($Label.timecard_entry_label_my_assignments)}';
+			$Label.ProjAsnLookup_global_projects = '{!JSINHTMLENCODE($Label.timacard_entry_label_global_projects)}';
+			$Label.ProjAsnLookup_title = '{!JSINHTMLENCODE($Label.timecard_entry_label_project_assignment_lookup)}';
+			$Label.ProjAsnLookup_recent_project_assignment = '{!JSINHTMLENCODE($Label.timecard_entry_label_recent_project_assignment)}';
+			$Label.ProjAsnLookup_search_results = '{!JSINHTMLENCODE($Label.timecard_entry_label_search_results)}';
+
+			// Labels for copy from previous week
+			$Label.common_label_copy = '{!JSINHTMLENCODE($Label.common_label_copy)}';
+			$Label.common_label_notes = '{!JSINHTMLENCODE($Label.common_label_notes)}';
+			$Label.common_label_hours = '{!JSINHTMLENCODE($Label.common_label_hours)}';
+			$Label.label_timecard_field_description = '{!JSINHTMLENCODE($Label.timecard_field_description)}';
+			$Label.label_additional_fields = '{!JSINHTMLENCODE($Label.timecard_entry_label_additional_fields)}';
+			$Label.label_select_fields_to_copy = '{!JSINHTMLENCODE($Label.timecard_entry_label_select_fields_to_copy)}';
+			$Label.label_selected_fields = '{!JSINHTMLENCODE($Label.timecard_copy_selected_fields)}';
+			$Label.label_estimated_time_to_completion = '{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Estimated_Time_To_Completion__c.label)}';
+			$Label.label_project_methodology = '{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Project_Methodology__c.label)}';
+			$Label.label_milestone = '{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Milestone__c.label)}';
+			$Label.label_project_phase = '{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Project_Phase__c.label)}';
+			$Label.label_hours_description = '{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Monday_Hours__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Tuesday_Hours__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Wednesday_Hours__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Thursday_Hours__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Friday_Hours__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Saturday_Hours__c.label)},		{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Sunday_Hours__c.label)}';
+			$Label.label_travel_description = '{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Travel_Mon__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Travel_Tue__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Travel_Wed__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Travel_Thu__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Travel_Fri__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Travel_Sat__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Travel_Sun__c.label)}';
+			$Label.label_location_description = '{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Location_Mon__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Location_Tue__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Location_Wed__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Location_Thu__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Location_Fri__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Location_Sat__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Location_Sun__c.label)}';
+			$Label.label_notes_description = '{!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Timecard_Notes__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Monday_Notes__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Tuesday_Notes__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Wednesday_Notes__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Thursday_Notes__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Friday_Notes__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Saturday_Notes__c.label)}, {!JSINHTMLENCODE($ObjectType.Timecard_Header__c.fields.Sunday_Notes__c.label)}';
+		 	$Label.msg_error_atleast_select_one_filed_to_copy = '{!JSINHTMLENCODE($Label.timecard_entry_label_atleast_select_one_filed_to_copy)}';
+		 	$Label.timecard_entry_label_copy_tasks_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_tasks_description)}';
+			$Label.timecard_entry_label_copy_task_hours_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_tasks_hours_description)}';
+			$Label.timecard_entry_label_copy_project_phase_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_project_phase_description)}';
+			$Label.timecard_entry_label_copy_project_methodology_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_project_methodology_description)}';
+			$Label.timecard_entry_label_copy_project_milestone_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_project_milestone_description)}';
+			$Label.timecard_entry_label_copy_estimated_time_to_completion_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_estimated_time_to_completion_description)}';
+			$Label.timecard_entry_label_copy_notes_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_notes_description)}';
+			$Label.timecard_entry_label_copy_location_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_location_description)}';
+			$Label.timecard_entry_label_copy_travel_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_travel_description)}';
+			$Label.timecard_entry_label_copy_hours_description = '{!JSINHTMLENCODE($Label.timecard_entry_label_copy_hours_description)}';
+		 	
+
+     		// Labels for preferences
+     		$Label.label_preferences_save_fail_msgBox_title = '{!JSINHTMLENCODE($Label.common_label_preferences_save_fail_msgBox_title)}';
+			$Label.label_preferences_save_fail_msgBox_content = '{!JSINHTMLENCODE($Label.common_label_preferences_save_fail_msgBox_content)}';
+			$Label.label_preferences_save_msgBox_title = '{!JSINHTMLENCODE($Label.common_label_preferences_save_msgBox_title)}';
+			$Label.label_preferences_save_msgBox_content = '{!JSINHTMLENCODE($Label.common_label_preferences_save_msgBox_content)}';
+
+			//Label for Add Line
+		 	$Label.common_label_add =  '{!JSINHTMLENCODE($Label.common_label_add)}';
+		 	$Label.timecard_entry_label_rows =  '{!JSINHTMLENCODE($Label.timecard_entry_label_rows)}';
+
+		 	//Label for schedule
+		 	$Label.common_label_schedule = '{!JSINHTMLENCODE($Label.common_label_schedule)}';
+		 	$Label.assignment_label_self_assignment = '{!JSINHTMLENCODE($Label.assignment_label_self_assignment)}';
+		 	$Label.saved_schedule_information = '{!JSINHTMLENCODE($Label.saved_schedule_information)}';
+		 	$Label.timecard_schedule_label_assign = '{!JSINHTMLENCODE($Label.timecard_schedule_label_assign)}';
+		 	$Label.timecard_schedule_label_title = '{!JSINHTMLENCODE($Label.timecard_schedule_label_title)}';
+		 	$Label.timecard_entry_label_sum = '{!JSINHTMLENCODE($Label.timecard_entry_label_sum)}';
+		 	$Label.schedule_error_blank_date = '{!JSINHTMLENCODE($Label.schedule_error_blank_date)}';
+		 	$Label.schedule_error_invalid_date = '{!JSINHTMLENCODE($Label.schedule_error_invalid_date)}';
+		 	$Label.timecard_entry_label_schedule_notes_title = '{!JSINHTMLENCODE($Label.timecard_entry_label_schedule_notes_title)}';
+		 	$Label.timecard_entry_label_schedule_week1_title = '{!JSINHTMLENCODE($Label.timecard_entry_label_schedule_week1_title)}';
+		 	$Label.timecard_entry_label_schedule_week2_title = '{!JSINHTMLENCODE($Label.timecard_entry_label_schedule_week2_title)}';
+		 	$Label.timecard_entry_message_no_sch = '{!JSINHTMLENCODE($Label.timecard_entry_message_no_sch)}';
+		 	$Label.save_schedule_button = '{!JSINHTMLENCODE($Label.save_schedule_button)}';
+		 	$Label.timecard_entry_message_copy_schedule_for_week_ending = '{!JSINHTMLENCODE($Label.timecard_entry_message_copy_schedule_for_week_ending)}';
+		 	$Label.schedule_copied_information = '{!JSINHTMLENCODE($Label.schedule_copied_information)}';
+		 	$Label.schedule_unsaved_copy_information = '{!JSINHTMLENCODE($Label.schedule_unsaved_copy_information)}';
+		 	$Label.schedule_unsaved_title_information = '{!JSINHTMLENCODE($Label.schedule_unsaved_title_information)}';
+		 	$Label.timecard_entry_button_label_copy_from_schedule = '{!JSINHTMLENCODE($Label.timecard_entry_button_label_copy_from_schedule)}';
+		 	$Label.common_label_confirmation = '{!JSINHTMLENCODE($Label.common_label_confirmation)}';
+		 	$Label.schedule_copy_confirmation = '{!JSINHTMLENCODE($Label.schedule_copy_confirmation)}';
+
+		 	//Label for Recall
+		 	$Label.timacard_entry_label_recall_approval_request = '{!JSINHTMLENCODE($Label.timacard_entry_label_recall_approval_request)}';
+			$Label.timacard_entry_label_recall = '{!JSINHTMLENCODE($Label.timacard_entry_label_recall)}';
+			$Label.common_label_comments = '{!JSINHTMLENCODE($Label.common_label_comments)}';
+			$Label.timecard_recall_tc_full_detail = '{!JSINHTMLENCODE($Label.timecard_recall_tc_full_detail)}';
+			$Label.timecard_recall_toast_message = '{!JSINHTMLENCODE($Label.timecard_recall_toast_message)}';
+
+			//Label for timecard status hide
+		 	$Label.timecard_label_hide_timecard_status = '{!JSINHTMLENCODE($Label.timecard_label_hide_timecard_status)}';
+			$Label.timecard_label_hidden_timecard_status = '{!JSINHTMLENCODE($Label.timecard_label_hidden_timecard_status)}';
+			$Label.timecard_label_select_status_to_hide = '{!JSINHTMLENCODE($Label.timecard_label_select_status_to_hide)}';
+
+			//Label for required field error handling
+			$Label.timecard_entry_required_box_popup_header = '{!JSINHTMLENCODE($Label.timecard_entry_required_box_popup_header)}';
+			$Label.timecard_entry_required_box_popup_header_submit = '{!JSINHTMLENCODE($Label.timecard_entry_required_box_popup_header_submit)}';
+            $Label.timecard_entry_required_box_popup_message = '{!JSINHTMLENCODE($Label.timecard_entry_required_box_popup_message)}';
+            $Label.timecard_entry_error_box_message = '{!JSINHTMLENCODE($Label.timecard_entry_error_box_message)}';
+            $Label.timecard_entry_required_field_tooltip = '{!JSINHTMLENCODE($Label.timecard_entry_required_field_tooltip)}';
+            $Label.timecard_entry_visualforce_error_message = '{!JSINHTMLENCODE($Label.timecard_entry_visualforce_error_message)}';
+            $Label.timecard_entry_save_validation_failed = '{!JSINHTMLENCODE($Label.timecard_entry_save_validation_failed)}';
+            $Label.timecard_entry_submit_validation_failed = '{!JSINHTMLENCODE($Label.timecard_entry_submit_validation_failed)}';
+            $Label.timecard_entry_task_time_save_validation_failed = '{!JSINHTMLENCODE($Label.timecard_entry_task_time_save_validation_failed)}';
+            $Label.timecard_failed_day_validation = '{!JSINHTMLENCODE($Label.timecard_failed_day_validation)}';
+            $Label.timecard_entry_required_field_tooltip_for_easyentry_weekday = '{!JSINHTMLENCODE($Label.timecard_entry_required_field_tooltip_for_easyentry_weekday)}';
+
+            //Label for submit
+            $Label.timecard_entry_message_submit_timecards_for_approval_header = '{!JSINHTMLENCODE($Label.timecard_entry_message_submit_timecards_for_approval_header)}';
+            $Label.timecard_entry_message_submit_timecards_for_approval_message = '{!JSINHTMLENCODE($Label.timecard_entry_message_submit_timecards_for_approval_message)}';
+            $Label.timecard_entry_message_submit_all_timecards_for_approval = '{!JSINHTMLENCODE($Label.timecard_entry_message_submit_all_timecards_for_approval)}';
+            $Label.timecard_entry_message_timecards_submitted_for_approval = '{!JSINHTMLENCODE($Label.timecard_entry_message_timecards_submitted_for_approval)}';
+			$Label.timecard_entry_message_submit_selected_timecards_for_approval_message = '{!JSINHTMLENCODE($Label.timecard_entry_message_submit_selected_timecards_for_approval_message)}';
+
+            // Labels for task time entry
+            $Label.tasktimeentry_label_add_tasks = '{!JSINHTMLENCODE($Label.tasktimeentry_label_add_tasks)}';
+            $Label.tasktimeentry_label_task_totals = '{!JSINHTMLENCODE($Label.tasktimeentry_label_task_totals)}';
+            $Label.common_label_loading_details = '{!JSINHTMLENCODE($Label.common_label_loading_details)}';
+			$Label.common_remoting_exception = '{!JSINHTMLENCODE($Label.common_remoting_exception)}';
+			$Label.timecard_entry_label_select_tasks = '{!JSINHTMLENCODE($Label.timecard_entry_label_select_tasks)}';
+			$Label.tc_taskSelector_filter_all = '{!JSINHTMLENCODE($Label.tc_taskSelector_filter_all)}';
+			$Label.tc_taskSelector_filter_my = '{!JSINHTMLENCODE($Label.tc_taskSelector_filter_my)}';
+			$Label.tc_taskSelector_filter_show = '{!JSINHTMLENCODE($Label.tc_taskSelector_filter_show)}';
+			$Label.tc_taskSelector_limit_to = '{!JSINHTMLENCODE($Label.tc_taskSelector_limit_to)}';
+			$Label.tc_taskSelector_milestone_filter = '{!JSINHTMLENCODE($Label.tc_taskSelector_milestone_filter)}';
+			$Label.tc_taskSelector_filter_milestone_tooltip = '{!JSINHTMLENCODE($Label.tc_taskSelector_filter_milestone_tooltip)}';
+			$Label.tc_taskSelector_assignment_filter = '{!JSINHTMLENCODE($Label.tc_taskSelector_assignment_filter)}';
+			$Label.tc_taskSelector_filter_assignment_tooltip = '{!JSINHTMLENCODE($Label.tc_taskSelector_filter_assignment_tooltip)}';
+			$Label.tc_taskSelector_end_date = '{!JSINHTMLENCODE($ObjectType.Project_Task__c.fields.End_Date__c.label)}';
+			$Label.tc_taskSelector_milestone = '{!JSINHTMLENCODE($ObjectType.Project_Task__c.fields.Milestone__c.label)}';
+			$Label.tc_taskSelector_name = '{!JSINHTMLENCODE($ObjectType.Project_Task__c.fields.Name.label)}';
+			$Label.tc_taskSelector_start_date = '{!JSINHTMLENCODE($ObjectType.Project_Task__c.fields.Start_Date__c.label)}';
+			$Label.tc_taskSelector_status_c = '{!JSINHTMLENCODE($ObjectType.Project_Task__c.fields.Status__c.label)}';
+			$Label.tasktimeentry_label_no_task_time_record_found = '{!JSINHTMLENCODE($Label.tasktimeentry_label_no_task_time_record_found)}';
+			$Label.timecard_entry_label_tasks = '{!JSINHTMLENCODE($Label.timecard_entry_label_tasks)}';
+			$Label.timecard_entry_label_task_hours = '{!JSINHTMLENCODE($Label.timecard_entry_label_task_hours)}';
+		
+			// Label for delete task time lines
+			$Label.timecard_entry_label_delete_lines = '{!JSINHTMLENCODE($Label.timecard_entry_label_delete_lines)}';
+			$Label.timecard_entry_label_delete_lines_prompt_msg = '{!JSINHTMLENCODE($Label.timecard_entry_label_delete_lines_prompt_msg)}';
+			$Label.timecard_entry_label_delete_lines_with_project_assignment_prompt_msg = '{!JSINHTMLENCODE($Label.timecard_entry_label_delete_lines_with_project_assignment_prompt_msg)}';
+			$Label.common_label_delete = '{!JSINHTMLENCODE($Label.common_label_delete)}';
+			$Label.timecard_entry_Project_task_delete_confirm_message = '{!JSINHTMLENCODE($Label.timecard_entry_Project_task_delete_confirm_message)}';
+			$Label.timecard_entry_project_assignment_change = '{!JSINHTMLENCODE($Label.timecard_entry_project_assignment_change)}';
+
+			// Label for mix max hours rule
+			$Label.timecard_entry_error_min_week_hours_exceeds_max_week_hours = '{!JSINHTMLENCODE($Label.timecard_entry_error_min_week_hours_exceeds_max_week_hours)}';
+			$Label.timecard_entry_error_for_hours_validation = '{!JSINHTMLENCODE($Label.timecard_entry_error_for_hours_validation)}';
+			$Label.timecard_entry_tooltip_for_max_hour_error_for_day = '{!JSINHTMLENCODE($Label.timecard_entry_tooltip_for_max_hour_error_for_day)}';
+			$Label.timecard_entry_tooltip_min_week_percent_hours_exceeded_total_week_hours = '{!JSINHTMLENCODE($Label.timecard_entry_tooltip_min_week_percent_hours_exceeded_total_week_hours)}';
+			$Label.timecard_entry_tooltip_min_week_hours_exceeded_total_week_hours = '{!JSINHTMLENCODE($Label.timecard_entry_tooltip_min_week_hours_exceeded_total_week_hours)}';
+			$Label.timecard_entry_tooltip_max_week_percent_hours_exceeded_total_week_hours = '{!JSINHTMLENCODE($Label.timecard_entry_tooltip_max_week_percent_hours_exceeded_total_week_hours)}';
+			$Label.timecard_entry_tooltip_max_week_hours_exceeded_total_week_hours = '{!JSINHTMLENCODE($Label.timecard_entry_tooltip_max_week_hours_exceeded_total_week_hours)}';
+
+			// Project task notes editor lable
+			$Label.tc_task_entry_project_task_notes = '{!JSINHTMLENCODE($Label.tc_task_entry_project_task_notes)}';
+
+			//Combine Similar Timecards
+			$Label.timecard_entry_label_sun_additional_notes     = '{!JSINHTMLENCODE($Label.timecard_entry_label_sun_additional_notes)}';
+			$Label.timecard_entry_label_mon_additional_notes     = '{!JSINHTMLENCODE($Label.timecard_entry_label_mon_additional_notes)}';
+			$Label.timecard_entry_label_tue_additional_notes     = '{!JSINHTMLENCODE($Label.timecard_entry_label_tue_additional_notes)}';
+			$Label.timecard_entry_label_wed_additional_notes     = '{!JSINHTMLENCODE($Label.timecard_entry_label_wed_additional_notes)}';
+			$Label.timecard_entry_label_thu_additional_notes     = '{!JSINHTMLENCODE($Label.timecard_entry_label_thu_additional_notes)}';
+			$Label.timecard_entry_label_fri_additional_notes     = '{!JSINHTMLENCODE($Label.timecard_entry_label_fri_additional_notes)}';
+			$Label.timecard_entry_label_sat_additional_notes     = '{!JSINHTMLENCODE($Label.timecard_entry_label_sat_additional_notes)}';
+			$Label.timecard_entry_label_weekly_additional_notes  = '{!JSINHTMLENCODE($Label.timecard_entry_label_weekly_additional_notes)}';
+			$Label.timecard_error_aggregated_hours_limit_sencha  = '{!JSINHTMLENCODE($Label.timecard_error_aggregated_hours_limit_sencha)}';
+			$Label.timecard_entry_combine_similar_timecard_saved_message = '{!JSINHTMLENCODE($Label.timecard_entry_combine_similar_timecard_saved_message)}';
+
+			// Label for expand and collapse
+			$Label.collapse_tasks = '{!JSINHTMLENCODE($Label.collapse_tasks)}';
+			$Label.expand_tasks = '{!JSINHTMLENCODE($Label.expand_tasks)}';
+
+            $Label.common_and_one_other = '{!JSINHTMLENCODE($Label.common_and_one_other)}';
+            $Label.common_and_x_others = '{!JSINHTMLENCODE($Label.common_and_x_others)}';
+            $Label.common_list_separator = '{!JSINHTMLENCODE($Label.common_list_separator)}';
+            $Label.timecard_entry_message_delete_failed_record_permission = '{!JSINHTMLENCODE($Label.timecard_entry_message_delete_failed_record_permission)}';
+		</script>
+
+		</c:extjs_bootstrap>
+
+		<script>
+		 	//only warn about unsaved changes in read-write mode
+			window.addEventListener("beforeunload", function(e) {
+			
+				if (window.isDirty) {
+			   		//cross-browser support for unload confirmation dialog. See https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload#Notes
+			    	(e || window.event).returnValue = $Label.timecard_entry_message_unsaved_changes;
+			    	return $Label.timecard_entry_message_unsaved_changes;
+			    }
+		    });
+		</script>
+	</apex:outputPanel>
+</apex:page>

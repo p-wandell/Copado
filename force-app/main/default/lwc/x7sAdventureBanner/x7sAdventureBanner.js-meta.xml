@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Adventure Banner</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightningCommunity__Default,lightning__HomePage">
+            <property name="customClass" label="Custom Class Name" type="String" description="Custom CSS class name. Usually remains blank." />
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="displayTitle" label="Show Adventure Title" type="Boolean"  description="Display the title for the adventure." /> 
+            <property name="displaySubTitle" label="Show Adventure Subtitle" type="Boolean"  description="Select to display the adventure subtitle." />
+            <property name="displayDescription" label="Show Adventure Description" type="Boolean"  description="Select to display the adventure description." />
+            <property name="showCloneButton" label="Show Clone Button" type="Boolean" description="Select to display the Full Clone Button."/>
+            <property name="cloneButtonLabel" label="Clone Button Label" type="String" description="Label for the Clone button."/>
+            <property name="showOwner" label="Show Owner" type="Boolean" description="Select to display the owner of the adventure."/>
+            <property name="showSource" label="Show Source" type="Boolean" description="Select to display the source of the adventure."/>
+            <property name="showTaskRemaining" label="Show Tasks Remaining" type="Boolean" description="Select to display number of task remaining."/>
+            <property name="showPercentComplete" label="Show Percent Complete" type="Boolean" description="Select to show the percent of all tasks for the adventure that are complete."/>
+            <property name="showTopics" label="Show Topics" type="Boolean" description="Select to show the topics"/>
+            <property name="showViewOtherAdventures" label="Show View Other Adventures" type="Boolean" description="Select to display a link which navigates to Adventure list"/>
+            <property name="exploreOtherAdventuresAPI" label="View Other Adventures Page API Name" type="String" description="Leave blank to use the default list page for 7S Adventure object.  For a custom list page, enter the page API name."/>
+            <property name="listId" label="Component Group" type="String" description="Unique ID to link complimentary components together to share data."/>
+        <!--<property name="titleTextSize" label="Adventure Title Size" type="String" description="This is the font size of the Adventure Title" datasource="small,medium,large"/>
+            <property name="adventureTitleTextColor" label="Adventure Title Text Color" type="String" description="The font color of the Adventure Title "/>
+            <property name="imagePosition" label=" Adventure Title Image Position" type="String" description="Enter values to change the position on the image behind the Adventure title. Values will be applied in following order: top, right, bottom, left "/> 
+            <property name="AdventureBannerAlign" label="Adventure Banner Alignment" type="String" description="Select the banner alignment diplay option." datasource="center,left,right"/> -->
+        </targetConfig>
+    </targetConfigs> 
+</LightningComponentBundle>

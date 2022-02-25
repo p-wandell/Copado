@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>When a pursuit lead is assigned, an email is sent to the creator of the request.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Pursuit Lead Assigned</name>
+    <style>none</style>
+    <subject>Pursuit Lead Assigned to {!Opportunity.Name}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

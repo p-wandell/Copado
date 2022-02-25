@@ -1,0 +1,245 @@
+<apex:page controller="pse.SkillsAndCertificationsController" tabStyle="Skills_And_Certifications_Matrix__tab" lightningStylesheets="true">
+<style>
+div#wait { width: 100%; height: 100%; position: {!IF($User.UIThemeDisplayed == 'Theme4d', 'fixed', '')} }
+div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+a.link { cursor: pointer; }
+.filterSection table { margin-bottom: {!IF($User.UIThemeDisplayed == 'Theme4d', '5px;', '0px;')} }
+.filterSection table td { vertical-align: middle; }
+.collapseExpandImg { vertical-align: bottom; cursor: pointer; width: 12px; height: {!IF($User.UIThemeDisplayed == 'Theme4d', '18px;', '14px;')} }
+</style>
+<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+<script type="text/javascript">
+var prevSearchTerm = null;
+var timer = null;
+function setVisible(name, visible) {
+  var e = document.getElementById(name);
+  if (e != null) {
+    if (visible) {
+      e.setAttribute("style", "display: block");
+      e.style.cssText = "display: block";
+    } else {
+      e.setAttribute("style", "display: none");
+      e.style.cssText = "display: none";
+    }
+  }
+}
+function wait(val) {
+  setVisible('loading', val);
+  setVisible('wait', val);
+}
+function enableSearchTerm(val, searchTermId) {
+  var searchTerm = document.getElementById(searchTermId);
+  prevSearchTerm = null;
+  if (val == 'other') {
+    searchTerm.removeAttribute("disabled");
+  } else {
+    searchTerm.setAttribute("disabled", "true");
+    searchTerm.value = '';
+  }
+  refreshResources2(null, val);
+  return true;
+}
+function sanitize(val) {
+  val = val.replace(/'/g, "\'");
+  val = val.replace(/\"/g, "\'");
+  return val;
+}
+function searchTermChanged(term) {
+  // Removing leading spaces only (Not using trim() method due to issues in search with trailing spaces)
+  var searchTerm = term.value.replace(/^\s+/g, ''); 
+  if ((searchTerm.length >= 2 || term.value.length == 0) && prevSearchTerm != searchTerm) {
+    clearTimeout(timer);
+    timer = setTimeout("refreshResources(\"" + sanitize(searchTerm) + "\", 'other')", 1000);
+    prevSearchTerm = searchTerm;
+  }
+}
+function completeRefreshResources(id, totalMatches) {
+  var term = document.getElementById(id);
+  term.focus();
+  term.selectionStart = term.selectionEnd = term.value.length;
+  working = false;
+}
+</script>
+<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+<div id="loading" class="waitingSearchDiv" style="display: none">
+ <div id="waitingHolder" class="waitingHolder">
+  <img class="waitingImage" src="/img/loading.gif"/>
+  <span class="waitingDescription">{!$Label.common_loading_label}</span>
+ </div>
+</div>
+
+<apex:form id="form">
+<apex:sectionHeader title="{!$Label.pse__skill_certification_section_header}" help="{!$Page.pse__SkillHelp}"  />
+<apex:actionFunction name="refreshResources" action="{!refreshResources}" rerender="searchResults, msgs, main" immediate="true" status="searchStatus" oncomplete="completeRefreshResources('{!$Component.main.searchTerm}', '{!totalMatches}');">
+<apex:param name="param1" value="" assignTo="{!searchTerm}" />
+<apex:param name="param2" value="" assignTo="{!selfOrOther}" />
+</apex:actionFunction>
+<apex:actionFunction name="refreshResources2" action="{!refreshResources}" rerender="msgs, main" immediate="true" oncomplete="completeRefreshResources('{!$Component.main.searchTerm}', 0);">
+<apex:param name="param1" value="" assignTo="{!searchTerm}" />
+<apex:param name="param2" value="" assignTo="{!selfOrOther}" />
+</apex:actionFunction>
+<apex:actionFunction name="selectResource" action="{!selectResource}" rerender="msgs, main" immediate="true" oncomplete="document.getElementById('{!$Component.main.searchTerm}').value = '{!searchTerm}';">
+<apex:param name="param1" value="" assignTo="{!selectedResourceId}" />
+</apex:actionFunction>
+<apex:actionFunction id="expandSkill" name="expandSkill" action="{!expandSkill}" rerender="skillsSection" immediate="true" oncomplete="wait(false);">
+ <apex:param id="expandParam" name="expandParam" value="" assignTo="{!selectedSkillType}" />
+</apex:actionFunction>
+<apex:actionFunction id="collapseSkill" name="collapseSkill" action="{!collapseSkill}" rerender="skillsSection" immediate="true" oncomplete="wait(false);">
+ <apex:param id="collapseParam" name="collapseParam" value="" assignTo="{!selectedSkillType}" />
+</apex:actionFunction>
+<apex:actionFunction id="expandCertification" name="expandCertification" action="{!expandCertification}" rerender="certificationsSection" immediate="true" oncomplete="wait(false);">
+ <apex:param id="expandCertParam" name="expandCertParam" value="" assignTo="{!selectedCertificationType}" />
+</apex:actionFunction>
+<apex:actionFunction id="collapseCertification" name="collapseCertification" action="{!collapseCertification}" rerender="certificationsSection" immediate="true" oncomplete="wait(false);">
+ <apex:param id="collapseCertParam" name="collapseCertParam" value="" assignTo="{!selectedCertificationType}" />
+</apex:actionFunction>
+<apex:actionFunction id="expandAll" name="expandAll" action="{!expandAll}" rerender="skillsSection, certificationsSection" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:actionFunction id="collapseAll" name="collapseAll" action="{!collapseAll}" rerender="skillsSection, certificationsSection" immediate="true" oncomplete="wait(false);">
+</apex:actionFunction>
+<apex:pageMessages id="msgs" />
+
+<apex:pageBlock id="main" title="{!$Label.pse__skill_certification_section_header}" rendered="{!NOT isDisabled}">
+<apex:pageBlockButtons >
+<apex:commandButton styleClass="btn" action="{!edit}" value="{!$Label.pse__common_label_edit_header}" disabled="{!NOT isEditable || selectedResourceId == null}" rendered="{!NOT isEditMode}" onclick="wait(true);" rerender="main" oncomplete="wait(false);" />
+<apex:commandButton styleClass="btn" action="{!save}" value="{!$Label.pse__common_label_save}" rendered="{!isEditMode}" />
+<apex:commandButton styleClass="btn" action="{!cancel}" value="{!$Label.pse__common_label_cancel}" rendered="{!isEditMode}" immediate="true" />
+<apex:commandButton styleClass="btn" onclick="wait(true); expandAll(); return false;" disabled="{!selectedResourceId == null}" value="{!$Label.pse__skill_certification_btn_expand_all}" oncomplete="wait(false);" />
+<apex:commandButton styleClass="btn" onclick="wait(true); collapseAll(); return false;" disabled="{!selectedResourceId == null}" value="{!$Label.pse__skill_certification_btn_collapse_all}" oncomplete="wait(false);" />
+</apex:pageBlockButtons>
+
+  <apex:outputPanel styleClass="filterSection">
+  <table cellpadding="0" cellspacing="0" border="0">
+  <tr><td>
+  <apex:selectRadio id="selfOrOther" value="{!selfOrOther}" disabled="{!isEditMode}" onclick="return enableSearchTerm(this.value, '{!$Component.searchTerm}');">
+    <apex:selectOption value="{!selfOption}" />
+    <apex:selectOption value="{!otherOption}" />
+  </apex:selectRadio>
+  </td>
+  <td>
+    <apex:inputText id="searchTerm" disabled="{!selfOrOther == 'self' || isEditMode}" onkeyup="searchTermChanged(this);"
+    style="margin-right: 5px;" />
+    <apex:actionStatus id="searchStatus" startText="{!$Label.pse__common_label_please_wait}" stopText="" />
+<script>
+if ('{!JSENCODE(selectedResourceId)}' != '') {
+  document.getElementById('{!$Component.searchTerm}').value = '{!JSENCODE(searchTerm)}';
+}
+</script>
+  </td></tr></table>
+  </apex:outputPanel>
+<apex:outputPanel id="searchResults">
+<apex:pageBlockTable value="{!resourcePages.page}" var="resource" rendered="{!selectedResourceId == null}">
+	<apex:column headerValue="{!$Label.pse__skill_certification_resource_table_name_header}">
+	  <a class="link" onclick="return selectResource('{!resource.Id}');">
+	  	<apex:outputText value="{!resource['Name']}"/>
+	  </a>
+	</apex:column>
+	<apex:column headerValue="{!$Label.pse__common_label_role}">
+		<apex:outputField value="{!resource['Resource_Role__c']}"/>
+	</apex:column>
+	<apex:column headerValue="{!$Label.pse__common_label_region}">
+		<apex:outputText value="{!resource['Region__r.Name']}"/>
+	</apex:column>
+</apex:pageBlockTable>
+  <apex:outputPanel layout="block" rendered="{!selectedResourceId == null}" style="margin-top: 5px; margin-right: auto; margin-left: auto; width: 50%">
+    <apex:commandButton styleClass="btn" action="{!resourcePages.previousPage}" value="{!$Label.pse__common_label_previous_page}" rerender="searchResults" disabled="{!!resourcePages.hasPreviousPage}"/>
+    <apex:outputText value="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__skill_capacity_page_number),'{0}',TEXT(resourcePages.pageNumber)),'{1}', TEXT(resourcePages.pageCount))}" style="padding-left: 10px; padding-right: 10px;"/>
+    <apex:commandButton styleClass="btn" action="{!resourcePages.nextPage}" value="{!$Label.pse__common_label_next_page}" rerender="searchResults" disabled="{!!resourcePages.hasNextPage}" />
+  </apex:outputPanel>
+</apex:outputPanel>
+<p />
+<apex:pageBlockSection title="{!$Label.pse__skill_certification_skills_page_block_section}" columns="1">
+<apex:outputPanel id="skillsSection">
+<table class="list" cellspacing="0" cellpadding="0" border="0">
+<tr class="headerRow">
+ <th>{!$Label.skill_certification_skills_table_skill_header}</th>
+ <th>{!$ObjectType.Skill_Certification_Rating__c.fields.Rating__c.label}</th>
+ <th>{!$ObjectType.Skill_Certification_Rating__c.fields.Notes__c.label}</th>
+ <th>{!$ObjectType.Skill_Certification_Rating__c.fields.Evaluation_Date__c.label}</th>
+ <th>{!$ObjectType.Skill_Certification_Rating__c.fields.LastModifiedDate.label}</th>
+</tr>
+<apex:repeat value="{!skillsData.contents}" var="skillType">
+<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+ <td colspan="5">
+  <a href="" onclick="wait(true); collapseSkill('{!skillType.EscapedName}'); return false;"><apex:image styleClass="collapseExpandImg"  url="{!URLFOR($Resource.pse__appirioCommon, 'chevrondown.svg')}" rendered="{!skillType.expanded}" /></a>
+  <a href="" onclick="wait(true); expandSkill('{!skillType.EscapedName}'); return false;"><apex:image styleClass="collapseExpandImg" url="{!URLFOR($Resource.pse__appirioCommon, 'chevronright.svg')}" rendered="{!NOT skillType.expanded}" /></a>
+  <apex:outputText value="{!skillCertTypes[skillType.Name]}" style="vertical-align: top; padding-left: 5px;" />
+ </td>
+</tr>
+<apex:repeat value="{!skillType.ratings}" var="rating">
+<tr style="display: {!IF(skillType.expanded, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+ <td class="dataCell" nowrap="true" style="padding-left: 50px;">{!rating.Data.Skill_Certification__r.Name}</td>
+ <td class="dataCell" nowrap="true">
+   <apex:inputField value="{!rating.Data.pse__Rating__c}" rendered="{!isEditMode}" />
+   <apex:outputField value="{!rating.Data.pse__Rating__c}" rendered="{!NOT isEditMode}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+   <apex:inputField value="{!rating.Data.pse__Notes__c}" rendered="{!isEditMode}" />
+   <apex:outputField value="{!rating.Data.pse__Notes__c}" rendered="{!NOT isEditMode}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+   <apex:inputField value="{!rating.Data.pse__Evaluation_Date__c}" rendered="{!isEditMode}" />
+   <apex:outputField value="{!rating.Data.pse__Evaluation_Date__c}" rendered="{!NOT isEditMode}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+   <apex:outputField value="{!rating.Data.LastModifiedDate}" />
+ </td>
+</tr>
+</apex:repeat>
+</apex:repeat>
+</table>
+</apex:outputPanel>
+</apex:pageBlockSection>
+
+<apex:pageBlockSection title="{!$Label.pse__skill_certification_certifications_page_block_section}" columns="1">
+<apex:outputPanel id="certificationsSection">
+<table class="list" cellspacing="0" cellpadding="0" border="0">
+<tr class="headerRow">
+ <th>{!$Label.skill_certification_certification_table_certification_column_header}</th>
+ <th>{!$Label.skill_certification_certification_table_rating_column_header}</th>
+ <th>{!$Label.common_label_notes}</th>
+ <th>{!$Label.skill_certification_certification_table_evaluation_date_column_header}</th>
+ <th>{!$Label.skill_certification_certification_table_expiration_date_column_header}</th>
+ <th>{!$Label.skill_certification_certification_table_last_modified_date_column_header}</th>
+</tr>
+<apex:repeat value="{!certsData.contents}" var="certType">
+<tr class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+ <td colspan="6">
+  <a href="" onclick="wait(true); collapseCertification('{!certType.EscapedName}'); return false;"><apex:image styleClass="collapseExpandImg" url="{!URLFOR($Resource.pse__appirioCommon, 'chevrondown.svg')}" rendered="{!certType.expanded}" /></a>
+  <a href="" onclick="wait(true); expandCertification('{!certType.EscapedName}'); return false;"><apex:image styleClass="collapseExpandImg" url="{!URLFOR($Resource.pse__appirioCommon, 'chevronright.svg')}" rendered="{!NOT certType.expanded}" /></a>
+  <apex:outputText value="{!skillCertTypes[certType.Name]}" style="vertical-align: top; padding-left: 5px;" />
+ </td>
+</tr>
+<apex:repeat value="{!certType.ratings}" var="rating">
+<tr style="display: {!IF(certType.expanded, '', 'none')}" class="dataRow" onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);}">
+ <td class="dataCell" nowrap="true" style="padding-left: 50px;">{!rating.Data.Skill_Certification__r.Name}</td>
+ <td class="dataCell" nowrap="true">
+   <apex:inputField value="{!rating.Data.pse__Rating__c}" rendered="{!isEditMode}" />
+   <apex:outputField value="{!rating.Data.pse__Rating__c}" rendered="{!NOT isEditMode}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+   <apex:inputField value="{!rating.Data.pse__Notes__c}" rendered="{!isEditMode}" />
+   <apex:outputField value="{!rating.Data.pse__Notes__c}" rendered="{!NOT isEditMode}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+   <apex:inputField value="{!rating.Data.pse__Evaluation_Date__c}" rendered="{!isEditMode}" />
+   <apex:outputField value="{!rating.Data.pse__Evaluation_Date__c}" rendered="{!NOT isEditMode}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+   <apex:inputField value="{!rating.Data.pse__Expiration_Date__c}" rendered="{!isEditMode}" />
+   <apex:outputField value="{!rating.Data.pse__Expiration_Date__c}" rendered="{!NOT isEditMode}" />
+ </td>
+ <td class="dataCell" nowrap="true">
+   <apex:outputField value="{!rating.Data.LastModifiedDate}" />
+ </td>
+</tr>
+</apex:repeat>
+</apex:repeat>
+</table>
+</apex:outputPanel>
+</apex:pageBlockSection>
+
+</apex:pageBlock>
+</apex:form>
+
+</apex:page>

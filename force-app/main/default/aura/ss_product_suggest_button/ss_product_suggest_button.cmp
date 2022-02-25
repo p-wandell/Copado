@@ -1,0 +1,51 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 11/2/17.
+ -->
+
+<aura:component description="ss_product_suggest_button"
+                controller="pc_suggestController"
+                extends="c:ss_product_base"
+                access="global">
+
+	<aura:attribute name="contact"       type="Map"    access="private"/>
+	<aura:attribute name="targetContact" type="Map"    access="private"/>
+	<aura:attribute name="contactError"  type="String" access="private"/>
+	<aura:attribute name="contactId"     type="String" access="private"/>
+
+	<aura:attribute name="iconName"      type="String" access="public"/>
+	<aura:attribute name="productId"     type="String" access="public"/>
+	<aura:attribute name="productName"   type="String" access="public"/>
+
+	<aura:attribute name="buttonVariant" type="String" default="brand"/>
+
+	<aura:attribute name="buttonSuggest"        type="String" default="{!$Label.c.ss_pc_button_suggestProduct}"/>
+	<aura:attribute name="buttonLabelSuggest"   type="String" default="{!$Label.c.ss_pc_button_suggestProduct}"/>
+	<aura:attribute name="buttonLabelSuggested" type="String" default="{!$Label.c.ss_pc_button_suggestedProduct}"/>
+
+	<aura:attribute name="toastMessage"         type="String" default="{!$Label.c.ss_pc_suggest_toast_message}" />
+
+	<force:recordData aura:id="contactDataRecord"
+	                  fields="Name, Email"
+	                  recordId="{!v.contactId}"
+	                  targetRecord="{!v.contact}"
+	                  targetFields="{!v.targetContact}"
+	                  targetError="{!v.contactError}"
+	                  recordUpdated="{!c.handleUserLoaded}"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="start">
+
+		<lightning:layoutItem size="12">
+			<lightning:button onclick="{!c.suggestToUser}"
+			                  label="{!v.buttonSuggest}"
+			                  title="{!$Label.c.ss_pc_tooltip_suggestProduct}"
+			                  iconName="{!v.iconName}"
+			                  variant="{!v.buttonVariant}"/>
+		</lightning:layoutItem>
+
+	</lightning:layout>
+</aura:component>

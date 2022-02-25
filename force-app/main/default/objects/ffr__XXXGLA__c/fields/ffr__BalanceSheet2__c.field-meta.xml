@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__BalanceSheet2__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Balance Sheet 2</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>ffr__BalanceSheet1__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Current Assets</fullName>
+                <default>false</default>
+                <label>Current Assets</label>
+            </value>
+            <value>
+                <fullName>Fixed Assets</fullName>
+                <default>false</default>
+                <label>Fixed Assets</label>
+            </value>
+            <value>
+                <fullName>Intangible Assets</fullName>
+                <default>false</default>
+                <label>Intangible Assets</label>
+            </value>
+            <value>
+                <fullName>Current Liabilities</fullName>
+                <default>false</default>
+                <label>Current Liabilities</label>
+            </value>
+            <value>
+                <fullName>Long Term Liabilities</fullName>
+                <default>false</default>
+                <label>Long Term Liabilities</label>
+            </value>
+            <value>
+                <fullName>Shareholders Funds</fullName>
+                <default>false</default>
+                <label>Shareholders Funds</label>
+            </value>
+            <value>
+                <fullName>Income Statement</fullName>
+                <default>false</default>
+                <label>Income Statement</label>
+            </value>
+            <value>
+                <fullName>Profit and Loss</fullName>
+                <default>false</default>
+                <label>Profit and Loss</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Current Assets</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Fixed Assets</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Intangible Assets</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Current Liabilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Long Term Liabilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Shareholders Funds</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Income Statement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balance Sheet</controllingFieldValue>
+            <valueName>Profit and Loss</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

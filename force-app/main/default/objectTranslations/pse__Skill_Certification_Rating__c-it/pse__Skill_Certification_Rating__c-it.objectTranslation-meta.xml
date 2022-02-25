@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Abilità / Certificazione</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Valutazioni abilità e certificazione</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Id di valutazione</nameFieldLabel>
+    <recordTypes>
+        <label><!-- Certification --></label>
+        <name>Certification</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Skill --></label>
+        <name>Skill</name>
+    </recordTypes>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <errorMessage><!-- The Skill / Certification value does not match the record type. If you are creating a Skill record, please choose a Skill value. If you are creating a Certification record, please choose a Certification value. --></errorMessage>
+        <name>Skill_Cert_Rating_Record_Type_Match</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Resource lookup must be set to an Contact with Is Resource = true --></errorMessage>
+        <name>pse__Check_Resource</name>
+    </validationRules>
+</CustomObjectTranslation>

@@ -1,0 +1,21 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+    <template if:true={showSteps}>
+        <section data-id="adventure_progress" class="padded-section">
+            <lightning-layout>
+                <lightning-layout-item size="12" class="slds-p-bottom_x-large" >
+                    <lightning-progress-indicator current-step={currentStep} type="base" variant="base" class="" >
+                        <template for:each={adventureContentObject.adventureStepWrapper} for:item="step" for:index="index">
+                            <div class="onboarding-progress__item" key={step.id} >
+                                <lightning-progress-step label={step.stepName} value={index} onclick={handleIconNext}></lightning-progress-step> 
+                                    <div class="onboarding-progress__item-label" data-id={index} onclick={handleDivNext} >{step.stepName}</div>
+                            </div>
+                        </template>
+                    </lightning-progress-indicator>
+                </lightning-layout-item>
+            </lightning-layout>
+        </section>
+    </template>
+</template>

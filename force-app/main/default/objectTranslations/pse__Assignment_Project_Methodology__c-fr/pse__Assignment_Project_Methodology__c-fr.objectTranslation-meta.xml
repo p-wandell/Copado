@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Méthodologie du projet d&apos;affectation</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Méthodologies de projet d&apos;affectation</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Nom</nameFieldLabel>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <errorMessage><!-- Cannot associate the project methodology with the assignment. These records do not belong to the same project. Enter a project methodology and assignment that belong to the same project. --></errorMessage>
+        <name>pse__Assignment_Methodology_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot associate a the project methodology with the assignment. These records do not belong to the same project. Enter a project phase and milestone that belong to the same project. --></errorMessage>
+        <name>pse__Assignmnet_Methodology_Project_Mismatch</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- New_Assignment_Methodology --></label>
+        <name>pse__New_Assignment_Methodology</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- New_Methodology_Assignment --></label>
+        <name>pse__New_Methodology_Assignment</name>
+    </webLinks>
+</CustomObjectTranslation>

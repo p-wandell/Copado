@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>52.0</apiVersion>
+	<isExposed>true</isExposed>
+	<masterLabel>7S Files List</masterLabel>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightningCommunity__Default">
+			<property name="tileVariant" label="Display Option" type="String"
+			          description="Select the default format of the card. Options are: None (flat) or Featured (drop shadow)"
+			          datasource="None,Outline,Featured"/>
+			<property name="layout" type="String" label="Default Layout"
+			          description="Select the default list layout. Options are Card, List or Table."
+			          datasource="Card,List,Table"/>
+			<property name="cardWidth" type="String" label="Minimum Card Width"
+			          description="Enter the narrowest size in pixels that cards can be responsively resized in Card view. 200-300 pixels is recommended."/>
+			<property name="cardGap" type="String" label="Card Gap"
+			          description="Enter the desired spacing between cards in px, em, or rem format. For example, 24px or 1rem."/>
+			<property name="textAlign" type="String" label="Card Text Alignment"
+			          description="Select the default text alignment for Cards. Options are Left, Center and Right"
+			          datasource="Left,Center,Right"/>
+			<property name="IconSecWidth" type="String" label="Icon Section Width"
+			          description="Select the Icon Section Width. Options are Wide and Narrow."
+			          datasource="Wide,Narrow"/>
+			<property name="showTitle" type="Boolean" label="Show Title" description="Select to display title." default="true"/>
+			<property name="showDescription" type="Boolean" label="Show Description"
+			          description="Select to display description."/>
+			<property name="descriptionLineCount" type="String" label="Description Lines to Show"
+			          description="Number of lines to show for the description"/>
+			<property name="showTreeView" type="Boolean" label="Show Tree View"
+			          description="Select to display Tree in Card, List, and Table View"/>
+			<property name="showBreadcrumbs" type="Boolean" label="Show Breadcrumbs"
+			          description="Select to display Breadcrumbs in Card, List, and Table View"/>
+			<property name="showFileType" type="Boolean" label="Show File Type"
+			          description="Select to display File Type."/>
+			<property name="showFileSize" type="Boolean" label="Show File Size"
+			          description="Select to display File Size."/>
+			<property name="showCreatedDate" type="Boolean" label="Show Created Date"
+			          description="Select to display Created Date."/>
+			<property name="showPreviewAction" type="Boolean" label="Show View Details Action"
+			          description="Select to display View Details Action in Card, List and Table View."/>
+			<property name="showDownloadAction" type="Boolean" label="Show Download Action"
+			          description="Select to display Download Action for Files in Card, List and Table View."/>
+			<property name="pageSize" type="String" label="Items per Page"
+			          description="This is the number of items that will be loaded per page"/>
+			<property name="customClass" label="Custom Class" type="String"
+			          description="Class for applying custom styling."/>
+			<property name="listId" label="List Id" type="String"
+			          description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates this component to a specific list."/>
+			<property name="recordId" label="Record Id" type="String"/>
+		</targetConfig>
+		<targetConfig targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage">
+			<property name="tileVariant" label="Display Option" type="String"
+			          description="Select the default format of the card. Options are: None (flat) or Featured (drop shadow)"
+			          datasource="None,Featured"/>
+			<property name="layout" type="String" label="Default Layout"
+			          description="Select the default list layout. Options are Card, List or Table."
+			          datasource="Card,List,Table"/>
+			<property name="cardWidth" type="String" label="Minimum Card Width"
+			          description="Enter the narrowest size in pixels that cards can be responsively resized in Card view. 200-300 pixels is recommended."/>
+			<property name="cardGap" type="String" label="Card Gap"
+			          description="Enter the desired spacing between cards in px, em, or rem format. For example, 24px or 1rem."/>
+			<property name="textAlign" type="String" label="Card Text Alignment"
+			          description="Select the default text alignment for Cards. Options are Left, Center and Right"
+			          datasource="Left,Center,Right"/>
+			<property name="IconSecWidth" type="String" label="Icon Section Width"
+			          description="Select the Icon Section Width. Options are Wide and Narrow."
+			          datasource="Wide,Narrow"/>
+			<property name="showTitle" type="Boolean" label="Show Title" description="Select to display title."/>
+			<property name="showDescription" type="Boolean" label="Show Description"
+			          description="Select to display description."/>
+			<property name="descriptionLineCount" type="String" label="Description Lines to Show"
+			          description="Number of lines to show for the description"/>
+			<property name="showTreeView" type="Boolean" label="Show Tree View"
+			          description="Select to display Tree in Card, List, and Table View"/>
+			<property name="showBreadcrumbs" type="Boolean" label="Show Breadcrumbs"
+			          description="Select to display Breadcrumbs in Card, List, and Table View"/>
+			<property name="showFileType" type="Boolean" label="Show File Type"
+			          description="Select to display File Type."/>
+			<property name="showFileSize" type="Boolean" label="Show File Size"
+			          description="Select to display File Size."/>
+			<property name="showCreatedDate" type="Boolean" label="Show Created Date"
+			          description="Select to display Created Date."/>
+			<property name="showPreviewAction" type="Boolean" label="Show View Details Action"
+			          description="Select to display View Details Action in Card, List and Table View."/>
+			<property name="showDownloadAction" type="Boolean" label="Show Download Action"
+			          description="Select to display Download Action for Files in Card, List and Table View."/>
+			<property name="pageSize" type="String" label="Items per Page"
+			          description="This is the number of items that will be loaded per page"/>
+			<property name="customClass" label="Custom Class" type="String"
+			          description="Class for applying custom styling."/>
+			<property name="listId" label="List Id" type="String"
+			          description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates this component to a specific list."/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

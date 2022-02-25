@@ -1,0 +1,1334 @@
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}">
+    <!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+    <!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+    <!-- User Note: You Can Create Your Own Stylsheet In The Static Resources And Apply It To Your Reports -->
+    <!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+    <apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+    <apex:stylesheet value="{!StyleSheetName}"/>
+    <!-- Variable to represent boolean true/false when needing to set other variables to these states -->
+    <apex:variable var="true" value="{!1=1}"/>
+    <apex:variable var="false" value="{!1=0}"/>
+    <!-- User Note: I Want To Format Values On A Report In Different Ways -->
+    <!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+    <!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brakets/Minus 3Charcterinternationalcurrencycode/None-->
+    <!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+    <!-- User Note: You Can Add Your Own Formats To The List Below Try To Keep A Good Coding Structure-->
+    <apex:variable var="V2NCB" value="{0, number, #,###,###,##0.00;(#,###,###,##0.00)}"/>
+    <apex:variable var="P2NCB" value="{0, number, #,###,###,##0.00%;(#,###,###,##0.00%)}"/>
+    <apex:variable var="V0NCB" value="{0, number, #,###,###,##0;(#,###,###,##0)}"/>
+    <apex:variable var="P0NCB" value="{0, number, #,###,###,##0%;(#,###,###,##0%)}"/>
+    <apex:variable var="V2RCB" value="{0, number, (#,###,###,##0.00);#,###,###,##0.00}"/>
+    <apex:variable var="P2RCB" value="{0, number, (#,###,###,##0.00%);#,###,###,##0.00%}"/>
+    <apex:variable var="V0RCB" value="{0, number, (#,###,###,##0);#,###,###,##0}"/>
+    <apex:variable var="P0RCB" value="{0, number, (#,###,###,##0%);#,###,###,##0%}"/>
+    <apex:variable var="V2NCBUSD" value="{0, number, $#,###,###,##0.00;$(#,###,###,##0.00)}"/>
+    <apex:variable var="V2RCBUSD" value="{0, number, $(#,###,###,##0.00);$#,###,###,##0.00}"/>
+    <!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+    <!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+    <!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+    <!-- User Note: It Is Possible To Use Individual Variables Against A Line This Method Allows You To Make A Single Change To All Related Formats -->
+    <apex:variable var="VN" value="{!V0NCB}"/>
+    <apex:variable var="PN" value="{!P2NCB}"/>
+    <apex:variable var="VR" value="{!V0RCB}"/>
+    <apex:variable var="PR" value="{!P2RCB}"/>
+    <apex:variable var="VZ" value="0"/>
+    <!-- User Note: The following variable counts the maximum number of Reporting Values of Type Group, excluding those used for Subtotals, defined and available to display with this template -->
+    <!-- User Note: Groups 01 to 03 are used for subtotals and 10 to 15 are used for display purposes, so the total number available to display is 6 -->
+    <apex:variable var="totalDisplayGroupsAvailable" value="6"/>
+    <!-- REGION 01: GENERAL CONFIGURATION END-->
+    <!-- REGION 02: REPORT HEADER START -->
+    <!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+    <apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+    <apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+    <!-- User Note: Show The Error Messages From The Reporting Engine -->
+<apex:PageMessages />
+    <div class="chatterPosition"></div>
+    <!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+    <!-- User Note: When Creating New Templates This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+    <table class="ffrgridd">
+        <tr>
+            <td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+        </tr>
+        <tr>
+            <td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+            <td align="right">{!NOW()}</td>
+        </tr>
+        <tr><td class="ffrgridspacer2"></td></tr>
+        <tr>
+            <td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+            <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+        </tr>
+        <tr><td class="ffrgridspacer2"></td></tr>
+        <tr>
+            <td align="left"><apex:outputField value="{!ffr__ReportingDefinition__c.ffr__Description__c}"/></td>
+            <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+        </tr>
+    </table>
+    <!-- User Note: Create a new table to display the prompt information -->
+    <table class="ffrgridnotfullpage">
+        <tr><td class="ffrgridspacer2"></td></tr>
+        <tr>
+            <td align="left">
+                <table class="ffrgrid">
+                    <apex:repeat value="{!promptList}" var="prompt" >
+                        <tr>
+                            <td align="left">{!prompt.label}</td>
+                            <td align="left" class="ffrgridspacer"></td>
+                            <td align="left"><strong>{!prompt.value}</strong></td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!-- REGION 02: REPORT HEADER END -->
+    <!-- REGION 03: REPORT BODY START -->
+    <!-- Initialise Variables to be used in calculations using data from all 3 Data Ranges -->
+    <apex:outputpanel rendered="{!!hasMessages}">
+        <apex:variable value="{!0}" var="netFromOperatingActivitiesColumnA"/>
+        <apex:variable value="{!0}" var="netFromOperatingActivitiesColumnB"/>
+        <apex:variable value="{!0}" var="netFromOperatingActivitiesColumnC"/>
+        <apex:variable value="{!0}" var="netFromOperatingActivitiesColumnD"/>
+        <apex:variable value="{!0}" var="netFromOperatingActivitiesColumnE"/>
+        <apex:variable value="{!0}" var="netFromOperatingActivitiesColumnF"/>
+        <apex:variable value="{!0}" var="netFromOperatingActivitiesColumnG"/>
+        <apex:variable value="{!0}" var="netFromOperatingActivitiesColumnH"/>
+        <apex:variable value="{!0}" var="netCashMovementColumnA"/>
+        <apex:variable value="{!0}" var="netCashMovementColumnB"/>
+        <apex:variable value="{!0}" var="netCashMovementColumnC"/>
+        <apex:variable value="{!0}" var="netCashMovementColumnD"/>
+        <apex:variable value="{!0}" var="netCashMovementColumnE"/>
+        <apex:variable value="{!0}" var="netCashMovementColumnF"/>
+        <apex:variable value="{!0}" var="netCashMovementColumnG"/>
+        <apex:variable value="{!0}" var="netCashMovementColumnH"/>
+        <!-- User Note: Create a table to display the data -->
+        <table class="ffrgridnotfullpage">
+            <!-- DATA RANGE 1: START-->
+            <apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+            <!-- Configuration of columns and groups (elastic template responds dynamically to existence of groups and columns -->
+            <!-- Column setup -->
+            <!-- Set the default column rendering state variables to "false" -->
+            <apex:variable var="RenderColumnA" value="{!false}"/>
+            <apex:variable var="RenderColumnB" value="{!false}"/>
+            <apex:variable var="RenderColumnC" value="{!false}"/>
+            <apex:variable var="RenderColumnD" value="{!false}"/>
+            <apex:variable var="RenderColumnE" value="{!false}"/>
+            <apex:variable var="RenderColumnF" value="{!false}"/>
+            <apex:variable var="RenderColumnG" value="{!false}"/>
+            <apex:variable var="RenderColumnH" value="{!false}"/>
+            <!-- Set the default column rendering state for calculated columns -->
+            <!-- Now set the column rendering state variables according to which columns have been used (via column filter mappings) -->
+            <apex:repeat var="columnKey" value="{!dataRange.columnKeyList}">
+                <apex:variable var="RenderColumnA" value="{!true}" rendered="{!columnKey=='A'}" />
+                <apex:variable var="RenderColumnB" value="{!true}" rendered="{!columnKey=='B'}" />
+                <apex:variable var="RenderColumnC" value="{!true}" rendered="{!columnKey=='C'}" />
+                <apex:variable var="RenderColumnD" value="{!true}" rendered="{!columnKey=='D'}" />
+                <apex:variable var="RenderColumnE" value="{!true}" rendered="{!columnKey=='E'}" />
+                <apex:variable var="RenderColumnF" value="{!true}" rendered="{!columnKey=='F'}" />
+                <apex:variable var="RenderColumnG" value="{!true}" rendered="{!columnKey=='G'}" />
+                <apex:variable var="RenderColumnH" value="{!true}" rendered="{!columnKey=='H'}" />
+            </apex:repeat>
+            <!-- Group setup-->
+            <!-- Set the default group value rendering state variables to "false" -->
+            <apex:variable var="RenderGroup01" value="{!false}"/>
+            <apex:variable var="RenderGroup02" value="{!false}"/>
+            <apex:variable var="RenderGroup03" value="{!false}"/>
+            <apex:variable var="RenderGroup10" value="{!false}"/>
+            <apex:variable var="RenderGroup11" value="{!false}"/>
+            <apex:variable var="RenderGroup12" value="{!false}"/>
+            <apex:variable var="RenderGroup13" value="{!false}"/>
+            <apex:variable var="RenderGroup14" value="{!false}"/>
+            <apex:variable var="RenderGroup15" value="{!false}"/>
+            <!-- We need to know whether to keep group subtotals. Default condition is false -->
+            <apex:variable var="RenderGroupSubtotals" value="{!false}"/>
+            <!-- Now set the group rendering state variables according to which group values have been used -->
+            <!-- Additionally, if we have any of groups 01-03 we need to maintain group subtotals -->
+            <apex:repeat var="groupKey" value="{!dataRange.groupKeyList}">
+                <!-- group-groups -->
+                <apex:outputPanel layout="none" rendered="{!groupKey=='01'}">
+                    <apex:variable var="RenderGroup01" value="{!true}"/>
+                    <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!groupKey=='02'}">
+                    <apex:variable var="RenderGroup02" value="{!true}"/>
+                    <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!groupKey=='03'}">
+                    <apex:variable var="RenderGroup03" value="{!true}"/>
+                    <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+                </apex:outputPanel>
+                <!-- Line-groups -->
+                <apex:variable var="RenderGroup10" value="{!true}" rendered="{!groupKey=='10'}"/>
+                <apex:variable var="RenderGroup11" value="{!true}" rendered="{!groupKey=='11'}"/>
+                <apex:variable var="RenderGroup12" value="{!true}" rendered="{!groupKey=='12'}"/>
+                <apex:variable var="RenderGroup13" value="{!true}" rendered="{!groupKey=='13'}"/>
+                <apex:variable var="RenderGroup14" value="{!true}" rendered="{!groupKey=='14'}"/>
+                <apex:variable var="RenderGroup15" value="{!true}" rendered="{!groupKey=='15'}"/>
+            </apex:repeat>
+            <!-- Column headings -->
+            <tr>
+                <!-- Note that these are contained within outputPanels which are rendered (displayed) depending on the appropriate column render state variable -->
+                <!-- Do not display headings for Reporting Values, only Column Filter Labels -->
+                <td class="ffrgridtitleleftd" colspan="{!totalDisplayGroupsAvailable}"></td>
+                <td class="ffrgridspacer"/>
+                <td class="{!if(RenderColumnA,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnA}">{!dataRange.columnLabels['A']}</apex:outputPanel></td>
+                <td class="{!if(RenderColumnB,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnB}">{!dataRange.columnLabels['B']}</apex:outputPanel></td>
+
+
+<!--Variance Column Heading Label 20-->
+<td class="{!if(RenderColumnB&& RenderColumnA,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnB && RenderColumnA}">{!Label['L20']}</apex:outputPanel></td>
+
+
+                <td class="{!if(RenderColumnC,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnC}">{!dataRange.columnLabels['C']}</apex:outputPanel></td>
+                <td class="{!if(RenderColumnD,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnD}">{!dataRange.columnLabels['D']}</apex:outputPanel></td>
+                <td class="{!if(RenderColumnE,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnE}">{!dataRange.columnLabels['E']}</apex:outputPanel></td>
+                <td class="{!if(RenderColumnF,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnF}">{!dataRange.columnLabels['F']}</apex:outputPanel></td>
+                <td class="{!if(RenderColumnG,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnG}">{!dataRange.columnLabels['G']}</apex:outputPanel></td>
+                <td class="{!if(RenderColumnH,'ffrgridtitlerightd','ffrhidden')}" style="width:120px;"><apex:outputPanel layout="none" rendered="{!RenderColumnH}">{!dataRange.columnLabels['H']}</apex:outputPanel></td>
+            </tr>
+            <!-- Display the header for the first section: Operating Activities (Label L05) -->
+            <tr><td class="ffrcalcsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L05']}</td></tr>
+            <!-- Spacer -->
+            <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+            <!-- Set all relevant variables to zero (if the column is in use - determined by column render state variables) -->
+            <!-- We need to track Profit Before Interest & Tax (PBIT) -->
+            <apex:variable value="{!0}" var="pbitColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!0}" var="pbitColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!0}" var="pbitColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!0}" var="pbitColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!0}" var="pbitColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!0}" var="pbitColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!0}" var="pbitColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!0}" var="pbitColumnH" rendered="{!RenderColumnH}"/>
+            <!-- We need to track P&L Adjustments from Operating Activities to be deducted from PBIT -->
+            <apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesPLColumnH" rendered="{!RenderColumnH}"/>
+            <!-- We need to track Other Adjustments from Operating Activities to be added to PBIT -->
+            <apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!0}" var="adjOperatingActivitiesOtherColumnH" rendered="{!RenderColumnH}"/>
+            <!-- Iterate over the Rows -->
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+                <!-- Setup for start of row -->
+                <apex:variable var="rowKeyNum" value="{!VALUE(row.key)}"/>
+                <!-- Row-sensitive number format -->
+                <apex:variable var="RowNumberPattern" value="{!if((rowKeyNum>10 && rowKeyNum<21) || rowKeyNum>50,VN,VR)}"/>
+                <!-- For each row, reset all column row-totals and subtotals to zero (if the column is in use - determined by column render state variables) -->
+                <!-- It calculates one Row Subtotal per Group (01 to 03), so we need rowSubtotal variables for each group (ie, rowSubtotalGroup01) -->
+                <apex:variable value="{!0}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnH" rendered="{!RenderColumnH}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnH" rendered="{!RenderColumnH}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnH" rendered="{!RenderColumnH}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnH" rendered="{!RenderColumnH}"/>
+                <!-- These variables are used to determine when to print a subtotal -->
+                <apex:variable var="previousLineGroup01" value=""/>
+                <apex:variable var="previousLineGroup02" value=""/>
+                <apex:variable var="previousLineGroup03" value=""/>
+                <apex:variable var="currentLineGroup01" value=""/>
+                <apex:variable var="currentLineGroup02" value=""/>
+                <apex:variable var="currentLineGroup03" value=""/>
+                <!-- This variable is used to determine whether the line is the first line in the row - to prevent a subtotal being printed before the first line -->
+                <apex:variable var="firstLine" value="{!true}"/>
+                <!-- Iterate over the Lines -->
+                <apex:repeat value="{!row.lineList}" var="line" >
+                    <!-- Display the line and process subtotals - only for rows between 11 and 70 -->
+                    <!-- Set the variables representing the groups for the current line for comparison with the previous line -->
+                    <apex:variable value="{!line.groups['01']}" var="currentLineGroup01" rendered="{!RenderGroup01}"/>
+                    <apex:variable value="{!line.groups['02']}" var="currentLineGroup02" rendered="{!RenderGroup02}"/>
+                    <apex:variable value="{!line.groups['03']}" var="currentLineGroup03" rendered="{!RenderGroup03}"/>
+                    <!-- Mid-row subtotal line -->
+                    <!-- Do we want to process a (mid-row) subtotal line for Group03? -->
+                    <apex:variable var="doSubtotal03" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02 || currentLineGroup03!=previousLineGroup03)}"/>
+                    <!-- Process a subtotal line - only for rows between 11 and 70 -->
+                    <!-- Display Subtotals if Group03 is rendered -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(doSubtotal03 && RenderGroup03,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!doSubtotal03 && RenderGroup03}"><div style="margin-left: 60px;">{!previousLineGroup03}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup03ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnB==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup03ColumnB}"/></apex:outputText></td>
+
+<!-- Variance A-B -->
+<td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnB && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA-rowSubtotalGroup03ColumnB==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnB && RenderColumnA}"><apex:param value="{!rowSubtotalGroup03ColumnA-rowSubtotalGroup03ColumnB}"/></apex:outputText></td>
+
+
+
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnC==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup03ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnD==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup03ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnE==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup03ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnF==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup03ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnG==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup03ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnH==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup03ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Reset the subtotals for Group03 -->
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnA" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnA}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnB" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnB}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnC" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnC}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnD" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnD}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnE" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnE}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnF" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnF}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnG" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnG}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnH" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnH}"/>
+                    <!-- Do we want to process a (mid-row) subtotal line for Group02? -->
+                    <apex:variable var="doSubtotal02" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02)}"/>
+                    <!-- Display Subtotals if Group02 is rendered -->
+                    <!-- Display the group-group values but not the group-line values -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(doSubtotal02 && RenderGroup02,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!doSubtotal02 && RenderGroup02}"><div style="margin-left: 40px;">{!previousLineGroup02}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup02ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnB==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup02ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnC==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup02ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnD==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup02ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnE==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup02ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnF==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup02ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnG==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup02ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnH==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup02ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Reset the subtotals for Group02 -->
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnA" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnA}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnB" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnB}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnC" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnC}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnD" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnD}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnE" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnE}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnF" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnF}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnG" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnG}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnH" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnH}"/>
+                    <!-- Do we want to process a (mid-row) subtotal line for Group01? -->
+                    <apex:variable var="doSubtotal01" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01)}"/>
+                    <!-- Display Subtotals if Group01 is rendered -->
+                    <!-- Display the group-group values but not the group-line values -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(doSubtotal01 && RenderGroup01,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!doSubtotal01 && RenderGroup01}"><div style="margin-left: 20px;">{!previousLineGroup01}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup01ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnB==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup01ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnC==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup01ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnD==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup01ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnE==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup01ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnF==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup01ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnG==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup01ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnH==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup01ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Reset the subtotals for Group01 -->
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnA" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnA}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnB" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnB}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnC" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnC}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnD" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnD}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnE" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnE}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnF" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnF}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnG" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnG}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnH" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnH}"/>
+                    <!-- Line setup -->
+                    <!-- Each column is configured independently within an outputPanel the outputpanel rendered property determines whether the column is configured -->
+                    <!-- This uses the column render state variable (e.g. "renderColumnA" determines whether the panel for column A is configured and rendered) -->
+                    <!-- For each column, add the column value to the sub-total -->
+                    <!-- Subtotals for Groups 01 to 03 -->
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup01ColumnA"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup02ColumnA"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup03ColumnA"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnB+line.columns['B'].values['A']}" var="rowSubtotalGroup01ColumnB"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnB+line.columns['B'].values['A']}" var="rowSubtotalGroup02ColumnB"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnB+line.columns['B'].values['A']}" var="rowSubtotalGroup03ColumnB"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnC+line.columns['C'].values['A']}" var="rowSubtotalGroup01ColumnC"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnC+line.columns['C'].values['A']}" var="rowSubtotalGroup02ColumnC"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnC+line.columns['C'].values['A']}" var="rowSubtotalGroup03ColumnC"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnD+line.columns['D'].values['A']}" var="rowSubtotalGroup01ColumnD"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnD+line.columns['D'].values['A']}" var="rowSubtotalGroup02ColumnD"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnD+line.columns['D'].values['A']}" var="rowSubtotalGroup03ColumnD"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnE+line.columns['E'].values['A']}" var="rowSubtotalGroup01ColumnE"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnE+line.columns['E'].values['A']}" var="rowSubtotalGroup02ColumnE"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnE+line.columns['E'].values['A']}" var="rowSubtotalGroup03ColumnE"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnF}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnF+line.columns['F'].values['A']}" var="rowSubtotalGroup01ColumnF"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnF+line.columns['F'].values['A']}" var="rowSubtotalGroup02ColumnF"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnF+line.columns['F'].values['A']}" var="rowSubtotalGroup03ColumnF"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnG}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnG+line.columns['G'].values['A']}" var="rowSubtotalGroup01ColumnG"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnG+line.columns['G'].values['A']}" var="rowSubtotalGroup02ColumnG"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnG+line.columns['G'].values['A']}" var="rowSubtotalGroup03ColumnG"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnH}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnH+line.columns['H'].values['A']}" var="rowSubtotalGroup01ColumnH"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnH+line.columns['H'].values['A']}" var="rowSubtotalGroup02ColumnH"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnH+line.columns['H'].values['A']}" var="rowSubtotalGroup03ColumnH"/>
+                    </apex:outputPanel>
+                    <!-- Display the line - only for rows between 11 and 70-->
+                    <apex:variable value="{!if(RenderGroup01 && RenderGroup02 && RenderGroup03,'80px',if(RenderGroup01 && RenderGroup02,'60px',if(RenderGroup01,'40px','20px')))}" var="indentingLevel"/>
+                    <apex:variable var="lineValuesNotZero" value="{!(RenderColumnA && line.columns['A'].values['A']!=0) || (RenderColumnB && line.columns['B'].values['A']!=0) || (RenderColumnC && line.columns['C'].values['A']!=0) || (RenderColumnD && line.columns['D'].values['A']!=0) || (RenderColumnE && line.columns['E'].values['A']!=0) || (RenderColumnF && line.columns['F'].values['A']!=0) || (RenderColumnG && line.columns['G'].values['A']!=0) || (RenderColumnH && line.columns['H'].values['A']!=0)}"/>
+                    <!-- Display the grouping values based on render settings -->
+                    <!-- Group Lines for groups 1-3 (with sub-totals) are hidden - only the Subtotal Line will be displayed -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71 && lineValuesNotZero,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(RenderGroup10,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup10}"><div style="margin-left: {!indentingLevel};">{!line.groups['10']}</div></apex:outputPanel></td>
+                        <td class="{!if(RenderGroup11,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup11}">{!line.groups['11']}</apex:outputPanel></td>
+                        <td class="{!if(RenderGroup12,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup12}">{!line.groups['12']}</apex:outputPanel></td>
+                        <td class="{!if(RenderGroup13,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup13}">{!line.groups['13']}</apex:outputPanel></td>
+                        <td class="{!if(RenderGroup14,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup14}">{!line.groups['14']}</apex:outputPanel></td>
+                        <td class="{!if(RenderGroup15,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup15}">{!line.groups['15']}</apex:outputPanel></td>
+                        <td class="ffrgridspacerd"/>
+                        <!-- Display the line value, formatted using OUTPUTTEXT  with the pattern defined above -->
+                        <td class="{!if(RenderColumnA,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['A'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnA}">
+                                <apex:param value="{!line.columns['A'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnB,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['B'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB}">
+                                <apex:param value="{!line.columns['B'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+
+<!--Variance A-B -->
+<td class="{!if(RenderColumnB && RenderColumnA,'ffrgridrowd','ffrhidden')}">
+<apex:outputText value="{!if(line.columns['A'].values['A']-line.columns['B'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB && RenderColumnA}">
+<apex:param value="{!line.columns['A'].values['A']-line.columns['B'].values['A']}"/>
+</apex:outputText>
+</td>
+
+
+                        <td class="{!if(RenderColumnC,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['C'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnC}">
+                                <apex:param value="{!line.columns['C'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnD,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['D'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnD}">
+                                <apex:param value="{!line.columns['D'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnE,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['E'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnE}">
+                                <apex:param value="{!line.columns['E'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnF,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['F'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnF}">
+                                <apex:param value="{!line.columns['F'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnG,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['G'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnG}">
+                                <apex:param value="{!line.columns['G'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnH,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['H'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnH}">
+                                <apex:param value="{!line.columns['H'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                    <!-- Setup for next line -->
+                    <!-- Record the group values as "previous" for comparison on the next line -->
+                    <apex:variable var="previousLineGroup01" value="{!currentLineGroup01}"/>
+                    <apex:variable var="previousLineGroup02" value="{!currentLineGroup02}"/>
+                    <apex:variable var="previousLineGroup03" value="{!currentLineGroup03}"/>
+                    <!-- If this was the first line, it was completed, so set first line to false -->
+                    <apex:variable var="firstLine" value="{!false}" rendered="{!firstLine}" />
+                    <!-- Add the values to the row-column totals -->
+                    <apex:variable value="{!rowTotalColumnA+line.columns['A'].values['A']}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+                    <apex:variable value="{!rowTotalColumnB+line.columns['B'].values['A']}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+                    <apex:variable value="{!rowTotalColumnC+line.columns['C'].values['A']}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+                    <apex:variable value="{!rowTotalColumnD+line.columns['D'].values['A']}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+                    <apex:variable value="{!rowTotalColumnE+line.columns['E'].values['A']}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+                    <apex:variable value="{!rowTotalColumnF+line.columns['F'].values['A']}" var="rowTotalColumnF" rendered="{!RenderColumnF}"/>
+                    <apex:variable value="{!rowTotalColumnG+line.columns['G'].values['A']}" var="rowTotalColumnG" rendered="{!RenderColumnG}"/>
+                    <apex:variable value="{!rowTotalColumnH+line.columns['H'].values['A']}" var="rowTotalColumnH" rendered="{!RenderColumnH}"/>
+                </apex:repeat>
+                <!-- Go to next line -->
+                <!-- Do we want to process an end-of-row subtotal line? (only required for rows 11-70) -->
+                <apex:outputPanel layout="none" rendered="{!RenderGroupSubtotals}">
+                    <!-- Display the group-group values but not the group-line values if Group03 is rendered -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(RenderGroup03,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!RenderGroup03}"><div style="margin-left: 60px;">{!previousLineGroup03}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(RenderGroup03,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup03ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup03ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup03ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup03ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup03ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup03ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup03ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup03ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Display the group-group values but not the group-line values if Group02 is rendered -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(RenderGroup02,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!RenderGroup02}"><div style="margin-left: 40px;">{!previousLineGroup02}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(RenderGroup02,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup02ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup02ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup02ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup02ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup02ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup02ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup02ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup02ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Display the group-group values but not the group-line values if Group01 is rendered -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(RenderGroup01,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!RenderGroup01}"><div style="margin-left: 20px;">{!previousLineGroup01}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(RenderGroup01,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup01ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup01ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup01ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup01ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup01ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup01ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup01ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup01ColumnH}"/></apex:outputText></td>
+                    </tr>
+                </apex:outputPanel>
+                <!-- Setup for end of row -->
+                <!-- Add the row-total to the relevant variables so it accumulates across all the rows -->
+                <!-- Note that the row-totals are reset for each successive row -->
+                <!-- Accumulate Profit Before Interest & Tax if the row is in the range 01-10 -->
+                <apex:variable value="{!pbitColumnA+rowTotalColumnA}" var="pbitColumnA" rendered="{!RenderColumnA && rowKeyNum<11}"/>
+                <apex:variable value="{!pbitColumnB+rowTotalColumnB}" var="pbitColumnB" rendered="{!RenderColumnB && rowKeyNum<11}"/>
+                <apex:variable value="{!pbitColumnC+rowTotalColumnC}" var="pbitColumnC" rendered="{!RenderColumnC && rowKeyNum<11}"/>
+                <apex:variable value="{!pbitColumnD+rowTotalColumnD}" var="pbitColumnD" rendered="{!RenderColumnD && rowKeyNum<11}"/>
+                <apex:variable value="{!pbitColumnE+rowTotalColumnE}" var="pbitColumnE" rendered="{!RenderColumnE && rowKeyNum<11}"/>
+                <apex:variable value="{!pbitColumnF+rowTotalColumnF}" var="pbitColumnF" rendered="{!RenderColumnF && rowKeyNum<11}"/>
+                <apex:variable value="{!pbitColumnG+rowTotalColumnG}" var="pbitColumnG" rendered="{!RenderColumnG && rowKeyNum<11}"/>
+                <apex:variable value="{!pbitColumnH+rowTotalColumnH}" var="pbitColumnH" rendered="{!RenderColumnH && rowKeyNum<11}"/>
+                <!-- Accumulate P&L Adjustments From Operating Activities if the row is in the range 11-20 -->
+                <apex:variable value="{!adjOperatingActivitiesPLColumnA+rowTotalColumnA}" var="adjOperatingActivitiesPLColumnA" rendered="{!RenderColumnA && rowKeyNum>10 && rowKeyNum<21}"/>
+                <apex:variable value="{!adjOperatingActivitiesPLColumnB+rowTotalColumnB}" var="adjOperatingActivitiesPLColumnB" rendered="{!RenderColumnB && rowKeyNum>10 && rowKeyNum<21}"/>
+                <apex:variable value="{!adjOperatingActivitiesPLColumnC+rowTotalColumnC}" var="adjOperatingActivitiesPLColumnC" rendered="{!RenderColumnC && rowKeyNum>10 && rowKeyNum<21}"/>
+                <apex:variable value="{!adjOperatingActivitiesPLColumnD+rowTotalColumnD}" var="adjOperatingActivitiesPLColumnD" rendered="{!RenderColumnD && rowKeyNum>10 && rowKeyNum<21}"/>
+                <apex:variable value="{!adjOperatingActivitiesPLColumnE+rowTotalColumnE}" var="adjOperatingActivitiesPLColumnE" rendered="{!RenderColumnE && rowKeyNum>10 && rowKeyNum<21}"/>
+                <apex:variable value="{!adjOperatingActivitiesPLColumnF+rowTotalColumnF}" var="adjOperatingActivitiesPLColumnF" rendered="{!RenderColumnF && rowKeyNum>10 && rowKeyNum<21}"/>
+                <apex:variable value="{!adjOperatingActivitiesPLColumnG+rowTotalColumnG}" var="adjOperatingActivitiesPLColumnG" rendered="{!RenderColumnG && rowKeyNum>10 && rowKeyNum<21}"/>
+                <apex:variable value="{!adjOperatingActivitiesPLColumnH+rowTotalColumnH}" var="adjOperatingActivitiesPLColumnH" rendered="{!RenderColumnH && rowKeyNum>10 && rowKeyNum<21}"/>
+                <!-- Accumulate Other Adjustments From Operating Activities if the row is in the range 21-30 -->
+                <apex:variable value="{!adjOperatingActivitiesOtherColumnA+rowTotalColumnA}" var="adjOperatingActivitiesOtherColumnA" rendered="{!RenderColumnA && rowKeyNum>20 && rowKeyNum<31}"/>
+                <apex:variable value="{!adjOperatingActivitiesOtherColumnB+rowTotalColumnB}" var="adjOperatingActivitiesOtherColumnB" rendered="{!RenderColumnB && rowKeyNum>20 && rowKeyNum<31}"/>
+                <apex:variable value="{!adjOperatingActivitiesOtherColumnC+rowTotalColumnC}" var="adjOperatingActivitiesOtherColumnC" rendered="{!RenderColumnC && rowKeyNum>20 && rowKeyNum<31}"/>
+                <apex:variable value="{!adjOperatingActivitiesOtherColumnD+rowTotalColumnD}" var="adjOperatingActivitiesOtherColumnD" rendered="{!RenderColumnD && rowKeyNum>20 && rowKeyNum<31}"/>
+                <apex:variable value="{!adjOperatingActivitiesOtherColumnE+rowTotalColumnE}" var="adjOperatingActivitiesOtherColumnE" rendered="{!RenderColumnE && rowKeyNum>20 && rowKeyNum<31}"/>
+                <apex:variable value="{!adjOperatingActivitiesOtherColumnF+rowTotalColumnF}" var="adjOperatingActivitiesOtherColumnF" rendered="{!RenderColumnF && rowKeyNum>20 && rowKeyNum<31}"/>
+                <apex:variable value="{!adjOperatingActivitiesOtherColumnG+rowTotalColumnG}" var="adjOperatingActivitiesOtherColumnG" rendered="{!RenderColumnG && rowKeyNum>20 && rowKeyNum<31}"/>
+                <apex:variable value="{!adjOperatingActivitiesOtherColumnH+rowTotalColumnH}" var="adjOperatingActivitiesOtherColumnH" rendered="{!RenderColumnH && rowKeyNum>20 && rowKeyNum<31}"/>
+                <!-- Display the row totals -->
+                <!--Display the title for the row-total - which is the row label -->
+                <!-- The td tag needs to span the number of groups being rendered -->
+
+
+                <tr>
+                    <td class="{!if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotallabeld','ffrcalcsumlabeld')}" colspan="{!totalDisplayGroupsAvailable}">{!row.label}</td>
+                    <td class="ffrgridspacerd"/>
+                    <td class="{!if(RenderColumnA,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnA}">
+                        <apex:param value="{!rowTotalColumnA}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnB,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB}">
+                        <apex:param value="{!rowTotalColumnB}"/>
+                    </apex:outputText></td>
+
+<!-- Variance of A-B -->
+<td class="{!if(RenderColumnA && RenderColumnB,'ffrcalcsumd','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowTotalColumnA-rowTotalColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnA && RenderColumnB}"><apex:param value="{!rowTotalColumnA-rowTotalColumnB}"/>
+</apex:outputText></td>
+
+                    <td class="{!if(RenderColumnC,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnC}">
+                        <apex:param value="{!rowTotalColumnC}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnD,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnD}">
+                        <apex:param value="{!rowTotalColumnD}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnE,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnE}">
+                        <apex:param value="{!rowTotalColumnE}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnF,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnF}">
+                        <apex:param value="{!rowTotalColumnF}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnG,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnG}">
+                        <apex:param value="{!rowTotalColumnG}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnH,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnH}">
+                        <apex:param value="{!rowTotalColumnH}"/>
+                    </apex:outputText></td>
+                </tr>
+                <!-- Make some vertical space before the next row -->
+                <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+            </apex:repeat>
+            <!-- Go to the next row -->
+            <!-- Calculate variables for Net Cash from Operating Activities -->
+            <apex:variable value="{!(pbitColumnA-adjOperatingActivitiesPLColumnA+adjOperatingActivitiesOtherColumnA)}" var="netFromOperatingActivitiesColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!(pbitColumnB-adjOperatingActivitiesPLColumnB+adjOperatingActivitiesOtherColumnB)}" var="netFromOperatingActivitiesColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!(pbitColumnC-adjOperatingActivitiesPLColumnC+adjOperatingActivitiesOtherColumnC)}" var="netFromOperatingActivitiesColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!(pbitColumnD-adjOperatingActivitiesPLColumnD+adjOperatingActivitiesOtherColumnD)}" var="netFromOperatingActivitiesColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!(pbitColumnE-adjOperatingActivitiesPLColumnE+adjOperatingActivitiesOtherColumnE)}" var="netFromOperatingActivitiesColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!(pbitColumnF-adjOperatingActivitiesPLColumnF+adjOperatingActivitiesOtherColumnF)}" var="netFromOperatingActivitiesColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!(pbitColumnG-adjOperatingActivitiesPLColumnG+adjOperatingActivitiesOtherColumnG)}" var="netFromOperatingActivitiesColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!(pbitColumnH-adjOperatingActivitiesPLColumnH+adjOperatingActivitiesOtherColumnH)}" var="netFromOperatingActivitiesColumnH" rendered="{!RenderColumnH}"/>
+            <!-- Display the Net Cash from Operating Activities calculations -->
+            <!-- The td tag needs to span the number of groups being rendered -->
+            <tr>
+                <td class="ffrsubtotallabeld" colspan="{!totalDisplayGroupsAvailable}">{!label['L10']}</td>
+                <td class="ffrgridspacerd"/>
+                <td class="{!if(RenderColumnA,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnA==0,VZ,VR)}" rendered="{!RenderColumnA}"><apex:param value="{!netFromOperatingActivitiesColumnA}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnB,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnB==0,VZ,VR)}" rendered="{!RenderColumnB}"><apex:param value="{!netFromOperatingActivitiesColumnB}"/></apex:outputText></td>
+            
+<!-- Variance of A - B -->
+<td class="{!if(RenderColumnB && RenderColumnA,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnA-netFromOperatingActivitiesColumnB ==0,VZ,VR)}" rendered="{!RenderColumnB && RenderColumnA}"><apex:param value="{!netFromOperatingActivitiesColumnA-netFromOperatingActivitiesColumnB}"/></apex:outputText></td>
+
+
+                <td class="{!if(RenderColumnC,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnC==0,VZ,VR)}" rendered="{!RenderColumnC}"><apex:param value="{!netFromOperatingActivitiesColumnC}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnD,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnD==0,VZ,VR)}" rendered="{!RenderColumnD}"><apex:param value="{!netFromOperatingActivitiesColumnD}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnE,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnE==0,VZ,VR)}" rendered="{!RenderColumnE}"><apex:param value="{!netFromOperatingActivitiesColumnE}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnF,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnF==0,VZ,VR)}" rendered="{!RenderColumnF}"><apex:param value="{!netFromOperatingActivitiesColumnF}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnG,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnG==0,VZ,VR)}" rendered="{!RenderColumnG}"><apex:param value="{!netFromOperatingActivitiesColumnG}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnH,'ffrsubtotald','ffrhidden')}"><apex:outputText value="{!if(netFromOperatingActivitiesColumnH==0,VZ,VR)}" rendered="{!RenderColumnH}"><apex:param value="{!netFromOperatingActivitiesColumnH}"/></apex:outputText></td>
+            </tr>
+            <!-- Make some vertical space -->
+            <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+            <!-- DATA RANGE 1: END-->
+            <!-- DATA RANGE 2: START-->
+            <apex:variable var="dataRange" value="{!reportingData['DR02']}"/>
+            <!-- Configuration of columns and groups (elastic template responds dynamically to existence of groups and columns -->
+            <!-- Column setup -->
+            <!-- Set the default column rendering state variables to "false" -->
+            <apex:variable var="RenderColumnA" value="{!false}"/>
+            <apex:variable var="RenderColumnB" value="{!false}"/>
+            <apex:variable var="RenderColumnC" value="{!false}"/>
+            <apex:variable var="RenderColumnD" value="{!false}"/>
+            <apex:variable var="RenderColumnE" value="{!false}"/>
+            <apex:variable var="RenderColumnF" value="{!false}"/>
+            <apex:variable var="RenderColumnG" value="{!false}"/>
+            <apex:variable var="RenderColumnH" value="{!false}"/>
+            <!-- Set the default column rendering state for calculated columns -->
+            <!-- Now set the column rendering state variables according to which columns have been used (via column filter mappings) -->
+            <apex:repeat var="columnKey" value="{!dataRange.columnKeyList}">
+                <apex:variable var="RenderColumnA" value="{!true}" rendered="{!columnKey=='A'}" />
+                <apex:variable var="RenderColumnB" value="{!true}" rendered="{!columnKey=='B'}" />
+                <apex:variable var="RenderColumnC" value="{!true}" rendered="{!columnKey=='C'}" />
+                <apex:variable var="RenderColumnD" value="{!true}" rendered="{!columnKey=='D'}" />
+                <apex:variable var="RenderColumnE" value="{!true}" rendered="{!columnKey=='E'}" />
+                <apex:variable var="RenderColumnF" value="{!true}" rendered="{!columnKey=='F'}" />
+                <apex:variable var="RenderColumnG" value="{!true}" rendered="{!columnKey=='G'}" />
+                <apex:variable var="RenderColumnH" value="{!true}" rendered="{!columnKey=='H'}" />
+            </apex:repeat>
+            <!-- Group setup-->
+            <!-- Set the default group value rendering state variables to "false" -->
+            <apex:variable var="RenderGroup01" value="{!false}"/>
+            <apex:variable var="RenderGroup02" value="{!false}"/>
+            <apex:variable var="RenderGroup03" value="{!false}"/>
+            <apex:variable var="RenderGroup10" value="{!false}"/>
+            <apex:variable var="RenderGroup11" value="{!false}"/>
+            <apex:variable var="RenderGroup12" value="{!false}"/>
+            <apex:variable var="RenderGroup13" value="{!false}"/>
+            <apex:variable var="RenderGroup14" value="{!false}"/>
+            <apex:variable var="RenderGroup15" value="{!false}"/>
+            <!-- We need to know whether to keep group subtotals. Default condition is false -->
+            <apex:variable var="RenderGroupSubtotals" value="{!false}"/>
+            <!-- Now set the group rendering state variables according to which group values have been used -->
+            <!-- Additionally, if we have any of groups 01-03 we need to maintain group subtotals -->
+            <apex:repeat var="groupKey" value="{!dataRange.groupKeyList}">
+                <!-- group-groups -->
+                <apex:outputPanel layout="none" rendered="{!groupKey=='01'}">
+                    <apex:variable var="RenderGroup01" value="{!true}"/>
+                    <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!groupKey=='02'}">
+                    <apex:variable var="RenderGroup02" value="{!true}"/>
+                    <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!groupKey=='03'}">
+                    <apex:variable var="RenderGroup03" value="{!true}"/>
+                    <apex:variable var="RenderGroupSubtotals" value="{!true}"/>
+                </apex:outputPanel>
+                <!-- Line-groups -->
+                <apex:variable var="RenderGroup10" value="{!true}" rendered="{!groupKey=='10'}"/>
+                <apex:variable var="RenderGroup11" value="{!true}" rendered="{!groupKey=='11'}"/>
+                <apex:variable var="RenderGroup12" value="{!true}" rendered="{!groupKey=='12'}"/>
+                <apex:variable var="RenderGroup13" value="{!true}" rendered="{!groupKey=='13'}"/>
+                <apex:variable var="RenderGroup14" value="{!true}" rendered="{!groupKey=='14'}"/>
+                <apex:variable var="RenderGroup15" value="{!true}" rendered="{!groupKey=='15'}"/>
+            </apex:repeat>
+            <!-- Set all relevant variables to zero (if the column is in use - determined by column render state variables) -->
+            <!-- We need to track Net Cash from Investing and Financing Activities -->
+            <apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!0}" var="netFromInvFinanActivitiesColumnH" rendered="{!RenderColumnH}"/>
+            <!-- We need to track Other Cash Flows -->
+            <apex:variable value="{!0}" var="otherCashFlowsColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!0}" var="otherCashFlowsColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!0}" var="otherCashFlowsColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!0}" var="otherCashFlowsColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!0}" var="otherCashFlowsColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!0}" var="otherCashFlowsColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!0}" var="otherCashFlowsColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!0}" var="otherCashFlowsColumnH" rendered="{!RenderColumnH}"/>
+            <!-- Display the header for the second section: Investing Activities (Label L06) -->
+            <tr><td class="ffrcalcsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L06']}</td></tr>
+            <!-- Spacer -->
+            <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+            <!-- We need to track whether or not various headers have been displayed - this defaults to false -->
+            <apex:variable value="{!false}" var="sectionThreeHeaderDisplayed"/>
+            <apex:variable value="{!false}" var="sectionFourHeaderDisplayed"/>
+            <!-- Iterate over the Rows -->
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+                <!-- Setup for start of row -->
+                <apex:variable var="rowKeyNum" value="{!VALUE(row.key)}"/>
+                <!-- Row-sensitive number format -->
+                <apex:variable var="RowNumberPattern" value="{!if((rowKeyNum>10 && rowKeyNum<21) || rowKeyNum>50,VN,VR)}"/>
+                <!-- Display the header for the third section: Financing Activities (Label L07) if it has not been displayed and rows 01 to 40 have been processed -->
+                <apex:outputPanel layout="none" rendered="{!!sectionThreeHeaderDisplayed && rowKeyNum>40}">
+                    <tr><td class="ffrcalcsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L07']}</td></tr>
+                    <!-- Spacer -->
+                    <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+                    <!-- Set the flag to indicate that we have displayed the header for the third section -->
+                    <apex:variable value="{!true}" var="sectionThreeHeaderDisplayed"/>
+                </apex:outputPanel>
+                <!-- Display the header for the fourth section: Other Cash Flows (Label L08) if it has not been displayed and row 51 has been selected -->
+                <apex:outputPanel layout="none" rendered="{!!sectionFourHeaderDisplayed && rowKeyNum=46}">
+                    <tr><td class="ffrcalcsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L08']}</td></tr>
+                    <!-- Spacer -->
+                    <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+                    <!-- Set the flag to indicate that we have displayed the header for the third section -->
+                    <apex:variable value="{!true}" var="sectionFourHeaderDisplayed"/>
+                </apex:outputPanel>
+                <!-- For each row, reset all column row-totals and subtotals to zero (if the column is in use - determined by column render state variables) -->
+                <!-- It calculates one Row Subtotal per Group (01 to 03), so we need rowSubtotal variables for each group (ie, rowSubtotalGroup01) -->
+                <apex:variable value="{!0}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnH" rendered="{!RenderColumnH}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnH" rendered="{!RenderColumnH}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnH" rendered="{!RenderColumnH}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnH" rendered="{!RenderColumnH}"/>
+                <!-- These variables are used to determine when to print a subtotal -->
+                <apex:variable var="previousLineGroup01" value=""/>
+                <apex:variable var="previousLineGroup02" value=""/>
+                <apex:variable var="previousLineGroup03" value=""/>
+                <apex:variable var="currentLineGroup01" value=""/>
+                <apex:variable var="currentLineGroup02" value=""/>
+                <apex:variable var="currentLineGroup03" value=""/>
+                <!-- This variable is used to determine whether the line is the first line in the row - to prevent a subtotal being printed before the first line -->
+                <apex:variable var="firstLine" value="{!true}"/>
+                <!-- Iterate over the Lines -->
+                <apex:repeat value="{!row.lineList}" var="line" >
+                    <!-- Display the line and process subtotals - only for rows between 11 and 70 -->
+                    <!-- Set the variables representing the groups for the current line for comparison with the previous line -->
+                    <apex:variable value="{!line.groups['01']}" var="currentLineGroup01" rendered="{!RenderGroup01}"/>
+                    <apex:variable value="{!line.groups['02']}" var="currentLineGroup02" rendered="{!RenderGroup02}"/>
+                    <apex:variable value="{!line.groups['03']}" var="currentLineGroup03" rendered="{!RenderGroup03}"/>
+                    <!-- Mid-row subtotal line -->
+                    <!-- Do we want to process a (mid-row) subtotal line for Group03? -->
+                    <apex:variable var="doSubtotal03" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02 || currentLineGroup03!=previousLineGroup03)}"/>
+                    <!-- Process a subtotal line - only for rows between 11 and 70 -->
+                    <!-- Display Subtotals if Group03 is rendered -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(doSubtotal03 && RenderGroup03,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!doSubtotal03 && RenderGroup03}"><div style="margin-left: 60px;">{!previousLineGroup03}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup03ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnB==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup03ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnC==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup03ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnD==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup03ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnE==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup03ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnF==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup03ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnG==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup03ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal03 && RenderGroup03 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnH==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup03ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Reset the subtotals for Group03 -->
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnA" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnA}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnB" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnB}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnC" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnC}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnD" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnD}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnE" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnE}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnF" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnF}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnG" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnG}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup03ColumnH" rendered="{!doSubtotal03 && RenderGroup03 && RenderColumnH}"/>
+                    <!-- Do we want to process a (mid-row) subtotal line for Group02? -->
+                    <apex:variable var="doSubtotal02" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01 || currentLineGroup02!=previousLineGroup02)}"/>
+                    <!-- Display Subtotals if Group02 is rendered -->
+                    <!-- Display the group-group values but not the group-line values -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(doSubtotal02 && RenderGroup02,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!doSubtotal02 && RenderGroup02}"><div style="margin-left: 40px;">{!previousLineGroup02}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup02ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnB==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup02ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnC==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup02ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnD==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup02ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnE==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup02ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnF==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup02ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnG==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup02ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal02 && RenderGroup02 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnH==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup02ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Reset the subtotals for Group02 -->
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnA" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnA}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnB" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnB}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnC" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnC}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnD" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnD}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnE" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnE}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnF" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnF}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnG" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnG}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup02ColumnH" rendered="{!doSubtotal02 && RenderGroup02 && RenderColumnH}"/>
+                    <!-- Do we want to process a (mid-row) subtotal line for Group01? -->
+                    <apex:variable var="doSubtotal01" value="{!RenderGroupSubtotals && !firstLine && (currentLineGroup01!=previousLineGroup01)}"/>
+                    <!-- Display Subtotals if Group01 is rendered -->
+                    <!-- Display the group-group values but not the group-line values -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(doSubtotal01 && RenderGroup01,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!doSubtotal01 && RenderGroup01}"><div style="margin-left: 20px;">{!previousLineGroup01}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnA==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup01ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnB==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup01ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnC==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup01ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnD==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup01ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnE==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup01ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnF==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup01ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnG==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup01ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(doSubtotal01 && RenderGroup01 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnH==0,VZ,RowNumberPattern)}" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup01ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Reset the subtotals for Group01 -->
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnA" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnA}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnB" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnB}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnC" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnC}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnD" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnD}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnE" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnE}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnF" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnF}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnG" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnG}"/>
+                    <apex:variable value="{!0}" var="rowSubtotalGroup01ColumnH" rendered="{!doSubtotal01 && RenderGroup01 && RenderColumnH}"/>
+                    <!-- Line setup -->
+                    <!-- Each column is configured independently within an outputPanel the outputpanel rendered property determines whether the column is configured -->
+                    <!-- This uses the column render state variable (e.g. "renderColumnA" determines whether the panel for column A is configured and rendered) -->
+                    <!-- For each column, add the column value to the sub-total -->
+                    <!-- Subtotals for Groups 01 to 03 -->
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnA}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup01ColumnA"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup02ColumnA"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnA+line.columns['A'].values['A']}" var="rowSubtotalGroup03ColumnA"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnB}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnB+line.columns['B'].values['A']}" var="rowSubtotalGroup01ColumnB"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnB+line.columns['B'].values['A']}" var="rowSubtotalGroup02ColumnB"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnB+line.columns['B'].values['A']}" var="rowSubtotalGroup03ColumnB"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnC}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnC+line.columns['C'].values['A']}" var="rowSubtotalGroup01ColumnC"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnC+line.columns['C'].values['A']}" var="rowSubtotalGroup02ColumnC"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnC+line.columns['C'].values['A']}" var="rowSubtotalGroup03ColumnC"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnD}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnD+line.columns['D'].values['A']}" var="rowSubtotalGroup01ColumnD"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnD+line.columns['D'].values['A']}" var="rowSubtotalGroup02ColumnD"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnD+line.columns['D'].values['A']}" var="rowSubtotalGroup03ColumnD"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnE}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnE+line.columns['E'].values['A']}" var="rowSubtotalGroup01ColumnE"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnE+line.columns['E'].values['A']}" var="rowSubtotalGroup02ColumnE"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnE+line.columns['E'].values['A']}" var="rowSubtotalGroup03ColumnE"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnF}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnF+line.columns['F'].values['A']}" var="rowSubtotalGroup01ColumnF"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnF+line.columns['F'].values['A']}" var="rowSubtotalGroup02ColumnF"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnF+line.columns['F'].values['A']}" var="rowSubtotalGroup03ColumnF"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnG}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnG+line.columns['G'].values['A']}" var="rowSubtotalGroup01ColumnG"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnG+line.columns['G'].values['A']}" var="rowSubtotalGroup02ColumnG"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnG+line.columns['G'].values['A']}" var="rowSubtotalGroup03ColumnG"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!RenderColumnH}">
+                        <apex:variable value="{!rowSubtotalGroup01ColumnH+line.columns['H'].values['A']}" var="rowSubtotalGroup01ColumnH"/>
+                        <apex:variable value="{!rowSubtotalGroup02ColumnH+line.columns['H'].values['A']}" var="rowSubtotalGroup02ColumnH"/>
+                        <apex:variable value="{!rowSubtotalGroup03ColumnH+line.columns['H'].values['A']}" var="rowSubtotalGroup03ColumnH"/>
+                    </apex:outputPanel>
+                    <!-- Display the line - only for rows between 11 and 70-->
+                    <apex:variable value="{!if(RenderGroup01 && RenderGroup02 && RenderGroup03,'80px',if(RenderGroup01 && RenderGroup02,'60px',if(RenderGroup01,'40px','20px')))}" var="indentingLevel"/>
+                    <apex:variable var="lineValuesNotZero" value="{!(RenderColumnA && line.columns['A'].values['A']!=0) || (RenderColumnB && line.columns['B'].values['A']!=0) || (RenderColumnC && line.columns['C'].values['A']!=0) || (RenderColumnD && line.columns['D'].values['A']!=0) || (RenderColumnE && line.columns['E'].values['A']!=0) || (RenderColumnF && line.columns['F'].values['A']!=0) || (RenderColumnG && line.columns['G'].values['A']!=0) || (RenderColumnH && line.columns['H'].values['A']!=0)}"/>
+                    <!-- Display the grouping values based on render settings -->
+                    <!-- Group Lines for groups 1-3 (with sub-totals) are hidden - only the Subtotal Line will be displayed -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71 && lineValuesNotZero,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(RenderGroup10,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup10}"><div style="margin-left: {!indentingLevel};">{!line.groups['10']}</div></apex:outputPanel></td>
+                        <td class="{!if(RenderGroup11,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup11}">{!line.groups['11']}</apex:outputPanel></td>
+                        <td class="{!if(RenderGroup12,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup12}">{!line.groups['12']}</apex:outputPanel></td>
+                        <td class="{!if(RenderGroup13,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup13}">{!line.groups['13']}</apex:outputPanel></td>
+                        <td class="{!if(RenderGroup14,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup14}">{!line.groups['14']}</apex:outputPanel></td>
+                        <td class="{!if(RenderGroup15,'ffrgridrowlabeld','ffrhidden')}"><apex:outputPanel layout="none" rendered="{!RenderGroup15}">{!line.groups['15']}</apex:outputPanel></td>
+                        <td class="ffrgridspacerd"/>
+                        <!-- Display the line value, formatted using OUTPUTTEXT  with the pattern defined above -->
+                        <td class="{!if(RenderColumnA,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['A'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnA}">
+                                <apex:param value="{!line.columns['A'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnB,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['B'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB}">
+                                <apex:param value="{!line.columns['B'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+
+
+<!--Variance A-B -->
+<td class="{!if(RenderColumnB && RenderColumnA,'ffrgridrowd','ffrhidden')}">
+<apex:outputText value="{!if(line.columns['A'].values['A']-line.columns['B'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB && RenderColumnA}">
+<apex:param value="{!line.columns['A'].values['A']-line.columns['B'].values['A']}"/>
+</apex:outputText>
+</td>
+
+
+                        <td class="{!if(RenderColumnC,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['C'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnC}">
+                                <apex:param value="{!line.columns['C'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnD,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['D'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnD}">
+                                <apex:param value="{!line.columns['D'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnE,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['E'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnE}">
+                                <apex:param value="{!line.columns['E'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnF,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['F'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnF}">
+                                <apex:param value="{!line.columns['F'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnG,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['G'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnG}">
+                                <apex:param value="{!line.columns['G'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                        <td class="{!if(RenderColumnH,'ffrgridrowd','ffrhidden')}">
+                            <apex:outputText value="{!if(line.columns['H'].values['A']==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnH}">
+                                <apex:param value="{!line.columns['H'].values['A']}"/>
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                    <!-- Setup for next line -->
+                    <!-- Record the group values as "previous" for comparison on the next line -->
+                    <apex:variable var="previousLineGroup01" value="{!currentLineGroup01}"/>
+                    <apex:variable var="previousLineGroup02" value="{!currentLineGroup02}"/>
+                    <apex:variable var="previousLineGroup03" value="{!currentLineGroup03}"/>
+                    <!-- If this was the first line, it was completed, so set first line to false -->
+                    <apex:variable var="firstLine" value="{!false}" rendered="{!firstLine}" />
+                    <!-- Add the values to the row-column totals -->
+                    <apex:variable value="{!rowTotalColumnA+line.columns['A'].values['A']}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+                    <apex:variable value="{!rowTotalColumnB+line.columns['B'].values['A']}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+                    <apex:variable value="{!rowTotalColumnC+line.columns['C'].values['A']}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+                    <apex:variable value="{!rowTotalColumnD+line.columns['D'].values['A']}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+                    <apex:variable value="{!rowTotalColumnE+line.columns['E'].values['A']}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+                    <apex:variable value="{!rowTotalColumnF+line.columns['F'].values['A']}" var="rowTotalColumnF" rendered="{!RenderColumnF}"/>
+                    <apex:variable value="{!rowTotalColumnG+line.columns['G'].values['A']}" var="rowTotalColumnG" rendered="{!RenderColumnG}"/>
+                    <apex:variable value="{!rowTotalColumnH+line.columns['H'].values['A']}" var="rowTotalColumnH" rendered="{!RenderColumnH}"/>
+                </apex:repeat>
+                <!-- Go to next line -->
+                <!-- Do we want to process an end-of-row subtotal line? (only required for rows 11-70) -->
+                <apex:outputPanel layout="none" rendered="{!RenderGroupSubtotals}">
+                    <!-- Display the group-group values but not the group-line values if Group03 is rendered -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(RenderGroup03,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!RenderGroup03}"><div style="margin-left: 60px;">{!previousLineGroup03}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(RenderGroup03,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup03ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup03ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup03ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup03ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup03ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup03ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup03ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup03 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup03ColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup03 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup03ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Display the group-group values but not the group-line values if Group02 is rendered -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(RenderGroup02,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!RenderGroup02}"><div style="margin-left: 40px;">{!previousLineGroup02}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(RenderGroup02,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup02ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup02ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup02ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup02ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup02ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup02ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup02ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup02 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup02ColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup02 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup02ColumnH}"/></apex:outputText></td>
+                    </tr>
+                    <!-- Display the group-group values but not the group-line values if Group01 is rendered -->
+                    <tr class="{!if(rowKeyNum>10 && rowKeyNum<71,'ffrgridrowlabeld','ffrsubtotalhidden')}">
+                        <td class="{!if(RenderGroup01,'ffrsubtotallabeld','ffrsubtotalhidden')}" colspan="{!totalDisplayGroupsAvailable}">
+                            <apex:outputPanel layout="none" rendered="{!RenderGroup01}"><div style="margin-left: 20px;">{!previousLineGroup01}</div></apex:outputPanel>
+                        </td>
+                        <td class="{!if(RenderGroup01,'ffrgridspacerd','ffrsubtotalhidden')}"></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnA,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnA}"><apex:param value="{!rowSubtotalGroup01ColumnA}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnB,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnB}"><apex:param value="{!rowSubtotalGroup01ColumnB}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnC,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnC}"><apex:param value="{!rowSubtotalGroup01ColumnC}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnD,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnD}"><apex:param value="{!rowSubtotalGroup01ColumnD}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnE,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnE}"><apex:param value="{!rowSubtotalGroup01ColumnE}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnF,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnF}"><apex:param value="{!rowSubtotalGroup01ColumnF}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnG,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnG}"><apex:param value="{!rowSubtotalGroup01ColumnG}"/></apex:outputText></td>
+                        <td class="{!if(RenderGroup01 && RenderColumnH,'ffrsubtotald','ffrsubtotalhidden')}"><apex:outputText value="{!if(rowSubtotalGroup01ColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderGroup01 && RenderColumnH}"><apex:param value="{!rowSubtotalGroup01ColumnH}"/></apex:outputText></td>
+                    </tr>
+                </apex:outputPanel>
+                <!-- Setup for end of row -->
+                <!-- Add the row-total to the relevant variables so it accumulates across all the rows -->
+                <!-- Note that the row-totals are reset for each successive row -->
+                <!-- Accumulate Adjustments From Investing and Financing Activities if the row is in the range 31-50 -->
+                <apex:variable value="{!netFromInvFinanActivitiesColumnA+rowTotalColumnA}" var="netFromInvFinanActivitiesColumnA" rendered="{!RenderColumnA && rowKeyNum>30 && rowKeyNum<51}"/>
+                <apex:variable value="{!netFromInvFinanActivitiesColumnB+rowTotalColumnB}" var="netFromInvFinanActivitiesColumnB" rendered="{!RenderColumnB && rowKeyNum>30 && rowKeyNum<51}"/>
+                <apex:variable value="{!netFromInvFinanActivitiesColumnC+rowTotalColumnC}" var="netFromInvFinanActivitiesColumnC" rendered="{!RenderColumnC && rowKeyNum>30 && rowKeyNum<51}"/>
+                <apex:variable value="{!netFromInvFinanActivitiesColumnD+rowTotalColumnD}" var="netFromInvFinanActivitiesColumnD" rendered="{!RenderColumnD && rowKeyNum>30 && rowKeyNum<51}"/>
+                <apex:variable value="{!netFromInvFinanActivitiesColumnE+rowTotalColumnE}" var="netFromInvFinanActivitiesColumnE" rendered="{!RenderColumnE && rowKeyNum>30 && rowKeyNum<51}"/>
+                <apex:variable value="{!netFromInvFinanActivitiesColumnF+rowTotalColumnF}" var="netFromInvFinanActivitiesColumnF" rendered="{!RenderColumnF && rowKeyNum>30 && rowKeyNum<51}"/>
+                <apex:variable value="{!netFromInvFinanActivitiesColumnG+rowTotalColumnG}" var="netFromInvFinanActivitiesColumnG" rendered="{!RenderColumnG && rowKeyNum>30 && rowKeyNum<51}"/>
+                <apex:variable value="{!netFromInvFinanActivitiesColumnH+rowTotalColumnH}" var="netFromInvFinanActivitiesColumnH" rendered="{!RenderColumnH && rowKeyNum>30 && rowKeyNum<51}"/>
+                <!-- Accumulate Adjustments From Other Cash Flows if the row is in the range 51-70 -->
+                <apex:variable value="{!otherCashFlowsColumnA+rowTotalColumnA}" var="otherCashFlowsColumnA" rendered="{!RenderColumnA && rowKeyNum>50 && rowKeyNum<71}"/>
+                <apex:variable value="{!otherCashFlowsColumnB+rowTotalColumnB}" var="otherCashFlowsColumnB" rendered="{!RenderColumnB && rowKeyNum>50 && rowKeyNum<71}"/>
+                <apex:variable value="{!otherCashFlowsColumnC+rowTotalColumnC}" var="otherCashFlowsColumnC" rendered="{!RenderColumnC && rowKeyNum>50 && rowKeyNum<71}"/>
+                <apex:variable value="{!otherCashFlowsColumnD+rowTotalColumnD}" var="otherCashFlowsColumnD" rendered="{!RenderColumnD && rowKeyNum>50 && rowKeyNum<71}"/>
+                <apex:variable value="{!otherCashFlowsColumnE+rowTotalColumnE}" var="otherCashFlowsColumnE" rendered="{!RenderColumnE && rowKeyNum>50 && rowKeyNum<71}"/>
+                <apex:variable value="{!otherCashFlowsColumnF+rowTotalColumnF}" var="otherCashFlowsColumnF" rendered="{!RenderColumnF && rowKeyNum>50 && rowKeyNum<71}"/>
+                <apex:variable value="{!otherCashFlowsColumnG+rowTotalColumnG}" var="otherCashFlowsColumnG" rendered="{!RenderColumnG && rowKeyNum>50 && rowKeyNum<71}"/>
+                <apex:variable value="{!otherCashFlowsColumnH+rowTotalColumnH}" var="otherCashFlowsColumnH" rendered="{!RenderColumnH && rowKeyNum>50 && rowKeyNum<71}"/>
+                <!-- Display the row totals -->
+                <!--Display the title for the row-total - which is the row label -->
+                <!-- The td tag needs to span the number of groups being rendered -->
+                <tr>
+                    <td class="{!if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotallabeld','ffrcalcsumlabeld')}" colspan="{!totalDisplayGroupsAvailable}">{!row.label}</td>
+                    <td class="ffrgridspacerd"/>
+                    <td class="{!if(RenderColumnA,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnA}">
+                        <apex:param value="{!rowTotalColumnA}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnB,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB}">
+                        <apex:param value="{!rowTotalColumnB}"/>
+                    </apex:outputText></td>
+
+<!--Variance A-B -->
+<td class="{!if(RenderColumnB && RenderColumnA,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnA-rowTotalColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB && RenderColumnA}">
+<apex:param value="{!rowTotalColumnA-rowTotalColumnB}"/>
+</apex:outputText></td>
+
+
+                    <td class="{!if(RenderColumnC,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnC}">
+                        <apex:param value="{!rowTotalColumnC}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnD,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnD}">
+                        <apex:param value="{!rowTotalColumnD}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnE,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnE}">
+                        <apex:param value="{!rowTotalColumnE}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnF,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnF}">
+                        <apex:param value="{!rowTotalColumnF}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnG,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnG}">
+                        <apex:param value="{!rowTotalColumnG}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnH,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnH}">
+                        <apex:param value="{!rowTotalColumnH}"/>
+                    </apex:outputText></td>
+                </tr>
+                <!-- Make some vertical space before the next row -->
+                <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+            </apex:repeat>
+            <!-- Go to the next row -->
+            <!-- Calculate variables for Net Cash Movement -->
+            <apex:variable value="{!(netFromOperatingActivitiesColumnA+netFromInvFinanActivitiesColumnA-otherCashFlowsColumnA)}" var="netCashMovementColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!(netFromOperatingActivitiesColumnB+netFromInvFinanActivitiesColumnB-otherCashFlowsColumnB)}" var="netCashMovementColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!(netFromOperatingActivitiesColumnC+netFromInvFinanActivitiesColumnC-otherCashFlowsColumnC)}" var="netCashMovementColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!(netFromOperatingActivitiesColumnD+netFromInvFinanActivitiesColumnD-otherCashFlowsColumnD)}" var="netCashMovementColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!(netFromOperatingActivitiesColumnE+netFromInvFinanActivitiesColumnE-otherCashFlowsColumnE)}" var="netCashMovementColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!(netFromOperatingActivitiesColumnF+netFromInvFinanActivitiesColumnF-otherCashFlowsColumnF)}" var="netCashMovementColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!(netFromOperatingActivitiesColumnG+netFromInvFinanActivitiesColumnG-otherCashFlowsColumnG)}" var="netCashMovementColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!(netFromOperatingActivitiesColumnH+netFromInvFinanActivitiesColumnH-otherCashFlowsColumnH)}" var="netCashMovementColumnH" rendered="{!RenderColumnH}"/>
+            <!-- Display Net Cash Movement -->
+            <!-- The td tag needs to span the number of groups being rendered -->
+            <tr>
+                <td class="ffrgridsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!label['L11']}</td>
+                <td class="ffrgridspacerd"/>
+                <td class="{!if(RenderColumnA,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnA==0,VZ,VR)}" rendered="{!RenderColumnA}"><apex:param value="{!netCashMovementColumnA}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnB,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnB==0,VZ,VR)}" rendered="{!RenderColumnB}"><apex:param value="{!netCashMovementColumnB}"/></apex:outputText></td>
+
+<!--Variance of A-B-->
+<td class="{!if(RenderColumnB && RenderColumnA,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnA-netCashMovementColumnB==0,VZ,VR)}" rendered="{!RenderColumnB && RenderColumnA}"><apex:param value="{!netCashMovementColumnA-netCashMovementColumnB}"/></apex:outputText></td>
+
+
+                <td class="{!if(RenderColumnC,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnC==0,VZ,VR)}" rendered="{!RenderColumnC}"><apex:param value="{!netCashMovementColumnC}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnD,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnD==0,VZ,VR)}" rendered="{!RenderColumnD}"><apex:param value="{!netCashMovementColumnD}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnE,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnE==0,VZ,VR)}" rendered="{!RenderColumnE}"><apex:param value="{!netCashMovementColumnE}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnF,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnF==0,VZ,VR)}" rendered="{!RenderColumnF}"><apex:param value="{!netCashMovementColumnF}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnG,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnG==0,VZ,VR)}" rendered="{!RenderColumnG}"><apex:param value="{!netCashMovementColumnG}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnH,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if(netCashMovementColumnH==0,VZ,VR)}" rendered="{!RenderColumnH}"><apex:param value="{!netCashMovementColumnH}"/></apex:outputText></td>
+            </tr>
+            <!-- Make some vertical space -->
+            <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+            <!-- DATA RANGE 2: END-->
+            <!-- DATA RANGE 3: START-->
+            <apex:variable var="dataRange" value="{!reportingData['DR03']}"/>
+            <!-- Configuration of columns and groups (elastic template responds dynamically to existence of groups and columns -->
+            <!-- Column setup -->
+            <!-- Set the default column rendering state variables to "false" -->
+            <apex:variable var="RenderColumnA" value="{!false}"/>
+            <apex:variable var="RenderColumnB" value="{!false}"/>
+            <apex:variable var="RenderColumnC" value="{!false}"/>
+            <apex:variable var="RenderColumnD" value="{!false}"/>
+            <apex:variable var="RenderColumnE" value="{!false}"/>
+            <apex:variable var="RenderColumnF" value="{!false}"/>
+            <apex:variable var="RenderColumnG" value="{!false}"/>
+            <apex:variable var="RenderColumnH" value="{!false}"/>
+            <!-- Set the default column rendering state for calculated columns -->
+            <!-- Now set the column rendering state variables according to which columns have been used (via column filter mappings) -->
+            <apex:repeat var="columnKey" value="{!dataRange.columnKeyList}">
+                <apex:variable var="RenderColumnA" value="{!true}" rendered="{!columnKey=='A'}" />
+                <apex:variable var="RenderColumnB" value="{!true}" rendered="{!columnKey=='B'}" />
+                <apex:variable var="RenderColumnC" value="{!true}" rendered="{!columnKey=='C'}" />
+                <apex:variable var="RenderColumnD" value="{!true}" rendered="{!columnKey=='D'}" />
+                <apex:variable var="RenderColumnE" value="{!true}" rendered="{!columnKey=='E'}" />
+                <apex:variable var="RenderColumnF" value="{!true}" rendered="{!columnKey=='F'}" />
+                <apex:variable var="RenderColumnG" value="{!true}" rendered="{!columnKey=='G'}" />
+                <apex:variable var="RenderColumnH" value="{!true}" rendered="{!columnKey=='H'}" />
+            </apex:repeat>
+            <!-- Group setup-->
+            <!-- Set the default group value rendering state variables to "false" -->
+            <apex:variable var="RenderGroup10" value="{!false}"/>
+            <apex:variable var="RenderGroup11" value="{!false}"/>
+            <apex:variable var="RenderGroup12" value="{!false}"/>
+            <apex:variable var="RenderGroup13" value="{!false}"/>
+            <apex:variable var="RenderGroup14" value="{!false}"/>
+            <apex:variable var="RenderGroup15" value="{!false}"/>
+            <!-- Now set the group rendering state variables according to which group values have been used -->
+            <apex:repeat var="groupKey" value="{!dataRange.groupKeyList}">
+                <!-- Line-groups -->
+                <apex:variable var="RenderGroup10" value="{!true}" rendered="{!groupKey=='10'}"/>
+                <apex:variable var="RenderGroup11" value="{!true}" rendered="{!groupKey=='11'}"/>
+                <apex:variable var="RenderGroup12" value="{!true}" rendered="{!groupKey=='12'}"/>
+                <apex:variable var="RenderGroup13" value="{!true}" rendered="{!groupKey=='13'}"/>
+                <apex:variable var="RenderGroup14" value="{!true}" rendered="{!groupKey=='14'}"/>
+                <apex:variable var="RenderGroup15" value="{!true}" rendered="{!groupKey=='15'}"/>
+            </apex:repeat>
+            <!-- Set all relevant variables to zero (if the column is in use - determined by column render state variables) -->
+            <!-- We need to track Opening Balance for Cash and Equivalents -->
+            <apex:variable value="{!0}" var="openingCashColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!0}" var="openingCashColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!0}" var="openingCashColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!0}" var="openingCashColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!0}" var="openingCashColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!0}" var="openingCashColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!0}" var="openingCashColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!0}" var="openingCashColumnH" rendered="{!RenderColumnH}"/>
+            <!-- We need to track Closing Balance for Cash and Equivalents -->
+            <apex:variable value="{!0}" var="closingCashColumnA" rendered="{!RenderColumnA}"/>
+            <apex:variable value="{!0}" var="closingCashColumnB" rendered="{!RenderColumnB}"/>
+            <apex:variable value="{!0}" var="closingCashColumnC" rendered="{!RenderColumnC}"/>
+            <apex:variable value="{!0}" var="closingCashColumnD" rendered="{!RenderColumnD}"/>
+            <apex:variable value="{!0}" var="closingCashColumnE" rendered="{!RenderColumnE}"/>
+            <apex:variable value="{!0}" var="closingCashColumnF" rendered="{!RenderColumnF}"/>
+            <apex:variable value="{!0}" var="closingCashColumnG" rendered="{!RenderColumnG}"/>
+            <apex:variable value="{!0}" var="closingCashColumnH" rendered="{!RenderColumnH}"/>
+            <!-- Iterate over the Rows -->
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+                <!-- Setup for start of row -->
+                <apex:variable var="rowKeyNum" value="{!VALUE(row.key)}"/>
+                <!-- Row-sensitive number format -->
+                <apex:variable var="RowNumberPattern" value="{!if((rowKeyNum>10 && rowKeyNum<21) || rowKeyNum>50,VN,VR)}"/>
+                <!-- For each row, reset all column row-totals to zero (if the column is in use - determined by column render state variables) -->
+                <apex:variable value="{!0}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnF" rendered="{!RenderColumnF}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnG" rendered="{!RenderColumnG}"/>
+                <apex:variable value="{!0}" var="rowTotalColumnH" rendered="{!RenderColumnH}"/>
+                <!-- Iterate over the Lines -->
+                <apex:repeat value="{!row.lineList}" var="line" >
+                    <!-- Add the values to the row-column totals -->
+                    <apex:variable value="{!rowTotalColumnA+line.columns['A'].values['A']}" var="rowTotalColumnA" rendered="{!RenderColumnA}"/>
+                    <apex:variable value="{!rowTotalColumnB+line.columns['B'].values['A']}" var="rowTotalColumnB" rendered="{!RenderColumnB}"/>
+                    <apex:variable value="{!rowTotalColumnC+line.columns['C'].values['A']}" var="rowTotalColumnC" rendered="{!RenderColumnC}"/>
+                    <apex:variable value="{!rowTotalColumnD+line.columns['D'].values['A']}" var="rowTotalColumnD" rendered="{!RenderColumnD}"/>
+                    <apex:variable value="{!rowTotalColumnE+line.columns['E'].values['A']}" var="rowTotalColumnE" rendered="{!RenderColumnE}"/>
+                    <apex:variable value="{!rowTotalColumnF+line.columns['F'].values['A']}" var="rowTotalColumnF" rendered="{!RenderColumnF}"/>
+                    <apex:variable value="{!rowTotalColumnG+line.columns['G'].values['A']}" var="rowTotalColumnG" rendered="{!RenderColumnG}"/>
+                    <apex:variable value="{!rowTotalColumnH+line.columns['H'].values['A']}" var="rowTotalColumnH" rendered="{!RenderColumnH}"/>
+                </apex:repeat>
+                <!-- Go to next line -->
+                <!-- Setup for end of row -->
+                <!-- Add the row-total to the relevant variables so it accumulates across all the rows -->
+                <!-- Note that the row-totals are reset for each successive row -->
+                <!-- Accumulate Opening Balance for Cash if the row is in the range 71-99 -->
+                <apex:variable value="{!openingCashColumnA+rowTotalColumnA}" var="openingCashColumnA" rendered="{!RenderColumnA && rowKeyNum>70}"/>
+                <apex:variable value="{!openingCashColumnB+rowTotalColumnB}" var="openingCashColumnB" rendered="{!RenderColumnB && rowKeyNum>70}"/>
+                <apex:variable value="{!openingCashColumnC+rowTotalColumnC}" var="openingCashColumnC" rendered="{!RenderColumnC && rowKeyNum>70}"/>
+                <apex:variable value="{!openingCashColumnD+rowTotalColumnD}" var="openingCashColumnD" rendered="{!RenderColumnD && rowKeyNum>70}"/>
+                <apex:variable value="{!openingCashColumnE+rowTotalColumnE}" var="openingCashColumnE" rendered="{!RenderColumnE && rowKeyNum>70}"/>
+                <apex:variable value="{!openingCashColumnF+rowTotalColumnF}" var="openingCashColumnF" rendered="{!RenderColumnF && rowKeyNum>70}"/>
+                <apex:variable value="{!openingCashColumnG+rowTotalColumnG}" var="openingCashColumnG" rendered="{!RenderColumnG && rowKeyNum>70}"/>
+                <apex:variable value="{!openingCashColumnH+rowTotalColumnH}" var="openingCashColumnH" rendered="{!RenderColumnH && rowKeyNum>70}"/>
+                <!-- Display the row totals -->
+                <!--Display the title for the row-total - which is the row label -->
+                <!-- The td tag needs to span the number of groups being rendered -->
+                <tr>
+                    <td class="{!if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotallabeld','ffrcalcsumlabeld')}" colspan="{!totalDisplayGroupsAvailable}">{!row.label}</td>
+                    <td class="ffrgridspacerd"/>
+                    <td class="{!if(RenderColumnA,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnA==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnA}">
+                        <apex:param value="{!rowTotalColumnA}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnB,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB}">
+                        <apex:param value="{!rowTotalColumnB}"/>
+                    </apex:outputText></td>
+
+<!-- Variance A-B -->
+<td class="{!if(RenderColumnB && RenderColumnA,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnA-rowTotalColumnB==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnB && RenderColumnA}">
+    <apex:param value="{!rowTotalColumnA-rowTotalColumnB}"/>
+</apex:outputText></td>
+
+
+                    <td class="{!if(RenderColumnC,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnC==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnC}">
+                        <apex:param value="{!rowTotalColumnC}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnD,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnD==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnD}">
+                        <apex:param value="{!rowTotalColumnD}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnE,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnE==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnE}">
+                        <apex:param value="{!rowTotalColumnE}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnF,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnF==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnF}">
+                        <apex:param value="{!rowTotalColumnF}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnG,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnG==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnG}">
+                        <apex:param value="{!rowTotalColumnG}"/>
+                    </apex:outputText></td>
+                    <td class="{!if(RenderColumnH,if(rowKeyNum>30 && rowKeyNum<71,'ffrsubtotald','ffrcalcsumd'),'ffrhidden')}"><apex:outputText value="{!if(rowTotalColumnH==0,VZ,RowNumberPattern)}" rendered="{!RenderColumnH}">
+                        <apex:param value="{!rowTotalColumnH}"/>
+                    </apex:outputText></td>
+                </tr>
+                <!-- Make some vertical space before the next row -->
+                <tr><td class="ffrgridspacerd" colspan="{!totalDisplayGroupsAvailable}"></td></tr>
+            </apex:repeat>
+            <!-- Go to the next row -->
+            <!-- Display Closing Balance for Cash and Cash Equivalents -->
+            <!-- The td tag needs to span the number of groups being rendered -->
+            <tr>
+                <td class="ffrgridsumlabeld" colspan="{!totalDisplayGroupsAvailable}">{!Label['L12']}</td>
+                <td class="ffrgridspacerd"/>
+                <td class="{!if(RenderColumnA,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnA-openingCashColumnA)==0,VZ,VR)}" rendered="{!RenderColumnA}"><apex:param value="{!(netCashMovementColumnA-openingCashColumnA)}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnB,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnB-openingCashColumnB)==0,VZ,VR)}" rendered="{!RenderColumnB}"><apex:param value="{!(netCashMovementColumnB-openingCashColumnB)}"/></apex:outputText></td>
+
+<!-- Variance A-B -->
+<td class="{!if(RenderColumnB && RenderColumnA,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnA-openingCashColumnA)-(netCashMovementColumnB-openingCashColumnB)==0,VZ,VR)}" rendered="{!RenderColumnB && RenderColumnA}"><apex:param value="{!(netCashMovementColumnA-openingCashColumnA)-(netCashMovementColumnB-openingCashColumnB)}"/></apex:outputText></td>
+
+
+                <td class="{!if(RenderColumnC,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnC-openingCashColumnC)==0,VZ,VR)}" rendered="{!RenderColumnC}"><apex:param value="{!(netCashMovementColumnC-openingCashColumnC)}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnD,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnD-openingCashColumnD)==0,VZ,VR)}" rendered="{!RenderColumnD}"><apex:param value="{!(netCashMovementColumnD-openingCashColumnD)}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnE,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnE-openingCashColumnE)==0,VZ,VR)}" rendered="{!RenderColumnE}"><apex:param value="{!(netCashMovementColumnE-openingCashColumnE)}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnF,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnF-openingCashColumnF)==0,VZ,VR)}" rendered="{!RenderColumnF}"><apex:param value="{!(netCashMovementColumnF-openingCashColumnF)}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnG,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnG-openingCashColumnG)==0,VZ,VR)}" rendered="{!RenderColumnG}"><apex:param value="{!(netCashMovementColumnG-openingCashColumnG)}"/></apex:outputText></td>
+                <td class="{!if(RenderColumnH,'ffrgridsumd','ffrhidden')}"><apex:outputText value="{!if((netCashMovementColumnH-openingCashColumnH)==0,VZ,VR)}" rendered="{!RenderColumnH}"><apex:param value="{!(netCashMovementColumnH-openingCashColumnH)}"/></apex:outputText></td>
+            </tr>
+            <!-- DATA RANGE 3: END -->
+        </table>
+    </apex:outputpanel>
+    <!-- REGION 03: REPORT BODY END -->
+    <!-- REGION 06: REPORT CHATTER START -->
+    <c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+    <!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

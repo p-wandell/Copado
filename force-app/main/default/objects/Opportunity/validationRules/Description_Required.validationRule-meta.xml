@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Description_Required</fullName>
+    <active>true</active>
+    <description>Description is required when the opp is closed/won.</description>
+    <errorConditionFormula>AND 
+( 
+AccountId&lt;&gt;&quot;0018000000wPCYE&quot;, 
+IsWon = True, 
+CloseDate&gt;=DATE(2019,01,01),
+ISBLANK( Description)
+)</errorConditionFormula>
+    <errorDisplayField>Description</errorDisplayField>
+    <errorMessage>Description is required in order to mark this opportunity Closed/Won.</errorMessage>
+</ValidationRule>

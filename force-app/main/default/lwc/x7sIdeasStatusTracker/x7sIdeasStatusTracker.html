@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<template if:true={showStatusTracker}>
+		<c-x7s-shr-component-wrapper
+				custom-class={customClass}
+				variant={displayVariant}
+				title={title}
+				auto-slds-card={autoSlds}>
+			<div>
+				<lightning-progress-indicator current-step={currentStep}
+				                              type={statusType}
+				                              variant="shaded">
+					<template for:each={statusSet} for:item="step">
+						<lightning-progress-step
+								label={step}
+								value={step}
+								key={step}>
+						</lightning-progress-step>
+					</template>
+				</lightning-progress-indicator>
+			</div>
+		</c-x7s-shr-component-wrapper>
+	</template>
+</template>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Delete_Prior_Calculation__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>If checked, will delete prior calculations and details based on either the Name or the Time Period/Parent combination by the same logic used by &quot;Is Report Master&quot; which is configured by the custom setting Utilization&apos;s field  &quot;Uncheck Master Based On Time Parent&quot;</description>
+    <externalId>false</externalId>
+    <label>Delete Prior Calculation</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

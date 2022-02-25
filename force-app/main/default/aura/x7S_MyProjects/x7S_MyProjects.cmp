@@ -1,0 +1,41 @@
+<!-- Copyright © 2016-2017 7Summits, Inc. All rights reserved. -->
+
+<aura:component description="x7S_MyProjects" extends="c:Peak_Base" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" controller="x7S_MyProjectsController">
+
+    <aura:attribute name="isInit" type="Boolean" default="false" />
+    <aura:attribute name="profilePageId" type="String" default="" />
+    <aura:attribute name="heading" type="String" default="" />
+
+
+    <aura:attribute name="myProjects" type="List" default="[]" />
+
+    <aura:attribute name="CustomClassName" type="String" default="" access="global" />
+    <aura:attribute name="innerDivClasses" type="String" default="" access="global" />
+
+    <aura:handler name="init" action="{!c.initMyProjects}" value="{!this}" />
+
+    <section class="{!'peak-component ' + v.CustomClassName}">
+        <aura:if isTrue="{!and(v.isInit, !empty(v.myProjects))}">
+            <div class="{!v.innerDivClasses}">
+            <c:Peak_HTML_Headings headingText="{!v.heading}" headingTag="h4" />
+            <ul>
+            <aura:iteration items="{!v.myProjects}" var="project">
+                <li class="slds-p-vertical_x-small">
+                    <lightning:formattedUrl value="{!v.sitePrefix + '/detail/' + project.Id}" label="{!project.Name}" /><br />
+                    <div class="metadata">
+                        <div class="{! 'project-status ' + project.pse__Project_Status__c}">{!project.pse__Project_Status__c}</div>  &nbsp; {!project.pse__Stage__c} &middot;
+                        <aura:if isTrue="{!project.pse__Project_Manager__c}">
+                            <lightning:formattedUrl value="{!v.sitePrefix + '/profile/' + project.pse__Salesforce_User__c}" label="{!project.FirstName + ' ' + project.LastName}" class="project-manager" /><br />
+                            <aura:set attribute="else">
+                                TBD
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </li>
+            </aura:iteration>
+            </ul>
+            </div>
+        </aura:if>
+    </section>
+
+</aura:component>

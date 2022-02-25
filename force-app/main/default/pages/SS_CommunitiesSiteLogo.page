@@ -1,0 +1,13 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+        .logo {
+            height:80px;
+            width:150px;
+            position:absolute;
+        }
+    </style>
+    <apex:image url="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/image/7s_logos/7s_blue.png')}" styleClass="logo"/>
+</apex:page>

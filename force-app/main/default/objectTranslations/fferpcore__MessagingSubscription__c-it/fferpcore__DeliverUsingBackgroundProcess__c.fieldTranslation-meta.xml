@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Determina se i messaggi vengono consegnati utilizzando un processo in background quando il mittente specifica che devono essere consegnati ora.</help>
+    <label><!-- Deliver Using Background Process --></label>
+    <name>fferpcore__DeliverUsingBackgroundProcess__c</name>
+    <picklistValues>
+        <masterLabel>Always</masterLabel>
+        <translation>Sempre</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Capacity</masterLabel>
+        <translation>Capacità</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Never</masterLabel>
+        <translation>Mai</translation>
+    </picklistValues>
+</CustomFieldTranslation>

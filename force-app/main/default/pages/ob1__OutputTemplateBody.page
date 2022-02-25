@@ -1,0 +1,23 @@
+<apex:page standardController="ob1__Output_Template_Body__c" tabStyle="ob1__Output_Template_Body__c">
+
+<br/>
+ <apex:outputField value="{!ob1__Output_Template_Body__c.Name}"/><br/>
+ <apex:outputField value="{!ob1__Output_Template_Body__c.ob1__Output_Template__c}"/><br/>
+<br/>
+
+<apex:form >
+<apex:pageBlock >
+    <apex:pageBlockButtons >
+       <apex:commandButton action="{!save}" value="Save"/>
+       <apex:commandButton action="{!quicksave}" value="Quick Save"/>
+    </apex:pageBlockButtons>
+    <apex:pageBlockSection columns="1" >
+      <apex:inputField value="{!ob1__Output_Template_Body__c.ob1__Sequence__c}"/>
+      <apex:inputField value="{!ob1__Output_Template_Body__c.ob1__Description__c}" style="width:100%;"  />
+      <apex:inputField value="{!ob1__Output_Template_Body__c.ob1__Body__c}"        style="width:100%;"  />
+    </apex:pageBlockSection>
+</apex:pageBlock>
+</apex:form>
+ 
+
+</apex:page>

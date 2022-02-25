@@ -1,0 +1,23 @@
+<!--
+ - Copyright (c) 2020.  7Summits Inc. All rights reserved.
+ -->
+
+<!-- 7S Facebook Feed -->
+<template>
+    <c-x7s-shr-component-wrapper
+            class="x7s-facebook-feed"
+            title={title}
+            title-align={align}
+            description={subTitle}
+            variant={variant}>
+        <iframe
+                src={facebookHref}
+                width={width}
+                height={height}
+                scrolling="no"
+                frameborder="0"
+                allowtransparency="true"
+                allow="encrypted-media"
+                title="FaceBook Feed"></iframe>
+    </c-x7s-shr-component-wrapper>
+</template>

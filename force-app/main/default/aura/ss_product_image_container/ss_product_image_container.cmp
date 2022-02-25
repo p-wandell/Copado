@@ -1,0 +1,46 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by joe callin on 7/18/17.
+ -->
+<aura:component description="ss_product_image_container"
+                extends="c:ss_product_base"
+                access="global">
+
+	<aura:attribute name="productImage" type="String[]"/>
+	<aura:attribute name="productPrice" type="String"/>
+	<aura:attribute name="productId" type="String"/>
+	<aura:attribute name="usePoints" type="Boolean"/>
+	<aura:attribute name="showImagePrice" type="Boolean"/>
+	<aura:attribute name="showImageBorder" type="Boolean" default="false"/>
+
+	<a href="javascript:void(0);" onclick="{!c.gotoRecord}">
+		<section class="{!v.showImageBorder == true
+				? 'slds-m-bottom_medium image-item'
+				: 'slds-m-bottom_medium image-item no-border'}"
+		         style="{! 'height:205px;background-image:url(' + v.productImage[0] + ')'}">
+
+			<aura:if isTrue="{!and(v.showImagePrice, v.productPrice)}">
+				<lightning:layout class="{!v.showImageBorder == true
+						? 'image-wrap slds-p-around_x-small'
+						: 'image-wrap slds-p-around_x-small no-border'}"
+				                  horizontalAlign="end"
+				                  verticalAlign="end">
+					<lightning:layoutItem>
+						<span class="slds-p-around_x-small slds-text-heading_small slds-box slds-box--xx-small product-price">
+							<aura:if isTrue="{!v.usePoints}">
+									<lightning:formattedNumber value="{!v.productPrice}"/>
+								<aura:set attribute="else">
+									<lightning:formattedNumber value="{!v.productPrice}"
+									                           style="currency"/>
+								</aura:set>
+							</aura:if>
+						</span>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</aura:if>
+		</section>
+	</a>
+</aura:component>

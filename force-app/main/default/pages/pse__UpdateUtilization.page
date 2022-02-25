@@ -1,0 +1,565 @@
+<apex:page controller="pse.UpdateUtilizationController" title="{!$Label.pse__utilization_update_label_update_utilization}" sidebar="true" showHeader="true" tabStyle="pse__Utilization_Calculation__c">
+<!-- START code from s-control -->
+<apex:includeScript value="/js/functions.js"/>
+<apex:includeScript value="/soap/ajax/16.0/connection.js"/>
+<apex:includeScript value="/soap/ajax/16.0/apex.js"/>
+
+<script type="text/javascript">
+	//Automatically called after body load
+	function jsUpdateUtilization(){
+		updateUtilization();
+	}
+	
+	var EMPTY_STR = '';
+	var COMMA_STR = ',';
+	var QUOTE_STR = '\'';
+	var DOT_STR = '.';
+	var SLASH_STR = '/';
+	var PERCENT_STR = '%';
+	
+	var CUSTOM_SUFFIX_STR = '__c';
+	var CUSTOM_JOIN_SUFFIX_STR = '__r';
+	
+	var CORE_NS = 'appirio_core';
+	var CORE_NS_PREFIX;
+	if ((CORE_NS == null) || (CORE_NS == EMPTY_STR)) CORE_NS_PREFIX = EMPTY_STR;
+	else CORE_NS_PREFIX = CORE_NS + '__';
+	
+	var NS,NS_PREFIX,REGION,PRACTICE,GROUP,GROUP_FIELD_NAME,RESOURCE_MANAGER_CLASS;
+	
+	var NS = EMPTY_STR; // Queried and overwritten from configs
+	var ASM_BASE_GROUP_KEY = 'asm.base';
+	var NS_CONFIG_OPTION_NAME = 'appirio-base-namespace';
+	var GET_WORKING_HOURS_METHOD = 'getWorkingHours';
+	var UPDATE_RESOURCE_ACTUALS_UTILIZATION = 'updateResourceActualsUtilization';
+	var RECORDS = 'records';
+	var SUCCESS = 'success';
+	var DONE = 'done'; 
+	var NUMBER = 'number';
+	var RESOURCE_BATCH_SIZE = 10;
+	var RESOURCE_ACTUALS_BATCH_SIZE = 10;
+	var FP_DISPLAY_PRECISION = 2;
+	
+	var regionId = '{!regionId}';
+	var practiceId = '{!practiceId}';
+	var groupId = '{!groupId}';
+	
+	var rpgName,rpgObj,rpgObjId,rpgFieldName,rpgFieldNameJoin,rpgObjInstance;
+	
+	function setNS(orgNS)
+	{
+		if (orgNS == null) NS = EMPTY_STR;
+		else NS = orgNS;
+		if ((NS == null) || (NS == EMPTY_STR))
+		{
+			NS_PREFIX = EMPTY_STR;
+			RESOURCE_MANAGER_CLASS = 'ResourceManager';
+		}
+		else
+		{
+			NS_PREFIX = NS + '__';
+			RESOURCE_MANAGER_CLASS = NS + DOT_STR + 'ResourceManager';
+		}
+		REGION = NS_PREFIX + 'Region';
+		PRACTICE = NS_PREFIX + 'Practice';
+		GROUP = NS_PREFIX + 'Grp';
+		GROUP_FIELD_NAME = NS_PREFIX + 'Group';
+	}
+	
+	function escapeSOQL(query)
+	{
+	if((query != EMPTY_STR) && (query.length > 0) && (query != undefined))
+	{
+	var uquery = unescape(query);
+	uquery = uquery.replace("\\", "\\\\");
+	uquery = uquery.replace("'", "\\'");
+	uquery = uquery.replace("\"", "\\\"");
+	return uquery;
+	}
+	return query;
+	}
+	
+	function escapeQuery(query)
+	{
+	if ((query != EMPTY_STR) && (query.length > 0) && (query != undefined)) return query.replace(/([\'\&\|\!\(\)\{\}\[\]\^~\:\\\+\-])/g, "\\$1");
+	else return query;
+	}
+	
+	function escapeHTMLValue(oldvalue)
+	{
+	if (oldvalue == null){
+		return EMPTY_STR;
+	}
+	oldvalue = oldvalue.replace(/&/g,"&amp;");
+	oldvalue = oldvalue.replace(/</g, "&lt;");
+	oldvalue = oldvalue.replace(/>/g, "&gt;");
+	oldvalue = oldvalue.replace(/"/g, "&quot;");
+	oldvalue = oldvalue.replace(/'/g, "&#39;");
+	return oldvalue;
+	}
+	
+	function getNamespaceQuery()
+	{
+	var namespaceQueryBuffer = new sforce.StringBuffer();
+	namespaceQueryBuffer.append('SELECT Id');
+	namespaceQueryBuffer.append(COMMA_STR);
+	namespaceQueryBuffer.append(CORE_NS_PREFIX);
+	namespaceQueryBuffer.append('Value__c FROM ');
+	namespaceQueryBuffer.append(CORE_NS_PREFIX);
+	namespaceQueryBuffer.append('Config_Value__c WHERE (');
+	namespaceQueryBuffer.append(CORE_NS_PREFIX);
+	namespaceQueryBuffer.append('Config_Option__r.Name = ');
+	namespaceQueryBuffer.append(QUOTE_STR);
+	namespaceQueryBuffer.append(NS_CONFIG_OPTION_NAME);
+	namespaceQueryBuffer.append(QUOTE_STR);
+	namespaceQueryBuffer.append(') AND (');
+	namespaceQueryBuffer.append(CORE_NS_PREFIX);
+	namespaceQueryBuffer.append('Config_Option__r.');
+	namespaceQueryBuffer.append(CORE_NS_PREFIX);
+	namespaceQueryBuffer.append('Group_Key__c = ');
+	namespaceQueryBuffer.append(QUOTE_STR);
+	namespaceQueryBuffer.append(ASM_BASE_GROUP_KEY);
+	namespaceQueryBuffer.append(QUOTE_STR);
+	namespaceQueryBuffer.append(')');
+	return namespaceQueryBuffer.toString();
+	}
+	
+	function initNamespace()
+	{
+		var namespaceQuery = getNamespaceQuery();
+		sforce.connection.sessionId = "{!$Api.Session_ID}";
+		var namespaceQueryResults = sforce.connection.query(namespaceQuery);
+		var namespaceQueryResultArray = namespaceQueryResults.getArray(RECORDS);
+		var retrievedNS;
+		if ((namespaceQueryResultArray != null) && (namespaceQueryResultArray[0] != null) &&
+			((retrievedNS = namespaceQueryResultArray[0].get(CORE_NS_PREFIX + 'Value__c')) != null))
+		{
+			setNS(retrievedNS);
+		}
+		else setNS(EMPTY_STR);
+	}
+	
+	function setComplete()
+	{
+	document.getElementById('waitingdiv').innerHTML = '<a href="javascript:navigateToSourceObject();">Continue</a>';
+	}
+	
+	function handleSuccess(msg)
+	{
+	document.getElementById('statusText').innerHTML = '<b>Utilization Update Complete:</b><br><b>' + escapeHTMLValue(msg) + '</b>';
+	setComplete();
+	}
+	
+	function handleFailure(error)
+	{
+	document.getElementById('statusText').innerHTML = '<b>Utilization Update Failed:</b><br><b>' + escapeHTMLValue(error) + '</b>';
+	setComplete();
+	} 
+	
+	
+	function nullToZero(num)
+	{
+	if ((num == null) || (typeof num != NUMBER) || (!isFinite(num))) return 0;
+	else return num;
+	}
+	
+	function arrayContains(a, obj)
+	{
+	var i = a.length;
+	while (i--)
+	if (a[i] == obj) return true;
+	return false;
+	}
+	
+	function getResourceActualsQuery(resourceIDs)
+	{
+	var resourceActualsQueryBuffer = new sforce.StringBuffer();
+	resourceActualsQueryBuffer.append('SELECT Id');
+	resourceActualsQueryBuffer.append(COMMA_STR);
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Time_Period__c');
+	resourceActualsQueryBuffer.append(COMMA_STR);
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Resource__c');
+	resourceActualsQueryBuffer.append(COMMA_STR);
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Utilization_Elapsed_Hours__c');
+	resourceActualsQueryBuffer.append(COMMA_STR);
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Total_Time_Period_Hours__c');
+	resourceActualsQueryBuffer.append(COMMA_STR);
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Utilization_Calculation_Date__c');
+	resourceActualsQueryBuffer.append(COMMA_STR);
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Start_Date__c');
+	resourceActualsQueryBuffer.append(COMMA_STR);
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('End_Date__c FROM ');
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Resource_Actuals__c WHERE ');
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Resource__c IN (');
+	
+	var resourceIDsLength = resourceIDs.length;
+	var iCounter,resourceID;
+	for (iCounter = 0; iCounter < resourceIDsLength; iCounter++)
+	if ((resourceID = resourceIDs[iCounter]) != null)
+	{
+	if (iCounter > 0) resourceActualsQueryBuffer.append(COMMA_STR);
+	resourceActualsQueryBuffer.append(QUOTE_STR);
+	resourceActualsQueryBuffer.append(escapeSOQL(resourceID));
+	resourceActualsQueryBuffer.append(QUOTE_STR);
+	}
+	resourceActualsQueryBuffer.append(') ORDER BY ');
+	resourceActualsQueryBuffer.append(NS_PREFIX);
+	resourceActualsQueryBuffer.append('Time_Period__c');
+	return resourceActualsQueryBuffer.toString();
+	}
+	
+	function updateResourceActualsUtilization(resourceIDs)
+	{
+	if ((resourceIDs == null) || (resourceIDs.length == 0)) return;
+	var resourceActualsQuery = getResourceActualsQuery(resourceIDs);
+	var queryMoreResourceActuals = true;
+	
+	var resourceActualsQueryResults,resourceActualsQueryIterator,resourceActualsIDList,resourceIDSubList,currentResourceActuals,currentResourceID,currentCalcDate,currentEndDate;
+	
+	resourceActualsQueryResults = sforce.connection.query(resourceActualsQuery);
+	
+	while (queryMoreResourceActuals)
+	{
+	resourceActualsQueryIterator = new sforce.QueryResultIterator(resourceActualsQueryResults);
+	
+	while (resourceActualsQueryIterator.hasNext())
+	{
+	resourceActualsIDList = new Array();
+	resourceIDSubList = new Array();
+	while ((resourceActualsQueryIterator.hasNext()) && (resourceActualsIDList.length < RESOURCE_ACTUALS_BATCH_SIZE))
+	{
+	var currentResourceActuals = resourceActualsQueryIterator.next();
+	if ((currentResourceActuals != null) &&
+	(currentResourceActuals.Id != null) &&
+	((currentResourceID = currentResourceActuals.get(NS_PREFIX + 'Resource__c')) != null) &&
+	((currentEndDate = currentResourceActuals.get(NS_PREFIX + 'End_Date__c')) != null) &&
+	(((currentCalcDate = currentResourceActuals.get(NS_PREFIX + 'Utilization_Calculation_Date__c')) == null) ||
+	(currentCalcDate <= currentEndDate)))
+	{
+	resourceActualsIDList.push(currentResourceActuals.Id);
+	if (!arrayContains(resourceIDSubList,currentResourceID)) resourceIDSubList.push(currentResourceID);
+	}
+	}
+	
+	sforce.apex.execute(RESOURCE_MANAGER_CLASS,UPDATE_RESOURCE_ACTUALS_UTILIZATION,{resourceActualsIDList:resourceActualsIDList,resourceIDList:resourceIDSubList});
+	}
+	
+	if (resourceActualsQueryResults.getBoolean(DONE))
+	{
+	queryMoreResourceActuals = false;
+	}
+	else
+	{
+	alert('Querying more Resource Actuals, resourceActualsIDList size = ' + resourceActualsIDList.length);
+	resourceActualsQueryResults = sforce.connection.query(resourceActualsQueryResults.queryLocator);
+	}
+	}
+	
+	return;
+	}
+	
+	function getRPGQuery()
+	{
+	var rpgQueryBuffer = new sforce.StringBuffer();
+	rpgQueryBuffer.append('SELECT Id');
+	rpgQueryBuffer.append(COMMA_STR);
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('Billable_Internal_Hours__c');
+	rpgQueryBuffer.append(COMMA_STR);
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('Credited_Non_Billable_Internal_Hours__c');
+	rpgQueryBuffer.append(COMMA_STR);
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('Excluded_Hours__c');
+	rpgQueryBuffer.append(COMMA_STR);
+	rpgQueryBuffer.append(escapeSOQL(rpgName));
+	rpgQueryBuffer.append('_ID_Chain__c');
+	rpgQueryBuffer.append(COMMA_STR);
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('Hierarchy_Depth__c');
+	rpgQueryBuffer.append(COMMA_STR);
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('Current_Time_Period__r');
+	rpgQueryBuffer.append(DOT_STR);
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('Start_Date__c');
+	rpgQueryBuffer.append(COMMA_STR);
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('Current_Time_Period__r');
+	rpgQueryBuffer.append(DOT_STR);
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('End_Date__c FROM ');
+	rpgQueryBuffer.append(escapeSOQL(rpgObj));
+	rpgQueryBuffer.append(' WHERE ');
+	rpgQueryBuffer.append(escapeSOQL(rpgName));
+	rpgQueryBuffer.append('_ID_Chain__c LIKE ');
+	rpgQueryBuffer.append(QUOTE_STR);
+	rpgQueryBuffer.append(PERCENT_STR);
+	rpgQueryBuffer.append(escapeSOQL(rpgObjId));
+	rpgQueryBuffer.append(PERCENT_STR);
+	rpgQueryBuffer.append(QUOTE_STR);
+	rpgQueryBuffer.append(' ORDER BY ');
+	rpgQueryBuffer.append(NS_PREFIX);
+	rpgQueryBuffer.append('Hierarchy_Depth__c');
+	return rpgQueryBuffer.toString();
+	}
+	
+	function getResourceQuery(rpgObjInstanceID)
+	{
+	var resourceQueryBuffer = new sforce.StringBuffer();
+	resourceQueryBuffer.append('SELECT Id');
+	resourceQueryBuffer.append(COMMA_STR);
+	resourceQueryBuffer.append(NS_PREFIX);
+	resourceQueryBuffer.append('Utilization_Elapsed_Hours__c');
+	resourceQueryBuffer.append(COMMA_STR);
+	resourceQueryBuffer.append(NS_PREFIX);
+	resourceQueryBuffer.append('Total_Time_Period_Hours__c');
+	resourceQueryBuffer.append(COMMA_STR);
+	resourceQueryBuffer.append(NS_PREFIX);
+	// 2010-05-27 Newly added to handle zero-ing out excluded Resources:
+	resourceQueryBuffer.append('Exclude_From_Time_Calculations__c');
+	resourceQueryBuffer.append(COMMA_STR);
+	resourceQueryBuffer.append(NS_PREFIX);
+	// Above code added 2010-05-27
+	resourceQueryBuffer.append('Utilization_Calculation_Date__c');
+	resourceQueryBuffer.append(COMMA_STR);
+	resourceQueryBuffer.append(NS_PREFIX);
+	resourceQueryBuffer.append('Action_Calculate_Utilization__c');
+	resourceQueryBuffer.append(COMMA_STR);
+	resourceQueryBuffer.append(escapeSOQL(rpgFieldName));
+	resourceQueryBuffer.append(COMMA_STR);
+	resourceQueryBuffer.append(escapeSOQL(rpgFieldNameJoin));
+	resourceQueryBuffer.append(DOT_STR);
+	resourceQueryBuffer.append(escapeSOQL(rpgName));
+	resourceQueryBuffer.append('_ID_Chain__c FROM Contact WHERE (');
+	resourceQueryBuffer.append(escapeSOQL(rpgFieldNameJoin));
+	resourceQueryBuffer.append(DOT_STR);
+	resourceQueryBuffer.append(escapeSOQL(rpgName));
+	resourceQueryBuffer.append('_ID_Chain__c LIKE ');
+	resourceQueryBuffer.append(QUOTE_STR);
+	resourceQueryBuffer.append(PERCENT_STR);
+	resourceQueryBuffer.append(escapeSOQL(rpgObjInstanceID));
+	resourceQueryBuffer.append(PERCENT_STR);
+	resourceQueryBuffer.append(QUOTE_STR);
+	// 2010-05-27 No longer want to skip Resources that are Excluded From Time Calculations - added code in web service to explicitly zero them out
+	resourceQueryBuffer.append(')');
+	// resourceQueryBuffer.append(') AND (');
+	// resourceQueryBuffer.append(NS_PREFIX);
+	// resourceQueryBuffer.append('Exclude_From_Time_Calculations__c = false)');
+	return resourceQueryBuffer.toString();
+	}
+	
+	function updateUtilization()
+	{
+	try
+	{
+	updateUtilizationImpl();
+	}
+	catch(e)
+	{
+	handleFailure('Error occurred while updating Utilization. Please contact your system administrator. Error: ' + e);
+	}
+	return;
+	}
+	
+	function updateUtilizationImpl()
+	{
+	initNamespace();
+	
+	if ((regionId != null) && (regionId != EMPTY_STR))
+	{
+	rpgName = REGION;
+	rpgFieldName = (rpgObj = REGION + CUSTOM_SUFFIX_STR);
+	rpgObjId = regionId;
+	
+	}
+	else if ((practiceId != null) && (practiceId != EMPTY_STR))
+	{
+	rpgName = PRACTICE;
+	rpgFieldName = (rpgObj = PRACTICE + CUSTOM_SUFFIX_STR);
+	rpgObjId = practiceId;
+	}
+	else if ((groupId != null) && (groupId != EMPTY_STR))
+	{
+	rpgName = GROUP_FIELD_NAME;
+	rpgObj = GROUP + CUSTOM_SUFFIX_STR;
+	rpgFieldName = GROUP_FIELD_NAME + CUSTOM_SUFFIX_STR;
+	rpgObjId = groupId;
+	}
+	else
+	{
+	handleFailure('Could not identify Region, Practice, or Group for which to update Utilization');
+	return;
+	}
+	
+	// replace '__c' with '__r' for join string
+	rpgFieldNameJoin = rpgFieldName.replace(/__c$/g,CUSTOM_JOIN_SUFFIX_STR);
+	
+	var queryMoreRPGs = true;
+	var rpgQueryResults = sforce.connection.query(getRPGQuery());
+	var rpgQueryResultArray = new Array();
+	
+	while (queryMoreRPGs)
+	{
+	rpgQueryResultArray = rpgQueryResultArray.concat(rpgQueryResults.getArray(RECORDS));
+	if (rpgQueryResults.getBoolean(DONE)) queryMoreRPGs = false;
+	else rpgQueryResults = sforce.connection.query(rpgQueryResults.queryLocator);
+	}
+	
+	var rpgQueryResultArrayLength = rpgQueryResultArray.length;
+	
+	if ((rpgQueryResultArray == null) || ((rpgQueryResultArrayLength = rpgQueryResultArray.length) == 0) || ((rpgObjInstance = rpgQueryResultArray[0]) == null))
+	{
+	handleFailure('Could not find Region, Practice, or Group for which to update Utilization');
+	return;
+	}
+	var todaysDate = new Date();
+	var rpgObjUpdateList = new Array();
+	var billableInternalHours,creditedNonBillableInternalHours,excludedHours,timePeriod,startDate,endDate,resourceQuery,iCounter;
+	var utilization0,fullTimePeriodUtilization;
+	
+	for (iCounter = 0; iCounter < rpgQueryResultArrayLength; iCounter++)
+	{
+	if (iCounter > 0) rpgObjInstance = rpgQueryResultArray[iCounter];
+	billableInternalHours = nullToZero(parseFloat(rpgObjInstance.get(NS_PREFIX + 'Billable_Internal_Hours__c')));
+	creditedNonBillableInternalHours = nullToZero(parseFloat(rpgObjInstance.get(NS_PREFIX + 'Credited_Non_Billable_Internal_Hours__c')));
+	excludedHours = nullToZero(parseFloat(rpgObjInstance.get(NS_PREFIX + 'Excluded_Hours__c')));
+	
+	if (((timePeriod = rpgObjInstance.get(NS_PREFIX + 'Current_Time_Period__r')) == null) ||
+	((startDate = timePeriod.get(NS_PREFIX + 'Start_Date__c')) == null) ||
+	((endDate = timePeriod.get(NS_PREFIX + 'End_Date__c')) == null))
+	{
+	if (iCounter == 0)
+	{
+	handleFailure('Could not find Time Period dates for which to update Utilization');
+	return;
+	}
+	else continue;
+	}
+	
+	resourceQuery = getResourceQuery(rpgObjInstance.Id);
+	
+	var resourceQueryResults,resourceQueryResultIterator,resourceIDs,hoursArray,totalElapsedHours,totalHours,iCounter,resource;
+	totalElapsedHours = (totalHours = 0);
+	
+	var queryMoreResources = true;
+	resourceQueryResults = sforce.connection.query(resourceQuery);
+	
+	while (queryMoreResources)
+	{
+	resourceQueryResultIterator = new sforce.QueryResultIterator(resourceQueryResults);
+	
+	while (resourceQueryResultIterator.hasNext())
+	{
+	resourceIDs = new Array();
+	while ((resourceQueryResultIterator.hasNext()) && (resourceIDs.length < RESOURCE_BATCH_SIZE))
+	if (((resource = resourceQueryResultIterator.next()) != null) && (resource.Id != null)) resourceIDs.push(resource.Id);
+	
+	// Only take pass through Resource Actuals for top-level RPG
+	if ((iCounter == 0) && (resourceIDs.length > 0)) updateResourceActualsUtilization(resourceIDs);
+	
+	hoursArray = sforce.apex.execute(RESOURCE_MANAGER_CLASS,GET_WORKING_HOURS_METHOD,{resourceIDList:resourceIDs,startDate:startDate,endDate:endDate});
+	if ((hoursArray != null) && (hoursArray.length == 2))
+	{
+	totalElapsedHours += parseFloat(hoursArray[0]);
+	totalHours += parseFloat(hoursArray[1]);
+	}
+	}
+	
+	if (resourceQueryResults.getBoolean(DONE)) queryMoreResources = false;
+	else resourceQueryResults = sforce.connection.query(resourceQueryResults.queryLocator);
+	}
+	
+	var utilization,utilizationDenominator,fullTimePeriodUtilization,fullTimePeriodUtilizationDenominator;
+	if ((utilizationDenominator = totalElapsedHours - excludedHours) <= 0) utilization = 0;
+	else utilization = ((billableInternalHours + creditedNonBillableInternalHours) * 100)/utilizationDenominator;
+	if ((fullTimePeriodUtilizationDenominator = totalHours - excludedHours) <= 0) fullTimePeriodUtilization = 0;
+	else fullTimePeriodUtilization = ((billableInternalHours + creditedNonBillableInternalHours) * 100)/fullTimePeriodUtilizationDenominator;
+	
+	if (iCounter == 0)
+	{
+	utilization0 = utilization;
+	fullTimePeriodUtilization0 = fullTimePeriodUtilization;
+	}
+	
+	var rpgObjUpdateInstance = new sforce.SObject(rpgObj);
+	rpgObjUpdateInstance.set('Id',escapeQuery(rpgObjInstance.Id));
+	rpgObjUpdateInstance.set(NS_PREFIX + 'Utilization__c',escapeQuery(utilization));
+	rpgObjUpdateInstance.set(NS_PREFIX + 'Utilization_Over_Full_Time_Period__c',escapeQuery(fullTimePeriodUtilization));
+	rpgObjUpdateInstance.set(NS_PREFIX + 'Utilization_Elapsed_Hours__c',escapeQuery(totalElapsedHours));
+	rpgObjUpdateInstance.set(NS_PREFIX + 'Total_Time_Period_Hours__c',escapeQuery(totalHours));
+	rpgObjUpdateInstance.set(NS_PREFIX + 'Utilization_Last_Calculation_Date__c',escapeSOQL(todaysDate));
+	rpgObjUpdateInstance.set(NS_PREFIX + 'Utilization_Period_Start_Date__c',escapeSOQL(startDate));
+	rpgObjUpdateInstance.set(NS_PREFIX + 'Utilization_Period_End_Date__c',escapeSOQL(endDate));
+	rpgObjUpdateList.push(rpgObjUpdateInstance);
+	}
+	if (rpgObjUpdateList.length == 0)
+	{
+	handleFailure('Could not complete updates');
+	return;
+	}
+	
+	var updateResult = sforce.connection.update(rpgObjUpdateList);
+	if (!updateResult[0].getBoolean(SUCCESS))
+	{
+	handleFailure('Could not update total hours to Salesforce: ' + updateResult[0] + '. Utilization: Elapsed Hours = ' + totalElapsedHours + ', Total Time Period Hours = ' + totalHours);
+	return;
+	}
+	var msgBuffer = new sforce.StringBuffer();
+	msgBuffer.append('Utilization = ');
+	msgBuffer.append(utilization0.toFixed(FP_DISPLAY_PRECISION));
+	msgBuffer.append(PERCENT_STR);
+	msgBuffer.append(COMMA_STR);
+	msgBuffer.append(' Full Time Period Utilization = ');
+	msgBuffer.append(fullTimePeriodUtilization0.toFixed(FP_DISPLAY_PRECISION));
+	msgBuffer.append(PERCENT_STR);
+	
+	handleSuccess(msgBuffer.toString());
+	return;
+	}
+</script>
+<!-- END code from s-control -->
+<apex:form >
+<apex:actionFunction name="navigateToSourceObject" action="{!navigateToSourceObject}"/>
+</apex:form>  
+	<apex:sectionHeader title="{!$Label.pse__utilization_update_label_update_utilization}" subTitle="{!UILabel}" help="{!$Page.pse__UtilizationCalculationHelp}" />
+    <apex:pageBlock title="{!$Label.pse__utilization_update_label_update_utilization_status}" id="pb" mode="view" >
+		<center> 
+		<br/>
+		<table width="100%">
+			<tr>
+				<td align="center">
+					<div align="center" id="statusText">  
+						<apex:image value="{!URLFOR($Resource.pse__appirioCommon, 'progress-rotation.gif')}"/> 
+						<span style="line-height:32px;vertical-align:center;margin-left:6px;">{!$Label.utilization_update_label_updating}</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="center">
+					<div id="waitingdiv">
+					</div>
+				</td>
+			</tr>
+		</table>
+		</center>
+     </apex:pageBlock>
+   
+   <script type="text/javascript">
+   // run after a delay - if we try to execute immediately, the call isn't made properly, Titash reduced from 750ms to 1ms
+   setTimeout("jsUpdateUtilization();", 1);
+   </script>
+
+</apex:page>

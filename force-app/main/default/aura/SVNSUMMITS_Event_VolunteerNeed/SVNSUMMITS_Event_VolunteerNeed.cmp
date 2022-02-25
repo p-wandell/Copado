@@ -1,0 +1,101 @@
+<aura:component controller="SVNSUMMITS_EventVolunteersController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="baseModel" type="String" access="global"/>
+
+    <aura:attribute name="volunteersNeeded" type="Integer" default="0" access="global"/>
+    <aura:attribute name="wrapper" type="SVNSUMMITS_EventVolunteerWrapper" default="" access="global"/>
+    <aura:attribute name="currentUser" type="User" access="global"/>
+    <aura:attribute name="showXUsers" type="Integer" default="18" access="global"/>
+    <aura:attribute name="showingMore" type="Boolean" default="false" access="global"/>
+    <aura:attribute name="sitePath" type="String" access="global"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <section class="slds-m-bottom_xx-large">
+
+        <div class="slds-card slds-p-around_x-small slds-text-heading--small"><h4>{!v.wrapper.volunteerNeed.Name}</h4>
+        <p><small>{!v.wrapper.volunteerNeed.Criteria__c}</small></p>
+        </div>
+
+        <p class="slds-m-vertical_medium"><small>{!v.wrapper.volunteerNeed.Volunteer_Registrations__r.length} {!' ' + $Label.c.ss_evt_label_Volunteering}:</small></p>
+
+        <div class="slds-grid slds-wrap slds-grid_pull-padded">
+            <div class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_6-of-12">
+                <!-- Put current user first always. Use their profile photo as queried by querying user directly -->
+
+                <!-- Loop through all other volunteers -->
+                <aura:iteration items="{!v.wrapper.volunteerNeed.Volunteer_Registrations__r}" var="registration" indexVar="idx">
+                    <!-- If less than max default list, or showing all  -->
+                    <aura:if isTrue="{!or(lessthan(idx,v.showXUsers),v.showingMore)}">
+                        <!-- Don't show current user again in loop -->
+                        <a href="{!v.sitePath + '/profile/' + registration.User__r.Id}" title="{!registration.User__r.Name}">
+                            <lightning:avatar src="{!registration.User__r.SmallPhotoUrl}" alternativeText="{!if(v.currentUser.UserType != 'Guest',registration.User__r.Name,'')}" size="medium" variant="circle" fallbackIconName="standard:user" class="slds-m-right_x-small slds-m-vertical_xx-small" />
+                        </a>
+                    </aura:if>
+                </aura:iteration>
+
+                <!-- Show more / less button only if the volunteers registered exceeds show users. Use this property as its toggled in the register/reviewed methods and is always accurate! -->
+                <aura:if isTrue="{!greaterthan(v.wrapper.volunteerNeed.Volunteer_Registrations__r.length,v.showXUsers)}">
+                    <div>
+                        <!-- Lightning: buttonStateful doesn't allow for iconPosition! -->
+                        <aura:if isTrue="{!v.showingMore}">
+                            <lightning:button onclick="{!c.showToggle}"
+                                    label="{!$Label.c.ss_evt_label_show_less}"
+                                    iconName="utility:forward"
+                                    iconPosition="right"
+                                    variant="text"
+                            />
+                            <aura:set attribute="else">
+                                <lightning:button onclick="{!c.showToggle}"
+                                        label="{!$Label.c.ss_evt_label_Show_More}"
+                                        iconName="utility:forward"
+                                        iconPosition="right"
+                                        variant="text"
+                                />
+                            </aura:set>
+                        </aura:if>
+
+                    </div>
+                </aura:if>
+            </div>
+            <div class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_3-of-12 slds-align_absolute-center">
+                <aura:if isTrue="{!v.volunteersNeeded != 999999}">
+                    <span class="slds-badge slds-badge_lightest">
+                        <span>{!v.volunteersNeeded}</span> {!' ' + $Label.c.ss_evt_label_More_volunteers_needed}
+                    </span>
+                </aura:if>
+            </div>
+            <div class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_3-of-12 slds-align_absolute-center">
+                <!--
+                    If current user is already registered = show no matter what
+                    If guest user = never show
+                    If current user is not already registered AND volunteers needed > 0
+                -->
+                <aura:if isTrue="{!and(v.currentUser.UserType != 'Guest', or(v.wrapper.currentUserRegistered,v.volunteersNeeded > 0))}">
+                    <aura:if isTrue="{!v.wrapper.currentUserRegistered}">
+                        <lightning:buttonStateful labelWhenOff="{!$Label.c.ss_evt_label_Sign_Up}"
+                                labelWhenOn="{!$Label.c.ss_evt_label_Youre_signed_up}"
+                                labelWhenHover="{!$Label.c.ss_evt_label_Remove_me}"
+                                iconNameWhenOff=""
+                                iconNameWhenOn="utility:check"
+                                iconNameWhenHover="utility:close"
+                                state="true"
+                                onclick="{!c.removeVolunteer}"
+                        />
+                        <aura:set attribute="else">
+                            <lightning:button onclick="{!c.registerVolunteer}"
+                                    label="{!$Label.c.ss_evt_label_Sign_Up}"
+                                    class="slds-button_brand"
+                            />
+                        </aura:set>
+                    </aura:if>
+                </aura:if>
+
+            </div>
+        </div>
+
+    </section>
+</aura:component>

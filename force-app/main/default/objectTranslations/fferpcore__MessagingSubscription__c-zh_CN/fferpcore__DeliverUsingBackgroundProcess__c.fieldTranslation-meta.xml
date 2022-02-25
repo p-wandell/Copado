@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>确定当发件人指定要立即传递邮件时，是否使用后台进程传递邮件。</help>
+    <label><!-- Deliver Using Background Process --></label>
+    <name>fferpcore__DeliverUsingBackgroundProcess__c</name>
+    <picklistValues>
+        <masterLabel>Always</masterLabel>
+        <translation>总是</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Capacity</masterLabel>
+        <translation>容量</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Never</masterLabel>
+        <translation>决不</translation>
+    </picklistValues>
+</CustomFieldTranslation>

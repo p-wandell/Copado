@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Used to notify Project Manager when a Fully Staffed Project assigned</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Blank_Letterhead</letterhead>
+    <name>PSA Project Fully Staffed Notification</name>
+    <style>freeForm</style>
+    <subject>Welcome to Project Name</subject>
+    <textOnly>Hi {!pse__Assignment__r.pse__Resource__r.FirstName},
+
+
+I&apos;ve been working with Ops on our upcoming {!pse__Assignment__c.pse__Role__c} assignments and wanted to signal where we landed on your next project:
+
+
+
+Project Name: {!pse__Assignment__r.pse__Project__r.Name}
+
+Allocation: {!pse__Assignment__c.pse__Project__r.pse__Hours__c} hrs/wk
+
+Start date: {!pse__Assignment__c.pse__Project__r.pse__Start_Date__c}
+
+
+Considerations:
+
+Overall goal is to update the partner registration process to allow Contacts to be added to their correct Account immediately, enable an account hierarchy, and solve for numerous pain points in the current process.
+
+Note that {!pse__Assignment__r.pse__Project__r.Name} has not signed yet, {!pse__Assignment__r.pse__Project__r.pse__Opportunity__r.Owner.Name} can keep you in the loop on the expected signature date. If the client has not signed by the start date {!pse__Assignment__c.pse__Project__r.pse__Start_Date__c}, we&apos;ll need to get WAR approval from Henwood &amp; Michelle
+
+
+
+
+Next steps:
+
+Feel free to take a peek at the SOW and contact the account team ({!pse__Assignment__r.pse__Project__r.pse__Opportunity__r.Owner.Name}) for any questions on start logistics
+
+Ops is actively working on getting the rest of the SFDC DEV team staffed and she will keep you in the loop as things get locked in
+
+Please make sure you reshape the first few weeks of the project so that it properly represents the Prepare phase activities. Feel reach out to Kristin for questions there as he’ll be working on the Pre-Flight Risk Assessment
+
+
+
+Thanks,
+
+Alan</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

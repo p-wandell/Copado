@@ -1,0 +1,3 @@
+<!-- set recordsetvar to enable this to be the source for a list button on contact -->
+<apex:page sidebar="false" action="{!navigateToPlannerFromGroup}" title="{!$Label.pse__projplanner_title}" standardController="pse__Proj__c" recordSetVar="recs" extensions="pse.PlannerControllerExtension">
+</apex:page>

@@ -1,0 +1,10 @@
+<apex:page standardController="pse__Region__c" action="{!initForRegion}" extensions="pse.UtilizationSchedulerController" 
+    title="{!$Label.pse__utilization_label_schedule_calc_ute}" tabStyle="pse__Utilization_Calculation__c" showHeader="false" sidebar="false">
+
+    <apex:composition template="pse__UtilizationSchedulerTemplate">
+        <apex:define name="sectionHeader">
+            <apex:sectionHeader title="{!$Label.pse__utilization_label_schedule_calc_ute}" subtitle="{!pse__Region__c.Name}"/>
+        </apex:define>
+    </apex:composition>
+    
+</apex:page>

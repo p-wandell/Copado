@@ -1,0 +1,53 @@
+<apex:page controller="pse.ERPAdministrationController" tabStyle="PS_Admin__tab" title="{!$Label.pse__erp_administration_title}" lightningStylesheets="true">
+ <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+<apex:sectionHeader title="{!$Label.pse__erp_administration_title}"/>
+
+<apex:pageMessages id="msgs" />
+
+<apex:pageBlock title="{!addedValuesTitle}" rendered="{!showAddedValues}">
+    <apex:dataList value="{!addedValues}" var="value">
+        <apex:outputText value="{!value}"/>
+    </apex:dataList>
+</apex:pageBlock>
+
+<apex:pageBlock title="{!duplicateValuesTitle}" rendered="{!showDuplicateValues}">
+    <apex:dataList value="{!duplicateValues}" var="value">
+        <apex:outputText value="{!value}"/>
+    </apex:dataList>
+</apex:pageBlock>
+
+<apex:pageBlock title="{!removedValuesTitle}" rendered="{!showRemovedValues}">
+    <apex:dataList value="{!removedValues}" var="value">
+        <apex:outputText value="{!value}"/>
+    </apex:dataList>
+</apex:pageBlock>
+
+<apex:outputPanel rendered="{!displayPage}">
+	<apex:form >
+	    <apex:pageBlock title="{!$Label.pse__erp_title_register_publications_and_subscriptions}" mode="edit">
+	     	<apex:pageBlockButtons location="top">
+	        <apex:commandButton styleClass="slds-button" action="{!register}" value="{!$Label.pse__erp_register}"
+	            id="registerButton" onclick="if(!confirm('{!JSENCODE($Label.pse__common_message_are_you_sure)}')){return false;}"/>
+	        <apex:commandButton styleClass="slds-button" action="{!unregister}" value="{!$Label.pse__erp_unregister}"
+	            id="unregisterButton" onclick="if(!confirm('{!JSENCODE($Label.pse__common_message_are_you_sure)}')){return false;}"/>
+            </apex:pageBlockButtons>
+	    </apex:pageBlock>
+	    <apex:pageBlock title="{!$Label.pse__erp_title_publications}" mode="edit">
+	    	<apex:pageBlockButtons location="top">
+	        <apex:commandButton styleClass="slds-button" action="{!handlePublications}" value="{!$Label.pse__erp_load_publications}"
+	            id="loadPublicationsButton" onclick="if(!confirm('{!JSENCODE($Label.pse__common_message_are_you_sure)}')){return false;}"/>
+	        <apex:commandButton styleClass="slds-button" action="{!removeCurrentNodes}" value="{!$Label.pse__erp_remove_publications}"
+	            id="removePublicationsButton" onclick="if(!confirm('{!JSENCODE($Label.pse__common_message_are_you_sure)}')){return false;}"/>
+            </apex:pageBlockButtons>
+	    </apex:pageBlock>
+	    <apex:pageBlock title="{!$Label.pse__erp_title_subscriptions}" mode="edit">
+	    	<apex:pageBlockButtons location="top">
+	        <apex:commandButton styleClass="slds-button" action="{!handleSubscriptions}" value="{!$Label.pse__erp_load_subscriptions}"
+	            id="loadSubscriptionsButton" onclick="if(!confirm('{!JSENCODE($Label.pse__common_message_are_you_sure)}')){return false;}"/>
+	        <apex:commandButton styleClass="slds-button" action="{!removeCurrentMappings}" value="{!$Label.pse__erp_remove_subscriptions}"
+	            id="removeSubscriptionsButton" onclick="if(!confirm('{!JSENCODE($Label.pse__common_message_are_you_sure)}')){return false;}"/>
+            </apex:pageBlockButtons>
+	    </apex:pageBlock>
+	</apex:form>
+</apex:outputPanel>
+</apex:page>

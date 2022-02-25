@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Status --></label>
+    <name>pse__Status__c</name>
+    <picklistValues>
+        <masterLabel>Aborted</masterLabel>
+        <translation>중단 된</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Completed</masterLabel>
+        <translation>완료 됨</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed</masterLabel>
+        <translation>실패한</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Holding</masterLabel>
+        <translation>보유</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Preparing</masterLabel>
+        <translation>준비중 인</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Processing</masterLabel>
+        <translation>가공</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Queued</masterLabel>
+        <translation>대기 중</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>El estado de la información que se aplicará al usuario de Salesforce.</help>
+    <label><!-- Status --></label>
+    <name>fferpcore__Status__c</name>
+    <picklistValues>
+        <masterLabel>Activating</masterLabel>
+        <translation>Activando</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Active</masterLabel>
+        <translation>Activo</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Deactivated</masterLabel>
+        <translation>Desactivado</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Deactivating</masterLabel>
+        <translation>Desactivando</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Activate</masterLabel>
+        <translation>Error al activar</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Create</masterLabel>
+        <translation>Fallo al crear</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Deactivate</masterLabel>
+        <translation>Error al desactivar</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Update</masterLabel>
+        <translation>Error al actualizar</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Activation</masterLabel>
+        <translation>Activacion pendiente</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Create</masterLabel>
+        <translation>Pendiente Crear</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Deactivation</masterLabel>
+        <translation>Desactivación pendiente</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Update</masterLabel>
+        <translation>Actualización pendiente</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Updating</masterLabel>
+        <translation>Actualizando</translation>
+    </picklistValues>
+</CustomFieldTranslation>

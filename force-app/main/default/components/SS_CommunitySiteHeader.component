@@ -1,0 +1,22 @@
+<!--Header component -->
+<apex:component >
+	<div id="summits-topbar">							
+		<div id="toprow">			
+			<span class="item"><a target="_blank" href="http://www.7summitsagency.com/news/">{!$Label.newsAndPR}</a></span>
+
+			<span class="item"><a target="_blank" href="http://www.7summitsagency.com/social">{!$Label.socialHub}</a></span>
+
+			<span class="item hidden-xs"><a target="_blank" href="http://www.7summitsagency.com/careers/">{!$Label.careers}</a></span>
+
+			<span class="item"><a target="_blank" href="http://www.7summitsagency.com/contact/">{!$Label.contact}</a></span>
+			
+			<span class="item hidden-xs"><a target="_blank" href="http://peak.7summitsagency.com/">{!$Label.peakClientCommunity}</a></span>
+		</div>
+	</div>
+	<div id="header">
+		<!--TODO: replace this to 7Summits logo-->
+		<a href="/" class="{!IF(ISPICKVAL($User.UserType,'Guest'), 'text-center', '')}"><apex:image url="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/image/7s_logos/7s_blue.png')}" styleClass="logo"/></a>
+		<div id="powered" class="hidden-xs"></div>
+		<c:SS_CommunitySiteMenu />
+	</div>
+</apex:component>

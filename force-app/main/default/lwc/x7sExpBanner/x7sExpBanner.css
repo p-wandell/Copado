@@ -1,0 +1,55 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+
+/* General styles */
+.x7s-banner {
+    position: relative;
+    background-size: cover;
+}
+
+/* z-index: 1 places content above the overlay */
+.slds-grid {
+    position: relative;
+    z-index: 1;
+}
+
+/* Headings */
+h1, h2 {
+    line-height: normal;
+}
+
+h1 {
+    font-size: 1.75rem;
+}
+
+h2 {
+    font-size: 1.2rem;
+}
+
+/* Media queries */
+@media (min-width: 48em) {
+    h1 {
+        font-size: 3.75rem;
+    }
+    h2 {
+        font-size: 2.75rem;
+    }
+}
+@media (max-width: 48em){
+    /* Adds space between columns when viewed on mobile */
+    .slds-wrap .slds-size_12-of-12:not(:last-of-type) {
+        margin-bottom: var(--lwc-spacingLarge);
+    }
+}
+
+/* Overlay styles */
+.x7s-banner-overlay {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    content: ' ';
+}

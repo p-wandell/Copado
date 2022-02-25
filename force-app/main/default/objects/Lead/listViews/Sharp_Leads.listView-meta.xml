@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sharp_Leads</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.COMPANY</columns>
+    <columns>LEAD.STATE_CODE</columns>
+    <columns>Passed_to_Sales__c</columns>
+    <columns>LEAD.UNREAD</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CORE.USERS.LAST_NAME</field>
+        <operation>equals</operation>
+        <value>Sharp</value>
+    </filters>
+    <filters>
+        <field>Disqualified__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <label>Sharp Leads</label>
+    <language>en_US</language>
+</ListView>

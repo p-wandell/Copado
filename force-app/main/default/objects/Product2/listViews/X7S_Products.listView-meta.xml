@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X7S_Products</fullName>
+    <columns>PRODUCT2.NAME</columns>
+    <columns>PRODUCT2.CUSTOMER_PRODUCT_ID</columns>
+    <columns>PRODUCT2.DESCRIPTION</columns>
+    <columns>PRODUCT2.FAMILY</columns>
+    <columns>Technology_Platform__c</columns>
+    <columns>Licensing_Type__c</columns>
+    <columns>PRODUCT2.QTY_SCHEDULE_ENABLED</columns>
+    <columns>PRODUCT2.REV_SCHEDULE_ENABLED</columns>
+    <columns>Recurring_Revenue__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>7S Products</label>
+    <language>en_US</language>
+</ListView>

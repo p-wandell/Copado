@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Topics Followed</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Topics Followed</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" type="String" label="Component title" description="This is the text that will be displayed as the component title. If blank, the title will not display." />
+            <property name="recordsToShow" type="String" label="Maximum number of records to show" />
+            <property name="showNoTopicsMessage" type="Boolean" default="True" label="Display this component even if no topics are followed" description="Check this box in order to display a prompt to the user if they follow no topics. Otherwise, the component does not display on page when no topics are followed." />
+            <property name="noTopicsTitle" type="String" label="No topics - Component Title" description="The component displays this title no topics are followed by the user." />
+            <property name="noTopicsMessage" type="String" label="No topics - Message" description="The component displays this message no topics are followed by the user." />
+            <property name="noTopicsButtonLabel" type="String" label="No topics - Button label" description="Use to control the label for the no topics button. Leave blank to not display a button." />
+            <property name="noTopicsButtonLink" type="String" label="No topics - Button link" description="Use to control the link for the no topics button. This typically links to a list of topics. Leave blank to not display a button." />
+            <property name="customClass" label="CSS Class" type="String" description="Apply additional SLDS or custom CSS class" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

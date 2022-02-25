@@ -1,0 +1,35 @@
+/**
+ * Copyright (c) 2020. 7Summits Inc. All rights reserved.
+ */
+
+
+.x7s-video__video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background-color: #E8E8E8;
+}
+
+.x7s-video__video {
+    display: flex;
+    flex-direction: column;
+}
+
+.x7s-video__video-embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.x7s-video__video-item {
+    flex: 1;
+}
+
+.x7s-video__video-description {
+    display: flex;
+    overflow: hidden;
+}

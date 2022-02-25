@@ -1,0 +1,126 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- X 7 S Members List Item -->
+<template>
+	<c-x7s-shr-card title={member.Name}
+	            record-id={member.Id}
+	            image-src={member.FullPhotoUrl}
+	            image-height="140px"
+	            layout={layout}
+	            variant={tileVariant}
+	            text-align={textAlign}
+	            hide-image={hide_image}
+                use-avatar={useAvatar}
+				custom-class={customClass}
+	>
+	<slot>	 
+		<div class={memberMetaRowClass} if:true={showTitle}>
+			<c-x7s-shr-meta custom-class="x7s-member__meta">
+				{member.Title}
+			</c-x7s-shr-meta>
+		</div>
+
+		<div class={memberMetaRowClass} if:true={showPhone}>
+			<template if:true={clickToCall}>
+			   <lightning-formatted-phone value={member.Phone} ></lightning-formatted-phone>
+			</template>
+			<template if:false={clickToCall}>
+				{member.Phone}
+			</template>
+		</div>
+
+		<div class={memberMetaRowClass} if:true={showEmail}>
+			{member.Email}
+		</div>
+
+		<div class={memberMetaRowClass} if:true={showKnowledgeable}>
+			{member.strKnowledgeTopics}
+		</div>
+		<div if:true={chkCustomFieldLength1} class={customFieldAlign}>
+			<c-x7s-members-custom-field custom-field={member.customField1}
+			                            custom-label={customLabel1}>
+			</c-x7s-members-custom-field>
+		</div>
+		<div if:true={chkCustomFieldLength2} class={customFieldAlign}>
+			<c-x7s-members-custom-field custom-field={member.customField2}
+			                            custom-label={customLabel2}>
+			</c-x7s-members-custom-field>
+		</div>
+		
+		<div if:true={chkCustomFieldLength3} class={customFieldAlign}>
+			<c-x7s-members-custom-field custom-field={member.customField3}
+			                            custom-label={customLabel3}>
+			</c-x7s-members-custom-field>
+		</div>
+		<div if:true={chkCustomFieldLength4} class={customFieldAlign}>
+			<c-x7s-members-custom-field custom-field={member.customField4}
+			                            custom-label={customLabel4}>
+			</c-x7s-members-custom-field>
+		</div>
+		<div if:true={chkCustomFieldLength5} class={customFieldAlign}>
+			<c-x7s-members-custom-field custom-field={member.customField5}
+			                            custom-label={customLabel5}>
+			</c-x7s-members-custom-field>
+		</div>
+		<div if:true={chkCustomFieldLength6} class={customFieldAlign}>
+			<c-x7s-members-custom-field custom-field={member.customField6}
+			                            custom-label={customLabel6}>
+			</c-x7s-members-custom-field>
+		</div>
+		
+		<div if:true={displayChatterStats}>
+			<template if:true={member.intNumberOfFollowers}>
+				<c-x7s-shr-meta icon="utility:groups" count={member.intNumberOfFollowers}
+							label={labels.labelFollowers}>
+				</c-x7s-shr-meta>
+			</template>
+			<template if:false={member.intNumberOfFollowers}>
+				<c-x7s-shr-meta icon="utility:groups" count="0"
+							label={labels.labelFollowers}>
+				</c-x7s-shr-meta>
+			</template>
+			<template if:true={member.intLikeReceived}>
+				<c-x7s-shr-meta icon="utility:like" count={member.intLikeReceived}
+							label={labels.labelLikes}>
+				</c-x7s-shr-meta>
+			</template>
+			<template if:false={member.intLikeReceived}>
+				<c-x7s-shr-meta icon="utility:like" count="0" label={labels.labelLikes}>
+				</c-x7s-shr-meta>
+			</template>
+			<template if:true={member.intPostsMade}>
+				<c-x7s-shr-meta icon="utility:share_post" count={member.intPostsMade}
+							label={labels.labelPosts}>
+				</c-x7s-shr-meta>
+			</template>
+			<template if:false={member.intPostsMade}>
+				<c-x7s-shr-meta icon="utility:share_post" count="0" label={labels.labelPosts}>
+				</c-x7s-shr-meta>
+			</template>
+		</div>	
+	</slot>
+		<div slot="footer">
+			<template if:true={displayFollowButton}>
+				<template if:true={member.showJoinButton}>
+					<div class={memberFollowRowClass}>
+						<lightning-button-stateful class="slds-align_absolute-center"
+												style="display: contents;"
+												label-when-off={labels.labelButtonFollow}
+												label-when-on={labels.labelButtonFollowing}
+												label-when-hover={labels.labelButtonUnFollow}
+												icon-name-when-off="utility:add"
+												icon-name-when-on="utility:check"
+												icon-name-when-hover="utility:close"
+												data-id={member.Id}
+												onclick={handleFollowRecord}
+												selected={selected}>
+						</lightning-button-stateful>
+					</div>
+				</template>
+			</template>
+		</div>
+
+	</c-x7s-shr-card>
+</template>

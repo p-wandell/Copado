@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Folder__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Parent folder, null if root folder</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Parent folder, null if root folder</inlineHelpText>
+    <label>Parent Folder</label>
+    <referenceTo>X7S_File_Folder__c</referenceTo>
+    <relationshipLabel>7S File Folders</relationshipLabel>
+    <relationshipName>X7S_File_Folders</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

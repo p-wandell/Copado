@@ -1,0 +1,60 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Events Create">
+	<design:attribute name="debugMode"
+	                  label="Debug Mode"
+	                  description="Enable/disable debug mode" />
+
+	<design:attribute name="headerText"
+	                  label="Heading Title"
+	                  description="Header Text"/>
+	<design:attribute name="headerSize"
+	                  label="Heading Size"
+	                  description="Header Size"
+	                  datasource="large,medium,small"/>
+	<design:attribute name="headerAlignment"
+	                  label="Heading Alignment"
+	                  description="Header Alignment"
+	                  datasource="left,center"/>
+
+	<design:attribute name="showEventType"
+	                  label="Show event type"
+	                  description="Check to show the event type on the tile"/>
+	<design:attribute name="useTopics"
+	                  label="Require topics"
+	                  description="Require the user to select at least one topic"/>
+    <design:attribute name="autoApproveEvents"
+                      label="Auto Approve Events"
+                      description="If Selected Events will be created with Status 'Approved' else 'Created'"/>
+
+	<!-- CUSTOM FIELDS --> 
+	<design:attribute name="customLabel1"
+	                  label="Custom label 1"
+	                  description="Define a label for custom field 1"/>
+	<design:attribute name="customField1"
+	                  label="Custom field 1"
+	                  description="Custom field 1 to display on the tile (ex: MyField__c)"/>
+	<design:attribute name="customLabel2"
+	                  label="Custom label 2"
+	                  description="Define a label for custom field 2"/>
+	<design:attribute name="customField2"
+	                  label="Custom field 2"
+	                  description="Custom field 2 to display on the tile"/>
+	<design:attribute name="customLabel3"
+	                  label="Custom label 3"
+	                  description="Define a label for custom field 3"/>
+	<design:attribute name="customField3"
+	                  label="Custom field 3"
+	                  description="Custom field 3 to display on the tile"/>
+
+	<design:attribute name="pathToDetail"
+                      label="Path To Detail"
+                      description="Enter Events Detail Page URL"/>
+    <design:attribute name="allEventsUrl"
+                      label="Events List View URL"
+                      description="Enter Events List View URL"/>
+
+	<!-- GROUPS -->
+	<design:attribute name="limitToSpecificGroups"
+	                  label="Enable Group Selection?"
+	                  description="Check to show the groups drop down. Enforcement is managed through Events Settings"/>
+</design:component>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Unassigned_PSRs</fullName>
+    <columns>NAME</columns>
+    <columns>Opportunity__c</columns>
+    <columns>PSR_Due_Date__c</columns>
+    <columns>PSR_Type__c</columns>
+    <columns>Request_Owner__c</columns>
+    <columns>PSR_Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Request_Owner__c</field>
+        <operation>equals</operation>
+    </filters>
+    <label>Unassigned PSRs</label>
+    <language>en_US</language>
+</ListView>

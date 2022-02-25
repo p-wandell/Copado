@@ -1,0 +1,124 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+  -->
+
+<!-- 7S Files Sharing Criteria -->
+<template>
+	<c-x7s-shr-component-wrapper custom-class={customClass}
+	                             icon-name={iconName}
+	                             title={title}
+	                             variant={viewVariant}
+	                             aria-label={labels.labelAriaCriteria}
+	                             auto-slds-card
+	>
+		<template if:true={isItemAvailable}>
+			<!-- Row 1-->
+			<lightning-layout multiple-rows="true"
+			                  horizontal-align="spread"
+			                  vertical-align="end"
+			                  pull-to-boundary="small">
+
+				<lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6"
+				                       padding="around-small">
+					<lightning-layout vertical-align="end">
+						<!-- Combo-->
+						<lightning-layout-item flexibility="grow">
+							<lightning-combobox name="selectSettings"
+							                    label={labels.labelSettings}
+							                    options={settings}
+							                    value={settingId}
+							                    onchange={handleSettingSelection}
+							>
+							</lightning-combobox>
+						</lightning-layout-item>
+
+						<!-- Apply settings-->
+						<lightning-layout-item flexibility="no-shrink no-grow">
+							<lightning-button name="saveSettingsButton"
+							                  class="slds-p-left_small"
+							                  title={labels.tooltipSave}
+							                  value="Save"
+							                  disabled={disableSave}
+							                  label={labels.labelSave}
+							                  onclick={handleSaveSettings}
+							                  variant="neutral"
+							>
+							</lightning-button>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3"
+				                       padding="around-small">
+					<!-- refresh -->
+					<lightning-button name="shareButton"
+					                  class="slds-float_right"
+					                  title={labels.tooltipShare}
+					                  icon-name="utility:refresh"
+					                  icon-position="left"
+					                  value="Share"
+					                  label={labels.labelShare}
+					                  onclick={handleFolderShare}
+					                  variant="neutral"
+					>
+					</lightning-button>
+				</lightning-layout-item>
+			</lightning-layout>
+
+			<!-- Row 2 -->
+			<lightning-layout multiple-rows="false" pull-to-boundary="small">
+				<lightning-layout-item padding="around-small"
+				                       flexibility="auto"
+				>
+					<!-- Logic -->
+					<lightning-formatted-text value={labels.labelLogic} class="slds-text-color_weak">
+					</lightning-formatted-text>
+					&nbsp;
+					<lightning-formatted-text value={defaultLogic}>
+					</lightning-formatted-text>
+					&nbsp;
+					<lightning-formatted-text value={customLogic}>
+					</lightning-formatted-text>
+				</lightning-layout-item>
+				<lightning-layout-item padding="around-small"
+				                       flexibility="auto, no-shrink"
+				>
+					<!-- goto cmt -->
+
+					<div if:true={showSettingNavigation}>
+						<lightning-formatted-text class="slds-float_right slds-item slds-text-link"
+						                          value={labels.labelView}
+						                          onclick={navigateToSetting}
+						                          linkify>
+						</lightning-formatted-text>
+					</div>
+					<div if:false={showSettingNavigation}>
+						<lightning-formatted-text class="slds-float_right slds-item slds-text-link"
+						                          value={labels.labelCMTView}
+						                          onclick={navigateToCustomMetadataSetup}
+						                          linkify>
+						</lightning-formatted-text>
+					</div>
+
+				</lightning-layout-item>
+			</lightning-layout>
+
+			<!-- Row 3 -->
+			<lightning-layout multiple-rows="false">
+				<lightning-layout-item padding="around-small"
+				                       size="12"
+				                       flexibility="auto"
+				                       class="slds-border_top">
+					<lightning-datatable key-field="id"
+					                     data={data}
+					                     columns={columns}
+					                     hide-checkbox-column="true"
+					                     onrowaction={handleRowAction}
+					>
+					</lightning-datatable>
+				</lightning-layout-item>
+
+			</lightning-layout>
+		</template>
+	</c-x7s-shr-component-wrapper>
+</template>

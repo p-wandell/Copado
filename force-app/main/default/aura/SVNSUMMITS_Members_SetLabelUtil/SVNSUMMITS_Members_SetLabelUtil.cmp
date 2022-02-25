@@ -1,0 +1,19 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+
+<!--
+ - Created by joecallin - cloned by michaelsullivan on 6/28/17.
+ -->
+
+<aura:component description="SVNSUMMITS_Members_SetLabelUtil"
+                access="global"
+                extensible="true">
+
+    <aura:attribute name="text" type="String"/>
+    <aura:attribute name="label" type="String"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <aura:unescapedHtml value="{!v.label}"/>
+</aura:component>

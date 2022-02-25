@@ -1,0 +1,55 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventListController"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName"
+                access="global">
+
+	<!--Static resource Section Start-->
+
+	<!-- Base model -->
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler   name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.doInit}"/>
+
+	<!--Handler Declaration Section Start-->
+	<aura:handler event="c:SVNSUMMITS_Events_Date_Filter_Event"     action="{!c.setDateFilter}"/>
+	<aura:handler event="c:SVNSUMMITS_Events_Topic_Filter_Event"    action="{!c.setTopicFilter}"/>
+	<aura:handler event="c:SVNSUMMITS_Events_Location_Filter_Event" action="{!c.setLocationFilter}"/>
+	<aura:handler event="c:SVNSUMMITS_Events_Type_Filter_Event"     action="{!c.setTypeFilter}"/>
+	<aura:handler event="c:SVNSUMMITS_Events_Filter_Event"          action="{!c.setCustomFilter}"/>
+
+	<aura:registerEvent name="headerEvent1"  type="c:SVNSUMMITS_Events_Header_Event"/>
+	<aura:registerEvent name="displayEvent"  type="c:SVNSUMMITS_Events_DisplayMode_Event"/>
+
+	<!--Attributes Declaration Section Start-->
+	<aura:attribute name="sitePrefix"   type="String" access="public"/>
+	<aura:attribute name="categories" type="String" default="" access="global"/>
+	<aura:attribute name="titletext" type="String" description="Event Title Text" access="global"/>
+	<aura:attribute name="numberofresults" type="Integer" description="Number of attendees for the event"
+	                access="global"/>
+	<aura:attribute name="listSize"     type="Integer" default="50" access="global"/>
+	<aura:attribute name="totalResults" type="Integer" default="0"  access="global"/>
+
+	<aura:handler name="change" value="{!v.totalResults}" action="{!c.updateHeader}"/>
+
+	<aura:attribute name="filterByTopic" type="String" access="global"/>
+	<aura:attribute name="filterType"   type="String" access="global"/>
+	<aura:attribute name="topicValue"   type="String" access="global"/>
+
+	<aura:attribute name="locationFilter"   type="String" default="" access="public"/>
+	<aura:attribute name="eventTypeFilter"  type="String" default="" access="public"/>
+	<aura:attribute name="customFilter"     type="String" default="" access="public" description="compound filter string"/>
+
+	<aura:attribute name="listViewMode" type="String" default="Calendar" access="global"/>
+	<aura:attribute name="sortBy" default="Upcoming" type="String" access="global"/>
+	<aura:attribute name="filterOn" default="None" type="String" access="global"/>
+	<aura:attribute name="searchstr" type="String" access="global"/>
+	<aura:attribute name="wrappedEvents" type="SVNSUMMITS_EventListWrapper" access="global"/>
+	<aura:attribute name="events" type="String[]" access="global"/>
+	<aura:attribute name="eventCalendarValues" type="String[]" access="global"/>
+	<aura:attribute name="debugMode" type="Boolean" default="false" access="global"/>
+
+	<div style="clear:both!important">
+	</div>
+	<div id="calendar" aura:id="calendar" class="customCalendarView">
+	</div>
+</aura:component>

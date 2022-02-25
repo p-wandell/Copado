@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Quantity_List__c</fullName>
+    <defaultValue>&quot;1,2,3,4,5,6,7,8,9,10,15,20,30,50&quot;</defaultValue>
+    <description>Quantity option list</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>CSV list of quantity options</inlineHelpText>
+    <label>Quantity List</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

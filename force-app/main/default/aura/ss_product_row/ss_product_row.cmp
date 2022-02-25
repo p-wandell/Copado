@@ -1,0 +1,175 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 8/3/17.
+ -->
+
+<aura:component description="ss_product_row"
+                extends="c:ss_product_base"
+                access="global">
+
+	<aura:attribute name="recId"                type="String"   access="public"/>
+	<aura:attribute name="product"              type="Map"      access="public"/>
+	<aura:attribute name="actionItems"          type="Map"      access="public"/>
+	<aura:attribute name="optionsQuantity"      type="String[]" access="public"/>
+
+	<aura:attribute name="cartIconName"         type="String"   access="public"/>
+	<aura:attribute name="suggestIconName"      type="String"   access="public"/>
+	<aura:attribute name="usePoints"            type="Boolean"  access="public"/>
+	<aura:attribute name="pricebookId"          type="String"   access="public"/>
+	<aura:attribute name="showImage"            type="Boolean"  access="public"/>
+	<aura:attribute name="showImageBorder"      type="Boolean"  access="public"/>
+	<aura:attribute name="showImagePrice"       type="Boolean"  access="public"/>
+	<aura:attribute name="showDescription"      type="Boolean"  access="public"/>
+	<aura:attribute name="descriptionLines"     type="String"   access="public"/>
+	<aura:attribute name="showProductFamily"    type="Boolean"  access="public"/>
+	<aura:attribute name="showProductCode"      type="Boolean"  access="public"/>
+	<aura:attribute name="showPrice"            type="Boolean"  access="public"/>
+	<aura:attribute name="showAddToCart"        type="Boolean"  access="public"/>
+	<aura:attribute name="showSuggestProduct"   type="Boolean"  access="public"/>
+	<aura:attribute name="showAddQuantity"      type="Boolean"  access="public"/>
+	<aura:attribute name="showActionMenu"       type="Boolean"  access="public"/>
+	<aura:attribute name="addToCartPosition"    type="String"   access="public"/>
+
+	<aura:attribute name="lineHeight"           type="Integer"  access="private" default="18" description="line height for alignment"/>
+
+	<lightning:layout verticalAlign="center"
+	                  multipleRows="true">
+
+		<aura:if isTrue="{!v.showImage}">
+			<lightning:layoutItem flexibility="auto"
+			                      padding="around-small"
+			                      size="12"
+			                      mediumDeviceSize="3">
+				<c:ss_product_image_container productImage="{!v.product.imageUrl}"
+				                              productPrice="{! v.usePoints ? v.product.points : v.product.unitPrice}"
+				                              productId="{!v.product.productId}"
+				                              usePoints="{!v.usePoints}"
+				                              showImageBorder="{!v.showImageBorder}"
+				                              showImagePrice="{!v.showImagePrice}"/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<lightning:layoutItem flexibility="no-grow"
+		                      padding="around-small"
+		                      size="12"
+		                      mediumDeviceSize="9">
+
+			<aura:if isTrue="{!v.addToCartPosition == 'Top'}">
+				<aura:if isTrue="{! v.showAddToCart || v.showSuggestProduct || v.showActionMenu}">
+					<lightning:layout multipleRows="false"
+					                  verticalAlign="start"
+					                  horizontalAlign="spread">
+
+						<aura:if isTrue="{!v.showAddToCart}">
+							<lightning:layoutItem>
+								<c:ss_product_cart_button iconName="{!v.cartIconName}"
+								                          productId="{!v.product.productId}"
+								                          productName="{!v.product.name}"
+								                          unitPrice="{!v.usePoints ? v.product.points : v.product.unitPrice}"
+								                          showQuantity="{!v.showAddQuantity}"
+								                          optionsQuantity="{!v.optionsQuantity}"/>
+							</lightning:layoutItem>
+						</aura:if>
+
+						<aura:if isTrue="{!v.showSuggestProduct}">
+							<lightning:layoutItem>
+								<c:ss_product_suggest_button iconName="{!v.suggestIconName}"
+								                             productId="{!v.product.productId}"
+								                             productName="{!v.product.name}"/>
+							</lightning:layoutItem>
+						</aura:if>
+						<aura:if isTrue="{!v.showActionMenu}">
+							<lightning:layoutItem>
+								<c:ss_product_action_menu product="{!v.product}"
+								                          recId="{!v.recId}"
+								                          actionItems="{!v.actionItems}"/>
+							</lightning:layoutItem>
+						</aura:if>
+					</lightning:layout>
+				</aura:if>
+			</aura:if>
+
+			<h3 class="slds-m-bottom_x-small">
+				<a href="javascript:void(0)"
+				   data-id="{!v.product.productId}"
+				   onclick="{!c.gotoRecord}"
+				   class="slds-truncate"
+				   style="width:100%">
+						{!v.product.name}</a>
+			</h3>
+
+			<aura:if isTrue="{!v.showProductFamily}">
+				<p class="slds-text-body--small slds-text-color--weak">
+						{!v.product.family}
+				</p>
+			</aura:if>
+
+			<aura:if isTrue="{!v.showProductCode}">
+				<p class="slds-text-body--small  slds-text-color--weak">
+						{!v.product.productCode}
+				</p>
+			</aura:if>
+
+			<aura:if isTrue="{!v.showDescription}">
+				<div class="slds-text-body_regular slds-p-top--medium description"
+				     style="{!'-webkit-line-clamp:'+ v.descriptionLines +';'+
+						     'min-height:' + v.descriptionLines * v.lineHeight + 'px;'}">
+						{!v.product.description}
+				</div>
+			</aura:if>
+
+			<aura:if isTrue="{!v.showPrice}">
+				<p class="slds-p-top--large slds-p-bottom--large">
+					<aura:if isTrue="{!v.usePoints}">
+						<lightning:formattedNumber value="{!v.product.points}"/>
+						<aura:set attribute="else">
+							<lightning:formattedNumber value="{!v.product.unitPrice}"
+							                           style="currency"/>
+						</aura:set>
+					</aura:if>
+				</p>
+			</aura:if>
+
+			<aura:if isTrue="{!v.addToCartPosition == 'Bottom'}">
+				<aura:if isTrue="{! v.showAddToCart || v.showSuggestProduct || v.showActionMenu}">
+					<lightning:layout multipleRows="false"
+					                  horizontalAlign="spread"
+					                  verticalAlign="end">
+
+						<aura:if isTrue="{!v.showAddToCart}">
+							<lightning:layoutItem>
+								<c:ss_product_cart_button iconName="{!v.cartIconName}"
+								                          productId="{!v.product.productId}"
+								                          productName="{!v.product.name}"
+								                          unitPrice="{!v.usePoints ? v.product.points : v.product.unitPrice}"
+								                          showQuantity="{!v.showAddQuantity}"
+								                          optionsQuantity="{!v.optionsQuantity}"/>
+							</lightning:layoutItem>
+						</aura:if>
+
+						<aura:if isTrue="{!v.showSuggestProduct}">
+							<lightning:layoutItem>
+								<c:ss_product_suggest_button iconName="{!v.suggestIconName}"
+								                             productId="{!v.product.productId}"
+								                             productName="{!v.product.name}"/>
+							</lightning:layoutItem>
+						</aura:if>
+						<aura:if isTrue="{!v.showActionMenu}">
+							<lightning:layoutItem>
+								<c:ss_product_action_menu product="{!v.product}"
+								                          pricebookId="{!v.pricebookId}"
+								                          recId="{!v.recId}"
+								                          actionItems="{!v.actionItems}"/>
+							</lightning:layoutItem>
+						</aura:if>
+					</lightning:layout>
+				</aura:if>
+			</aura:if>
+
+		</lightning:layoutItem>
+
+	</lightning:layout>
+</aura:component>

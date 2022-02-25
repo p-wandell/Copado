@@ -1,0 +1,56 @@
+<apex:page standardController="fferpcore__MessagingDelivery__c" extensions="fferpcore.RetryController" recordSetVar="original" lightningStylesheets="true">
+  <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+  <apex:sectionHeader title="{!$Label.fferpcore__erpretrytitle}"/>
+  <apex:pageMessage rendered="{!AND(securityRestricted, NOT(securityWarningSeen))}" summary="{!$Label.fferpcore__erpretrysecurityrestricted}" severity="warning" strength="2" />
+  <apex:pageMessage rendered="{!NOT(ISBLANK(errorMessage))}" summary="{!errorMessage}" severity="error" strength="2" />
+  <apex:pageMessage rendered="{!NOT(ISBLANK(successMessage))}" summary="{!successMessage}" severity="confirm" strength="2" />
+  <apex:pageMessage rendered="{!NOT(ISBLANK(notTriedMessage))}" summary="{!notTriedMessage}" severity="confirm" strength="2" />
+  <apex:pageMessage rendered="{!selectedTotal == 0}" summary="{!$Label.fferpcore__erpretrynoneselected}" severity="warning" strength="2" />
+  <apex:pageMessage rendered="{!selectedTotal != 0}" summary="{!selectionSummary}" severity="info" strength="2" />
+  <apex:form >
+    <apex:pageBlock >
+      <apex:pageBlockButtons >
+        <apex:commandButton value="{!$Label.fferpcore__erpretry}" action="{!retry}" disabled="{!retriableTotal == 0}"/>
+        <apex:commandButton value="{!$Label.fferpcore__erpcancel}" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+      <apex:pageBlockSection rendered="{!retriableTotal != 0}" title="{!$Label.fferpcore__erpretryretriabletitle}" columns="1">
+        <apex:pageBlockTable value="{!retriable}" var="delivery">
+          <apex:column headerValue="{!$Label.fferpcore__erpretrylastmodifieddateheading}">
+            <apex:outputField value="{!delivery.LastModifiedDate}"/>
+          </apex:column>
+          <apex:column headerValue="{!$Label.fferpcore__erpretryidheading}">
+            <c:LookupHover sObjectId="{!delivery.Id}" text="{!delivery.Name}"/>
+          </apex:column>
+          <apex:column headerValue="{!$Label.fferpcore__erpretryownerproductheading}">
+            <apex:outputField value="{!delivery.Subscription__r.fferpcore__OwnerProduct__c}"/>
+          </apex:column>
+          <apex:column headerValue="{!$Label.fferpcore__erpretrymessagetypeheading}">
+            <apex:outputField value="{!delivery.Message__r.fferpcore__MessageType__c}"/>
+          </apex:column>
+          <apex:column headerValue="{!$Label.fferpcore__erpretrystateheading}">
+            <apex:outputField value="{!delivery.fferpcore__State__c}"/>
+          </apex:column>
+        </apex:pageBlockTable>
+      </apex:pageBlockSection>
+      <apex:pageBlockSection rendered="{!notRetriableTotal != 0}" title="{!$Label.fferpcore__erpretrynotretriabletitle}" columns="1">
+        <apex:pageBlockTable value="{!notRetriable}" var="delivery">
+          <apex:column headerValue="{!$Label.fferpcore__erpretrylastmodifieddateheading}">
+            <apex:outputField value="{!delivery.LastModifiedDate}"/>
+          </apex:column>
+          <apex:column headerValue="{!$Label.fferpcore__erpretryidheading}">
+            <c:LookupHover sObjectId="{!delivery.Id}" text="{!delivery.Name}"/>
+          </apex:column>
+          <apex:column headerValue="{!$Label.fferpcore__erpretryownerproductheading}">
+            <apex:outputField value="{!delivery.Subscription__r.fferpcore__OwnerProduct__c}"/>
+          </apex:column>
+          <apex:column headerValue="{!$Label.fferpcore__erpretrymessagetypeheading}">
+            <apex:outputField value="{!delivery.Message__r.fferpcore__MessageType__c}"/>
+          </apex:column>
+          <apex:column headerValue="{!$Label.fferpcore__erpretrystateheading}">
+            <apex:outputField value="{!delivery.fferpcore__State__c}"/>
+          </apex:column>
+        </apex:pageBlockTable>
+      </apex:pageBlockSection>
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

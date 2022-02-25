@@ -1,0 +1,123 @@
+<apex:page standardController="pse__Resource_Request__c" tabstyle="pse__Resource_Request__c" lightningStylesheets="true" extensions="pse.ResourceRequestController">
+
+	<script>
+		// override default visualforce page onloadFocus - so that the calendar control does appear open on page load
+		function setFocusOnLoad() {}
+
+		function setVisible(name, visible) {
+			var e = document.getElementById(name);
+			if (e != null) {
+				if (visible) {
+					e.setAttribute("style", "display: block");
+					e.style.cssText = "display: block";
+				} else {
+					e.setAttribute("style", "display: none");
+					e.style.cssText = "display: none";
+				}
+			}
+		}
+
+		function wait(val) {
+			setVisible('loading', val);
+			setVisible('wait', val);
+		}
+	</script>
+	<!--
+	Bug/Fix: The Salesforce javascript 'twistSection' method does not get defined when
+	the collapsible pageBlocksection is in a component rather than on the hosting page,
+	giving rise to the javascript error : method twistSection is not defined.
+	The lines below fix this by causing the javascript method 'twistSection' to be included.
+	-->
+	<div style="display:none">
+		<apex:pageBlock title="includeTwistSection">
+			<apex:pageBlockSection collapsible="true" />
+		</apex:pageBlock>
+	</div>
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<script>
+		prepareHeader();
+
+		function prepareHeader() {
+			var config = {
+				recordId: '{!resourceRequest.Id}',
+				objectName: '{!JSENCODE($Label.resource_request_edit)}',
+				recordName: '{!JSENCODE(if(resourceRequest.Id == null, $Label.resource_request_new, resourceRequest.Name))}',
+				objectApiName: '{!$ObjectType["Resource_Request__c"].name}',
+				onRender: 'onHeaderLoadCallback',
+				buttons: [{
+					id: 'cancel',
+					label: '{!JSENCODE($Label.common_label_cancel)}',
+					actionFn: 'onCancelClick'
+				}, {
+					id: 'save',
+					label: '{!JSENCODE($Label.common_label_save)}',
+					actionFn: 'onSaveClick'
+				}],
+				fields: [{
+					id: 'project',
+					field: '{!$ObjectType["Resource_Request__c"].Fields["Project__c"].name}'
+				}, {
+					id: 'startDate',
+					field: '{!$ObjectType["Resource_Request__c"].Fields["Start_Date__c"].name}'
+				}, {
+					id: 'endDate',
+					field: '{!$ObjectType["Resource_Request__c"].Fields["End_Date__c"].name}'
+				}, {
+					id: 'resourceRole',
+					field: '{!$ObjectType["Resource_Request__c"].Fields["Resource_Role__c"].name}'
+				}],
+				helpUrl: '{!$Page.ResourceRequestHelp}'
+			};
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+	</script>
+	<apex:form id="ResourceRequestForm">
+
+		<apex:pageMessages ></apex:pageMessages>
+
+		<c:LoadMaskRegion >
+
+			<apex:pageBlock mode="edit" id="ResourceRequestEdit" title="Resource Request Edit">
+				<apex:actionFunction name="onSaveClick" oncomplete="wait(false);" action="{!save}" reRender="ResourceRequestForm" />
+				<apex:actionFunction name="onCancelClick" immediate="true" oncomplete="wait(false);" action="{!cancel}" />
+
+				<apex:pageBlockSection title="{!$Label.pse__common_label_resource_request}" columns="2" collapsible="false" >
+
+					<apex:repeat value="{!resourceRequestFields}" var="f">
+
+						<!-- make mandatory if : Resource Role, Requested Hours, Start Date, End Date -->
+						<apex:inputField value="{!resourceRequest[f.fieldPath]}" required="true" rendered="{!OR( f.Label == $ObjectType.Resource_Request__c.Fields.Resource_Role__c.Label,
+                                        f.Label == $ObjectType.Resource_Request__c.Fields.SOW_Hours__c.Label,
+                                        f.Label == $ObjectType.Resource_Request__c.Fields.Start_Date__c.Label,
+                                        f.Label == $ObjectType.Resource_Request__c.Fields.End_Date__c.Label )}" />
+
+						<!-- output normally if not : Resource Role, Requested Hours, Start Date, End Date  -->
+						<apex:inputField value="{!resourceRequest[f.fieldPath]}" required="{!OR(f.required, f.dbrequired)}" rendered="{!AND( NOT(f.Label == $ObjectType.Resource_Request__c.Fields.Resource_Role__c.Label),
+                                         NOT(f.Label == $ObjectType.Resource_Request__c.Fields.SOW_Hours__c.Label),
+                                         NOT(f.Label == $ObjectType.Resource_Request__c.Fields.Start_Date__c.Label),
+                                         NOT(f.Label == $ObjectType.Resource_Request__c.Fields.End_Date__c.Label) )}" />
+
+					</apex:repeat>
+
+				</apex:pageBlockSection>
+
+				<!-- Note: need to put the skills component into an action region - so the post back work correctly on it -->
+				<apex:actionRegion >
+					<c:SkillFilter id="skillFilter" parentComponent="{!this}" />
+				</apex:actionRegion>
+
+			</apex:pageBlock>
+
+		</c:LoadMaskRegion>
+	</apex:form>
+
+</apex:page>

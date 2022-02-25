@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Status --></label>
+    <name>fferpcore__Status__c</name>
+    <picklistValues>
+        <masterLabel>Aborted</masterLabel>
+        <translation>中止</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Completed</masterLabel>
+        <translation>完了しました</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed</masterLabel>
+        <translation>失敗しました</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Holding</masterLabel>
+        <translation>ホールディング</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Preparing</masterLabel>
+        <translation>準備</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Processing</masterLabel>
+        <translation>処理</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Queued</masterLabel>
+        <translation>待ち行列</translation>
+    </picklistValues>
+</CustomFieldTranslation>

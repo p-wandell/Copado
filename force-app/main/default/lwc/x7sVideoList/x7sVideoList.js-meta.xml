@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>Component to display a grouping of videos.</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Video List</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage, lightning__RecordPage, lightningCommunity__Default">
+            <property name="title" type="String" label="Title"/>
+            <property name="subTitle" type="String" label="Subtitle"/>
+            <property name="align" type="String" label="Title Alignment" datasource="left,center,right"/>
+            <property name="videoGalleryLink" type="String" label="Video Reference" description="Enter a supported YouTube, Brightcove or Vimeo link. For Vimeo, add a link from a channel, showcase or group. For YouTube, you can add a link from a user, channel, or playlist. For Wistia, Project Id."/>
+            <property name="numberOfVideos" type="Integer" label="Number of Videos" description="[Vimeo: 20 max] [YouTube: 50 max]"/>
+            <property name="order" type="String" label="YouTube Channel/Username Sort By" datasource="date,rating,relevance,title,videoCount,viewCount"/>
+            <property name="carouselMode" type="Boolean" label="Display as Carousel"/>
+            <property name="hideDescriptions" type="Boolean" label="Hide All Descriptions" description="Check this setting to hide all descriptions, even if the description fields are populated."/>
+            <property name="descriptionLineLength" type="Integer" label="Maximum Description Lines" description="The maximum number of lines of the description text to be displayed."/>
+            <property name="hasBorder" type="Boolean" label="Add Border to Videos"/>
+            <property name="videosPerRow" type="String" label="Videos Per Row" datasource="1,2,3,4,5,6" description="When viewed on a mobile device, the row count will be stacked vertically."/>
+            <property name="showSeeMoreButton" type="Boolean" label="Show See More Button"/>
+            <property name="moreText" type="String" label="'See More' Link Text"/>
+            <property name="apiKey" type="String" label="API Key" description="Required for YouTube,Brightcove,Wistia. Each organization using this component must obtain its own YouTube API v3 Key by registering. This process is simple and free. Please go here for more info: https://developers.google.com/youtube/registering_an_application"/>
+            <property name="variant" type="String" label="Variant" datasource="default, slds-card, featured" description="Sets the style of the component wrapper."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

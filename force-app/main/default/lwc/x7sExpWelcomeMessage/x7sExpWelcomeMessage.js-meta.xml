@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>Personalized and localized welcome user message</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Welcome Message</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="greeting" label="Default Greeting" type="String" description="Greeting text. Use '{0}' as the placeholder for the user's first name."/>
+            <property name="greetingMorning" label="Greeting (Morning)" description="Greeting the user see in the morning (12:01am - noon). Leave blank to use default greeting. Use '{0}' as the placeholder for the user's first name." type="String" />
+            <property name="greetingAfternoon" label="Greeting (Afternoon)" description="Greeting the user see in the afternoon (noon - 6pm). Leave blank to use default greeting. Use '{0}' as the placeholder for the user's first name." type="String" />
+            <property name="greetingEvening" label="Greeting (Evening)" description="Greeting the user see in the evening (6pm - midnight). Leave blank to use default greeting. Use '{0}' as the placeholder for the user's first name." type="String" />
+            <property name="useCommunityNickname" label="Use nickname" type="Boolean" description="Use Community Nickname if it exists." />
+            <property name="showAccountName" label="Display Account Name" type="Boolean" description="Displays the Account Name associated with the user in parenthesis after the user's name" />
+            <property name="guestGreeting" label="Guest Greeting Text" type="String" description="If no first name is available for the user, or the user is a guest user, this headline will display." />
+            <property name="welcomeText" label="Welcome Text" type="String" description="Text entered here will display on the second line"/>
+            <property name="customClass" label="CSS Class" type="String" description="Apply additional SLDS or custom CSS class" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,85 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.x7s-component__header {
+  padding-bottom: 0.5rem;
+}
+.x7s-component__header.x7s-component_header--shaded {
+  background: #efefef;
+}
+.x7s-component__header .x7s-component__icon {
+  padding-right: 0.5rem;
+}
+.x7s-component__header.slds-text-align_center {
+  flex-direction: column;
+}
+.x7s-component__header.slds-text-align_center .x7s-component__icon {
+  padding-bottom: 0.5rem;
+  padding-right: 0;
+}
+.x7s-component__title {
+  font-size: 1rem;
+  font-family: var(--lwc-fontFamilyHeader);
+  font-weight: bold;
+  line-height: 1.15;
+  color: var(--lwc-colorTextDefault);
+}
+.x7s-component__description {
+  color: var(--lwc-colorTextWeak);
+  line-height: 1.15;
+}
+.x7s-component__title + .x7s-component__description {
+  margin-top: 0.125rem;
+}
+.x7s-component__branding {
+  text-align: right;
+  border-top: 1px solid #f6f6f6;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+.x7s-component__branding a {
+  color: var(--lwc-colorTextDefault);
+}
+.x7s-component__branding a:hover,
+.x7s-component__branding a:focus {
+  color: var(--lwc-colorTextWeak);
+}
+.slds-card {
+  background: #fff;
+}
+.slds-card .x7s-component_header--shaded {
+  padding-bottom: 1rem;
+}
+.x7s-component_featured {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 2px -1px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.x7s-component_featured .x7s-component__body {
+  padding: 1rem;
+}
+.x7s-component_featured .x7s-component__header {
+  padding: 1rem 1rem 0 1rem;
+}
+.x7s-component_featured .x7s-component__header.x7s-component_header--shaded {
+  padding-bottom: 1rem;
+}
+.x7s-component_featured .x7s-component__branding {
+  background: #f6f6f6;
+  padding: 0.25rem 1rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+.x7s-component__featured-footer slot[name="footer"] {
+  display: block;
+  text-align: right;
+  padding: 0.75rem 1rem;
+}
+.x7s-component .x7s-component__body.x7s-component__body-no-padding {
+  margin: 0;
+  padding: 0;
+}

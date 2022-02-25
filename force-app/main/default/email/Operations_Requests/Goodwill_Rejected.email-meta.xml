@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Goodwill Rejection Email</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Letterhead_w_updated_IBM_logo</letterhead>
+    <name>Goodwill Rejected</name>
+    <style>freeForm</style>
+    <subject>Goodwill Request Rejected</subject>
+    <textOnly>Your request for Goodwill on {!GoodwillRequest__c.Project__c} has been rejected</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

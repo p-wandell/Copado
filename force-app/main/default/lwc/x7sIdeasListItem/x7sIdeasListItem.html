@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<template>
+	<c-x7s-shr-card title={idea.Title}
+	                record-id={idea.Id}
+					image-src={imageUrl}
+					topics={getTopic}
+					description={descriptionValue}
+					description-lines={descriptionLineCount}
+	                custom-class={customClass}
+	                image-height={imageHight}
+	                layout={layoutView}
+	                variant={viewtileVariant}
+	                hide-image={hide_image}
+	                use-avatar={useAvatar}
+					use-href-only={useHrefOnly}
+					href={alternateUrl}
+					aria-label={labels.labelAria}
+	>
+		<slot>
+			<!---Status-->
+			<template if:true={getStatus}>
+                <span class="textStyle">
+                    <lightning-formatted-text value={idea.Status}></lightning-formatted-text>
+                </span>
+			</template>
+
+			<div if:true={displayPostDateAuthor} class="slds-p-top_xx-small">
+				<c-x7s-shr-meta icon="utility:date_time"
+				                hide-count>
+					<lightning-relative-date-time value={fromNowDate}>
+
+					</lightning-relative-date-time>&nbsp;
+					{ss_idealabelby}&nbsp;
+					<a href={userProfileURL} title={ideaUserName}>
+						{ideaUserName}
+					</a>
+				</c-x7s-shr-meta>
+			</div>
+		</slot>
+
+		<div slot="footer">
+			<div style={footerStyle}>
+				<c-x7s-ideas-points points={idea.VoteTotal}></c-x7s-ideas-points>
+			</div>
+			<template if:true={allowVoting}>
+				<c-x7s-ideas-vote-buttons disable-down-voting={disableDownVote}
+										  idea-created-by={ideaCreatedBy}
+				                          user-has-voted={userHasVoted}
+										  user-vote-type={userVoteType}
+				                          onupvote={handle_VoteUp}
+										  ondownvote={handle_VoteDown}
+										  onremovevote={handleRemoveVote}
+				                          enable-vote={idea.enableVote}
+				                          idea-id={idea.Id}
+				                          reduce-button-labels="true"
+				                          total-vote-count={totalVoteCount}
+				                          current-vote-count={currentVoteCount}
+										  account-limit-reached-message={accountLimitReachedMessage}
+										  show-remove-vote={showRemoveVote}
+				></c-x7s-ideas-vote-buttons>
+			</template>
+		</div>
+	</c-x7s-shr-card>
+</template>

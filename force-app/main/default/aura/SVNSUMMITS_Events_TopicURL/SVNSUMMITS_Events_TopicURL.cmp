@@ -1,0 +1,15 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global">
+
+	<!--Attributes Declaration Section Start-->
+	<aura:attribute name="debugMode"     type="Boolean" default="false"/>
+	<aura:attribute name="topicName"     type="String"  access="global"/>
+	<aura:attribute name="topicId"       type="String"  access="global"/>
+	<aura:attribute name="topicNameToId" type="Map"     access="global"/>
+
+	<!--Handler Declaration Section Start-->
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<ui:outputURL click="c.navigateToTopic" value="" label="{!v.topicName}"/>
+
+</aura:component>

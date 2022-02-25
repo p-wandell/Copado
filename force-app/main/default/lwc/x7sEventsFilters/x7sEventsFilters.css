@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2020. 7summits Inc. All rights reserved.
+ */
+
+.x7s-events-filters{
+    position: relative;
+}
+@media screen and (max-width: 29.99em) {
+    .x7s-events-filters__item {
+        width: 100%;
+    }
+    .x7s-events-filters__item + .x7s-events-filters__item {
+        /* We don't need double padding when stacking the filters */
+        margin-top: var(--lwc-spacingSmall);
+    }
+}
+.topicDiv{
+    margin-top: 4.5px;
+}

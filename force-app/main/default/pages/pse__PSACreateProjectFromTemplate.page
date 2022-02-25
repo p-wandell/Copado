@@ -1,0 +1,123 @@
+<apex:page standardController="pse__Proj__c"  extensions="pse.CPFTController" tabStyle="Create_Project_From_Template__tab"  action="{!init}" recordSetVar="projects" sidebar="false" lightningStylesheets="true">
+    <style>		
+		.cpftLblBold{
+			font-weight:bold;
+		}
+		.cpftLblLeftAlign{
+			float: left;
+		}
+	    .waitingSearchDivOpacity {
+       		opacity: 0.90 !important;
+	    } 
+        .infoIcon { 
+            vertical-align: middle;
+            margin: 5px 10px 5px 10px !important; 
+        }
+        .info-block {    
+            border: 1px solid;
+            border-color: #dddbda;
+            border-radius: .25rem; 
+        }
+        .pageBlockTableScroll {display: block; overflow-x: auto; width: 93vw;}
+        .slds-vf-scope .errorMsg {display: block;}
+        .disableLink {pointer-events: none; color: inherit;}
+        .detailList th.headerRow + th.headerRow {border-left: 1px solid #dedede;}
+        .detailList th.headerRow {vertical-align : inherit;}
+    </style>
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:outputPanel layout="none" rendered="{!$User.UIThemeDisplayed=='Theme4d'}">
+			<style>
+				.infoIcon {
+					width: 23px !important;
+				    color: #706e6b;
+				    height: 23px !important;
+				}
+				.info-block {    
+			    	background-color: #f4f6f9;
+	    			padding: 0.75rem 1rem;
+				    border: none;
+		   		 }
+			</style>
+		</apex:outputPanel>
+    
+
+    <script>
+    _FocusTab = '';
+    function validate() {
+        var ifSubmitForm = false;
+        if(_isDateOffSetChanged || _isWorkCalendarChanged){
+            ifSubmitForm = confirm("{!JSENCODE($Label.cpft_project_template_apply_offset_set_date_message)}");
+            // if use confirm the message response show wait screen.
+            if (ifSubmitForm) {
+                wait(true);
+            }			
+            return ifSubmitForm;
+		}
+		else {
+            wait(true);
+        }
+    }
+		
+		// function is used to check if offset pop window need's to be populated and set flag _isDateOffSetChanged according
+		function validateIfPopupNeedToShow(clientCheck, serverCheck) {
+			serverCheck = serverCheck === 'true' || serverCheck === true ? true : false;
+			_isDateOffsetApplied = _isDateOffsetApplied === 'true' || _isDateOffsetApplied === true ? true : false;
+			if (_isDateOffsetApplied === serverCheck) {
+				_isDateOffSetChanged = true;
+			} else {
+				_isDateOffSetChanged = false;
+				_isWorkCalendarChanged = false;
+				_isDateOffsetApplied = serverCheck;
+			}
+		}
+	</script>
+    <c:CPFTProjectPicker nextView="{!nextView}" cancelView="{!cancelView}" rendered="{!NOT(isProjectTemplateSelected)}"  /> 
+    
+    <apex:outputPanel rendered="{!isProjectTemplateSelected}">
+		<apex:sectionHeader title="{!$Label.pse__create_project_page_title}" help="{!$Page.pse__ProjectHelp}" rendered="{!NOT(isCreateProjectFromTemplateCallerIsProject)}"/>
+		<apex:sectionHeader title="{!$Label.pse__common_label_copy_from_template}" help="{!$Page.pse__ProjectHelp}" rendered="{!isCreateProjectFromTemplateCallerIsProject}"/>
+		
+		<apex:outputPanel layout="block" styleClass="info-block" >
+		    <table>
+		        <tr>
+		            <td><apex:image value="/s.gif" styleClass="infoIcon"/></td>
+					<td>
+						<apex:outputText value="{!$Label.pse__create_project_from_template_message}" rendered="{!NOT(isCreateProjectFromTemplateCallerIsProject)}"/>
+						<apex:outputText value="{!$Label.pse__copy_from_temp_heading_text}"   rendered="{!isCreateProjectFromTemplateCallerIsProject}"/>
+					</td>
+		        </tr>
+		    </table>
+		</apex:outputPanel>
+        <p></p>
+    	
+    	<apex:pageMessages id="pageMessages"/>
+  		<!--For PSA-26638: Blocking Enter Key -->
+		<apex:form rendered="{!isEverythingOk}" id="cpftForm" onkeypress="blockEnterKey(event)">
+			<c:enterKeyBlocker />
+  		 <apex:actionRegion >
+            <apex:actionFunction name="applyOffsetProjectTask" action="{!applyTopLevelDateOffset}"
+                rerender="pageMessages, projectDetailSection, cpfTTabPanel" status="counterStatus">
+			</apex:actionFunction>
+  		  	<apex:actionFunction name="jsApplyDateOffset" action="{!applyDateOffset}" 
+	  			rerender="pageMessages, projectDetailSection, cpfTTabPanel" status="counterStatus" oncomplete="validateIfPopupNeedToShow(_isDateOffSetChanged, '{!formBean.isOffsetApplied}');">
+				<apex:param name="projectStartDate" value="" assignTo="{!projectStartDate}"/>
+			</apex:actionFunction>
+			<apex:actionStatus onstart="wait(true);" onstop="wait(false);" id="counterStatus"/>
+    		<apex:pageBlock title="{!$Label.pse__create_project_details} ({!$Label.pse__cpft_project_copied_from} {!formBean.templateProjectName})" mode="edit" id="pageBlock">
+    			<apex:pageBlockButtons location="top" styleClass="cpftPageBlockButtons">
+					<apex:commandButton value="{!$Label.pse__create_project_page_title}" onclick="return validate();" action="{!onSaveClick}" rendered="{!NOT(isCreateProjectFromTemplateCallerIsProject)}"/>
+                	<apex:commandButton value="{!$Label.pse__common_label_copy}" action="{!onSaveClick}" rendered="{!isCreateProjectFromTemplateCallerIsProject}"/>
+    				<apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!onCancelClick}" immediate="true" />
+		        </apex:pageBlockButtons>
+		        <c:CPFTProjectDetail projectDetail="{!formBean}" isCFT="{!isCreateProjectFromTemplateCallerIsProject}"/>
+	        </apex:pageBlock>
+	        <!--  Tab instance for the CPFT for showing different business records. -->
+	        <apex:pageBlock >
+	        	<!-- Added extra pageBlockSection to fix this uncaught referenceError: twistSection is not defined. -->
+	        	<apex:pageBlockSection rendered="false"/>
+           		<c:CPFTRelatedRecordTab cpftTabInstance="{!formBean}"/>
+            </apex:pageBlock>
+           </apex:actionRegion> 
+        </apex:form>
+    </apex:outputPanel>
+</apex:page>

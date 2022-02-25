@@ -1,0 +1,644 @@
+<apex:page controller="pse.ProjectBillingController" lightningStylesheets="true">
+
+<style type="text/css">
+    div#wait { width: 100%; height: 100% }
+    div#loading { width: 100%; height: 100%; position: fixed; top: 0px;}
+    .fixed-layout { position: fixed; }
+</style>
+
+<apex:outputPanel rendered="{!$User.UIThemeDisplayed!='Theme3'}" layout="none">
+	<style>
+		.btn-left-margin { margin-left: .5rem; }
+    	.lbl-left-margin { margin-left: .75rem; }
+		.pagination-col-spacing { padding-right: .5rem; }  
+		.loadingLayout { position: fixed!important; }
+		
+		.rich-tabpanel-content {
+	        border-bottom-width: inherit !important;
+	        border-bottom-style: inherit !important;
+	        border-left-width: inherit !important;
+	        border-left-style: inherit !important;
+	        border-right-width: inherit !important;
+	        border-right-style: inherit !important;
+	        background-color: inherit !important;
+	        font-size: inherit !important;
+	        font-family: inherit !important;
+	    }
+	    .rich-tab-active {
+	        background-color: inherit !important;
+	        background-image: inherit !important;
+	        border-width: inherit !important;
+	        border-style: inherit !important;
+	        padding: inherit !important;
+	        text-align: inherit !important;
+	    }
+	    .rich-tab-inactive {
+	        background-color: inherit !important;
+	        background-image: inherit !important;
+	        border-width: inherit !important;
+	        border-style: inherit !important;    
+	    }
+	    .rich-tab-header {
+	        font-size: inherit !important;
+	        font-family: inherit !important;
+	        padding: inherit !important;
+	    }
+	    .rich-tabhdr-side-cell {
+	        border-top-width: inherit !important;
+	        border-top-style: inherit !important;
+	    }
+	    .rich-tabhdr-cell-disabled, .rich-tabhdr-cell-inactive {
+	        padding-top: inherit !important;
+	    }
+	</style>  
+</apex:outputPanel>
+
+<script type="text/javascript">
+
+function setVisible(name, visible) {
+  var e = document.getElementById(name);
+  if (e != null) {
+    if (visible) {
+      e.setAttribute("style", "display: block");
+      e.style.cssText = "display: block";
+    } else {
+      e.setAttribute("style", "display: none");
+      e.style.cssText = "display: none";
+    }
+  }
+}
+
+function wait(val) {
+  setVisible('loading', val);
+  setVisible('wait', val);
+}
+
+//Check If All The Checkboxes Are Checked To Set Select All Checkbox To True
+function submitValue(checkboxIdentifier, allCheckboxIdentifier){
+    var checkBoxCount = document.querySelectorAll("."+checkboxIdentifier+"[type='checkbox']").length;
+    var checked = document.querySelectorAll("."+checkboxIdentifier+"[type='checkbox']:checked");
+    var allCheckBox = document.querySelectorAll("."+allCheckboxIdentifier+"[type='checkbox']");
+
+    if (allCheckBox.length === 1) {
+      allCheckBox[0].checked = (checked.length === checkBoxCount);
+    }   
+}
+
+//Method To Turn ON or OFF Select All Checkbox When Uber Select/Deselect All Is Clicked 
+//OR Specific Objects Select/Deselect All Is Clicked
+function selectDeselectAllRecordBox(allCheckboxIdentifier, isChecked){
+  var allCheckBox = document.querySelectorAll("."+allCheckboxIdentifier+"[type='checkbox']");
+  
+  if (allCheckBox.length !==0) {
+    for(var i=0; i<allCheckBox.length; i++){
+      allCheckBox[i].checked = isChecked;
+    }
+  }
+}
+
+function uberSelectDeselectAllRecordBox(isChecked){
+  var allCheckBox = document.querySelectorAll(".selectCheckbox[type='checkbox']");
+  
+  if (allCheckBox.length !==0) {
+    for(var i=0; i<allCheckBox.length; i++){
+      allCheckBox[i].checked = isChecked;
+    }
+  }
+}
+
+function checkAllTimecardOnPage(enable){
+  if(enable.checked){
+    tPageSelect();
+  }
+  else{
+    tPageDeSelect();
+  }
+}
+
+function checkAllExpenseOnPage(enable){
+  if(enable.checked){
+    ePageSelect();
+  }
+  else{
+    ePageDeSelect();
+  }
+}
+
+function checkAllMilestoneOnPage(enable){
+  if(enable.checked){
+    mPageSelect();
+  }
+  else{
+    mPageDeSelect();
+  }
+}
+
+function checkAllMiscOnPage(enable){
+  if(enable.checked){
+    maPageSelect();
+  }
+  else{
+    maPageDeSelect();
+  }
+}
+
+function checkAllBudgetsOnPage(enable){
+  if(enable.checked){
+    bPageSelect();
+  }
+  else{
+    bPageDeSelect();
+  }
+}
+
+//Added to confirm the billing generation
+function pregenerate() {
+	var configForConfirm = {!CONFIRM_BILLING_GENERATION};
+	
+	if (!configForConfirm) 
+    {
+    	//Adding wait component to prevent user from clicking generate button twice
+    	wait(true);
+        return true;
+    } 
+    else 
+    {
+    	var project = '{!JSENCODE(project.Name)}';
+		var account = '{!JSENCODE(account.Name)}';
+		var confirmMsg = '{!JSENCODE($Label.Billing_events_wish_to_generate_Billing_Events_message)}' + ' ';
+		
+		if (account != null && account.trim() != '') 
+		{
+			confirmMsg += "\"" + account.trim() + "\" " + '{!JSENCODE($Label.common_label_account)}';
+            if (confirm(confirmMsg + '?')) 
+            {
+                wait(true);
+                return true;
+            }
+        } 
+        else if (project != null && project.trim() != '') 
+        {
+            confirmMsg += "\"" + project.trim() + "\" " + '{!JSENCODE($Label.common_label_project)}';
+            if (confirm(confirmMsg + '?')) 
+            {
+                wait(true);
+                return true;
+            }
+        }
+    	
+    	return false;
+    }
+}
+
+</script>
+<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+
+<div id="wait" class="waitingSearchDiv waitingSearchDivOpacity loadingLayout {!IF(project.Name=null,'fixed-layout','')}" style="display: none"></div>
+<div id="loading" class="waitingSearchDiv" style="display: none">
+  <div id="waitingHolder" class="waitingHolder">
+    <img class="waitingImage" src="/img/loading.gif"/>
+    <span class="waitingDescription">{!$Label.common_message_processing_wait}</span>
+  </div>
+</div>
+
+  <apex:sectionHeader title="{!IF(project.Name=null,$Label.pse__billing_by_account,$Label.pse__billing_by_project)}" help="{!$Page.pse__ProjectBillingHelp}"/>
+	<apex:form id="itemForm">
+	   <apex:pageMessages id="messages"/>
+	   <apex:pageBlock id="itemPage">
+	      <apex:pageBlockSection columns="1">
+	         <apex:outputField value="{!project.Name}" rendered="{!project.Name!=null}"/>
+	         <apex:outputField value="{!project.CurrencyIsoCode}"/>
+	         <apex:outputField value="{!project.pse__Account__c}"/>
+	      </apex:pageBlockSection>
+	      <apex:pageBlockButtons location="bottom">
+	         <apex:commandButton action="{!selectAllItems}"   value="{!selectAllLabel}" onclick="uberSelectDeselectAllRecordBox(true)"   reRender="ProjectBillingObjectsTabPanel"/>
+	         <apex:commandButton action="{!deselectAllItems}" value="{!deselectAllLabel}" onclick="uberSelectDeselectAllRecordBox(false)" reRender="ProjectBillingObjectsTabPanel"/>
+	         <apex:outputPanel id="filterToggle" styleClass="btn-left-margin">
+	            <apex:commandButton value="{!hideFilterLabel}" action="{!changeFilterDisplay}" onclick="wait(true);setVisible('filterSectionBlock', false);" oncomplete="wait(false);" rendered="{!displayFilters}" reRender="filterToggle"/>
+	            <apex:commandButton value="{!showFilterLabel}" action="{!changeFilterDisplay}" onclick="wait(true);setVisible('filterSectionBlock', true);" oncomplete="wait(false);" rendered="{!NOT(displayFilters)}" reRender="filterToggle"/>
+	         </apex:outputPanel>
+	         <apex:commandButton value="{!cancelLabel}" action="{!cancel}"/>
+	         <apex:commandButton value="{!$Label.pse__generate_billing_event}" action="{!generate}" disabled="{!!allowGenerate}" onclick="return pregenerate();"/>
+	         <apex:inputField value="{!project.pse__Add_BEIs_To_Existing_Batches__c}" rendered="{!showAddBEIsToExistingBatchesCheckbox_Project}"/>
+	         <apex:inputField value="{!account.pse__Add_BEIs_To_Existing_Batches__c}" rendered="{!showAddBEIsToExistingBatchesCheckbox_Account}"/>
+	         <apex:outputLabel value="{!$Label.pse__add_beis_to_existing_billing_events}" />
+	      </apex:pageBlockButtons>
+	   </apex:pageBlock>
+	   <apex:pageBlock >
+	      <div id="filterSectionBlock">
+	         <apex:pageBlockSection id="filterSection" title="{!$Label.pse__common_label_filter_items}" columns="1">
+	            <script>twistSection(document.getElementById('img_{!$Component.filterSection}'));</script>
+	            <apex:pageBlockSection id="searchCriteria" columns="2">
+	               <apex:inputField id="resourceLookup" value="{!filterResource.pse__Resource__c}" label="{!$Label.pse__common_label_resource}" required="false"/>
+	               <div></div>
+	               <apex:inputField value="{!filterStartDate.pse__Date__c}" label="{!$Label.pse__common_label_start_date}" required="false"/>
+	               <apex:inputField value="{!filterEndDate.pse__Date__c}" label="{!$Label.pse__common_label_end_date}" required="false"/>
+	            </apex:pageBlockSection>
+	            <apex:pageBlockSection id="timecardFilters" title="{!$Label.pse__billing_timecard_filters}" rendered="{!includeTimecards && hasFilterT}" columns="2">
+	               <apex:repeat value="{!filterFieldsT}" var="f">
+	                  <apex:selectList value="{!filterTypeT[f.fieldPath]}" size="1" label="{!f.Label}">
+	                     <apex:selectOptions value="{!IF(f.Type='boolean' || f.Type='reference',filterTypes2,filterTypes)}" />
+	                  </apex:selectList>
+	                  <apex:inputField value="{!filterT[f.fieldPath]}" label=" " required="false"/>
+	               </apex:repeat>
+	            </apex:pageBlockSection>
+	            <apex:pageBlockSection id="expenseFilters" title="{!$Label.pse__billing_expense_filters}" columns="2" rendered="{!includeExpenses && hasFilterE}">
+	               <apex:repeat value="{!filterFieldsE}" var="f">
+	                  <apex:selectList value="{!filterTypeE[f.fieldPath]}" size="1" label="{!f.Label}">
+	                     <apex:selectOptions value="{!IF(f.Type='boolean' || f.Type='reference',filterTypes2,filterTypes)}" />
+	                  </apex:selectList>
+	                  <apex:inputField value="{!filterE[f.fieldPath]}" label=" " required="false"/>
+	               </apex:repeat>
+	            </apex:pageBlockSection>
+	            <apex:pageBlockSection id="milestoneFilters" title="{!$Label.pse__billing_milestone_filters}" columns="2" rendered="{!includeMilestones && hasFilterM}">
+	               <apex:repeat value="{!filterFieldsM}" var="f">
+	                  <apex:selectList value="{!filterTypeM[f.fieldPath]}" size="1" label="{!f.Label}">
+	                     <apex:selectOptions value="{!IF(f.Type='boolean' || f.Type='reference',filterTypes2,filterTypes)}" />
+	                  </apex:selectList>
+	                  <apex:inputField value="{!filterM[f.fieldPath]}" label=" " required="false"/>
+	               </apex:repeat>
+	            </apex:pageBlockSection>
+	            <apex:pageBlockSection id="miscadjFilters" title="{!$Label.pse__billing_misc_adj_filters}" columns="2" rendered="{!includeMiscAdj && hasFilterA}">
+	               <apex:repeat value="{!filterFieldsA}" var="f">
+	                  <apex:selectList value="{!filterTypeA[f.fieldPath]}" size="1" label="{!f.Label}">
+	                     <apex:selectOptions value="{!IF(f.Type='boolean' || f.Type='reference',filterTypes2,filterTypes)}" />
+	                  </apex:selectList>
+	                  <apex:inputField value="{!filterA[f.fieldPath]}" label=" " required="false"/>
+	               </apex:repeat>
+	            </apex:pageBlockSection>
+	            <apex:pageBlockSection id="budgetFilters" title="{!$Label.pse__billing_budget_filters}" columns="2" rendered="{!includeBudgets && hasFilterB}">
+	               <apex:repeat value="{!filterFieldsB}" var="f">
+	                  <apex:selectList value="{!filterTypeB[f.fieldPath]}" size="1" label="{!f.Label}">
+	                     <apex:selectOptions value="{!IF(f.Type='boolean' || f.Type='reference',filterTypes2,filterTypes)}" />
+	                  </apex:selectList>
+	                  <apex:inputField value="{!filterB[f.fieldPath]}" label=" " required="false"/>
+	               </apex:repeat>
+	            </apex:pageBlockSection>
+	            <apex:pageBlockSection columns="2">
+	               <apex:pageBlockSectionItem dataStyle="text-align:right">
+	                  <apex:commandButton value="{!$Label.pse__common_label_clear_filters}" action="{!clearFilter}" reRender="searchCriteria,timecardFilters,expenseFilters,milestoneFilters,miscadjFilters,budgetFilters,messages,ProjectBillingObjectsTabPanel" onclick="wait(true);" oncomplete="wait(false);"/>
+	               </apex:pageBlockSectionItem>
+	               <apex:pageBlockSectionItem dataStyle="text-align:left">
+	                  <apex:commandButton value="{!$Label.pse__common_label_apply_filters}" action="{!filter}" reRender="ProjectBillingObjectsTabPanel" onclick="wait(true);" oncomplete="wait(false);"/>
+	               </apex:pageBlockSectionItem>
+	            </apex:pageBlockSection>
+	         </apex:pageBlockSection>
+	      </div>
+	   </apex:pageBlock>
+	   <!-- Tab panel -->
+	   <apex:tabPanel switchType="client" selectedTab="name2" id="ProjectBillingObjectsTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab">
+	      <!---Timecard Tab-->
+	      <apex:tab label="{!$Label.pse__common_label_timecards} ({!timecardCount})" name="Timecard" id="tabTimecard" rendered="{!renderTimecards}">
+	         <apex:actionFunction name="updateSelected" action="{!updateSelected}" rerender="tSelectedCount,tSummary" oncomplete="wait(false);">
+	            <apex:param id="proj_id" name="proj_id" assignTo="{!SelectedId}"    value=""/>
+	            <apex:param id="state"   name="state" assignTo="{!SelectedState}" value=""/>
+	            <apex:param id="objectType"   name="type" assignTo="{!objectType}" value=""/>
+	         </apex:actionFunction>
+	         <apex:actionFunction name="tPageSelect" action="{!selectAllTimecardRecordsOnPage}" rerender="tSelectedCount,tSummary,tTable" oncomplete="wait(false);" status="actStatusTimecardId"/>
+	         <apex:actionFunction name="tPageDeSelect" action="{!deselectAllTimecardRecordsOnPage}" rerender="tSelectedCount,tSummary,tTable" oncomplete="wait(false);" status="actStatusTimecardId"/>
+	         <apex:pageBlock id="tform">
+	            <b>
+	               <apex:outputLabel id="tSelectedCount" value="{!timecardSelectedLabel}" />
+	            </b>
+	            <br/>
+	            <apex:panelGrid columns="4">
+	               <apex:commandLink action="{!selectAllTimecard}" value="{!$Label.pse__billing_label_select_all_timecards}" onclick="selectDeselectAllRecordBox('timecardAllCheckbox', true)" reRender="tform,tTable" status="actStatusTimecardId"/>
+	               <apex:outputLabel value="|" styleClass="lbl-left-margin"/>
+	               <apex:commandLink action="{!deselectAllTimecard}" value="{!$Label.pse__billing_label_deselect_all_timecards}" onclick="selectDeselectAllRecordBox('timecardAllCheckbox', false)" reRender="tform,tTable" status="actStatusTimecardId"/>
+	               <apex:actionStatus id="actStatusTimecardId" >
+	                  <apex:facet name="start" >
+	                     <img src="/img/loading.gif" />                    
+	                  </apex:facet>
+	               </apex:actionStatus>
+	            </apex:panelGrid>
+	            <apex:outputText rendered="{!warnT!=null}">{!MsgT}</apex:outputText>
+	            <br/>
+	            <apex:outputPanel id="tSummary" title="{!$Label.pse__billing_label_summary_totals}">
+	               <b>
+	                  <apex:outputLabel value="{!$Label.pse__billing_label_summary_totals}" />
+	               </b>
+	               <br/> <br/>
+	               <apex:outputLabel value="{!SUBSTITUTE($Label.pse__billing_label_total_billable_amount,'{0}',timecardTotalBillableAmountInFormat)}"/>
+	               <br/>            
+	               <apex:outputLabel value="{!SUBSTITUTE($Label.pse__billing_label_total_billable_hours,'{0}',timecardTotalBillableHoursInFormat)}"/>
+	               <br/>
+	            </apex:outputPanel>
+	            <br/>
+	            <apex:pageBlockTable value="{!timecardResultSet}" id="tTable" var="tc">
+	               <apex:column >
+	                  <apex:facet name="header">
+	                     <apex:inputCheckbox id="includedAllCBox" styleClass="selectCheckbox timecardAllCheckbox" onclick="checkAllTimecardOnPage(this)"/>
+	                  </apex:facet>
+	                  <apex:inputCheckbox id="includedCBox" styleClass="selectCheckbox timecardCheckbox" value="{!tc.selected}" onclick="updateSelected('{!tc.tc.id}',this.checked,'timecard'); submitValue('timecardCheckbox','timecardAllCheckbox');"/>
+	               </apex:column>
+	               <apex:column headerValue="{!$Label.pse__common_label_name}">
+	                  <a href="{!URLFOR($Action.pse__Timecard__c.View, tc.tc.Id)}" target="_blank">{!tc.tc.Name}</a>
+	               </apex:column>
+	               <apex:column value="{!tc.tc.pse__Project__c}" rendered="{!showProjColumn}"/>
+	               <apex:column headerValue="{!$Label.pse__common_label_resource}" value="{!tc.tc.Resource__r.Name}" />
+	               <apex:column value="{!tc.tc.pse__Total_Billable_Amount__c}"              rendered="{!NOT(hasDisplayT)}"/>
+	               <apex:column value="{!tc.tc.pse__Total_Hours__c}"                        rendered="{!NOT(hasDisplayT)}"/>
+	               <apex:column value="{!tc.tc.pse__Total_Days_Worked__c}"                  rendered="{!NOT(hasDisplayT)}"/>
+	               <apex:column value="{!tc.tc.Timecard_Header__r.pse__Bill_Rate__c}"       rendered="{!NOT(hasDisplayT)}"/>
+	               <apex:column value="{!tc.tc.Timecard_Header__r.pse__Daily_Bill_Rate__c}" rendered="{!NOT(hasDisplayT)}"/>
+	               <apex:column value="{!tc.tc.pse__Start_Date__c}"                         rendered="{!NOT(hasDisplayT)}"/>
+	               <apex:column value="{!tc.tc.pse__End_Date__c}"                           rendered="{!NOT(hasDisplayT)}"/>
+	               <apex:repeat value="{!displayFieldsT}" var="f">
+	                  <apex:column value="{!tc.tc[f.fieldPath]}" headerValue="{!f.Label}"/>
+	               </apex:repeat>
+	            </apex:pageBlockTable>
+	            <apex:panelGrid columns="3" columnClasses="pagination-col-spacing">
+	               <apex:commandButton action="{!tpage.previous}" disabled="{!!tpage.hasPrevious}" oncomplete="submitValue('timecardCheckbox','timecardAllCheckbox');" value="<" rerender="tform" styleClass="btn"/>
+	               <apex:commandButton action="{!tpage.next}" disabled="{!!tpage.hasNext}" value = ">" oncomplete="submitValue('timecardCheckbox','timecardAllCheckbox');" reRender="tform" styleClass='btn'/>
+	               <apex:outputLabel value="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__pagination_message_page_status),'{0}',TEXT(tPage.pageNumber)),'{1}', Text(tPage.totalPage))}"/>
+	            </apex:panelGrid>
+	         </apex:pageBlock>
+	      </apex:tab>
+	      <!---Expenses Tab-->
+	      <apex:tab label="{!$Label.pse__common_label_expenses} ({!expenseCount})" name="Expenses" id="tabExp" rendered="{!renderExpenses}">
+	         <apex:actionFunction name="updateSelectedExp" action="{!updateSelected}" rerender="eSelectedCount, eSummary" oncomplete="wait(false);">
+	            <apex:param id="proj_id_exp" name="proj_id" assignTo="{!SelectedId}"    value=""/>
+	            <apex:param id="state_exp"   name="state" assignTo="{!SelectedState}" value=""/>
+	            <apex:param id="objectType_exp"   name="type" assignTo="{!objectType}" value=""/>
+	         </apex:actionFunction>
+	         <apex:actionFunction name="ePageSelect" action="{!selectAllExpenseRecordsOnPage}" rerender="eSelectedCount,eSummary,eTable" status="actStatusExpenseId"/>
+	         <apex:actionFunction name="ePageDeSelect" action="{!deselectAllExpenseRecordsOnPage}" rerender="eSelectedCount,eSummary,eTable,eForm" status="actStatusExpenseId"/>
+	         <apex:pageBlock id="eform">
+	            <b>
+	               <apex:outputLabel id="eSelectedCount" value="{!expenseSelectedLabel}" />
+	            </b>
+	            <br/>
+	            <apex:panelGrid columns="4" >
+	               <apex:commandLink action="{!selectAllExpense}" value="{!$Label.pse__billing_label_select_all_expenses}" onclick="selectDeselectAllRecordBox('expenseAllCheckbox',true)" rerender="eform" status="actStatusExpenseId"/>
+	               <apex:outputLabel value="|" styleClass="lbl-left-margin"/>
+	               <apex:commandLink action="{!deselectAllExpense}" value="{!$Label.pse__billing_label_deselect_all_expenses}" onclick="selectDeselectAllRecordBox('expenseAllCheckbox',false)" reRender="eform" status="actStatusExpenseId"/>
+	               <apex:actionStatus id="actStatusExpenseId" >
+	                  <apex:facet name="start" >
+	                     <img src="/img/loading.gif" />                    
+	                  </apex:facet>
+	               </apex:actionStatus>
+	            </apex:panelGrid>
+	            <apex:outputText rendered="{!warnE!=null}">{!MsgE}</apex:outputText>
+	            <br/>
+	            <apex:outputPanel id="eSummary" title="{!$Label.pse__billing_label_summary_totals}">
+	               <b>
+	                  <apex:outputLabel value="{!$Label.pse__billing_label_summary_totals}" />
+	               </b>
+	               <br/> <br/>
+	               <apex:outputLabel value="{!SUBSTITUTE($Label.pse__billing_label_total_billable_amount,'{0}',expenseTotalBillableAmountInFormat)}"/>
+	               <br/>
+	            </apex:outputPanel>
+	            <br/>
+	            <apex:pageBlockTable id="eTable" value="{!ExpenseResultSet}" var="exp">
+	               <apex:column >
+	                  <apex:facet name="header">
+	                     <apex:inputCheckbox id="includedAllExpBox" styleClass="selectCheckbox expenseAllCheckbox" onclick="checkAllExpenseOnPage(this)"/>
+	                  </apex:facet>
+	                  <apex:inputCheckbox id="includedExpBox" styleClass="selectCheckbox expenseCheckbox" value="{!exp.selected}" onclick="updateSelectedExp('{!exp.exp.id}',this.checked,'expense');submitValue('expenseCheckbox','expenseAllCheckbox');" />
+	               </apex:column>
+	               <apex:column headerValue="{!$Label.pse__common_label_name}">
+	                  <a href="{!URLFOR($Action.Expense__c.View, exp.exp.Id)}" target="_blank" >{!exp.exp.Name}</a>
+	               </apex:column>
+	               <apex:column value="{!exp.exp.pse__Project__c}" rendered="{!showProjColumn}"/>
+	               <apex:column headerValue="{!$Label.pse__common_label_resource}" value="{!exp.exp.Resource__r.Name}" />
+	               <apex:column value="{!exp.exp.pse__Type__c}"             rendered="{!NOT(hasDisplayE)}"/>
+	               <apex:column value="{!exp.exp.pse__Expense_Date__c}"     rendered="{!NOT(hasDisplayE)}"/>
+	               <apex:column value="{!exp.exp.pse__Billing_Currency__c}" rendered="{!NOT(hasDisplayE)}"/>
+	               <apex:column value="{!exp.exp.pse__Billing_Amount__c}"   rendered="{!NOT(hasDisplayE)}"/>
+	               <apex:repeat value="{!displayFieldsE}" var="f">
+	                  <apex:column value="{!exp.exp[f.fieldPath]}" headerValue="{!f.Label}"/>
+	               </apex:repeat>
+	            </apex:pageBlockTable>
+	            <apex:panelGrid columns="3" columnClasses="pagination-col-spacing">
+	               <apex:commandButton action="{!exppage.previous}" disabled="{!!exppage.hasPrevious}" value="<" oncomplete="submitValue('expenseCheckbox','expenseAllCheckbox');" rerender="eform" styleClass="btn"/>
+	               <apex:commandButton action="{!exppage.next}" disabled="{!!exppage.hasNext}" value=">" oncomplete="submitValue('expenseCheckbox','expenseAllCheckbox');" rerender="eform" styleClass='btn'/>
+	               <apex:outputLabel value="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__pagination_message_page_status),'{0}',TEXT(expPage.pageNumber)),'{1}', Text(expPage.totalPage))}"/>
+	            </apex:panelGrid>
+	         </apex:pageBlock>
+	      </apex:tab>
+	      <!---Milestone Tab-->
+	      <apex:tab label="{!$Label.pse__common_label_milestones} ({!milestoneCount})" name="Milestones" id="tabMilestone" rendered="{!renderMilestones}">
+	         <apex:actionFunction name="updateSelectedMile" action="{!updateSelected}" rerender="mSelectedCount, mSummary" oncomplete="wait(false);">
+	            <apex:param id="proj_id_mile" name="proj_id" assignTo="{!SelectedId}"    value=""/>
+	            <apex:param id="state_mile"   name="state" assignTo="{!SelectedState}" value=""/>
+	            <apex:param id="objectType_mile"   name="type" assignTo="{!objectType}" value=""/>
+	         </apex:actionFunction>
+	         <apex:actionFunction name="mPageSelect" action="{!selectAllMilestoneRecordsOnPage}" rerender="mSelectedCount,mSummary,mTable" status="actStatusMilestoneId"/>
+	         <apex:actionFunction name="mPageDeSelect" action="{!deselectAllMilestoneRecordsOnPage}" rerender="mSelectedCount,mSummary,mTable,mForm" status="actStatusMilestoneId"/>
+	         <apex:pageBlock id="mform">
+	            <b>
+	               <apex:outputLabel id="mSelectedCount" value="{!milestoneSelectedLabel}" />
+	            </b>
+	            <br/>
+	            <apex:panelGrid columns="4" >
+	               <apex:commandLink action="{!selectAllMilestone}" value="{!$Label.pse__billing_label_select_all_milestones}" onclick="selectDeselectAllRecordBox('milestoneAllCheckbox', true)" rerender="mform" status="actStatusMilestoneId"/>
+	               <apex:outputLabel value="|" styleClass="lbl-left-margin" />
+	               <apex:commandLink action="{!deselectAllMilestone}" value="{!$Label.pse__billing_label_deselect_all_milestones}" onclick="selectDeselectAllRecordBox('milestoneAllCheckbox', false)" reRender="mform" status="actStatusMilestoneId"/>
+	               <apex:actionStatus id="actStatusMilestoneId" >
+	                  <apex:facet name="start" >
+	                     <img src="/img/loading.gif" />                    
+	                  </apex:facet>
+	               </apex:actionStatus>
+	            </apex:panelGrid>
+	            <apex:outputText rendered="{!warnM!=null}">{!MsgM}</apex:outputText>
+	            <br/>
+	            <apex:outputPanel id="mSummary" title="{!$Label.pse__billing_label_summary_totals}">
+	               <b>
+	                  <apex:outputLabel value="{!$Label.pse__billing_label_summary_totals}" />
+	               </b>
+	               <br/> <br/>
+	               <apex:outputLabel value="{!SUBSTITUTE($Label.pse__billing_label_total_billable_amount,'{0}',milestoneTotalBillableAmountInFormat)}"/>
+	               <br/>
+	            </apex:outputPanel>
+	            <br/>
+	            <apex:pageBlockTable value="{!milestoneResultSet}" id="mTable" var="ms">
+	               <apex:column >
+	                  <apex:facet name="header">
+	                     <apex:inputCheckbox id="includedAllMBox" styleClass="selectCheckbox milestoneAllCheckbox" onclick="checkAllMilestoneOnPage(this)"/>
+	                  </apex:facet>
+	                  <apex:inputCheckbox id="includedMBox" styleClass="selectCheckbox milestoneCheckbox" value="{!ms.selected}" onclick="updateSelectedMile('{!ms.ms.id}',this.checked,'milestone');submitValue('milestoneCheckbox','milestoneAllCheckbox');"/>
+	               </apex:column>
+	               <apex:column headerValue="{!$Label.pse__common_label_name}">
+	                  <a href="{!URLFOR($Action.pse__Milestone__c.View, ms.ms.Id)}" target="_blank">{!ms.ms.Name}</a>
+	               </apex:column>
+	               <apex:column value="{!ms.ms.pse__Project__c}" rendered="{!showProjColumn}"/>
+	               <apex:column value="{!ms.ms.pse__Actual_Date__c}"      rendered="{!NOT(hasDisplayM)}"/>
+	               <apex:column value="{!ms.ms.pse__Description__c}"      rendered="{!NOT(hasDisplayM)}"/>
+	               <apex:column value="{!ms.ms.pse__Milestone_Amount__c}" rendered="{!NOT(hasDisplayM)}"/>
+	               <apex:repeat value="{!displayFieldsM}" var="f">
+	                  <apex:column value="{!ms.ms[f.fieldPath]}" headerValue="{!f.Label}"/>
+	               </apex:repeat>
+	            </apex:pageBlockTable>
+	            <apex:panelGrid columns="3" columnClasses="pagination-col-spacing">
+	               <apex:commandButton action="{!mpage.previous}" disabled="{!!mpage.hasPrevious}" value="<" oncomplete="submitValue('milestoneCheckbox','milestoneAllCheckbox');" reRender="mform" styleClass="btn"/>
+	               <apex:commandButton action="{!mpage.next}" disabled="{!!mpage.hasNext}" value = ">" oncomplete="submitValue('milestoneCheckbox','milestoneAllCheckbox');" reRender="mform" styleClass='btn'/>
+	               <apex:outputLabel value="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__pagination_message_page_status),'{0}',TEXT(mPage.pageNumber)),'{1}', Text(mPage.totalPage))}"/>
+	            </apex:panelGrid>
+	         </apex:pageBlock>
+	      </apex:tab>
+	      <!---Misc Adjustments Tab-->
+	      <apex:tab label="{!$Label.pse__common_label_miscellaneous_adjustments} ({!miscCount})" name="MiscellaneousAdjustments" id="tabMA" rendered="{!renderMiscAdj}">
+	         <apex:actionFunction name="updateSelectedMA" action="{!updateSelected}" rerender="maSelectedCount, maSummary" oncomplete="wait(false);">
+	            <apex:param id="proj_id_ma" name="proj_id" assignTo="{!SelectedId}"    value=""/>
+	            <apex:param id="state_ma"   name="state" assignTo="{!SelectedState}" value=""/>
+	            <apex:param id="objectType_ma"   name="type" assignTo="{!objectType}" value=""/>
+	         </apex:actionFunction>
+	         <apex:actionFunction name="maPageSelect" action="{!selectAllMiscRecordsOnPage}" rerender="maSelectedCount,maSummary,maTable" status="actStatusMiscId"/>
+	         <apex:actionFunction name="maPageDeSelect" action="{!deselectAllMiscRecordsOnPage}" rerender="maSelectedCount,maSummary,maTable,maForm" status="actStatusMiscId"/>
+	         <apex:pageBlock id="maform">
+	            <b>
+	               <apex:outputLabel id="maSelectedCount" value="{!miscSelectedLabel}" />
+	            </b>
+	            <br/>
+	            <apex:panelGrid columns="4" >
+	               <apex:commandLink action="{!selectAllMisc}" value="{!$Label.pse__billing_label_select_all_miscellaneous_adjustments}" onclick="selectDeselectAllRecordBox('miscAllCheckbox', true)"  rerender="maform" status="actStatusMiscId"/>
+	               <apex:outputLabel value="|" styleClass="lbl-left-margin" />
+	               <apex:commandLink action="{!deselectAllMisc}" value="{!$Label.pse__billing_label_deselect_all_miscellaneous_adjustments}" onclick="selectDeselectAllRecordBox('miscAllCheckbox', false)" reRender="maform" status="actStatusMiscId"/>
+	               <apex:actionStatus id="actStatusMiscId" >
+	                  <apex:facet name="start" >
+	                     <img src="/img/loading.gif" />                    
+	                  </apex:facet>
+	               </apex:actionStatus>
+	            </apex:panelGrid>
+	            <br/>
+	            <apex:outputPanel id="maSummary" title="{!$Label.pse__billing_label_summary_totals}">
+	               <b>
+	                  <apex:outputLabel value="{!$Label.pse__billing_label_summary_totals}" />
+	               </b>
+	               <br/> <br/>
+	               <apex:outputLabel value="{!SUBSTITUTE($Label.pse__billing_label_total_billable_amount,'{0}',miscTotalBillableAmountInFormat)}"/>
+	               <br/>
+	            </apex:outputPanel>
+	            <br/>
+	            <apex:pageBlockTable value="{!miscResultSet}" id="maTable" var="misc">
+	               <apex:column >
+	                  <apex:facet name="header">
+	                     <apex:inputCheckbox id="includedAllMiscBox" styleClass="selectCheckbox miscAllCheckbox" onclick="checkAllMiscOnPage(this)"/>
+	                  </apex:facet>
+	                  <apex:inputCheckbox id="includedMiscBox" styleClass="selectCheckbox miscCheckbox" value="{!misc.selected}" onclick="updateSelectedMA('{!misc.misc.id}',this.checked,'misc');submitValue('miscCheckbox','miscAllCheckbox');"/>
+	               </apex:column>
+	               <apex:column headerValue="{!$Label.pse__common_label_name}">
+	                  <a href="{!URLFOR($Action.pse__Miscellaneous_Adjustment__c.View, misc.misc.Id)}" target="_blank">{!misc.misc.Name}</a>
+	               </apex:column>
+	               <apex:column value="{!misc.misc.pse__Project__c}" rendered="{!showProjColumn}"/>
+	               <apex:column value="{!misc.misc.pse__Effective_Date__c}" rendered="{!NOT(hasDisplayA)}"/>
+	               <apex:column value="{!misc.misc.pse__Description__c}"    rendered="{!NOT(hasDisplayA)}"/>
+	               <apex:column value="{!misc.misc.pse__Amount__c}"         rendered="{!NOT(hasDisplayA)}"/>
+	               <apex:repeat value="{!displayFieldsA}" var="f">
+	                  <apex:column value="{!misc.misc[f.fieldPath]}" headerValue="{!f.Label}"/>
+	               </apex:repeat>
+	            </apex:pageBlockTable>
+	            <apex:panelGrid columns="3" columnClasses="pagination-col-spacing">
+	               <apex:commandButton action="{!mapage.previous}" disabled="{!!mapage.hasPrevious}" value="<" oncomplete="submitValue('miscCheckbox','miscAllCheckbox');" reRender="maform" styleClass="btn"/>
+	               <apex:commandButton action="{!mapage.next}" disabled="{!!mapage.hasNext}" value = ">" oncomplete="submitValue('miscCheckbox','miscAllCheckbox');" reRender="maform" styleClass='btn'/>
+	               <apex:outputLabel value="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__pagination_message_page_status),'{0}',TEXT(maPage.pageNumber)),'{1}', Text(maPage.totalPage))}"/>
+	            </apex:panelGrid>
+	         </apex:pageBlock>
+	      </apex:tab>
+	      <!---Budget Tab-->
+	      <apex:tab label="{!$Label.pse__common_label_budgets} ({!budgetCount})"  name="Budgets" id="tabBudgets" rendered="{!renderBudgets}">
+	         <apex:actionFunction name="updateSelectedBud" action="{!updateSelected}" rerender="bselectedCount,bSummary" oncomplete="wait(false);">
+	            <apex:param id="proj_id_bud" name="proj_id" assignTo="{!SelectedId}"    value=""/>
+	            <apex:param id="state_bud"   name="state" assignTo="{!SelectedState}" value=""/>
+	            <apex:param id="objectType_bud"   name="type" assignTo="{!objectType}" value=""/>
+	         </apex:actionFunction>
+	         <apex:actionFunction name="bPageSelect" action="{!selectAllBudgetRecordsOnPage}" rerender="bSelectedCount,bSummary,bform" oncomplete="wait(false);" status="actStatusBudgetId"/>
+	         <apex:actionFunction name="bPageDeSelect" action="{!deselectAllBudgetRecordsOnPage}" rerender="bSelectedCount,bSummary,bform" oncomplete="wait(false);" status="actStatusBudgetId"/>
+	         <apex:pageBlock id="bform">
+	            <b>
+	               <apex:outputLabel id="bselectedCount" value="{!budgetSelectedLabel}" />
+	            </b>
+	            <br/>
+	            <apex:panelGrid columns="4" >
+	               <apex:commandLink action="{!selectAllBudget}" value="{!$Label.pse__billing_label_select_all_budgets}" onclick="selectDeselectAllRecordBox('budgetAllCheckbox', true)" rerender="bform" status="actStatusBudgetId"/>
+	               <apex:outputLabel value="|" styleClass="lbl-left-margin" />
+	               <apex:commandLink action="{!deselectAllBudget}" value="{!$Label.pse__billing_label_deselect_all_budgets}" onclick="selectDeselectAllRecordBox('budgetAllCheckbox', false)" reRender="bform" status="actStatusBudgetId"/>
+	               <apex:actionStatus id="actStatusBudgetId" >
+	                  <apex:facet name="start" >
+	                     <img src="/img/loading.gif" />                    
+	                  </apex:facet>
+	               </apex:actionStatus>
+	            </apex:panelGrid>
+	            <apex:outputText rendered="{!warnB!=null}">{!MsgB}</apex:outputText>
+	            <br/>
+	            <apex:outputPanel id="bSummary" title="{!$Label.pse__billing_label_summary_totals}">
+	               <b>
+	                  <apex:outputLabel value="{!$Label.pse__billing_label_summary_totals}" />
+	               </b>
+	               <br/> <br/>
+	               <apex:outputLabel value="{!SUBSTITUTE($Label.pse__billing_label_total_billable_amount,'{0}',budgetTotalBillableAmountInFormat)}"/>
+	               <br/>
+	            </apex:outputPanel>
+	            <br/>
+	            <apex:pageBlockTable value="{!budgetResultSet}" id="bTable" var="b">
+	               <apex:column >
+	                  <apex:facet name="header">
+	                     <apex:inputCheckbox id="includedAllBudBox" styleClass="selectCheckbox budgetAllCheckbox" onclick="checkAllBudgetsOnPage(this)"/>
+	                  </apex:facet>
+	                  <apex:inputCheckbox id="includedBudBox" value="{!b.selected}"  onclick="updateSelectedBud('{!b.budget.id}',this.checked,'budget');submitValue('budgetCheckbox','budgetAllCheckbox');" styleClass="selectCheckbox budgetCheckbox"/>
+	               </apex:column>
+	               <apex:column headerValue="{!$Label.pse__common_label_name}">
+	                  <a href="{!URLFOR($Action.pse__Budget__c.View, b.budget.Id)}" target="_blank">{!b.budget.Name}</a>
+	               </apex:column>
+	               <apex:column value="{!b.budget.pse__Project__c}" rendered="{!showProjColumn}"/>
+	               <apex:column value="{!b.budget.pse__Effective_Date__c}" rendered="{!NOT(hasDisplayB)}"/>
+	               <apex:column value="{!b.budget.pse__Description__c}"    rendered="{!NOT(hasDisplayB)}"/>
+	               <apex:column headerValue="{!$ObjectType.pse__Budget__c.fields.pse__Pre_Billed_Amount__c.label}" rendered="{!NOT(hasDisplayB)}" >
+	                  <apex:outputField value="{!b.budget.pse__Pre_Billed_Amount__c}" rendered="{!UseNewPreBillField && b.budget.pse__Pre_Billed_Amount__c!=null}"/>
+	                  <apex:outputField value="{!b.budget.pse__PreBilledAmount__c}"   rendered="{!NOT(UseNewPreBillField) || b.budget.pse__Pre_Billed_Amount__c=null}"/>
+	               </apex:column>
+	               <apex:repeat value="{!displayFieldsB}" var="f">
+	                  <apex:column value="{!b.budget[f.fieldPath]}" headerValue="{!f.Label}"/>
+	               </apex:repeat>
+	            </apex:pageBlockTable>
+	            <apex:panelGrid columns="3" columnClasses="pagination-col-spacing">
+	               <apex:commandButton action="{!bpage.previous}" disabled="{!!bpage.hasPrevious}" rerender="bform" value="<" oncomplete="submitValue('budgetCheckbox','budgetAllCheckbox');" styleClass="btn"/>
+	               <apex:commandButton action="{!bpage.next}" disabled="{!!bpage.hasNext}" rerender="bform" value=">" oncomplete="submitValue('budgetCheckbox','budgetAllCheckbox');" styleClass='btn'/>
+	               <apex:outputLabel value="{!SUBSTITUTE(SUBSTITUTE(($Label.pse__pagination_message_page_status),'{0}',TEXT(bPage.pageNumber)),'{1}', Text(bPage.totalPage))}"/>
+	            </apex:panelGrid>
+	         </apex:pageBlock>
+	      </apex:tab>
+	      <!--Summary Tab -->
+	      <apex:tab label="{!$Label.pse__common_label_summary}" name="Summary" id="tabSummary" reRender="sForm" rendered="{!displaySummary}" >
+	         <apex:pageBlock >
+	            <apex:pageBlockButtons location="top">
+	               <apex:commandButton action="{!summary}" value="{!$Label.pse__common_label_refresh}" reRender="sForm" status="actStatusRefreshId"/>
+	               &nbsp;
+	               <apex:actionStatus id="actStatusRefreshId" >
+	                  <apex:facet name="start" >
+	                     <img src="/img/loading.gif" />                    
+	                  </apex:facet>
+	               </apex:actionStatus>
+	            </apex:pageBlockButtons>
+	            <apex:outputPanel id="sForm">
+	               <apex:pageBlockSection title="{!$Label.pse__common_label_timecard}" rendered="{!tDisplay}" collapsible="false">
+	                  <apex:outputPanel title="{!$Label.pse__common_label_timecard}" >
+	                     <apex:dataList value="{!stList}" var="t">{!t}</apex:dataList>
+	                  </apex:outputPanel>
+	               </apex:pageBlockSection>
+	               <apex:pageBlockSection title="{!$Label.pse__common_label_expense}" rendered="{!eDisplay}" collapsible="false">
+	                  <apex:outputPanel title="{!$Label.pse__common_label_expense}">
+	                     <apex:dataList value="{!sexpList}" var="exp">{!exp}</apex:dataList>
+	                  </apex:outputPanel>
+	               </apex:pageBlockSection>
+	               <apex:pageBlockSection title="{!$Label.pse__common_label_milestones}" rendered="{!mDisplay}" collapsible="false">
+	                  <apex:outputPanel title="{!$Label.pse__common_label_milestones}">
+	                     <apex:dataList value="{!smList}" var="m">{!m}</apex:dataList>
+	                  </apex:outputPanel>
+	               </apex:pageBlockSection>
+	               <apex:pageBlockSection title="{!$Label.pse__common_label_miscellaneous_adjustment}" rendered="{!maDisplay}" collapsible="false">
+	                  <apex:outputPanel title="{!$Label.pse__common_label_miscellaneous_adjustment}">
+	                     <apex:dataList value="{!smiscList}" var="misc">{!misc}</apex:dataList>
+	                  </apex:outputPanel>
+	               </apex:pageBlockSection>
+	               <apex:pageBlockSection title="{!$Label.pse__common_label_budget}" rendered="{!bDisplay}" collapsible="false">
+	                  <apex:outputPanel title="{!$Label.pse__common_label_budget}">
+	                     <apex:dataList value="{!sbudList}" var="b">{!b}</apex:dataList>
+	                  </apex:outputPanel>
+	               </apex:pageBlockSection>
+	            </apex:outputPanel>
+	         </apex:pageBlock>
+	      </apex:tab>
+	   </apex:tabPanel>
+	</apex:form>
+</apex:page>

@@ -1,0 +1,96 @@
+<apex:page standardController="Contact" recordSetVar="recs" extensions="pse.ScheduleReportController" title="{!$Label.pse__schedulereport_label_title}" 
+    contentType="{!IF(displayAsExcel,'application/vnd.ms-excel#schedulereport.xls','')}" cache="{!IF(displayAsExcel,true,false)}"
+    action="{!displayReportAction}" 
+    showHeader="{!NOT(displayAsExcel)}" sidebar="false" standardStylesheets="true" tabStyle="pse__Schedule__c" lightningStylesheets="true">
+	
+    <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:outputPanel rendered="{!$User.UIThemeDisplayed!='Theme3'}" layout="none">
+		<style>
+			.resultTable th:not(:first-of-type) { 
+				border-left: 1px solid rgb(221, 219, 218) !important; 
+			}
+		</style>
+	</apex:outputPanel>
+	
+    <apex:sectionHeader title="{!$Label.pse__schedulereport_label_title}" subtitle="{!rpgTitle}" rendered="{!NOT(displayAsExcel)}"/> 
+     
+    <apex:form rendered="{!NOT(displayAsExcel)}">
+    	<apex:pageMessages id="messages" rendered="{!errorOccurred}"/>
+        <apex:pageBlock >
+            <apex:pageBlockButtons location="both" >
+                <apex:commandButton value="{!$Label.pse__schedulereport_label_export_to_excel}" action="{!exportToExcel}" rendered="{!NOT(errorOccurred)}"/>
+                <apex:commandButton value="{!$Label.pse__common_label_done}" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+
+            <apex:outputPanel rendered="{!NOT(errorOccurred)}">
+                <table class="list resultTable" border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr class="headerRow">
+                            <th>{!$Label.common_label_resource}</th>
+                            <th>{!$Label.schedulereport_label_project_type}</th>
+                            <th>{!$Label.schedulereport_label_scheduled_hours}</th>
+                            <th>{!$Label.schedulereport_label_scheduled_revenue}</th>
+                            <apex:repeat value="{!timePeriodLabels}" var="lbl">
+                                <th><apex:outputText value="{!lbl}"/></th>
+                            </apex:repeat>
+                            <th>{!$Label.pse__schedulereport_label_assignment_end_date}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!reportRows}" var="rr">
+                            <tr class="dataRow">
+                                <td><apex:outputPanel layout="inline" rendered="{!rr.isSubItem}">&nbsp;&nbsp;&nbsp;</apex:outputPanel>
+                                    <apex:outputLink value="/{!rr.objectId}" target="_blank" title="{!rr.label}" style="font-weight:{!IF(rr.isSubItem,'normal','bold')}">
+                                    {!rr.label}
+                                    </apex:outputLink>
+                                </td>
+                                <td><apex:outputText value="{!rr.projectType}" rendered="{!rr.isSubItem}"/></td>
+                                <td><apex:outputText value="{!rr.schedHoursString}"/></td>
+                                <td><apex:outputText value="{!rr.schedRevenueString}"/></td>
+                                <apex:repeat value="{!rr.timePeriods}" var="tp">
+                                    <td><apex:outputText value="{!tp.hoursString}"/></td>
+                                </apex:repeat>
+                                <td><apex:outputText value="{!rr.completionDate}"/></td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+    
+    <!-- EXCEL - NOTE THE TABLE IS NOT IDENTICAL TO THE ONE ABOVE: IT HAS DIFFERENT STYLING -->
+    <apex:outputPanel rendered="{!AND(NOT(errorOccurred),displayAsExcel)}">
+        <table border="0" width="100%">
+            <thead style="font-weight:bold;">
+                <tr>
+                    <th>{!$Label.pse__common_label_resource}</th>
+                    <th>{!$Label.pse__schedulereport_label_project_type}</th>
+                    <th>{!$Label.pse__schedulereport_label_scheduled_hours}</th>
+                    <th>{!$Label.pse__schedulereport_label_scheduled_revenue}</th>
+                    <apex:repeat value="{!timePeriodLabels}" var="lbl">
+                        <th><apex:outputText value="{!lbl}"/></th>
+                    </apex:repeat>
+                    <th>{!$Label.pse__schedulereport_label_assignment_end_date}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!reportRows}" var="rr">
+                    <tr>
+                        <td>
+                            <apex:outputPanel layout="inline" rendered="{!rr.isSubItem}">&nbsp;&nbsp;&nbsp;</apex:outputPanel>
+                            <apex:outputText value="{!rr.label}" style="font-weight:{!IF(rr.isSubItem,'normal','bold')}"/>
+                        </td>
+                        <td><apex:outputText value="{!rr.projectType}" rendered="{!rr.isSubItem}"/></td>
+                        <td align="center"><apex:outputText value="{!rr.schedHoursString}"/></td>
+                        <td align="center"><apex:outputText value="{!rr.schedRevenueString}"/></td>
+                        <apex:repeat value="{!rr.timePeriods}" var="tp">
+                            <td align="center"><apex:outputText value="{!tp.hoursString}"/></td>
+                        </apex:repeat>
+                        <td align="center"><apex:outputText value="{!rr.completionDate}"/></td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+    </apex:outputPanel> 
+</apex:page>

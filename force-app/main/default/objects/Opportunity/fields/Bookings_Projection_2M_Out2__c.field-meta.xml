@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bookings_Projection_2M_Out2__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(
+  AND(
+    OR(ISPICKVAL(StageName,&quot;1 Prospect&quot;),ISPICKVAL(StageName,&quot;2 Qualified&quot;),
+    ISPICKVAL(StageName,&quot;3 Opportunity Shaped&quot;)),
+  MONTH(CloseDate)=MONTH(TODAY())+1),
+Bookings_Projection__c,0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Bookings Projection 2M Out#2</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

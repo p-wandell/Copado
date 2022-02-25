@@ -1,0 +1,56 @@
+<apex:page standardController="Opportunity" extensions="pse.CreateCRController" tabStyle="pse__Proj__c" action="{!initForAccountDetail}"  lightningStylesheets="true">
+
+  <script language="javascript">
+      function updateProjectId(newProjectId) {
+          document.getElementById('{!$Component.projSelFrm.projectId}').value = newProjectId;
+      }  
+  </script>
+    
+    <apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+    <apex:sectionHeader title="{!$Label.pse__create_change_request_label_for_select_project}" />
+    <apex:form id="projSelFrm">     
+        <apex:pageMessages />
+        <apex:variable var="isLightningView" value="{!$User.UIThemeDisplayed=='Theme4d'}" />
+        <apex:outputPanel layout="none" rendered="{!isLightningView}">
+			<style>
+				.headerRow th:not(:first-of-type) {
+					border-left: 1px solid rgb(221, 219, 218); 
+				}
+			</style>
+		</apex:outputPanel>
+        <apex:inputHidden value="{!formBean.projectId}" id="projectId" />
+        <apex:pageBlock >
+            <apex:pageBlockSection title="{!$Label.pse__create_change_request_label_for_filter_projects}" columns="1" collapsible="false">
+                    <apex:outputPanel >
+                     	<apex:outputLabel value="{!$Label.pse__common_label_project_name}" for="filterProjectName" styleClass="{!IF(isLightningView,'','labelCol')}"/>                                  
+                       	<apex:inputText value="{!formBean.filterProjectName}" id="filterProjectName"/>
+                       	<apex:commandButton value="{!$Label.pse__common_label_filter}" action="{!filterProjectsForAccountDetails}" id="filterButton" status="filterStatus" />
+           				<apex:commandButton value="{!$Label.pse__common_label_clear}" action="{!clearFilter}" status="filterStatus"  />
+                    </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <apex:pageBlock title="" id="projSelBlk">
+            <apex:pageBlockButtons id="projSelBlkBtns">
+                <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancelFromAccountDetails}" immediate="true"/>
+                <apex:commandButton value="{!$Label.pse__common_label_next}" action="{!nextFromAccountDetails}" id="nextButton"  />
+            </apex:pageBlockButtons>
+            
+           <apex:pageBlockSection title="{!$Label.pse__common_label_projects}" columns="1" id="projListPBS" collapsible="false" >                                  
+               <apex:pageBlockTable value="{!formBean.projectsForAccount}" var="projAcc" >
+                   <apex:column rendered="{!IF(formBean.projectId == projAcc.Id, true, false)}">
+                        <input type="radio" name="justADummyForVF" onclick="updateProjectId('{!projAcc.Id}')" value="{!projAcc.Id}" checked="true"/>                        
+                   </apex:column>
+                   <apex:column rendered="{!IF(formBean.projectId == projAcc.Id, false, true)}">
+                        <input type="radio" name="justADummyForVF" onclick="updateProjectId('{!projAcc.Id}')" value="{!projAcc.Id}"/>                        
+                   </apex:column>
+                   <apex:column value="{!projAcc.Name}"/> 
+                   <apex:column value="{!projAcc.pse__Opportunity__c}"/>
+                   <apex:column value="{!projAcc.pse__Region__c}"/>
+                   <apex:column value="{!projAcc.pse__Group__c}"/>
+                   <apex:column value="{!projAcc.pse__Practice__c}"/>  
+               </apex:pageBlockTable>
+           </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>  
+</apex:page>

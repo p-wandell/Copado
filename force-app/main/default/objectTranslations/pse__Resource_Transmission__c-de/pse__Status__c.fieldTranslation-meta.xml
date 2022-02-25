@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Zeigt an, ob alle angeforderten Zeitkartendaten zurückgegeben wurden. Andernfalls wird Pending angezeigt.</help>
+    <label><!-- Status --></label>
+    <name>pse__Status__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>Komplett</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending</masterLabel>
+        <translation>Steht aus</translation>
+    </picklistValues>
+</CustomFieldTranslation>

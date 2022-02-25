@@ -1,0 +1,11 @@
+<apex:page standardController="pse__Utilization_Calculation__c" action="{!initForUC}" extensions="pse.UtilizationCalculatorController"
+    title="{!$Label.pse__utilization_label_utilization_calc}" showHeader="false" sidebar="false" lightningStylesheets="true">
+
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+    <apex:composition template="pse__UtilizationCalculator">
+        <apex:define name="sectionHeader">
+            <apex:sectionHeader title="{!$Label.pse__utilization_label_utilization_calc}" subtitle=""/>
+        </apex:define>
+    </apex:composition>
+
+</apex:page>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>FK_Contact.Target_Utilization_Hours__c:SUM - 
+pse__Est_Vs_Actuals__c.Scheduled_Billable_Hours__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Available Hours Against Util Target</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Available Hours Against Util Target</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <acrossGroupingContext>COLUMN_GRAND_SUMMARY</acrossGroupingContext>
+        <calculatedFormula>(40*pse__Est_Vs_Actuals__c.Count__c:UNIQUE) - 
+pse__Est_Vs_Actuals__c.Scheduled_Billable_Hours__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Available Hours @ 40 /wk Capacity</description>
+        <developerName>FORMULA2</developerName>
+        <downGroupingContext>FK_$Contact.pse__Resource_Role__c</downGroupingContext>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Available Hours @ 40 /wk Capacity</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <colorRanges>
+        <columnName>FORMULA1</columnName>
+        <highBreakpoint>4.0</highBreakpoint>
+        <highColor>#54C254</highColor>
+        <lowBreakpoint>0.0</lowBreakpoint>
+        <lowColor>#C25454</lowColor>
+        <midColor>#C2C254</midColor>
+    </colorRanges>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Est_Vs_Actuals__c.Scheduled_Billable_Hours__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>1 AND ((2 AND 3) OR (4 AND 5)) AND 6 AND 7</booleanFilter>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Time_Period_Type__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Week</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Project__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>7S</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.Project_Type__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>Customer</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.pse__Project__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>7S</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Est_Vs_Actuals__c.Project_Type__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>Customer</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_$Contact.pse__Is_Resource_Active__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_$Contact.Competency_Group__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Delivery Operations,Executive Management,Experience Design Studio,Business Consulting,Technology &amp; Accelerators</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <formattingRules>
+        <columnName>FORMULA1</columnName>
+        <values>
+            <backgroundColor>#C25454</backgroundColor>
+            <rangeUpperBound>0.0</rangeUpperBound>
+        </values>
+        <values>
+            <backgroundColor>#C2C254</backgroundColor>
+            <rangeUpperBound>4.0</rangeUpperBound>
+        </values>
+        <values>
+            <backgroundColor>#54C254</backgroundColor>
+        </values>
+    </formattingRules>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Est_Vs_Actuals__c.pse__Start_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_$Contact.pse__Resource_Role__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_$Contact.psa_report__Resource_Name__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Copy of Test Bench Model</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>CustomEntity$pse__Est_Vs_Actuals__c@pse__Est_Vs_Actuals__c.pse__Resource__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>false</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Est_Vs_Actuals__c.pse__Start_Date__c</dateColumn>
+        <endDate>2022-06-30</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2022-01-01</startDate>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <validationRules>
+        <errorMessage><!-- You must provide an attachment message for reports that are sent as attachments --></errorMessage>
+        <name>ob1__Attachments_Require_Message</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Automation --></label>
+        <name>ob1__Automation</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Validate --></label>
+        <name>ob1__Validate</name>
+    </webLinks>
+</CustomObjectTranslation>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Adventure Step</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightningCommunity__Default,lightning__HomePage">
+            <property name="recordId" label="Adventure Id" type="String" description="The ID of the Adventure to be displayed. Enter a specific record ID, or {!recordId} to dynamically display records." default="{!recordId}"/>
+            <property name="metadataRecordName" label="Adventure Setting" type="String" description="Enter the name of the Adventure Setting Custom Metadata Type record that contains configuration for the adventure you want to display." />         
+            <property name="moduleProgressType" label="Module Progress Display Options" type="String" description="Select the style of the progress bar to display.  Options are Progress Bar or Progress Ring." datasource="Progress-Bar,Progress-Ring"/>
+            <property name="displayStepTitle" label="Show Step Title" type="Boolean" description="Select to display the step title."/>
+            <property name="displayStepSubTitle" label="Show Step Subtitle" type="Boolean" description="Select to display the step subtitle."/>
+            <property name="showModuleTooltip" label="Show Module Tooltip" type="Boolean" description="Select to display the module tooltip."/>
+            <property name="truncate" label="Truncate Module Title" type="Boolean" description="Check this box if you’d like to truncate long Step Module titles. If unchecked, the title will wrap to the next line."/>
+            <property name="showLinks" label="Show Module Links" type="Boolean" description="Check this box if you’d like to show the additional Step Module links displayed below the Step Module titles."/>
+            <property name="showOnlyMyTask" label="Show 'Only My Tasks' Toggle" type="Boolean" description="Select to display 'Only My Tasks' Toggle."/>
+            <property name="variant" label="Display Option" type="String" description="Select the default format of the card.  Options are: None (flat) or Featured (drop shadow), Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="tileVariant" label="Module Display Option" type="String" description="Select the Module default format of the card.  Options are: None (flat) or Featured (drop shadow)" datasource="None,Featured"/>
+            <property name="customClass" label="Custom Class Name" type="String" description="The CSS class name for custom styling." />
+            <property name="listId" label="Component Group" type="String" description="Unique ID to link complimentary components together to share data."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

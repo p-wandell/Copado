@@ -1,0 +1,12 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Welcome Message -->
+<template>
+    <section class={customClass}>
+        <lightning-formatted-rich-text value={guestMessage} if:true={isGuest}></lightning-formatted-rich-text>
+        <lightning-formatted-rich-text value={welcomeMessage} if:false={isGuest}></lightning-formatted-rich-text>
+        <p if:true={welcomeText}>{welcomeText}</p>
+    </section>
+</template>

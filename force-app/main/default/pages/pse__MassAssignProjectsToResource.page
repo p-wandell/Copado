@@ -1,0 +1,324 @@
+<apex:page id="projsToResorcePage" title="{!$Label.pse__mass_assign_resource_projects_label_page_title}" showHeader="true" standardController="pse__Assignment__c"
+ recordsetvar="assignments" extensions="pse.MassAssignProjectsToResourceController" lightningStylesheets="true">
+	<style>
+		.pageBlockTableScroll {
+			display: block;
+			overflow-x: auto;
+			width: 93vw;
+		}
+
+		.pageBlockTableScroll table th.headerRow+th.headerRow {
+			border-left: 1px solid #dedede;
+		}
+
+		a.link {
+			cursor: pointer;
+		}
+	</style>
+
+	<c:ajaxStatusMessageCSS />
+	<c:selectAllCheckboxes functionName="selectAllProjects" />
+	<c:WaitComponent />
+
+	<apex:actionStatus id="ajaxStatus">
+		<apex:facet name="start">
+			<div class="ajaxstatus">{!$Label.pse__common_message_processing_wait}</div>
+		</apex:facet>
+	</apex:actionStatus>
+
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<apex:outputPanel id="ffHeader">
+		<c:ffui_header instanceName="$FFHEADER" />
+	</apex:outputPanel>
+
+	<apex:outputPanel id="ffHeaderScript">
+	<script>
+		prepareHeader();
+
+		function prepareHeader() {
+			var buttons = [],
+				config = {
+					objectName: '{!JSENCODE($Label.mass_assign_resource_projects_label_page_title)}',
+					recordName: '{!JSENCODE(bean.resource.name)}',
+					objectApiName: '{!$ObjectType["Assignment__c"].name}',
+					helpUrl: '{!$Page.AssignProjectsToResourceHelp}',
+					onRender: onHeaderLoadCallback
+				};
+
+			if ('{!bean.onlyShowError}' === 'true') {
+				buttons.push({
+					id: 'cancelWhenError',
+					label: '{!JSENCODE($Label.common_label_cancel)}',
+					actionFn: 'doCancelWhenError'
+				});
+			} else {
+				buttons.push({
+					id: 'cancel',
+					label: '{!JSENCODE($Label.common_label_cancel)}',
+					actionFn: 'doCancel'
+				});
+
+				if ('{!AND(bean.hasShortListedProjects,bean.showShortListedSection)}' === 'true') {
+					buttons.push({
+						id: 'createAssignmentsWhenSortListedProjectPB',
+						label: '{!JSENCODE($Label.mass_assign_proj_resources_label_create_assignments)}',
+						actionFn: 'doCreateAssignmentsWhenSortListedProjectPB'
+					});
+				}
+
+				if ('{!bean.hasMatchingProjects}' === 'true') {
+					buttons.push({
+						id: 'createAssignmentsWhenSelectProjectPB',
+						label: '{!JSENCODE($Label.mass_assign_proj_resources_label_create_assignments)}',
+						actionFn: 'doCreateAssignmentsWhenSelectProjectPB'
+					});
+				}
+			}
+
+			config.buttons = buttons;
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+	</script>
+</apex:outputPanel>
+	<apex:outputPanel layout="block" id="error-panel" rendered="{!bean.onlyShowError}">
+		<apex:form >
+			<apex:pageBlock >
+				<apex:pageMessages />
+				<apex:actionFunction name="doCancelWhenError" action="{!cancel}" />
+			</apex:pageBlock>
+		</apex:form>
+	</apex:outputPanel>
+
+	<apex:outputPanel layout="none" id="all" rendered="{!NOT(bean.onlyShowError)}">
+		<apex:form >
+			<apex:actionFunction name="doCancel" action="{!cancel}" />
+
+			<apex:pageMessages id="messageSection" />
+			<apex:outputPanel layout="none" id="shortListedProjects">
+				<apex:pageBlock id="sortListedProjectPB" title="{!$Label.pse__common_label_selected} {!$Label.pse__common_label_projects}" rendered="{!AND(bean.hasShortListedProjects,bean.showShortListedSection)}">
+
+					<apex:actionFunction name="doCreateAssignmentsWhenSortListedProjectPB" status="ajaxStatus" rendered="{!bean.hasShortListedProjects}"
+					 action="{!onCreateAssignments}" />
+
+					<apex:pageBlockSection columns="1" collapsible="true" title="{!$Label.pse__mass_assign_resource_projects_label_selected_project_msg}">
+						<i></i>
+						<apex:pageBlockTable value="{!bean.shortListedProjPaginator.visible}" var="wrapper">
+							<apex:column >
+								<apex:commandLink status="ajaxStatus" style="text-decoration:none" immediate="true" action="{!onDeleteShortListedProject}"
+								 reRender="shortListedProjects">
+									<apex:param name="selectedShortListedProject" value="{!wrapper.project.Id}" assignTo="{!bean.shortListedProjectToDelete}"
+									/>
+									<apex:image id="theImage" value="{!$Resource.pse__timecard}/timecard/delete_icon.gif" />
+								</apex:commandLink>
+							</apex:column>
+
+							<apex:column style="width:125px">
+								<apex:facet name="header">
+									<apex:outputPanel >
+										<a class="link" onclick="sortShortListedProjects('{!bean.SORT_COL_NAME}');">
+											{!$Label.common_label_name}
+										</a>&nbsp;
+										<apex:image styleClass="sortIndicator" value="/img/{!bean.shortListedProjPaginator.sortState.sortIndicatorImage}" rendered="{!bean.shortListedProjPaginator.sortState.sortColumn == bean.SORT_COL_NAME}"
+										/>
+									</apex:outputPanel>
+								</apex:facet>
+
+								<apex:outputLink value="/{!wrapper.project.Id}">
+									{!wrapper.project.Name}
+								</apex:outputLink>
+							</apex:column>
+
+							<apex:repeat value="{!AssignMultiProjectSearchColumnsAfterFilter}" var="f">
+								<apex:column value="{!wrapper.project[f]}">
+									<apex:facet name="header">
+										<apex:outputPanel >
+											<a class="link" onclick="sortShortListedProjects('{!f.fieldPath}', '{!f.type}');">
+												{!f.label}
+											</a>&nbsp;
+											<apex:image styleClass="sortIndicator" value="/img/{!bean.shortListedProjPaginator.sortState.sortIndicatorImage}" rendered="{!bean.shortListedProjPaginator.sortState.sortColumn == f.fieldPath}"
+											/>
+										</apex:outputPanel>
+									</apex:facet>
+								</apex:column>
+							</apex:repeat>
+
+						</apex:pageBlockTable>
+						<apex:pageBlockSectionItem rendered="{!bean.shortListedProjPaginator.showNavigators}">
+							<apex:outputPanel style="text-align:center">
+								<apex:commandLink action="{!bean.shortListedProjPaginator.showMore}" reRender="shortListedProjects" status="ajaxStatus">
+									{!bean.shortListedProjPaginator.showMoreLabel}</apex:commandLink> &nbsp;|&nbsp;
+								<apex:commandLink action="{!bean.shortListedProjPaginator.showAll}" reRender="shortListedProjects" status="ajaxStatus">{!bean.shortListedProjPaginator.showListLabel}</apex:commandLink>
+
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+				</apex:pageBlock>
+			</apex:outputPanel>
+
+			<apex:pageBlock title="{!$Label.pse__common_label_filter_options}" id="filterProjectPB">
+				<apex:pageBlockSection id="filterProjectPBS" columns="1">
+					<apex:panelGrid columns="4" id="filterGrid" style="min-width: auto;">
+						<!--  Row 1 with labels -->
+						<apex:outputLabel value="{!$Label.pse__common_label_project_name}" for="projectName" />
+						<apex:outputLabel value="{!$Label.pse__common_label_billable}" for="billableOptions" />
+						<apex:outputLabel value="{!$Label.pse__common_label_start_date}" for="filterByStartDt" />
+						<apex:outputLabel value="{!$Label.pse__common_label_end_date}" for="filterByEndDt" />
+
+						<!--  Row 2 with input fields-->
+						<apex:inputText value="{!bean.filterByProjName}" id="projectName" style="width:176px;" />
+						<apex:selectList value="{!bean.filterByBillable}" size="1" id="billableOptions" style="width:130px;">
+							<apex:selectOptions value="{!bean.billableOptions}" />
+						</apex:selectList>
+						<apex:inputField value="{!bean.projDateFilter.pse__Start_Date__c}" id="filterByStartDt" />
+						<apex:inputField value="{!bean.projDateFilter.pse__End_Date__c}" id="filterByEndDt" />
+
+						<!--  Row 3 with labels-->
+						<apex:outputLabel value="{!$Label.pse__common_label_region}" for="regionOptions" />
+						<apex:outputLabel value="{!$Label.pse__common_label_practice}" for="practiceOptions" />
+						<apex:outputLabel value="{!$Label.pse__common_label_group}" for="groupOptions" />
+						<apex:outputLabel value="{!$Label.pse__mass_assign_proj_resources_label_include_child_rpg}" for="childRPGselector" />
+
+						<!--  Row 4 with input fields-->
+						<apex:selectList value="{!bean.filterByRegion}" size="1" id="regionOptions" style="width:180px;">
+							<apex:selectOptions value="{!bean.regionOptions}" />
+						</apex:selectList>
+						<apex:selectList value="{!bean.filterByPractice}" size="1" id="practiceOptions" style="width:130px;">
+							<apex:selectOptions value="{!bean.practiceOptions}" />
+						</apex:selectList>
+						<apex:selectList value="{!bean.filterByGroup}" size="1" id="groupOptions" style="width:130px;">
+							<apex:selectOptions value="{!bean.groupOptions}" />
+						</apex:selectList>
+						<apex:inputCheckbox value="{!bean.filterByChildRPG}" id="childRPGselector" />
+					</apex:panelGrid>
+
+				</apex:pageBlockSection>
+				<apex:pageBlockSection >
+					<apex:repeat value="{!AssignMultiProjectFilterOptionsAfterFilter}" var="f">
+						<apex:inputField value="{!bean.projDateFilter[f]}" required="false" id="filterInputField">
+							<script>
+								var fieldType = '{!f.type}';
+								if (fieldType == 'double' || fieldType == 'currency' || fieldType == 'integer' || fieldType == 'string' || fieldType == 'percent') {
+									document.getElementById('{!$Component.filterInputField}').innerHTML = '';
+									document.getElementById('{!$Component.filterInputField}').value = '';
+								}
+							</script>
+						</apex:inputField>
+					</apex:repeat>
+				</apex:pageBlockSection>
+
+
+				<apex:pageBlockButtons location="bottom">
+					<apex:commandButton action="{!onFilterProjects}" value="{!$Label.pse__common_label_filter}" id="filterButton" rerender="selectProjectPB,addSelected,ffHeader,ffHeaderScript"
+					 status="ajaxStatus" />
+					<apex:commandButton action="{!onClearFilter}" value="{!$Label.pse__common_label_clear}" id="filterClearButton" rerender="selectProjectPB,filterProjectPBS,ffHeader,ffHeaderScript"
+					 status="ajaxStatus" />
+				</apex:pageBlockButtons>
+			</apex:pageBlock>
+
+			<apex:pageBlock title="{!$Label.pse__common_label_select_projects}" id="selectProjectPB">
+				<apex:actionFunction name="doCreateAssignmentsWhenSelectProjectPB" action="{!onAddSelectedProjects}" status="ajaxStatus"
+				 id="addSelected" rendered="{!bean.hasMatchingProjects}" />
+
+				<apex:pageBlockSection columns="1" id="availableProjects" rendered="{!bean.hasMatchingProjects}">
+					<apex:facet name="header">
+						<apex:outputText value="{!$Label.common_label_available} {!$Label.common_label_projects}
+						[{!$Label.mass_assign_resource_projects_label_projects_that_require_assignments}]" />
+					</apex:facet>
+
+					<apex:outputPanel rendered="{!bean.hasMatchingProjects}" styleClass="pageBlockTableScroll">
+						<table border="0" cellspacing="0" cellpadding="0" class="list">
+							<thead>
+								<tr class="headerRow">
+									<th class="headerRow" colspan="1" scope="col">
+										<input type="checkbox" onclick="selectAllProjects(this, 'matchingProjectSelector')" />
+									</th>
+									<th class="headerRow" colspan="1" scope="col" width="125px;">
+										<apex:outputPanel >
+											<a class="link" onclick="sortMatchingProjects('{!bean.SORT_COL_NAME}');">
+												{!$Label.common_label_name}</a>&nbsp;
+											<apex:image styleClass="sortIndicator" value="/img/{!bean.matchingProjPaginator.sortState.sortIndicatorImage}" rendered="{!bean.matchingProjPaginator.sortState.sortColumn == bean.SORT_COL_NAME}"
+											/>
+										</apex:outputPanel>
+									</th>
+									<apex:repeat value="{!AssignMultiProjectSearchColumnsAfterFilter}" var="f">
+										<th class="headerRow" colspan="1" scope="col">
+											<apex:outputPanel >
+												<a class="link" onclick="sortMatchingProjects('{!f.fieldPath}', '{!f.type}');">
+													{!f.label}
+												</a>&nbsp;
+												<apex:image styleClass="sortIndicator" value="/img/{!bean.matchingProjPaginator.sortState.sortIndicatorImage}" rendered="{!bean.matchingProjPaginator.sortState.sortColumn == f.fieldPath}"
+												/>
+											</apex:outputPanel>
+										</th>
+									</apex:repeat>
+								</tr>
+							</thead>
+							<tbody>
+								<apex:repeat value="{!bean.matchingProjPaginator.visibleExtended}" var="wrapperOuter">
+									<apex:repeat value="{!wrapperOuter}" var="wrapper">
+										<tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);}"
+										 onmouseover="if (window.hiOn){hiOn(this);}" class="dataRow">
+											<td class="dataCell">
+												<apex:inputCheckbox value="{!wrapper.selected}" id="matchingProjectSelector" />
+											</td>
+											<td class="dataCell">
+												<apex:outputLink value="/{!wrapper.project.Id}">{!wrapper.project.Name}</apex:outputLink>
+											</td>
+
+											<apex:repeat value="{!AssignMultiProjectSearchColumnsAfterFilter}" var="f">
+												<td class="dataCell">
+													<apex:outputField rendered="{!(f.type == 'date' || f.type == 'datetime')}" value=" {!wrapper.project[f]}" />
+													<apex:outputField rendered="{! NOT(f.type == 'date' || f.type == 'datetime')}" value="{!wrapper.project[f]}" />
+												</td>
+											</apex:repeat>
+										</tr>
+									</apex:repeat>
+								</apex:repeat>
+							</tbody>
+						</table>
+					</apex:outputPanel>
+
+					<apex:pageBlockSectionItem rendered="{!bean.matchingProjPaginator.showNavigators}">
+						<apex:outputPanel style="text-align:center">
+							<apex:commandLink action="{!bean.matchingProjPaginator.showMore}" reRender="availableProjects" status="ajaxStatus">
+								{!bean.matchingProjPaginator.showMoreLabel}</apex:commandLink> &nbsp;|&nbsp;
+							<apex:commandLink action="{!bean.matchingProjPaginator.showAll}" reRender="availableProjects" status="ajaxStatus"> {!bean.matchingProjPaginator.showListLabel}</apex:commandLink>
+							<apex:outputPanel style="text-align: left; display:inline; padding-left:10px;" rendered="{!bean.showResultLimitMessage}">
+								({!SUBSTITUTE($Label.pse__mass_assign_proj_resources_max_proj_shown, '{0}', bean.projectLoadLimitString)})
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem rendered="{!AND(NOT(bean.matchingProjPaginator.showNavigators), bean.showResultLimitMessage)}">
+						<apex:outputPanel style="text-align: left; display:inline;">
+							{!SUBSTITUTE($Label.pse__mass_assign_proj_resources_max_proj_shown, '{0}', bean.projectLoadLimitString)}
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+
+				</apex:pageBlockSection>
+				<apex:pageBlockSection id="noProjects" rendered="{!NOT(bean.hasMatchingProjects)}">
+					<apex:outputText value="{!$Label.pse__mass_assign_resource_projects_message_no_projects_available}"></apex:outputText>
+				</apex:pageBlockSection>
+
+			</apex:pageBlock>
+
+			<apex:actionFunction id="sortMatchingProjects" name="sortMatchingProjects" action="{!bean.matchingProjPaginator.sort}" rerender="availableProjects"
+			 immediate="true" status="ajaxStatus">
+				<apex:param id="sortColumn" name="sortColumn" value="" assignTo="{!bean.matchingProjPaginator.sortState.sortColumn}" />
+				<apex:param name="sortColumnType" value="" />
+			</apex:actionFunction>
+
+			<apex:actionFunction id="sortShortListedProjects" name="sortShortListedProjects" action="{!bean.shortListedProjPaginator.sort}"
+			 rerender="shortListedProjects" immediate="true" status="ajaxStatus">
+				<apex:param id="sortCol" name="sortCol" value="" assignTo="{!bean.shortListedProjPaginator.sortState.sortColumn}" />
+				<apex:param name="sortColumnType" value="" />
+			</apex:actionFunction>
+
+		</apex:form>
+	</apex:outputPanel>
+</apex:page>

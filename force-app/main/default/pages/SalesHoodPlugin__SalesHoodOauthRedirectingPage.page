@@ -1,0 +1,10 @@
+<apex:page controller="SalesHoodPlugin.SalesHoodLoginController">
+Redirecting to Opportunity Detail Page...
+<apex:form id="shLoginRedirectingForm">
+    <apex:actionFunction action="{!retrieveAppCredential}" name="retrieveAppCredential_JS" oncomplete="queryAccessToken_JS()" />
+    <apex:actionFunction action="{!queryAccessToken}" name="queryAccessToken_JS" reRender="shLoginRedirectingForm" />
+</apex:form>
+<script>
+    retrieveAppCredential_JS();
+</script>
+</apex:page>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apex:page contentType="text/xml" controller="pse.TCAjaxBrokerController" showHeader="false" sidebar="false" action="{!init}">
+
+<apex:outputText rendered="{!isAssignmentsLoadRequest}">
+<projAssignHome>
+	<assignments>
+		<apex:repeat value="{!listAssignDetailList}" var="assignmentDetails">
+			<apex:repeat value="{!assignmentDetails}" var="assignmentDetail">
+				<assignmentDetail>
+					<id>{!assignmentDetail.id}</id>
+					<!-- Removed the HTMLENCODE as it will be handled on the js file parsing and using this value. Agile Task: 	AT15382 -->
+					<name><![CDATA[{!assignmentDetail.name}]]></name>
+					<acountName><![CDATA[{!HTMLENCODE(assignmentDetail.accountName)}]]></acountName>
+					<!-- Removed the HTMLENCODE as it will be handled on the js file parsing and using this value. Agile Task: 	AT15382 -->
+					<nickName><![CDATA[{!assignmentDetail.nickName}]]></nickName>
+					<isAssignment><![CDATA[{!assignmentDetail.isAssignment}]]></isAssignment>
+					<tooltip><![CDATA[{!assignmentDetail.tooltip}]]></tooltip>
+					<billable>{!assignmentDetail.isBillable}</billable>
+					<projectId>{!assignmentDetail.projectId}</projectId>
+					<selectedMilestoneID><![CDATA[{!assignmentDetail.selectedMilestoneID}]]></selectedMilestoneID>
+					<dailynotesrequired>{!assignmentDetail.isDailyNotesRequired}</dailynotesrequired>
+				</assignmentDetail>
+				
+				<apex:outputText rendered="{!assignmentDetail.isAssignment}">
+					<assignment>
+			            <id>{!assignmentDetail.assignment.id}</id>
+			            <name><![CDATA[{!assignmentDetail.assignment.name}]]></name> <!-- Do not HTMLENCODE assignment name. will be handle by js file -->
+			            <apex:repeat value="{!assignmentLookupFieldsToDisplay}" var="fieldToDisplay">
+			            	<field><![CDATA[{!IF(assignmentBooleanFieldTypeMap[fieldToDisplay], '--', IF(assignmentfieldsToEscapeOutput[fieldToDisplay], HTMLENCODE(assignmentDetail.assignment[fieldToDisplay]), assignmentDetail.assignment[fieldToDisplay]))}]]></field>
+			            </apex:repeat>
+		            </assignment>
+			    </apex:outputText>
+		       
+		       <apex:outputText rendered="{!NOT(assignmentDetail.isAssignment)}">
+			       <project>
+				        <id>{!assignmentDetail.project.id}</id>
+				        <name><![CDATA[{!assignmentDetail.project.name}]]></name> <!-- Do not HTMLENCODE project name. will be handle by js file -->
+				        <apex:repeat value="{!projectLookupFieldsToDisplay}" var="fieldToDisplay">
+				             <field><![CDATA[{!IF(projectBooleanFieldTypeMap[fieldToDisplay], '--', IF(projectfieldsToEscapeOutput[fieldToDisplay], HTMLENCODE(assignmentDetail.project[fieldToDisplay]), assignmentDetail.project[fieldToDisplay]))}]]></field>
+				        </apex:repeat>
+			        </project>
+			   </apex:outputText>
+			</apex:repeat>
+		</apex:repeat>
+
+		<assignmentMapping>
+	        <apex:repeat value="{!assignmentLookupFieldLabels}" var="assignmentLookupFieldLabel" >
+	            <label><![CDATA[{!assignmentLookupFieldLabel}]]></label>
+	        </apex:repeat>
+       </assignmentMapping>
+       
+		<projectMapping>
+		     <apex:repeat value="{!projectLookupFieldLabels}" var="projectLookupFieldLabel" >
+		         <label><![CDATA[{!projectLookupFieldLabel}]]></label>
+		     </apex:repeat>
+	    </projectMapping>
+	</assignments>
+	
+	<!-- 
+	<assignmentSection>
+	       <apex:repeat value="{!listAssignList}" var="assignmentList">
+	        <apex:repeat value="{!assignmentList}" var="assignment">
+	            <assignment>
+	            <id>{!assignment.id}</id>
+	            <name><![CDATA[{!HTMLENCODE(assignment.name)}]]></name>
+	            <apex:repeat value="{!assignmentLookupFieldsToDisplay}" var="fieldToDisplay">
+	                <field><![CDATA[{!IF(assignmentBooleanFieldTypeMap[fieldToDisplay], '--', IF(assignmentfieldsToEscapeOutput[fieldToDisplay], HTMLENCODE(assignment[fieldToDisplay]), assignment[fieldToDisplay]))}]]></field>
+	            </apex:repeat>
+	            </assignment>
+	        </apex:repeat>
+	       </apex:repeat>
+	        
+	       <mapping>
+	        <apex:repeat value="{!assignmentLookupFieldLabels}" var="assignmentLookupFieldLabel" >
+	            <label><![CDATA[{!assignmentLookupFieldLabel}]]></label>
+	        </apex:repeat>
+	       </mapping>
+	</assignmentSection>
+	
+	 <projectSection>
+	     <apex:repeat value="{!listProjList}" var="projectList">
+	     <apex:repeat value="{!projectList}" var="project">
+	         <project>
+	         <id>{!project.id}</id>
+	         <name><![CDATA[{!HTMLENCODE(project.name)}]]></name>
+	         <apex:repeat value="{!projectLookupFieldsToDisplay}" var="fieldToDisplay">
+	             <field><![CDATA[{!IF(projectBooleanFieldTypeMap[fieldToDisplay], '--', IF(projectfieldsToEscapeOutput[fieldToDisplay], HTMLENCODE(project[fieldToDisplay]), project[fieldToDisplay]))}]]></field>
+	         </apex:repeat>
+	         </project>
+	     </apex:repeat>
+	     </apex:repeat>
+	     <mapping>
+		     <apex:repeat value="{!projectLookupFieldLabels}" var="projectLookupFieldLabel" >
+		         <label><![CDATA[{!projectLookupFieldLabel}]]></label>
+		     </apex:repeat>
+	     </mapping>
+	 </projectSection>
+	  -->
+	  
+	 <error><![CDATA[{!projectLoadError}]]></error>
+	</projAssignHome>
+</apex:outputText>
+
+<apex:outputText rendered="{!isAssignmentChangeRequest}">
+<milestones>
+<milestone><id><![CDATA[]]></id><name><![CDATA[]]></name></milestone><apex:repeat value="{!milestones}" var="ms">
+<!-- Changes done as fix for agile task: 000011080    By: Ashok   Dated: 2 July, 2011  -->
+<milestone><id>{!ms.id}</id><name><![CDATA[{!IF(ISNULL(showMilestoneDisplayField),ms.Name,IF(ISNULL(ms[showMilestoneDisplayField]),'',ms[showMilestoneDisplayField]) )}]]></name></milestone></apex:repeat></milestones>
+</apex:outputText>
+<!-- Original code 
+<apex:outputText rendered="{!isResourceLoadRequest}">
+        <resources><apex:repeat value="{!resources}" var="resourceList"><apex:repeat value="{!resourceList}" var="resource">
+            <resource>
+            <id>{!resource.id}</id>
+            <name><![CDATA[{!resource.Name}]]></name>
+            <account><![CDATA[{!IF(ISNULL(resource.Account.Name), '',  resource.Account.Name)}]]></account>
+            <region><![CDATA[{!IF(ISNULL(resource.Region__r.Name), '',  resource.Region__r.Name)}]]></region>
+            <practice><![CDATA[{!resource.Practice__r.Name}]]></practice>
+            <group><![CDATA[{!resource.Group__r.Name}]]></group>
+            </resource></apex:repeat></apex:repeat>
+        </resources>
+    </apex:outputText> 
+ -->
+<apex:outputText rendered="{!isResourceLoadRequest}">
+	<apex:outputPanel rendered="{!hasError}">
+	    <error>
+	    	<apex:pageMessages id="msgs"/>
+	    </error>
+	</apex:outputPanel>
+	<apex:outputPanel rendered="{!!hasError}">
+        <resources>
+    		<apex:repeat value="{!resources}" var="resourceList">
+	        <apex:repeat value="{!resourceList}" var="resource">
+	            <resource>
+	            <id>{!resource.id}</id>
+	            <name><![CDATA[{!HTMLENCODE(resource.name)}]]></name>
+	            <apex:repeat value="{!resourceLookupFieldsToDisplay}" var="fieldToDisplay">
+	                <field><![CDATA[{!IF(booleanFieldTypeMap[fieldToDisplay], '--', IF(fieldsToEscapeOutput[fieldToDisplay], HTMLENCODE(resource[fieldToDisplay]), resource[fieldToDisplay]))}]]></field>
+	            </apex:repeat>
+	            </resource>
+	        </apex:repeat>
+	        </apex:repeat>
+	         
+	        <mapping>
+	        <apex:repeat value="{!resourceLookupFieldLabels}" var="resourceLookupFieldLabel" >
+	            <label><![CDATA[{!resourceLookupFieldLabel}]]></label>
+	        </apex:repeat>
+	        </mapping>
+	    </resources>
+    </apex:outputPanel>
+</apex:outputText>
+</apex:page>

@@ -1,0 +1,84 @@
+/* Copyright ©2016-2017 7Summits Inc. All rights reserved. */
+
+.THIS{
+	height:100%;
+	position: relative;
+}
+
+.THIS .description {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.THIS .featuredImage {
+	overflow: hidden;
+}
+
+.THIS .featuredImage .titleImageWrap {
+	height: 112px;
+	width:  112px;
+	transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-ms-transition: all 0.5s ease-in-out;
+	-webkit-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
+	border-radius: 5px;
+}
+
+.THIS .featuredImage .titleImageWrap a{
+	width:  100%;
+}
+
+.THIS .featuredImage .tileImage {
+	border-radius: 10px;
+	overflow: hidden;
+	background: white;
+	background-size: cover;
+	position: relative;
+	height: 112px;
+	width:  112px;
+	padding:2px;
+	border: 1px solid lightgrey;
+}
+
+.THIS .featuredImage .image {
+	height: 75px;
+	width: 100%;
+	background-size: cover;
+	background-position: center center;
+	transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-ms-transition: all 0.5s ease-in-out;
+	-webkit-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
+	-webkit-filter: blur(5px); /* Chrome, Safari, Opera */
+	filter: blur(5px);
+	transform: scale(2);
+	-moz-transform: scale(2);
+	-webkit-transform: scale(2);
+	-o-transform: scale(2);
+	-ms-transform: scale(2); /* IE 9 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=2, M12=0, M21=0, M22=2, SizingMethod='auto expand')"; /* IE8 */
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=2, M12=0, M21=0, M22=25, SizingMethod='auto expand'); /* IE6 and 7 */
+}
+
+.THIS:hover .featuredImage .image{
+	transform: scale(2.5);
+	-moz-transform: scale(2.5);
+	-webkit-transform: scale(2.5);
+	-o-transform: scale(2.5);
+	-ms-transform: scale(2.5); /* IE 9 */
+}
+
+.THIS .featuredImage[data-hasBG=true]{
+	margin-bottom: -40px;
+}
+
+.THIS a lightning-icon svg{
+	fill: token(colorTextLink);
+}
+
+.THIS a:hover lightning-icon svg{
+	fill: token(colorTextLinkFocus);
+}

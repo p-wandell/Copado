@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Current status of IP-related warranty with 7Summits (typically expires 30 days after delivery of packaged IP for customers not also engaged with 7Summits services teams) --></help>
+    <label><!-- Warranty Status --></label>
+    <name>Warranty_Status__c</name>
+    <picklistValues>
+        <masterLabel>Current</masterLabel>
+        <translation><!-- Current --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Expired</masterLabel>
+        <translation><!-- Expired --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not sure</masterLabel>
+        <translation><!-- Not sure --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

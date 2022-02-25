@@ -1,0 +1,23 @@
+<apex:page showHeader="false" sidebar="false" title="{!$Label.site.bandwidth_limit_exceeded}">
+  <apex:composition template="{!$Site.Template}">
+    <apex:define name="body">
+      <title>{!$Label.site.bandwidth_limit_exceeded}</title>
+      <div id="content" class="full-width">
+        <div id="post-" class="post">
+            <div class="post-content">
+                <div class="title">
+                    <h2>{!$Label.site.limit_exceeded}</h2><div class="title-sep-container"><div class="title-sep"></div></div>
+                </div>
+                <div class="error_page">
+                    <apex:outputText value="{!$Label.site.sorry_for_inconvenience}"/>
+                    <apex:outputText escape="false" value=" {!$Label.site.get_in_touch}">
+                      <apex:param value="mailto:{!$Site.AdminEmailAddress}"/>
+                      <apex:param value="{!$Label.site.email_us}"/>
+                    </apex:outputText>
+                </div>
+            </div>
+        </div>
+      </div>
+   </apex:define> 
+  </apex:composition>
+</apex:page>

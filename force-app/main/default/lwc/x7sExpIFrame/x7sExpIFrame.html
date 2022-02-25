@@ -1,0 +1,17 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S iFrame -->
+<template>
+    <c-x7s-shr-component-wrapper
+            title={title}
+            title-align={titleAlign}
+            custom-class={componentClass}
+            aria-label={label.labelAriaWrapper}>
+        <div class={iframeContainerClass} lwc:dom="manual"></div>
+        <template if:true={showLoadingSpinner}>
+            <lightning-spinner variant="brand" size="large" if:true={loading}></lightning-spinner>
+        </template>
+    </c-x7s-shr-component-wrapper>
+</template>

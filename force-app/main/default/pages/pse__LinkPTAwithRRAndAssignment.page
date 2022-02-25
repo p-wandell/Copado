@@ -1,0 +1,291 @@
+<apex:page id="LinkPTAwithRRAndAssignment" title="{!$Label.pse__mass_link_ui_label_pta_with_rr_and_assignment}" controller="pse.LinkPTAwithRRAndAssignmentController"
+ sidebar="false" tabStyle="pse__Resource_Request__c" lightningStylesheets="true">
+
+	<style>
+		.bPageTitle {
+			white-space: nowrap;
+		}
+
+		.pageBlockTableScroll {
+			display: block;
+			overflow: auto;
+			width: {!IF($User.UIThemeDisplayed=='Theme4d', '94vw', '92vw')};
+			margin-bottom: 5px;
+		}
+
+		.pageBlockTableScroll table th.headerRow+th.headerRow {
+			border-left: 1px solid #dedede;
+		}
+
+		.alignMiddle {
+			vertical-align: middle;
+		}
+	</style>
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+
+	<apex:form id="tcMassAppForm">
+
+		<script type="text/javascript">
+			function showDifferRows() {
+				actionOnPtas();
+			}
+
+			function selectAllCheckbox(checkBoxObj, checkBoxIdPattern) {
+				var isChecked = checkBoxObj.checked;
+				var inputElem = document.getElementsByTagName("input");
+				for (var i = 0; i < inputElem.length; i++) {
+					if (inputElem[i].id.indexOf(checkBoxIdPattern) != -1)
+						inputElem[i].checked = isChecked;
+				}
+			}
+
+			function updateSelectAllCheckBox(checkBoxIdPattern, selectAllCheckBoxIdPattern) {
+				var selectAllElem = null;
+				var isAllSelectedflag = true;
+				var inputElem = document.getElementsByTagName("input");
+				for (var i = 0; i < inputElem.length; i++) {
+					if (inputElem[i].id.indexOf(checkBoxIdPattern) !== -1) {
+						isAllSelectedflag = isAllSelectedflag && inputElem[i].checked;
+					}
+					if (inputElem[i].id.indexOf(selectAllCheckBoxIdPattern) !== -1) {
+						selectAllElem = inputElem[i];
+					}
+				}
+				selectAllElem.checked = isAllSelectedflag;
+			}
+
+		</script>
+
+		<apex:actionFunction status="ajaxStatus" name="actionOnPtas" action="{!actionFunctionCall}" oncomplete="updateInputFields();"
+		 reRender="tcMassAppForm,rrAsnMassLinkingSection,indicator,PtaSelectionPanel,pageMessages" />
+		<apex:actionFunction name="redirectBackToProject" action="{!redirectToProject}" />
+
+		<apex:pageMessages id="pageMessages" />
+
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+		<apex:pageBlock id="ptaFilterPB" title="{!$Label.pse__mass_link_ui_filter_pta}" mode="edit">
+
+			<apex:pageBlockSection columns="2" id="massLinkFilterbyTable">
+				<apex:pageBlockSectionItem id="projectLookup">
+					<apex:outputLabel for="projectLst" value="{!$Label.pse__common_label_project}" />
+					<apex:inputField id="selectedProject" value="{!parentPT.pse__Project__c}" label="" required="true" />
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel for="showAllField" value="{!$Label.pse__mass_link_ui_show_all_pta}" />
+					<apex:inputCheckbox id="showAllField" value="{!showAll}" styleClass="slds-m-around_none" />
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem rendered="{!NOT(isFieldSetUseInFilter)}">
+					<apex:outputLabel for="resourceLst" value="{!$Label.pse__common_label_resource}" />
+					<apex:inputField id="resourceLst" value="{!selectedPTA.pse__Resource__c}" label="" />
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem rendered="{!NOT(isFieldSetUseInFilter)}">
+					<apex:outputLabel for="roleLst" value="{!$Label.pse__common_label_role}" />
+					<apex:inputField id="roleLst" value="{!selectedPTA.pse__Resource_Role__c}" label="" />
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem rendered="{!NOT(isFieldSetUseInFilter)}">
+					<apex:outputLabel for="startDateField" value="{!$Label.pse__common_label_start_date}" />
+					<apex:inputfield value="{!project.pse__Start_Date__c}" id="startDateField" />
+				</apex:pageBlockSectionItem>
+
+				<apex:pageBlockSectionItem rendered="{!NOT(isFieldSetUseInFilter)}">
+					<apex:outputLabel for="endDateField" value="{!$Label.pse__common_label_end_date}" />
+					<apex:inputField value="{!project.pse__End_Date__c}" id="endDateField" />
+				</apex:pageBlockSectionItem>
+
+				<apex:repeat value="{!projTaskAssignFields}" var="f">
+					<apex:inputField value="{!selectedPTA[f.fieldPath]}" required="{!f.required}" rendered="{!(isFieldSetUseInFilter)}" />
+				</apex:repeat>
+
+				<apex:repeat value="{!projTaskFieldsWraper}" var="f">
+					<apex:inputField value="{!parentPT[f.fieldName]}" required="{!f.isRequired}" rendered="{!(isFieldSetUseInFilter)}" />
+				</apex:repeat>
+
+			</apex:pageBlockSection>
+
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.pse__common_label_filter}" action="{!filterRecords}" status="ajaxStatus" reRender="tcMassAppForm,PtaSelectionPanel,pageMessages,rrAsnMassLinkingSection" />
+				<apex:commandButton value="{!$Label.pse__common_label_clear}" action="{!clearFilters}" reRender="tcMassAppForm,PtaSelectionPanel,pageMessages,rrAsnMassLinkingSection"
+				 status="ajaxStatus" />
+				<apex:commandButton action="{!redirectToProject}" value="{!$Label.pse__common_label_cancel}" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+
+		<apex:pageBlock title="{!$Label.pse__mass_link_ui_label_rr_and_assignment}" id="rrAsnMassLinkingSection" rendered="{!renderResourceRequestAsnSection}">
+			<!-- Filtered RR/ASN section-->
+
+			<apex:pageBlockSection id="rrAsnMassLinkingSectionPB">
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_resource_request}" for="rrSelector" />
+					<apex:outputPanel >
+						<div class="lookupInput slds-m-right_xx-small">
+							<input type="text" id="resourceRequestInput" onclick="showLookup(true)" />
+							<apex:image title="{!$Label.pse__custom_lookup_resource_request}" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+							 onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" styleClass="lookupIcon" alt="{!$Label.pse__custom_lookup_resource_request}"
+							 value="/s.gif" onclick="showLookup(true)" />
+						</div>
+						<apex:image title="{!$Label.pse__common_label_clear}" styleClass="deleteIcon alignMiddle" value="{!URLFOR($Resource.pse__appirioCommon, 'clear.svg')}"
+						 width="20" height="20" onclick="clearSelect(true)" />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.pse__common_label_assignment}" for="assignmentSelector" />
+					<apex:outputPanel >
+						<div class="lookupInput slds-m-right_xx-small">
+							<input type="text" id="assignmentInput" onclick="showLookup(false)" />
+							<apex:image title="{!$Label.pse__custom_lookup_assignment}" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+							 onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" styleClass="lookupIcon" alt="{!$Label.pse__custom_lookup_assignment}"
+							 value="/s.gif" onclick="showLookup(false)" />
+						</div>
+						<apex:image title="{!$Label.pse__common_label_clear}" styleClass="deleteIcon alignMiddle" value="{!URLFOR($Resource.pse__appirioCommon, 'clear.svg')}"
+						 width="20" height="20" onclick="clearSelect(false)" />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+
+			<!-- Filtered RR/ASN section ends here-->
+		</apex:pageBlock>
+		<apex:outputPanel rendered="{!(selectedAsnResource!='' && selectedAsnResource!=null)}" id="indicator" style="padding-bottom: 10px;">
+			<apex:outputText style="color: #CC0000;margin-left: 2px;font-weight: bold;" value="{!$Label.pse__mass_link_pta_resource_auto_updation_note}" />
+		</apex:outputPanel>
+
+		<apex:pageBlock title="{!$Label.pse__mass_link_ui_label_ptas}" id="PtaSelectionPanel" rendered="{!renderFilteredPTA}">
+			<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+			<apex:pageBlockSection columns="1">
+				<apex:outputPanel styleClass="pageBlockTableScroll">
+					<apex:pageBlockTable value="{!PTAs}" var="ptaWrapper" styleClass="slds-border_bottom">
+						<apex:column >
+							<apex:facet name="header">
+								<input type="checkbox" onclick="selectAllCheckbox(this, 'massLinkPtaSelector')" id="massLinkPtaSelectAll" class="slds-m-around_none" />
+							</apex:facet>
+							<apex:inputcheckbox value="{!ptaWrapper.isSelected}" id="massLinkPtaSelector" onclick="updateSelectAllCheckBox('massLinkPtaSelector','massLinkPtaSelectAll')" styleClass="slds-m-around_none" />
+						</apex:column>
+						<apex:column style="white-space: nowrap;">
+							<apex:facet name="header">
+								<apex:outputText value="{!$ObjectType.pse__Project_Task_Assignment__c.Fields.Name.Label}" />
+							</apex:facet>
+							<apex:outputpanel >
+								<a href="/{!ptaWrapper.pta.id}" target="_blank">
+									<apex:outputText rendered="{!(selectedAsnResource!='' && selectedAsnResource!=null && ptaWrapper.pta.pse__Resource__c!=null) && Not(selectedAsnResource == ptaWrapper.pta.pse__Resource__c)}"
+									style="color: #CC0000;margin-left: 2px;margin-right: 2px;float: left;font-weight: bold;font-size:16px" value="*" />
+									<apex:outputField value="{!ptaWrapper.pta.Name}" />
+								</a>
+							</apex:outputpanel>
+						</apex:column>
+						<apex:repeat value="{!ptaColumnsFieldset}" var="f">
+							<apex:column rendered="{!NOT(f.Label == $ObjectType.pse__Project_Task_Assignment__c.Fields.Name.Label)}" style="white-space: nowrap;">
+								<apex:facet name="header">
+									<apex:outputText value="{!f.Label}" />
+								</apex:facet>
+								<apex:outputField value="{!ptaWrapper.pta[f.fieldPath]}" />
+							</apex:column>
+						</apex:repeat>
+					</apex:pageBlockTable>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+			<div style="margin-bottom: 3px">
+				<c:Paginator paginatorAttribute="{!ptaPaginator}" pageRerenderAttribute="PtaSelectionPanel" />
+			</div>
+			<!-- Filtered PTA section Ends here-->
+
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.pse__mass_link_ui_button}" action="{!massLink}" status="ajaxStatus" reRender="tcMassAppForm,PtaSelectionPanel,pageMessages,rrAsnMassLinkingSection" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+
+		<!-- Input hidden to store selection that can be used after selection refresh -->
+		<apex:inputHidden value="{!selectedResourceRequest}" id="selectedValueInputHiddenRR" />
+		<apex:inputHidden value="{!selectedAssignment}" id="selectedValueInputHiddenAS" />
+		<apex:inputHidden value="{!selectedRRName}" id="selectedValueLabelInputHiddenRR" />
+		<apex:inputHidden value="{!selectedAssignmentName}" id="selectedValueLabelInputHiddenAS" />
+
+	</apex:form>
+	<c:lightningLookup exportObjectName="$FFDC" outContainerId="{!$Component.LookupContainer}" />
+	<apex:outputPanel id="LookupContainer" layout="block" />
+
+	<script>
+		prepareVFHeader();
+
+		function prepareVFHeader() {
+			var config = {
+				objectName: '{!JSENCODE($Label.mass_link_ui_label_pta_with_rr_and_assignment)}',
+				recordName: '{!JSENCODE(selectedproject.Name)}',
+				objectApiName: '{!$ObjectType["Resource_Request__c"].Name}',
+				helpUrl: '{!$Page.LinkPTAwithRRAndAssignmentHelp}',
+				onRender: 'onHeaderLoadCallback',
+				buttons: [{
+					id: 'backToProject',
+					label: '{!JSENCODE($Label.mass_assign_proj_resources_label_back_to_project)}',
+					actionFn: 'redirectBackToProject'
+				}]
+			};
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+
+		function updateInputFields() {
+			var rName = document.getElementById('{!$Component.tcMassAppForm.selectedValueLabelInputHiddenRR}').value;
+			document.getElementById('resourceRequestInput').value = (rName != null && rName.length > 0) ? unescape(rName) : '';
+
+			var aName = document.getElementById('{!$Component.tcMassAppForm.selectedValueLabelInputHiddenAS}').value;
+			document.getElementById('assignmentInput').value = (aName != null && aName.length > 0) ? unescape(aName) : '';
+		}
+
+		function showLookup(isRRLookup) {
+			wait(true);
+			var config = {
+				isRRLookup: isRRLookup,
+				projectId: '{!JSENCODE(parentPT.Project__c)}',
+				lookupType: 'RRAndAssignmentLookup'
+			};
+
+			$FFDC.showLookup(config, function (response) {
+				if (response) {
+					if (response.selectedRecord) {
+						doSelect(response.isRRLookup, response.selectedRecord.id, response.selectedRecord.name);
+					}
+				}
+				return true;
+			}, function () {
+				wait(false);
+			});
+		}
+
+		function doSelect(isRRLookup, id, name) {
+			if (isRRLookup) {
+				document.getElementById('resourceRequestInput').value = unescape(name);
+				document.getElementById('{!$Component.tcMassAppForm.selectedValueLabelInputHiddenRR}').value = name;
+				document.getElementById('{!$Component.tcMassAppForm.selectedValueInputHiddenRR}').value = id;
+			} else {
+				document.getElementById('assignmentInput').value = unescape(name);
+				document.getElementById('{!$Component.tcMassAppForm.selectedValueLabelInputHiddenAS}').value = name;
+				document.getElementById('{!$Component.tcMassAppForm.selectedValueInputHiddenAS}').value = id;
+			}
+			showDifferRows();
+		}
+
+		function clearSelect(isRRLookup) {
+			if (isRRLookup) {
+				document.getElementById('resourceRequestInput').value = '';
+				document.getElementById('{!$Component.tcMassAppForm.selectedValueLabelInputHiddenRR}').value = '';
+				document.getElementById('{!$Component.tcMassAppForm.selectedValueInputHiddenRR}').value = '';
+			} else {
+				document.getElementById('assignmentInput').value = '';
+				document.getElementById('{!$Component.tcMassAppForm.selectedValueLabelInputHiddenAS}').value = '';
+				document.getElementById('{!$Component.tcMassAppForm.selectedValueInputHiddenAS}').value = '';
+			}
+			showDifferRows();
+		}
+
+	</script>
+</apex:page>

@@ -1,0 +1,52 @@
+<!--7S community site template -->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="true" >
+  <head>
+      <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, height=device-height, user-scalable=no" />
+      <!-- hiding URL in mobile safari -->
+      <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+      <!-- bootstrap -->
+      <apex:stylesheet value="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/lib/bootstrap/bootstrap-3.1.1-dist/css/bootstrap.css')}"/>
+       <!--main.css-->
+      <apex:stylesheet value="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/css/main.css')}"/>
+      <!-- iOS home icons -->
+      <meta name="apple-mobile-web-app-title" content="Community"/>
+      <link rel="apple-touch-icon" href="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/image/7s_logos/touch-icon-iphone.png')}"/>
+      <link rel="apple-touch-icon" href="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/image/7s_logos/touch-icon-ipad.png')}" sizes="76x76"/>
+      <link rel="apple-touch-icon" href="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/image/7s_logos/touch-icon-iphone-retina.png')}" sizes="120x120"/>
+      <link rel="apple-touch-icon" href="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/image/7s_logos/touch-icon-ipad-retina.png')}" sizes="152x152"/>
+      <link rel="shortcut icon" href="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/image/favicon.jpg')}" type="image/x-icon"/>
+      
+      <style>
+        * {
+          box-sizing: inherit !important;
+        }
+      </style>
+　　　 <!-- jQUery-->
+      <script src="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/lib/jQuery/jquery-1.11.0.min.js')}"></script>
+      <!-- bootstrap -->
+      <script src="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/lib/bootstrap/bootstrap-3.1.1-dist/js/bootstrap.min.js')}"></script>
+      <script>
+        $j = jQuery.noConflict();
+      </script>
+
+  <!-- <c:MixPanelIncludes />-->
+  </head>
+
+
+   <!--header-->
+  <apex:insert name="header">
+    <c:SS_CommunitySiteHeader />
+  </apex:insert>
+
+   <!--body-->
+  <apex:insert name="body">
+    <div id="wrap" class="container-fluid">
+    </div>
+  </apex:insert>
+
+   <!--footer-->
+  <apex:insert name="footer">
+    <c:SS_CommunitySiteFooter />
+  </apex:insert>
+</apex:page>

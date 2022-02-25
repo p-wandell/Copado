@@ -1,0 +1,137 @@
+<apex:page controller="rh2.PS_ExceptionDisplay_Controller" title="Rollup Helper Exception Page" standardStylesheets="false"  sidebar="false" applyBodyTag="false" docType="html-5.0" showHeader="true">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head> 
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>    
+        <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }"/>	  
+    </head> 
+    <apex:slds /> 
+    <script>
+        function showRetryModal(){
+           document.getElementById('retryJobModal').style.display = 'block';
+           document.getElementById('retryJobBackdrop').style.display = 'block';
+        }
+
+        function closeRetryModal(){
+            document.getElementById('retryJobModal').style.display = 'none';	
+            document.getElementById('retryJobBackdrop').style.display = 'none';		
+		}
+
+        function handleErrsAndCloseRetryModal(invalidObjError, emptyObjsError){
+			if(!invalidObjError && !emptyObjsError){
+				closeRetryModal();
+			}
+		}
+    </script>
+    <apex:form > 
+    <div class="slds-scope" role="main">
+    <div class="slds-card">
+        <header class="slds-card__header ">
+            <h4 class="slds-text-heading_small slds-truncate">{!$Label.rh2__rolluphelperexceptions}</h4>
+        </header>
+        <section class="slds-card__body">
+               
+            <c:PS_Retry_Rollups pageController="{!rrc}"/>
+            <apex:outputPanel >
+                    <div class="slds-box slds-box_xsmall slds-theme_default slds-m-around_large" style="width:80%;">{!$Label.rh2__pleaseselectarolluptargetobject}
+                        <br/>
+                        <a onclick="showRetryModal();">Click here to configure a scheduled job to automatically retry rollups for records that have encountered exceptions.</a>
+                    </div>
+                    <apex:selectList value="{!selectedObject}" size="1" styleClass="slds-m-left_large">
+                        <apex:selectOptions value="{!objectNamesWithExceptions}"/>
+                    </apex:selectList>
+                    
+                    <apex:commandButton value="{!$Label.rh2__go}!" action="{!populateExceptionList}"/>
+                    
+                    <br/>
+                    <apex:outputPanel id="exceptionContainer" >
+                        <div style="width:95%; margin-left:auto; margin-right:auto;">
+                        <br/>
+                        <div>
+                            <c:Paginate pageController="{! pgCon }" renderedComponent="exceptionContainer" />
+                        </div>
+                        <apex:outputpanel rendered="{!IF(numberOfExceptions != 0, true, false)}" style="height:575px; width:95%;">
+                            
+                            <table class="slds-table slds-table_bordered slds-max-medium-table_stacked">
+                                <tr>
+                                        <td class="slds-text-heading_label" style="width:50%;">{!$Label.rh2__exceptionstacktrace}</td>
+                                        <td class="slds-text-heading_label" style="width:15%;">{!$Label.rh2__dateexceptionoccurred}</td>
+                                        <td class="slds-text-heading_label" style="width:20%;">{!$Label.rh2__dmlfailedrecordids}</td>
+                                        <td class="slds-text-heading_label" style="width:10%;">{!$Label.rh2__recordsaffected}</td>
+                                        <td class="slds-text-heading_label" style="width:5%;">{!$Label.rh2__help}</td>
+                                </tr>
+                            </table>
+                            <div style="overflow-y:scroll; height:550px;">
+                            <table class="slds-table slds-table_bordered" style="table-layout:fixed !important;">
+                                <apex:repeat value="{!PaginatedListForExceptions}" var="exc" >
+                                    <tr>
+                                        <td class="slds-cell-wrap" style="width:50%; word-wrap:break-word !important">{!exc.rh2__Exception_Stack_Trace__c}</td>
+                                        
+                                        <td style="width:15%;">{!exc.rh2__Formatted_Date__c}</td>
+                            
+                                        <td class="slds-cell-wrap slds-truncate" style="width:20%;"><apex:outputLink value="/{!exc.Id}" target="_blank">{!$Label.rh2__viewrecorddetails}</apex:outputLink></td>
+                            
+                                        <td style="width:10%; text-align:center;">{!exc.rh2__Number_of_Occurrences__c}</td> 
+
+                                        <td style="width:5%; text-align:center;">
+                                            <apex:commandLink action="{!openHelpModal}">
+                                                <apex:param value="{!exc.rh2__Exception_Type__c}" assignTo="{!requestedExpType}" name="seriously"/>
+                                                <img class="slds-icon slds-icon_x-small" src="/apexpages/slds/latest/assets/icons/utility/question_mark_60.png"/>
+                                            </apex:commandLink>
+                                        </td>
+                                    </tr>
+                                </apex:repeat>
+                              
+                            </table>
+                            </div>
+                            
+                        </apex:outputpanel>
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputpanel rendered="{!AND(numberOfExceptions == 0, selectedObject != null)}">
+                        <div class="slds-box slds-box_xsmall slds-theme_default slds-m-around_large">
+                            {!$Label.rh2__noexceptionsfound}
+                        </div>                        
+                    </apex:outputpanel>
+            </apex:outputPanel>            
+            
+        </section> 
+
+    </div>
+    </div> 
+    
+    <div class="slds-scope">
+    <apex:outputPanel rendered="{!showExpModal}">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="width:760px !important;">
+                <div class="slds-modal__header">
+                    <span>
+                        <h2 class="slds-text-heading_medium">{!$Label.ExceptionHelp}</h2>
+                        <apex:actionFunction action="{!closeHelpModal}" name="closeHelpModal"/>
+                        <button type="button" onClick="closeHelpModal()" class="slds-button slds-button_icon-inverse slds-modal__close">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon_large">
+                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>                         
+                        </button>
+                    </span>
+                </div>
+
+                <div class="slds-modal__content" style="padding-left:30px; padding-right:30px; padding-top:15px; padding-bottom:15px;">
+                    <apex:outputText value="{!messageForExceptionType}"/>
+                    <br/>
+                    <apex:outputLink target="_blank" value="{!URLFOR($Page.rh2__PS_helpPage)}">{!$Label.rh2__help} {!$Label.rh2__andfaq}</apex:outputLink>&nbsp; | &nbsp;
+                    <apex:outputLink target="_blank" value="mailto:support@passagetech.com">{!$Label.rh2__contactsupport}</apex:outputLink>
+                </div>
+
+                <div class="slds-modal__footer">
+                    <div class="slds-x-small-buttons_horizontal">                        
+                        <apex:commandButton action="{! closeHelpModal }" styleClass="slds-button slds-button_neutral slds-button_small slds-m-bottom_x-small" value="{!$Label.rh2__close}" />                      
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </apex:outputPanel> 
+    </div>
+    </apex:form>
+</html> 
+</apex:page>

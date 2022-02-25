@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>この値を設定すると開始日フィールドが自動的に設定されます</help>
+    <label><!-- Start Calculating From --></label>
+    <name>pse__Start_Calculating_From__c</name>
+    <picklistValues>
+        <masterLabel>Start of next week</masterLabel>
+        <translation>来週の始まり</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Start of this week</masterLabel>
+        <translation>今週の始まり</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Today</masterLabel>
+        <translation>今日</translation>
+    </picklistValues>
+</CustomFieldTranslation>

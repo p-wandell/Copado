@@ -1,0 +1,143 @@
+<apex:page standardController="ffct__BundleSubComponent__c" extensions="ffct.BundleSubComponentControllerExtension" action="{!isToolMustBeActivated}">
+  <apex:form id="form">
+         <apex:actionStatus id="eventStatus"  >
+         <apex:facet name="start">
+          <apex:outputPanel >
+                        <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                            <div style="position:absolute;top:50%;left:50%">
+                                <apex:image value="/img/loading32.gif"></apex:image>
+                            </div>
+                        </div>
+           </apex:outputPanel>
+        </apex:facet>   
+         </apex:actionStatus>
+        <apex:sectionHeader subtitle="{!IF(IsEdit,NewSubComponent.Name,$Label.ffct__newbundlesubcomponent)}" title="{!$Label.ffct__bundlesubcomponent}" help="helploader?topicid=1016"/>
+        <apex:pagemessages id="pgMsg"/>
+        <apex:pageBlock title="{!$Label.ffct__bundlesubcomponentedit}">
+            <apex:pageblockbuttons >
+                <apex:commandbutton action="{!save}" value="{!$Label.ffct__save}" disabled="{!ISNULL(BundleComponent)}"/>
+                <apex:commandbutton action="{!saveAndNew}" value="{!$Label.ffct__saveandnew}" disabled="{!ISNULL(BundleComponent)}"/>
+                <apex:commandbutton action="{!cancel}" value="{!$Label.ffct__cancel}" />
+            </apex:pageblockbuttons>
+            <apex:pageblocksection rendered="{!BundleComponent.ffct__Type__c!=MetadataModeValue && BundleComponent.ffct__Type__c!=SecondaryMetadataModeValue}">
+
+                <apex:selectList value="{!NewSubComponent.ffct__BundleSubComponentName__c}" multiselect="false" size="1" rendered="{!BundleComponent.ffct__Type__c=='MetadataProfile' || BundleComponent.ffct__Type__c=='MetadataPermissionSet'}">
+                    <apex:selectOptions value="{!ChildOptions}"/>
+                </apex:selectList>
+                <apex:inputField value="{!NewSubComponent.ffct__BundleSubComponentName__c}" rendered="{!BundleComponent.ffct__Type__c!='MetadataProfile' && BundleComponent.ffct__Type__c!='MetadataPermissionSet' && BundleComponent.ffct__Type__c!='Others'}" />
+                
+                <apex:outputfield value="{!NewSubComponent.ffct__BundleComponent__c}" />
+                
+                <apex:pageblocksectionitem rendered="{!BundleComponent.ffct__Type__c=='Others'}">
+                    <apex:outputlabel >{!$Label.ffct__type}</apex:outputlabel>
+                    <apex:panelgroup >
+                     <apex:selectList value="{!NewSubComponent.ffct__Type__c}" multiselect="false" size="1"  onchange="validateSubComponentType()" >
+                        <apex:selectOptions value="{!BundleSubCompType}"/>
+                    </apex:selectList>
+                     <apex:actionFunction name="validateSubComponentType" reRender="form" status="eventStatus" action="{!populateForOtherComponent}"/>
+                 </apex:panelgroup>
+                </apex:pageblocksectionitem>
+                
+                <apex:inputField value="{!LookupObject['c2g__Company__c']}" rendered="{!BundleComponent.ffct__Type__c=='Others' && NewSubComponent.ffct__Type__c=='FFACompany' && LookupObject!=null}" />
+                
+                <apex:pageblocksectionitem rendered="{!BundleComponent.ffct__Type__c=='MetadataPermissionSet' || BundleComponent.ffct__Type__c=='MetadataProfile'}">
+                	<apex:outputLabel value="{!$Label.ffct__excludeuserpermissions}" for="excludePerm"/>
+                	<apex:inputCheckbox value="{!ExcludeUserPermissions}" Id="excludePerm" />
+                </apex:pageblocksectionitem>
+               	<apex:inputField value="{!NewSubComponent.ffct__Overwrite__c}" onchange="if  (this.checked)  alert('{!$Label.ffct__metadataoverwriteontargetorg}')" rendered="{!BundleComponent.ffct__Type__c=='MetadataPermissionSet' || BundleComponent.ffct__Type__c=='MetadataProfile'}"/>
+                <apex:pageblocksectionitem rendered="{!BundleComponent.ffct__Type__c!='MetadataPermissionSet' && BundleComponent.ffct__Type__c!='MetadataProfile' && BundleComponent.ffct__Type__c!='Others'}">
+                    <apex:outputlabel >{!$Label.ffct__type}</apex:outputlabel>
+                    <apex:panelgroup >
+                     <apex:selectList required="true" value="{!NewSubComponent.ffct__Type__c}" multiselect="false" size="1"  onchange="showTheFilterElements()"  rendered="{!BundleComponent.ffct__Type__c==MetadataModeRecordValue && !DisplaySubComponentTypeBox}">
+                        <apex:selectOptions value="{!BundleSubCompType}"/>
+                    </apex:selectList>
+                    <apex:inputField required="true" value="{!NewSubComponent.ffct__Type__c}" rendered="{!DisplaySubComponentTypeBox}" onblur="showTheFilterElements()" />
+                 </apex:panelgroup>
+                </apex:pageblocksectionitem>
+                
+                <apex:outputfield value="{!NewSubComponent.ffct__Type__c}" rendered="{!BundleComponent.ffct__Type__c=='MetadataPermissionSet' || BundleComponent.ffct__Type__c=='MetadataProfile'}"/>
+                
+                
+                <apex:pageblocksectionitem rendered="{!BundleComponent.ffct__Type__c==MetadataModeRecordValue}">
+                    <apex:outputlabel >{!$Label.ffct__isfilter}</apex:outputlabel>
+                    
+                    <apex:selectList value="{!NewSubComponent.ffct__IsFilter__c}" multiselect="false" size="1" onchange="showTheFilterElements();">
+                        <apex:selectOptions value="{!BundleSubCompFilter}"/>
+                    </apex:selectList>
+                       
+                </apex:pageblocksectionitem>
+                
+                <apex:pageblocksectionitem id="filterbyList" rendered="{!BundleComponent.ffct__Type__c!='MetadataPermissionSet' && BundleComponent.ffct__Type__c!='MetadataProfile' && BundleComponent.ffct__Type__c!='Others'}">
+                    
+                    <apex:outputlabel >{!$Label.ffct__filter}</apex:outputlabel>
+                     <apex:panelgroup >
+                     <apex:selectList value="{!NewSubComponent.ffct__FilterBy__c}" multiselect="false" size="1" rendered="{!NewSubComponent.ffct__IsFilter__c!=IsFilterModeTagsValue}">
+                        <apex:selectOptions value="{!BundleSubCompFilterByElement}"/>
+                    </apex:selectList>
+                    <apex:inputField value="{!NewSubComponent.ffct__FilterBy__c}" rendered="{!NewSubComponent.ffct__IsFilter__c==IsFilterModeTagsValue}" />
+                    </apex:panelgroup>
+                </apex:pageblocksectionitem>
+            </apex:pageblocksection>
+            
+               <apex:pageblocksection rendered="{!BundleComponent.ffct__Type__c==MetadataModeValue || BundleComponent.ffct__Type__c==SecondaryMetadataModeValue}">
+                <apex:outputfield value="{!NewSubComponent.ffct__BundleComponent__c}" />
+                 <apex:pageblocksectionitem rendered="{!BundleComponent.ffct__Type__c!=SecondaryMetadataModeValue}">
+                    <apex:outputlabel >{!$Label.ffct__isfilter}</apex:outputlabel>
+                    
+                    <apex:selectList value="{!NewSubComponent.ffct__IsFilter__c}" multiselect="false" size="1" onchange="bundleComponentTypeForFieldSets();">
+                        <apex:selectOptions value="{!BundleSubCompFilter}"/>
+                    </apex:selectList>
+                </apex:pageblocksectionitem>
+                
+                <apex:pageblocksectionitem >
+                    <apex:outputlabel >{!$Label.ffct__type}</apex:outputlabel>
+                    <apex:panelgroup >
+                     <apex:selectList value="{!NewSubComponent.ffct__Type__c}" multiselect="false" size="1"  onchange="var filter ='{!NewSubComponent.ffct__IsFilter__c}'; if(filter) showTheFilterElementsForMetadata(); else showSubComponentNames();"  rendered="{!!DisplaySubComponentTypeBox}">
+                        <apex:selectOptions value="{!BundleSubCompType}"/>
+                    </apex:selectList>
+                    <apex:inputField value="{!NewSubComponent.ffct__Type__c}" rendered="{!DisplaySubComponentTypeBox}" onblur="var filter ='{!NewSubComponent.ffct__IsFilter__c}'; if(filter) showTheFilterElementsForMetadata(); else showSubComponentNames();" />
+                 </apex:panelgroup>
+                </apex:pageblocksectionitem>
+                
+                <apex:pageblocksectionitem id="filterbyList" rendered="{!BundleComponent.ffct__Type__c!=SecondaryMetadataModeValue}">
+                    <apex:outputlabel >{!$Label.ffct__filter}</apex:outputlabel>
+                     <apex:panelgroup >
+                     <apex:selectList value="{!NewSubComponent.ffct__FilterBy__c}" multiselect="false" size="1" rendered="{!NewSubComponent.ffct__IsFilter__c!=IsFilterModeTagsValue}">
+                        <apex:selectOptions value="{!BundleSubCompFilterByElement}"/>
+                    </apex:selectList>
+                    <apex:inputField value="{!NewSubComponent.ffct__FilterBy__c}" rendered="{!NewSubComponent.ffct__IsFilter__c==IsFilterModeTagsValue}" />
+                    </apex:panelgroup>
+                </apex:pageblocksectionitem>
+                
+				<apex:pageblocksectionitem id="parentName" rendered="{!showParentData}">
+               		<apex:outputlabel >{!parentOptionsLabel}</apex:outputlabel>
+                    <apex:panelgroup >
+                    	<apex:selectList value="{!SelectedParent}" multiselect="false" size="1" onchange="showSubComponentChildNames()" rendered="{!!DisplayParentNameTextBox}"> 
+                        	<apex:selectOptions value="{!ParentOptions}"/>
+                    	</apex:selectList>
+                    	<apex:inputText value="{!SelectedParent}"  onblur="showSubComponentChildNames()" rendered="{!DisplayParentNameTextBox}"/>
+                    </apex:panelgroup>
+                </apex:pageblocksectionitem>
+                
+                 <apex:pageblocksectionitem id="metadataName" rendered="{!showChildData}">
+                    <apex:outputlabel >{!$Label.ffct__bundlesubcomponentname}</apex:outputlabel>
+                     <apex:panelgroup >
+                     <apex:selectList value="{!NewSubComponent.ffct__BundleSubComponentName__c}" multiselect="false" size="1" rendered="{!!DisplayNameTextBox}">
+                        <apex:selectOptions value="{!ChildOptions}"/>
+                    </apex:selectList>
+                      <apex:inputField value="{!NewSubComponent.ffct__BundleSubComponentName__c}" rendered="{!DisplayNameTextBox}" />
+                    </apex:panelgroup>
+                </apex:pageblocksectionitem>
+            </apex:pageblocksection>
+            
+        </apex:pageBlock>  
+
+         <apex:actionFunction name="bundleComponentTypeForFieldSets" action="{!getbundleComponentTypeForFieldSets}" reRender="form" status="eventStatus"  rendered="{!BundleComponent.ffct__Type__c==MetadataModeValue}"/>
+       <apex:actionFunction name="showSubComponentChildNames" action="{!populateChildValues}" reRender="form" status="eventStatus"  rendered="{!BundleComponent.ffct__Type__c==MetadataModeValue || BundleComponent.ffct__Type__c==SecondaryMetadataModeValue}"/>
+       <apex:actionFunction name="showSubComponentNames" action="{!listMetadataAPIValues}" reRender="form" status="eventStatus"  rendered="{!BundleComponent.ffct__Type__c==MetadataModeValue || BundleComponent.ffct__Type__c==SecondaryMetadataModeValue}"/>
+       <apex:actionFunction name="showTheFilterElements" action="{!buildTheListOfFilterBy}" reRender="form" status="eventStatus"  rendered="{!BundleComponent.ffct__Type__c==MetadataModeRecordValue}"/>
+       <apex:actionFunction name="showTheFilterElementsForMetadata" action="{!buildMetadataListOfFilterBy}" reRender="form" status="eventStatus"  rendered="{!BundleComponent.ffct__Type__c==MetadataModeValue}"/>
+    </apex:form> 
+ 
+  
+</apex:page>

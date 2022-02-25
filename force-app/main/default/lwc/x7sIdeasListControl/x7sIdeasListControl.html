@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper custom-class={customClass} 
+								 auto-slds-card={autoSlds} 
+								 aria-label={labels.labelAriaWrapper}
+								 variant ={variant}>
+		<div class={bodyClass}>
+			<div if:true={showViewSelector}>
+				<lightning-button-group class={buttonGroup}>
+					<template if:true={showCard}>
+						<lightning-button-icon icon-name="utility:tile_card_list"
+												title={labels.titleViewCard}
+												alternative-text={labels.altViewCard}
+												variant={tileVariant}
+												onclick={handleCardView}>
+						</lightning-button-icon>
+					</template>
+					<template if:true={showList}>
+						<lightning-button-icon icon-name="utility:list"
+												title={labels.titleViewList}
+												alternative-text={labels.altViewList}
+												variant={listVariant}
+												onclick={handleListView}>
+						</lightning-button-icon>
+					</template>
+					<template if:true={showTable}> 
+						<lightning-button-icon icon-name="utility:table"
+												title={labels.titleViewTable}
+												alternative-text={labels.altViewTable}
+												variant={tableVariant}
+												onclick={handleTableView}>
+						</lightning-button-icon>
+					</template>
+				</lightning-button-group>
+			</div>
+			<div class="slds-col">
+				<c-x7s-shr-list-control list-id={listId}
+										custom-class={customClass}
+										default-sort={defaultSort}
+										hide-pagination={hidePagination}
+										hide-sort={hideSort}
+										hide-view-selector="true"
+										sort-options={sortBy}
+										sort-variant={sortVariant}
+				>
+				</c-x7s-shr-list-control>
+			</div>
+		</div>
+	</c-x7s-shr-component-wrapper>
+</template>

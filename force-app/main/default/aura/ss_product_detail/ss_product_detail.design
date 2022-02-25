@@ -1,0 +1,32 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 7/25/17.
+ -->
+
+<design:component label="7S Product Detail">
+	<design:attribute name="setting"
+	                  label="Catalog Setting Name"
+	                  description="Enter the name of product catalog custom metadata type record. Leave blank to use Default"/>
+	<design:attribute name="showHeader"
+	                  label="Show header"/>
+	<design:attribute name="title"
+	                  label="Header text"/>
+	<design:attribute name="showName"
+	                  label="Show product name"/>
+	<design:attribute name="showProductFamily"
+	                  label="Show product family"/>
+	<design:attribute name="showProductCode"
+	                  label="Show product code"/>
+	<design:attribute name="showPrice"
+	                  label="Show price"/>
+	<design:attribute name="showDescription"
+	                  label="Show product description"/>
+	<design:attribute name="showAddToCart"
+	                  label="Show add to cart button"/>
+	<design:attribute name="showActionMenu"
+	                  label="Show action menu"
+	                  description="Show the action menu to initiate an custom defined action."/>
+</design:component>

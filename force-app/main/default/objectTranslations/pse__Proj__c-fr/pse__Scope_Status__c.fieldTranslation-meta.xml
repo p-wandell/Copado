@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Sélectionnez l&apos;état actuel de l&apos;étendue dans la liste de sélection. Vous pouvez également utiliser Process Builder ou des règles de workflow pour utiliser votre propre logique afin de contrôler le comportement du champ d&apos;indicateur de couleur correspondant.</help>
+    <label><!-- Scope Status --></label>
+    <name>pse__Scope_Status__c</name>
+    <picklistValues>
+        <masterLabel>Green</masterLabel>
+        <translation>vert</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Red</masterLabel>
+        <translation>rouge</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Yellow</masterLabel>
+        <translation>Jaune</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Asset_Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Asset Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Pack</fullName>
+                <default>false</default>
+                <label>Pack</label>
+            </value>
+            <value>
+                <fullName>Pack Component</fullName>
+                <default>false</default>
+                <label>Pack Component</label>
+            </value>
+            <value>
+                <fullName>Bolt</fullName>
+                <default>false</default>
+                <label>Bolt</label>
+            </value>
+            <value>
+                <fullName>Bolt Component</fullName>
+                <default>false</default>
+                <label>Bolt Component</label>
+            </value>
+            <value>
+                <fullName>Stand Alone</fullName>
+                <default>false</default>
+                <label>Stand Alone</label>
+            </value>
+            <value>
+                <fullName>Legacy Pack</fullName>
+                <default>false</default>
+                <label>Legacy Pack</label>
+            </value>
+            <value>
+                <fullName>Legacy Pack Component</fullName>
+                <default>false</default>
+                <label>Legacy Pack Component</label>
+            </value>
+            <value>
+                <fullName>Legacy Stand Alone</fullName>
+                <default>false</default>
+                <label>Legacy Stand Alone</label>
+            </value>
+            <value>
+                <fullName>StandaloneOffering</fullName>
+                <default>false</default>
+                <label>StandaloneOffering</label>
+            </value>
+            <value>
+                <fullName>BundleEntry</fullName>
+                <default>false</default>
+                <label>BundleEntry</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

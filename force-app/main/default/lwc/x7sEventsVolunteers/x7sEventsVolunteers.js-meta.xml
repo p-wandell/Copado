@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Events Volunteers</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+		<target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default, lightning__RecordPage">
+            <property name="recordId" 
+                    label="Record Id"
+                    type="String"
+                    default="{!recordId}"
+                    description="Set to {!recordId} to pass the page's record Id."/>
+            <property name="variant" 
+                    label="Default Variant"
+                    type="String"  
+                    description="Select the default list layout" 
+                    datasource="default,slds-card,featured" />
+            <property name="customClass" 
+                    label="Custom Class" 
+                    type="String" 
+                    description="Used for custom styling." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,18 @@
+<apex:page standardController="Opportunity" extensions="pse.CreateCRController" tabStyle="pse__Proj__c" action="{!initForProjectLookup}" lightningStylesheets="true">
+    <apex:variable var="isLightningView" value="{!$User.UIThemeDisplayed=='Theme4d'}" />
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+    <apex:sectionHeader title="{!$Label.pse__create_change_request_label_for_select_project}" />
+    <apex:form id="projSelFrm">
+    	<apex:pagemessages />
+        <apex:pageBlock >
+           	<apex:pageBlockSection title="{!$Label.pse__create_change_request_label_for_project_details}" columns="1" collapsible="false">
+             	<apex:outputPanel >
+             		<apex:outputLabel value="{!$Label.pse__common_label_project_name}" for="filterProjectName" styleClass="{!IF(isLightningView,'','labelCol')}"/>
+             		<apex:inputField value="{!formBean.proxyForProjLookup.pse__Project__c}" />
+             		<apex:commandButton value="{!$Label.pse__common_label_next}" action="{!nextForProjectLookup}" id="nextButton" />
+                	<apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!list}" immediate="true"/>
+            	</apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>     
+</apex:page>

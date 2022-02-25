@@ -1,0 +1,22 @@
+<!-- fflib_vfbatchprogressinfo -->
+<apex:page controller="ffr.fflib_BatchProgressInfoController" tabStyle="ffr__fflib_BatchProcess__c">
+	<apex:form >
+		<apex:sectionHeader title="{!$Label.ffr__fflib_batchprocessprogresstitle}"/>
+		<apex:pageBlock title="{!$Label.ffr__fflib_batchprocessprogresssectiontitle}">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton value="{!$Label.ffr__fflib_batchprocessprogressclosebutton}" action="{!close}"/>
+			</apex:pageBlockButtons>
+			<apex:pageMessages />
+			<apex:pageBlockSection id="jobStatus" columns="1" collapsible="false">
+				
+				<c:fflib_batchInfo id="jobStatus"
+					batchControlRecordId="{!BatchControlRecordIdAttr}"
+					batchJobClass="{!BatchJobClassAttr}"
+				/>
+				
+				<apex:actionPoller action="{!redirectToBatchControl}" rerender="redirect" interval="5"/>
+				
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

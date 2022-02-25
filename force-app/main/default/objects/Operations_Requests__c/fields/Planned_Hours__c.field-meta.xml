@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Planned_Hours__c</fullName>
+    <description>Number of nonbill hours to be schedule for this resource.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Proved the number of nonbill hours forecasted for this resource.</inlineHelpText>
+    <label>Planned Hours</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__EnableUpdate__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>If this field is set then the records on the target org will get updated. It is only applicable if the component type is records. If this field is not set the records will get inserted.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If this field is set then the records on the target org will get updated. It is only applicable if the component type is records. If this field is not set the records will get inserted.</inlineHelpText>
+    <label>Enable Update</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

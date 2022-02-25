@@ -1,0 +1,127 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+  -->
+<template>
+	<c-x7s-shr-card 
+		title={eventName}
+		record-id={event.Id}
+		topics={topics}
+		image-src={imageUrl}
+		image-height="140px"
+		hide-image={hideImage}
+		layout={layout}
+		variant={tileVariant}
+		text-align={textAlign}
+		use-avatar={useAvatar}>
+		<slot>
+			<!--Display event date-->
+			<lightning-formatted-date-time 
+						value={event.localeStartDate}
+						month="short"
+						day="2-digit"
+						time-zone={timeZone}>
+			</lightning-formatted-date-time>
+			<template if:true={event.showStartYear}>
+				,&nbsp;<lightning-formatted-date-time 
+						value={event.localeStartDate}
+						year="numeric"
+						time-zone={timeZone}>
+				</lightning-formatted-date-time>
+			</template>
+			<template if:true={event.showEndDate}>
+				-&nbsp;<lightning-formatted-date-time 
+						value={event.localeEndDate}
+						month="short"	
+						day="2-digit"
+						year="numeric"
+						time-zone={timeZone}>
+					</lightning-formatted-date-time>
+			</template>
+			<template if:false={event.showEndDate}>
+				,&nbsp;<lightning-formatted-date-time 
+							value={event.localeEndDate}
+							year="numeric"
+							time-zone={timeZone}>
+					   </lightning-formatted-date-time>
+			</template>
+
+			<!--Display Event Time-->
+			<div if:true={isNotAllDayEvent}>
+				<lightning-formatted-date-time 
+						value={event.localeStartDate}
+						hour="2-digit"
+						minute="2-digit"
+						time-zone={timeZone}>
+				</lightning-formatted-date-time>
+				<template if:true={event.localeEndDate}>
+					&nbsp;{labels.labelTo}&nbsp;
+					<lightning-formatted-date-time 
+							value={event.localeEndDate}
+							hour="2-digit"
+							minute="2-digit"
+							time-zone={timeZone}>
+					</lightning-formatted-date-time>
+				</template>
+			</div>
+
+			<!--Display Event Type-->
+			<div if:true={showEventType}>
+				<template if:true={event.Event_Type__c}>
+					<lightning-formatted-text value={event.Event_Type__c} >
+					</lightning-formatted-text>
+				</template>     
+			</div>
+
+			<!--Display Event Location-->
+			<template if:true={location}>
+				<lightning-formatted-text value={location} >
+				</lightning-formatted-text>
+			</template> 
+			
+			<!--Display Custom Fields-->
+			<div if:true={customField1Value}>
+				<template if:true={event.customField1}>
+					<template if:true={customLabel1}>
+						<lightning-formatted-text value={customLabel1}>
+						</lightning-formatted-text>&nbsp;
+					</template>
+				{event.customField1}
+				</template>
+			</div>
+			<div if:true={customField2Value}>
+				<template if:true={event.customField2}>
+					<template if:true={customLabel2}>
+						<lightning-formatted-text value={customLabel2}>
+						</lightning-formatted-text>&nbsp;
+					</template>
+					{event.customField2}
+				</template>
+			</div>
+			<div if:true={customField3Value}>
+				<template if:true={event.customField3}>
+					<template if:true={customLabel3}>
+						<lightning-formatted-text value={customLabel3} >
+						</lightning-formatted-text>&nbsp;
+					</template>
+					{event.customField3}
+				</template>
+			</div>
+			<div if:true={displayNumOfAttendees}>
+				<lightning-icon icon-name="utility:people" 
+								size="x-small" 
+								alternative-text="people"
+								title="people">
+				</lightning-icon>
+				{event.Number_of_Attendees__c}
+			</div>
+			<div if:true={limitToSpecificGroups}>
+				<div if:true={event.groupName}>
+					<lightning-formatted-text value={labels.labelGroup} >
+					</lightning-formatted-text>&nbsp;
+					<lightning-formatted-text value={event.groupName} onclick={navigateToGroup} linkify>
+					</lightning-formatted-text>
+				</div>
+			</div>
+		</slot>
+	</c-x7s-shr-card>
+</template>

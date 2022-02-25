@@ -1,0 +1,11 @@
+<apex:page standardController="ffr__InquiryTemplate__c" extensions="ffr.ActionViewImportExportController" recordSetVar="templates" tabstyle="ExportActionViews__tab" sidebar="true" docType="html-5.0">
+	<c:extjs_bootstrap applicationName="ActionViewImportExport" staticResource="{!$Resource.ffr__ActionViewImportExport}" developmentPrefix="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}">
+		<c:actionviewimportexport export="true"
+			availableList="{!AvailableList}"
+			selectedList="{!SelectedList}"
+			exportBag="{!$RemoteAction.ActionViewImportExportController.exportBag}"
+			downloadUrl="{!downloadUrl}"
+			ListPageUrl="{!ListPageUrl}"
+			version="{!Version}"/>
+	</c:extjs_bootstrap>
+</apex:page>

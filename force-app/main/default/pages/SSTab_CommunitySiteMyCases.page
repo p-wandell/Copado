@@ -1,0 +1,109 @@
+<apex:page showHeader="true" standardController="Case" sidebar="false" recordSetVar="cases" standardStylesheets="false" extensions="SS_CommunitySiteMyCasesControllerExt" showChat="true" title="{!$Label.myCases}">
+
+      <c:SSTab_CommunitySiteIncludes />
+            <title>{!$Label.myCases}</title>
+            <div id="content">
+                <c:SS_PageHeader title="{!$Label.myCases}"/>
+                <div>
+                <apex:form >
+                    <apex:outputPanel layout="none" rendered="{!cases == null}">
+                        <div class="no-case-message">
+                            {!$Label.NoCasesExistMessage}
+                        </div>
+                    </apex:outputPanel>
+                    <a href="#" onclick="openModal()" class="btn ss-button"><!--mixpanel.track('Opened New Case Form');" class="btn">-->
+                      {!$Label.createNewCase}
+                    </a>
+                    <apex:outputPanel layout="none" rendered="{!cases != null}">
+                        <div class="table-responsive">
+                            <table id="myCases" class="table table-hover">
+                                <thead> 
+                                <tr>
+                                    <th>
+                                        {!$ObjectType.Case.fields.CaseNumber.label}
+                                    </th>
+                                    <th>
+                                        {!$ObjectType.Case.fields.Subject.label}
+                                    </th>
+                                    <th>
+                                        {!$ObjectType.Case.fields.Status.label}
+                                    </th>
+                                    <th>
+                                        <!-- TODO: Change to Date/Time Opened -->
+                                        {!$ObjectType.Case.fields.CreatedDate.label}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <apex:repeat var="c" value="{!cases}">
+                                <tr>
+                                    <td>
+                                        <apex:commandLink value="{!c.CaseNumber}" action="{!goToDetail}" styleClass="ss-link"> 
+                                            <apex:param name="CaseNumber" value="{!c.CaseNumber}" assignTo="{!CaseNumber}"/>
+                                        </apex:commandLink>
+                                    </td>
+                                    <td>
+                                        {!c.Subject}
+                                    </td>
+                                    <td>
+                                        {!c.Status}
+                                    </td>
+                                    <td> 
+                                        <apex:outputField value="{!c.CreatedDate}" />
+                                    </td>
+                                </tr>
+                                </apex:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                    </apex:outputPanel>
+                </apex:form>
+                </div>
+            </div>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="top: 50px;">
+          <div class="modal-dialog" style="width: 80% !important;">
+            <div class="modal-content" style="background-color: #FFFFFF;">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">{!$Label.newCase}</h4>
+              </div>
+                <apex:form >
+              <div class="modal-body" style="/*width:108%;*/">
+                             <div class="row">
+                             <apex:repeat value="{!$ObjectType.Case.FieldSets.CommunityFieldset2}" var="f">
+                                <div class="col-md-6">
+                                    <div class="panel panel-info">
+                                       <div class="panel-heading pageLabel">{!f.label}</div>
+                                       <div class="panel-body">
+                                            <apex:inputField styleClass="form-control" rendered="{!f.Type != 'textarea'}" value="{!myCase[f]}"/>
+                                            <apex:inputTextArea styleClass="form-control" style="height:150px;" rendered="{!f.Type == 'textarea'}" value="{!myCase[f]}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </apex:repeat>
+                            </div>
+              </div>
+              <div class="modal-footer">
+                <div class="row">
+                <!-- TODO - hook event into a successful create -->
+                <apex:commandButton styleclass="btn " action="{!saveCase}" value="{!$Label.createCase}"/><!-- onclick="mixpanel.track('Created Case');"/>-->
+                </div>
+              </div>
+            </apex:form>
+            </div>
+          </div>
+        </div>
+
+        <script type="text/javascript">
+            var openModal = function() {
+                $j('#myModal').modal('toggle');
+            };
+
+            $j(document).ready(function() {
+                // allow navigation to automatically open the modal window
+                if (window.location.search.indexOf('create=1') >= 0) {
+                    openModal();
+                }
+            });
+        </script>
+</apex:page>

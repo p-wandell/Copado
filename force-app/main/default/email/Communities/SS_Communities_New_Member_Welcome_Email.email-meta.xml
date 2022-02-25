@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Notification that user has been added to a community.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Letterhead_with_Logo</letterhead>
+    <name>7Summits Communities: New Member Welcome Email</name>
+    <style>freeForm</style>
+    <subject>Welcome to {!Community_Name}</subject>
+    <textOnly>Hello {!Receiving_User.FirstName} !
+
+Welcome to the 7Summits Support Community! Membership, or Sherpaship, to the Community is by invite only. If you feel another member of your organization should be a member then please feel free to create a case within the Community once you have registered!
+
+The purpose of the Community is to provide you the following related to your purchase of one of 7Summits Products:
+
+Ask Questions of 7Summits related to the Products you have purchased
+Access to our Knowledgebase which is related to the Products you have purchased
+Engage 1:1 with 7Summits within your own Customer Groups. If you have an existing Customer Group with 7Summits when engaging in one of our solution projects then you can start to engage here once that project is over.
+Provide your feedback directly to the 7Summits Product Team. We want to hear from you!!!!!
+Get a sneak peek around our plans and next steps in delivering our roadmap to you
+Messaging around announcements if identified known issues, patches impending and upgrades made available
+
+The Community is meant to be a 24/7 channel to access knowledge, content, ask a question or submit a ticket. If you have any questions in regards to registration then please feel free to ask customersupport@7summitsinc.com.
+
+Thank you for joining the Community and Welcome to the Mountain!
+
+Your username is {!Receiving_User.Username}
+
+To get started, go to {!Community_Url}</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

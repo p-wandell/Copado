@@ -1,0 +1,266 @@
+/* Copyright ©2016-2017 7Summits Inc. All rights reserved. */
+.THIS .slds-select_container:after {
+    border-top: 0 solid #061c3f !important;
+    bottom: calc((2.125rem / 2) - 6px);
+}
+.THIS .attachEdit[type=file] {
+    width: 112px;
+}
+.THIS .dateBar .picklist .datepicker__filter--year .uiDatePicker--default .picklist__label {
+    padding-left: 10px!important;
+}
+.THIS .checkboxCss {
+    float: left;
+    margin-right: 8px;
+    border-color: #AAAAAA;
+}
+.THIS .extrnlpymnt {
+    border-color: #AAAAAA;
+}
+.THIS .rsvpSelection {
+    margin-left: 5%;
+}
+.THIS .authrDropdwn {
+    font-size: 17px;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+.THIS .slds-form-element__control {
+    margin-bottom: 4%;
+}
+.THIS .showlabel {
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+.THIS .descriptiveText {
+    font-size: 16px;
+    font-weight: 300;
+    color: #8E8A8A;
+    margin-bottom: 12px;
+}
+.THIS .inputDiv {
+    margin-left: 0;
+    /*20px - old value, value is changed on 020616 to get similar alignment of fields as per wireframe*/
+}
+.THIS .dateText {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* .THIS .dtInput{
+    margin-left: 3%;
+}*/
+
+.THIS .hideDropdown {
+    display: none;
+}
+.THIS .showDropdown {
+    display: block;
+}
+
+.THIS .eventThresholdCountWidth {
+    width: 10%;
+    border-color: #AAAAAA;
+}
+.THIS .bgColorForInputs {
+    background-color: #F2F2F2;
+    padding: 5px 10px!important;
+    /*2%;*/
+}
+.THIS .showDiv {
+    display: block;
+}
+.THIS .hideDiv {
+    display: none;
+}
+
+.THIS .slds-notify--toast {
+    margin: 0.5rem 0!important;
+    /*min-width: auto!important;*/
+    min-width: 215px!important;
+}
+.THIS .displayNone {
+    display: none;
+}
+.THIS .fontFix {
+    color: white;
+}
+.THIS .floatL {
+    float: left!important;
+}
+.THIS .m_h5 {
+    margin: 0px 5px!important;
+}
+.THIS .m5 {
+    margin: 5px!important;
+}
+.THIS .buttoncss {
+    margin-top: 5%;
+}
+.THIS .slds-input, .THIS .stdate, .THIS .endDate {
+
+}
+.THIS .hide {
+    display: none;
+}
+.THIS .slds-spinner--large {
+    text-align: center;
+    opacity: .9;
+    color: #ccc;
+    border-radius: .25rem;
+    width: 90px;
+    padding: 1.5rem 0;
+    top: 50%;
+    left: 50%;
+    margin-left: -55px;
+    margin-top: -110px;
+    position: fixed;
+    display: block;
+}
+.THIS .salesforceSource_blurybackground {
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    width: 100%;
+    height: 700%;
+    z-index: 9999;
+    text-align: center;
+    vertical-align: middle;
+    /*background-color: #dcdcdc; */
+    opacity: 0.7;
+    filter: alpha(opacity=60)
+}
+.THIS .toggle {
+    display: none;
+}
+.THIS .waitingHolder {
+    width: 144px;
+    vertical-align: middle;
+}
+.THIS .errordivcheck {
+    color: white!important;
+}
+.THIS .errorDiv .uiInputDefaultError .form-element__help {
+    font-weight: 300;
+    font-size: 1.125rem;
+    color: #fff!important;
+}
+.THIS .errorDiv {
+    /* width: 250px;*/
+    background-color: red;
+    padding: 10px 17px 17px 17px;
+    margin-bottom: 10px;
+    margin-left: 11px;
+    border-radius: 5px;
+    min-width: 215px;
+}
+
+/*0110616, 0210616 updates*/
+
+.THIS .modalInputBSpacing {
+    margin-bottom: 10px!important
+}
+
+/*to remove extra space all fields except 'Event Participation Options'*/
+
+.THIS .modalEPOTSpacing {
+    margin-top: 10px!important
+}
+
+/*to remove extra top space from Event Participation Options field*/
+
+.THIS .epoChkbxLspacing {
+    margin-left: 10px!important
+}
+.THIS .attachEditSafari {
+    width: 100px!important
+}
+.THIS .attachEditMozilla {
+    width: 97px!important
+}
+
+/* IE10+ CSS styles go here */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    /*IE11 all fields are getting cut from right side*/
+    .THIS .createEventBox {
+        overflow-x: auto!important
+    }
+    .THIS .select.uiDatePicker--default {
+        padding-right: 0 !important;
+    }
+    .THIS .uiDatePicker--default .select {
+        padding-right: 0 !important;
+    }
+}
+
+/*0110616, 0210616 updates*/
+
+@media screen and (max-width: 767px) {
+    .THIS .eventThresholdCountWidth {
+        width: 15%!important;
+    }
+    /*.THIS .errorDiv{width: 100%!important;}*/
+    /*remove to fix full width issue of attachment error*/
+}
+@media screen and (max-width: 480px) {
+    .THIS .eventThresholdCountWidth {
+        width: 25%!important;
+    }
+}
+@media screen and (max-width: 320px) {
+    .THIS .stdate {
+        width: 100%!important;
+    }
+}
+
+.THIS .btn-primary{
+
+}
+
+.THIS .btn-link{
+
+}
+
+.THIS .btn{
+
+}
+
+/* Dropdown fix in the absence of fontawesome (adds somewhat hack-y workaround for a close "x") and
+  adjusts height of listing of selected topics to alleviate overflow */
+
+.THIS .topic.ui.multiple.dropdown>.label {
+    white-space: nowrap;
+}
+.THIS .topic.ui.fluid.dropdown {
+    height: 100%;
+}
+.THIS .topic a.ui.label i.delete.icon {
+    margin-right: -5px;
+    margin-left: 5px;
+    line-height: 6px;
+}
+
+.THIS .topic a.ui.label i.delete.icon:before {
+    content: "x";
+    padding-left: 5px;
+    color: #666;
+    font-style: normal;
+    font-weight: 600;
+    vertical-align: top;
+}
+.THIS .topic a.ui.label:hover {
+    background-color: #eee;
+}
+
+.THIS .topic a.ui.label:hover i.delete.icon:before {
+    color: #333;
+}
+
+.THIS.createEventBox {
+    box-shadow: 0 0 5px #807d7d!important;
+    border-radius: 5px!important;
+    padding-left: 3%!important;
+    padding-right: 3%!important;
+    padding-top: 7%!important;
+    padding-bottom: 7%!important;
+}

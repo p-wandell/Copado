@@ -1,0 +1,223 @@
+<apex:page controller="ob1.OutputManagerController" sidebar="false" showheader="false">
+
+<apex:outputText style="font-size:16pt;" rendered="{!NOT(ISNULL(Description))}" value="{!Description}"/>
+
+<apex:pageBlock rendered="{!NOT(display='PREVIEW')}">
+<apex:form >
+
+<apex:outputPanel layout="block" style="text-align:center;" rendered="{!display='CONFIRM'}">
+        <apex:outputText >{!displayMsg}</apex:outputText><br/>
+        <apex:commandButton action="{!confirm}" value="Close"/>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!display='CT'}">
+   <apex:pageBlockTable value="{!TemplateSelection}" var="ts">
+      <apex:column headerValue="Template Library" value="{!ts.Name}"/>
+      <apex:column value="{!ts.ob1__Description__c}"/>
+      <apex:column >
+        <apex:commandLink rendered="{!NOT(ts.Id=TemplateID)}" action="{!ChangeTemplate}">Select
+          <apex:param name="ID" value="{!ts.Id}" assignTo="{!TemplateID}"/>
+        </apex:commandLink>
+        <apex:outputText rendered="{!ts.id=TemplateID}">Selected</apex:outputText>
+      </apex:column>
+   </apex:pageBlockTable> 
+   <br/>
+   <br/>
+   <apex:commandLink action="{!reload}">Close
+     <apex:param name="pclose" value="PREVIEW" assignTo="{!display}"/>
+   </apex:commandLink>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!display='TO'}">
+   <apex:pageBlockTable value="{!toAddresses}" var="to">
+      <apex:column headerValue="Edit To:" value="{!to}"/>
+      <apex:column >
+        <apex:commandLink action="{!removeToAddress}">remove
+          <apex:param name="value" value="{!to}" assignTo="{!Remove}"/>
+        </apex:commandLink>
+      </apex:column>
+   </apex:pageBlockTable> 
+   <br/>
+   <br/>
+   <table>
+   <tr>
+   <td>Enter Address(es)</td>
+   <td><apex:inputField style="width:512px;" value="{!addContact.ob1__Free_Form__c}" />&nbsp;&nbsp;</td>
+   <td rowspan="2" style="vertical-align:middle;"><apex:commandButton action="{!addToAddress}" value="Add Address(es)"/></td>
+   </tr>
+   <tr>
+   <td>Contact Lookup</td> 
+   <td><apex:inputField value="{!addContact.ob1__Contact__c}" /></td>
+   </tr>
+   </table> 
+   <br/>
+   <br/>
+   <apex:commandLink action="{!reload}">Close
+     <apex:param name="pclose" value="PREVIEW" assignTo="{!display}"/>
+   </apex:commandLink>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!display='CC'}">
+   <apex:pageBlockTable value="{!ccAddresses}" var="cc">
+      <apex:column headerValue="Edit cc:" value="{!cc}"/>
+      <apex:column >
+        <apex:commandLink action="{!removeCCAddress}">remove
+          <apex:param name="value" value="{!cc}" assignTo="{!Remove}"/>
+        </apex:commandLink>
+      </apex:column>
+   </apex:pageBlockTable> 
+   <br/>
+   <table>
+   <tr>
+   <td>Enter Address(es)</td>
+   <td><apex:inputField style="width:512px;" value="{!addContact.ob1__Free_Form__c}" />&nbsp;&nbsp;</td>
+   <td rowspan="2" style="vertical-align:middle;"><apex:commandButton action="{!addCCAddress}" value="Add Address(es)"/></td>
+   </tr>
+   <tr>
+   <td>Contact Lookup</td> 
+   <td><apex:inputField value="{!addContact.ob1__Contact__c}" /></td>
+   </tr>
+   </table> 
+   <br/>
+   <br/>
+  <apex:commandLink action="{!reload}">Close
+    <apex:param name="pclose" value="PREVIEW" assignTo="{!display}"/>
+  </apex:commandLink>
+</apex:outputPanel>
+
+
+<apex:outputPanel rendered="{!display='BCC'}">
+   <apex:pageBlockTable value="{!bccAddresses}" var="bcc">
+      <apex:column headerValue="Edit bcc:" value="{!bcc}"/>
+      <apex:column >
+        <apex:commandLink action="{!removeBCCAddress}">remove
+          <apex:param name="value" value="{!bcc}" assignTo="{!Remove}"/>
+        </apex:commandLink>
+      </apex:column>
+   </apex:pageBlockTable> 
+   <br/>
+   <table>
+   <tr>
+   <td>Enter Address(es)</td>
+   <td><apex:inputField style="width:512px;" value="{!addContact.ob1__Free_Form__c}" />&nbsp;&nbsp;</td>
+   <td rowspan="2" style="vertical-align:middle;"><apex:commandButton action="{!addBCCAddress}" value="Add Address(es)"/></td>
+   </tr>
+   <tr>
+   <td>Contact Lookup</td> 
+   <td><apex:inputField value="{!addContact.ob1__Contact__c}" /></td>
+   </tr>
+   </table> 
+   <br/>
+   <br/>
+  <apex:commandLink action="{!reload}">Close
+    <apex:param name="pclose" value="PREVIEW" assignTo="{!display}"/>
+  </apex:commandLink>
+</apex:outputPanel>
+</apex:form>
+</apex:pageBlock>
+
+<apex:pageBlock tabstyle="Output_Template__c" rendered="{!display='PREVIEW' && SaveOnly}">
+<apex:form >
+<style>
+.OutputTemplate table {border:1px #C0C0C0 solid;border-collapse: collapse}
+.OutputTemplate th {border:1px #C0C0C0 solid;background-color: #E0F2FF; }
+.OutputTemplate td {border:1px #C0C0C0 solid;background-color: #FFFFFF; } 
+</style>
+
+<table class="OutputTemplate" style="width:100%;">
+<tr>
+<td class="OutputTemplate" colspan="3">
+<apex:commandButton action="{!save}" value="Save Only" />
+&nbsp;&nbsp;&nbsp;
+Last Saved: {!LastSent}
+&nbsp;&nbsp;&nbsp;
+<apex:outputLink value="/apex/OutputHistory?id={!objectID}&class={!TemplateClass}" target="_blank">View Historical Output</apex:outputLink>
+</td></tr>
+<tr>
+<th class="OutputTemplate"><b>Template</b></th>
+<td class="OutputTemplate"> 
+<apex:commandLink action="{!reload}">Change
+  <apex:param name="ptsShow" value="CT" assignTo="{!display}"/>
+</apex:commandLink>
+</td>
+<td class="OutputTemplate" style="width:100%;"><apex:outputText value="{!PreviewTS}" /></td>
+</tr>
+</table>
+</apex:form>
+<br/>
+<br/>
+</apex:pageBlock>
+
+<apex:pageBlock tabstyle="Output_Template__c" rendered="{!display='PREVIEW' && NOT(SaveOnly)}">
+<apex:form >
+<style>
+.OutputTemplate table {border:1px #C0C0C0 solid;border-collapse: collapse}
+.OutputTemplate th {border:1px #C0C0C0 solid;background-color: #E0F2FF; }
+.OutputTemplate td {border:1px #C0C0C0 solid;background-color: #FFFFFF; } 
+</style>
+
+<table class="OutputTemplate" style="width:100%;">
+<tr>
+<td class="OutputTemplate" colspan="3">
+<apex:commandButton action="{!saveSend}" value="Save & Send" disabled="{!PreviewTo=''}"/>
+&nbsp;&nbsp;&nbsp;
+Last Sent: {!LastSent}
+&nbsp;&nbsp;&nbsp;
+<apex:outputLink value="/apex/OutputHistory?id={!objectID}&class={!TemplateClass}" target="_blank">View Historical Output</apex:outputLink>
+</td></tr>
+<tr>
+<th class="OutputTemplate"><b>Template</b></th>
+<td class="OutputTemplate"> 
+<apex:commandLink action="{!reload}">Change
+  <apex:param name="ptsShow" value="CT" assignTo="{!display}"/>
+</apex:commandLink>
+</td>
+<td class="OutputTemplate" style="width:100%;"><apex:outputText value="{!PreviewTS}" /></td>
+</tr>
+
+<tr>
+<th class="OutputTemplate"><b>To:</b></th>
+<td class="OutputTemplate">
+<apex:commandLink action="{!reload}" rendered="{!toEdit}">edit
+<apex:param name="ptoShow" value="TO" assignTo="{!display}"/>
+</apex:commandLink>
+</td>
+<td  class="OutputTemplate" style="width:100%;"><apex:outputText value="{!PreviewTo}" /></td>
+</tr>
+<tr>
+<th class="OutputTemplate"><b>CC:</b></th>
+<td class="OutputTemplate">
+<apex:commandLink action="{!reload}" rendered="{!ccEdit}">edit
+<apex:param name="pccShow" value="CC" assignTo="{!display}"/>
+</apex:commandLink>
+</td>
+<td class="OutputTemplate" style="width:100%;"><apex:outputText value="{!PreviewCC}" /></td>
+</tr>
+<tr>
+<th class="OutputTemplate"><b>BCC:</b></th>
+<td class="OutputTemplate">
+<apex:commandLink action="{!reload}" rendered="{!bccEdit}">edit
+<apex:param name="pbccShow" value="BCC" assignTo="{!display}"/>
+</apex:commandLink>
+</td>
+<td class="OutputTemplate" style="width:100%;"><apex:outputText value="{!PreviewBCC}" /></td>
+</tr>
+<tr>
+<th class="OutputTemplate"><b>Subject:</b></th>
+<td class="OutputTemplate">&nbsp;</td>
+<td class="OutputTemplate" style="width:100%;"><apex:outputText escape="false" value="{!PreviewSubject}" /></td>
+</tr>
+</table>
+</apex:form>
+<br/>
+<br/>
+</apex:pageBlock>
+
+
+<apex:pageBlock rendered="{!display='PREVIEW'}">
+<apex:outputText escape="false" value="{!PreviewBody}" />
+</apex:pageBlock>
+
+<apex:pageMessages />
+
+</apex:page>

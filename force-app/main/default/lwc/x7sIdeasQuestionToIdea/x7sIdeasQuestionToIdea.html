@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<template if:true={createIdeaClick}>
+		<div>
+			<section class="slds-modal slds-fade-in-open slds-modal_medium" aria-hidden="false" role="dialog">
+				<div class="slds-modal__container">
+					<div class="slds-modal__header">
+						<button class="slds-button slds-button--icon-inverse slds-modal__close"
+						        onclick={closeIdeaPage}>
+							<lightning-icon icon-name="utility:close" size="medium" alternative-text="Close"
+							                title={labelModalClose} variant="inverse">
+							</lightning-icon>
+							<span class="slds-assistive-text">{labelModalClose}</span>
+						</button>
+						<h3 class="slds-text-heading--medium"></h3>
+					</div>
+					<div class="slds-modal__content createIdeaBox slds-p-around_small">
+						<c-x7s-ideas-new zone-name={zoneName}
+						                 idea-list-u-r-l={ideaListURL}
+						                 use-topics={useTopics}
+						                 create-idea-click={createIdeaClick}
+						                 curr-idea={currIdea}
+						                 allow-categories={allowCategories}
+						                 topic-required={topicRequired}
+						                 is-new-idea={isNewIdea}
+						                 show-requested-by={showRequestedBy}
+						                 selected-user={selectedUser}
+						                 show-cross={showCross}>
+						</c-x7s-ideas-new>
+					</div>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+	</template>
+	<template if:false={createIdeaClick}>
+		<div class="slds-size_1-of-1">
+			<lightning-button name={questionToIdeaButtonLabel}
+			                  label={questionToIdeaButtonLabel}
+			                  onclick={handleConvertToIdeaCancel}
+			                  class="btn-full-width">
+			</lightning-button>
+		</div>
+	</template>
+</template>

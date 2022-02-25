@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Ideas List</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightningCommunity__Default,lightning__HomePage">
+            <property name="zoneName" label="Zone Name" type="String" description="Enter the zone name"/>
+            <property name="tileVariant" label="Display Option" type="String" description="Select the tile layout display option." datasource="None,Featured"/>
+            <property name="layout" type="String" label="Default Layout" description="Select the default list layout" datasource="Card,List,Table"/>
+            <property name="listSize" label="Number of Ideas Per Page" description="Specify the number of Ideas to display in the list." type="Integer"/>
+            <property name="showAvatar" label="Show Avatar" type="Boolean"/>
+            <property name="showImages" label="Show Images" type="Boolean"/>
+            <property name="showDescription" type="Boolean" label="Show Description" description="Select to display description."/>
+            <property name="descriptionLineCount" type="String" label="Description Lines to Show" description="Number of lines to show for the description"/>
+            <property name="showStatus" type="Boolean" label="Show Status" description="Select to display Status."/>
+            <property name="showTopic" type="Boolean" label="Show Topic" description="Select to display Topic."/>
+            <property name="showEdit" label="Show Edit Action" type="Boolean" description="Enable to display Edit Action in Table view."/>
+            <property name="showDelete" label="Show Delete Action" type="Boolean" description="Enable to display Delete Action in Table view."/>
+            <property name="showVote" label="Show Vote Action" type="Boolean" description="Enable to display Vote Action in Table view."/>
+            <property name="showRemoveVote" label="Show Remove Vote Action" type="Boolean" description="Enable to display Show Remove Vote."/>
+            <property name="ideaNewURL" label="Idea Create Edit Page API Name" type="String" description="Enter the API name for the Idea Create Edit page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="displayPostDateAuthor" label="Display Post Date and Author" type="Boolean" description="Display the idea post date and author name"/>
+            <property name="displayMergeIdeas" label="Exclude Merged Ideas" type="Boolean" description="Exclude the merged idea"/>
+            <property name="sortBy" label="Sort Ideas By" type="String" description="Sort By" datasource="Popular Ideas, Recent Ideas, Top All-Time, Recent Comments"/>
+            <property name="searchString" label="Filter By Search String" type="String" description="Enter the name of the search string to filter on. To inherit search from the page use {searchString}"/>
+            <property name="searchByTopics" label="Filter By Topic" type="String" description="Enter name of topic to filter list on. To inherit topic from the page use {topicId}"/>
+            <property name="searchByTheme" label="Filter By Theme" type="String" description="Filter ideas by theme"/>
+            <property name="searchByStatus" label="Filter By Status" type="String" description="To filter the list by status values, enter a comma separated list of status values from the zone. Leave blank to show all statuses in the zone"/>
+            <property name="searchByCategories" label="Filter By Category" type="String" description="Filter ideas by category"/>
+            <property name="searchMyIdeas" label="Filter for My Ideas" type="String" datasource="No,Display My Ideas Only,Display My Voted Ideas Only" description="Filter for my ideas"/>
+            <property name="ideasListURL" label="Idea List Page API Name" type="String" description="Enter the API name for the Idea List page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="ideaDetailURL" label="Idea Detail Page API Name" type="String" description="Enter the API name for the Idea detail page.  API name can be found in page properties and shall include '__c'."/>
+            <property name="accountLimitReachedMessage" label="Account Vote Limit Message" type="String" description="Account Vote Limit Message"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates the filter component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

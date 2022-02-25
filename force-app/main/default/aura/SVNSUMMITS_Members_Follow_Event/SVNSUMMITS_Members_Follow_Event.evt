@@ -1,0 +1,12 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+
+<!--
+ - Created by francoiskorb on 8/31/17.
+ -->
+
+<aura:event type="APPLICATION" description="SVNSUMMITS_Members_Follow_Event" access="global">
+	<aura:attribute name="follow" type="Boolean" description="set to true to follow - false to un-follow" access="public"/>
+	<aura:attribute name="recordId" type="String" access="public"/>
+</aura:event>

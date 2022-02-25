@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Forecast_Formula__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(
+  AND(
+    OR(Owner.LastName=&quot;Friedhoff&quot;,Owner.LastName=&quot;Lesser&quot;,Owner.LastName=&quot;MacManus&quot;,
+    Owner.LastName=&quot;Pelletier&quot;,Owner.LastName=&quot;Fortino&quot;,Owner.LastName=&quot;Hogan&quot;,
+    Owner.LastName=&quot;Hogervorst&quot;),
+  ISPICKVAL(StageName,&quot;1 Prospect&quot;)), 
+Amount*0.08,
+IF(
+  AND(
+    OR(Owner.LastName=&quot;Friedhoff&quot;,Owner.LastName=&quot;Lesser&quot;,Owner.LastName=&quot;MacManus&quot;,
+    Owner.LastName=&quot;Pelletier&quot;,Owner.LastName=&quot;Fortino&quot;,Owner.LastName=&quot;Hogan&quot;,
+    Owner.LastName=&quot;Hogervorst&quot;),
+  ISPICKVAL(StageName,&quot;2 Qualified&quot;)), 
+Amount*0.16,
+IF(
+  AND(
+    OR(Owner.LastName=&quot;Friedhoff&quot;,Owner.LastName=&quot;Lesser&quot;,Owner.LastName=&quot;MacManus&quot;,
+    Owner.LastName=&quot;Pelletier&quot;,Owner.LastName=&quot;Fortino&quot;,Owner.LastName=&quot;Hogan&quot;,
+    Owner.LastName=&quot;Hogervorst&quot;),
+  ISPICKVAL(StageName,&quot;3 Opportunity Shaped&quot;)), 
+Amount*0.25,
+IF(
+  AND(
+    OR(Owner.LastName=&quot;Friedhoff&quot;,Owner.LastName=&quot;Lesser&quot;,Owner.LastName=&quot;MacManus&quot;,
+    Owner.LastName=&quot;Pelletier&quot;,Owner.LastName=&quot;Fortino&quot;,Owner.LastName=&quot;Hogan&quot;,
+    Owner.LastName=&quot;Hogervorst&quot;),
+  ISPICKVAL(StageName,&quot;4 Proposal&quot;)), 
+Amount*0.32,
+IF(
+  AND(
+    OR(Owner.LastName=&quot;Friedhoff&quot;,Owner.LastName=&quot;Lesser&quot;,Owner.LastName=&quot;MacManus&quot;,
+    Owner.LastName=&quot;Pelletier&quot;,Owner.LastName=&quot;Fortino&quot;,Owner.LastName=&quot;Hogan&quot;,
+    Owner.LastName=&quot;Hogervorst&quot;),
+  ISPICKVAL(StageName,&quot;5 Agreements Delivered&quot;)), 
+Amount*0.67,
+IF(
+  AND(
+    OR(Owner.LastName=&quot;Friedhoff&quot;,Owner.LastName=&quot;Lesser&quot;,Owner.LastName=&quot;MacManus&quot;,
+    Owner.LastName=&quot;Pelletier&quot;,Owner.LastName=&quot;Fortino&quot;,Owner.LastName=&quot;Hogan&quot;,
+    Owner.LastName=&quot;Hogervorst&quot;),
+  ISPICKVAL(StageName,&quot;6 Negotiating&quot;)), 
+Amount*0.88,
+IF(
+  AND(
+    OR(Owner.LastName=&quot;Lesser&quot;,Owner.LastName=&quot;Hogan&quot;,Owner.LastName=&quot;Hogervorst&quot;),
+  ISPICKVAL(StageName,&quot;7 Verbal Agreement&quot;)), 
+Amount*0.93,
+IF(
+  AND(
+    OR(Owner.LastName=&quot;Pelletier&quot;,Owner.LastName=&quot;Friedhoff&quot;,Owner.LastName=&quot;Fortino&quot;),
+  ISPICKVAL(StageName,&quot;7 Verbal Agreement&quot;)),
+Amount*0.95,
+IF(
+  AND(Owner.LastName=&quot;MacManus&quot;,ISPICKVAL(StageName,&quot;7 Verbal Agreement&quot;)),Amount*1,
+  IF(
+  AND(
+    OR(Owner.LastName=&quot;Friedhoff&quot;,Owner.LastName=&quot;Lesser&quot;,Owner.LastName=&quot;MacManus&quot;,
+    Owner.LastName=&quot;Pelletier&quot;,Owner.LastName=&quot;Fortino&quot;,Owner.LastName=&quot;Hogan&quot;,
+    Owner.LastName=&quot;Hogervorst&quot;),
+  ISPICKVAL(StageName,&quot;8 Closed Won&quot;)), Amount,
+  0))))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Forecast Formula</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

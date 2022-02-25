@@ -1,0 +1,26 @@
+<apex:page showHeader="true" sidebar="false" extensions="ffr.ReportingViewerController" standardController="ffr__ReportingDefinition__c" applyBodyTag="false" applyHtmlTag="true" renderAs="{!RenderAs}" contentType="{!ContentType}" lightningStylesheets="{!IsView}">
+	<html>
+		<head>
+			<style>
+				{!cssHeader}
+			</style>
+		</head>
+		<body>
+			<apex:pageMessages />
+
+			<apex:form rendered="{!IsView}">
+				<apex:actionFunction name="deleteAttachmentsAndReportingExecution" action="{!deleteAttachmentsAndReportingExecution}" reRender="none" />
+			</apex:form>
+
+			<apex:repeat value="{!reportHtmlChunkIds}" var="chunkId">
+				<c:ReportingViewerChunkComponent htmlChunkId="{!chunkId}" />
+			</apex:repeat>
+
+			<apex:outputPanel rendered="{!IsView}">
+				<script>
+					window.onload = deleteAttachmentsAndReportingExecution;
+				</script>
+			</apex:outputPanel>
+		</body>
+	</html>
+</apex:page>

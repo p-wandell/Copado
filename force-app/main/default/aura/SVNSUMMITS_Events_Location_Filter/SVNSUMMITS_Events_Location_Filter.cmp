@@ -1,0 +1,58 @@
+<!--
+ - Created by francoiskorb on 9/1/17.
+ -->
+
+<aura:component description="SVNSUMMITS_Events_Location_Filter"
+                controller="SVNSUMMITS_EventListController">
+
+	<aura:attribute name="selectAll" type="String" default="{!$Label.c.ss_evt_text_selectAll}" access="public"/>
+	<aura:attribute name="searchThreshold" type="Integer" default="2" access="public"/>
+	<aura:attribute name="showPickLists" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="locationValues" type="List" access="public"/>
+	<aura:attribute name="locationFilter" type="String" default="" access="public"/>
+	<aura:attribute name="locationTypeAhead" type="String" default="" access="public"/>
+	<aura:attribute name="locationSearch" type="String" default="" access="public"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<aura:registerEvent name="locationEvent" type="c:SVNSUMMITS_Events_Location_Filter_Event"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="start">
+
+		<lightning:layoutItem size="12"
+		                      padding="horizontal-small"
+		                      flexibility="auto">
+			<aura:if isTrue="{!v.showPickLists}">
+				<lightning:input type="search"
+				                 value="{!v.locationTypeAhead}"
+				                 onchange="{!c.onLocationTypeAhead}"
+				                 aura:id="locationTypeAhead"
+				                 name="locationTypeAhead"
+				                 placeholder="{!$Label.c.ss_evt_label_placeholderLocation}"
+				                 label="{!$Label.c.ss_evt_label_typeAheadLocation}"/>
+
+				<lightning:select name="locationFilter"
+				                  onchange="{!c.onFilterEvents}"
+				                  label="{!$Label.c.ss_evt_label_searchLocation}"
+				                  value="{!v.locationFilter}">
+					<aura:iteration items="{!v.locationValues}" var="location">
+						<option value="{!location}">{!location}</option>
+					</aura:iteration>
+				</lightning:select>
+
+				<aura:set attribute="else">
+					<lightning:input type="search"
+					                 value="{!v.locationFilter}"
+					                 onchange="{!c.onLocationSearch}"
+					                 aura:id="locationSearch"
+					                 name="locationSearch"
+					                 placeholder="{!$Label.c.ss_evt_label_placeholderLocation}"
+					                 label="{!$Label.c.ss_evt_label_typeAheadLocation}"/>
+				</aura:set>
+			</aura:if>
+		</lightning:layoutItem>
+
+	</lightning:layout>
+</aura:component>

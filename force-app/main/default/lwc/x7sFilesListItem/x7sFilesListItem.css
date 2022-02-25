@@ -1,0 +1,119 @@
+/*
+ * Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+ */
+
+ /* Base Styling */
+.files-item {
+    height: 100%;
+    padding: var(--lwc-spacingSmall);
+    display: flex;
+    flex-direction: column;
+}
+
+.files-item__title {
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    font-size: 1rem;
+    line-height: 1.05;
+}
+.files-item__description {
+    color: var(--lwc-colorTextWeak);
+    font-size: 0.675rem;
+    text-align: center;
+}
+.files-item__title + .files-item__description {
+    margin-top: var(--lwc-spacingXxxSmall);
+}
+
+.files-item__thumb {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 50% 50%;
+    margin: 0 auto;
+}
+.files-item_show-thumb .files-item__thumb {
+    width: 92px;
+    height: 92px;
+}
+
+.files-item__footer {
+    padding-top:3px;
+    /* margin-top: auto; */
+}
+
+/* List View */
+.files-item_list .files-item__thumb {
+    width: 48px;
+    height: 48px;
+    margin-right: var(--lwc-spacingSmall);
+}
+.files-item_list .files-item__title,
+.files-item_list .files-item__description {
+    text-align: left;
+}
+.files-item_list lightning-button + lightning-button {
+    margin-left: var(--lwc-spacingSmall);
+}
+
+@media (min-width:64em) {
+    .files-item_list {
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+    }
+    .files-item_list .files-item__thumb {
+        flex: none;
+        display: inline-flex;
+    }
+    .files-item_list .files-item__meta {
+        flex: 1 1 auto;
+    }
+    .files-item_list .files-item__footer {
+        margin-top: 0;
+        padding-top: 0;
+        display: flex;
+        justify-content: flex-end;
+        margin-left: var(--lwc-spacingSmall);
+    }
+}
+/* List view - mobile */
+@media (max-width: 63.9999em) {
+    .files-item_list {
+        flex-direction: column;
+        position: relative;
+    }
+    .files-item_list .files-item__thumb {
+        position: absolute;
+        left: 0;
+        top: var(--lwc-spacingXxSmall);
+    }
+    .files-item_list .files-item__meta {
+        flex: 1 1 100%;
+        width: 100%;
+        padding-left: 48px;
+    }
+    .files-item_list .files-item__footer {
+        flex: 1 1 100%;
+        justify-content: flex-start;
+        text-align: left;
+        width: 100%;
+        padding-left: 48px;
+    }
+    .files-item_show-thumb .files-item__meta,
+    .files-item_show-thumb .files-item__footer  {
+        padding-left: 92px;
+    }
+}
+
+.files-item_max-lines {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+}

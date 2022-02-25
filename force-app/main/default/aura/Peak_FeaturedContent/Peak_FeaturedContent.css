@@ -1,0 +1,198 @@
+/**
+ * Hive_Lightning - Generates the assets used for 7S Hive Migration Lightning
+ * @version 1.0.0
+ * @author 7Summits
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.THIS {
+  /*******************/
+  /* Common CSS here */
+  /*******************/
+}
+@keyframes fadeIn {
+  0% {
+    z-index: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 0;
+  }
+  100% {
+    z-index: 1;
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    z-index: 1;
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    z-index: -1;
+    opacity: 0;
+  }
+}
+.THIS .slds-p-around_xx-small {
+  padding: 0.125rem;
+}
+.THIS a {
+  text-decoration: none;
+  color: token(textColor);
+}
+.THIS a:hover {
+  text-decoration: none;
+}
+.THIS a.slds-text-color_inverse {
+  color: #fff;
+}
+.THIS h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  line-height: 1.5rem;
+}
+.THIS h2:not(.slds-text-color_inverse) a {
+  color: token(textColor);
+}
+.THIS h2 a {
+  color: #fff;
+}
+.THIS p {
+  color: #606060;
+}
+.THIS p.slds-text-color_inverse {
+  color: #fff;
+}
+.THIS .slds-card {
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  background-position: 50% 50%;
+  background-size: cover;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+}
+.THIS .slds-card__header-title {
+  text-transform: uppercase;
+  -ms-word-wrap: break-word;
+  word-wrap: break-word;
+}
+@media only screen and (max-width: 47.9375em) {
+  .THIS .slds-card__header-title .slds-text-heading_small {
+    font-size: 1rem;
+  }
+}
+.THIS .slds-card .slds-icon_container:not(.slds-icon-utility-share) {
+  display: block;
+  min-height: 3.125rem;
+  margin-bottom: 0.625rem;
+  text-align: center;
+  border-radius: 0;
+}
+.THIS .slds-card .slds-icon-utility-share {
+  position: relative;
+  top: -3px;
+  padding-left: 0.35rem;
+}
+.THIS .slds-card .slds-icon-utility-share .slds-icon {
+  width: 0.625rem;
+  fill: #808080 !important;
+}
+.THIS .slds-card .slds-text-title_caps a {
+  font-weight: bold;
+  color: #606060;
+}
+.THIS .card-gradient {
+  width: 100%;
+  height: 100%;
+  background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.75) 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.75) 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.75) 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+.THIS .slds-grid_vertical-align-end {
+  min-height: 12.5rem;
+}
+.THIS .slds-grid_vertical-align-end h2 {
+  text-transform: none;
+}
+.THIS .slds-grid_vertical-align-end .slds-text-title_caps {
+  top: 0;
+  left: 0;
+}
+.THIS .slds-icon-utility-image {
+  width: 100%;
+  min-height: 130px;
+  border-radius: 0;
+  background: #eee;
+}
+.THIS .slds-border_top {
+  border-top: 5px solid #fff;
+}
+.THIS .slds-border_left {
+  border-left: 5px solid #fff;
+}
+.THIS .slds-text-title_caps a {
+  font-weight: bold;
+  color: token(linkColor);
+}
+.THIS .gray.slds-border_top,
+.THIS .gray.slds-border_left {
+  border-color: #606060;
+}
+.THIS .gray.slds-border_top .slds-icon {
+  fill: #606060;
+}
+.THIS .teal.slds-border_top,
+.THIS .teal.slds-border_left {
+  border-color: #22c5be;
+}
+.THIS .teal.slds-border_top .slds-icon {
+  fill: #22c5be;
+}
+.THIS .green.slds-border_top,
+.THIS .green.slds-border_left {
+  border-color: #20b338;
+}
+.THIS .green.slds-border_top .slds-icon {
+  fill: #20b338;
+}
+.THIS .brand.slds-border_top,
+.THIS .brand.slds-border_left {
+  border-color: t(brandColor);
+}
+.THIS .brand.slds-border_top .slds-icon {
+  fill: t(brandColor);
+}
+.THIS .darkBlue.slds-border_top,
+.THIS .darkBlue.slds-border_left {
+  border-color: #163f6c;
+}
+.THIS .darkBlue.slds-border_top .slds-icon {
+  fill: #163f6c;
+}
+.THIS .orange.slds-border_top,
+.THIS .orange.slds-border_left {
+  border-color: #ff7c66;
+}
+.THIS .orange.slds-border_top .slds-icon {
+  fill: #ff7c66;
+}
+.THIS .purple.slds-border_top,
+.THIS .purple.slds-border_left {
+  border-color: #876cff;
+}
+.THIS .purple.slds-border_top .slds-icon {
+  fill: #876cff;
+}
+.THIS .white.slds-border_top,
+.THIS .white.slds-border_left {
+  border-color: #fff;
+}
+.THIS .white.slds-border_top .slds-icon {
+  fill: #fff;
+}

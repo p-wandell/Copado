@@ -1,0 +1,88 @@
+<apex:page showHeader="true" standardController="Case" sidebar="false" recordSetVar="cases" standardStylesheets="false" extensions="SS_CommunitySiteMyCasesControllerExt" action="{!forwardToCustomAuthPage}" showChat="true">
+
+    <div id="wrap">  
+        <div id="content">
+            <div class="page-header"><h2>My Cases</h2></div>
+            <div>
+            <apex:form >
+                <a href="#" onclick="$j('#myModal').modal('toggle');" class="btn">
+                  Create New Case
+                </a>
+                <div class="table-responsive">
+                    <table id="myCases" class="table table-hover">
+                        <thead> 
+                        <tr>
+                            <th>
+                                Case Number
+                            </th>
+                            <th>
+                                Subject
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Date/Time Opened
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <apex:repeat var="c" value="{!cases}">
+                        <tr>
+                            <td>
+                                <apex:commandLink value="{!c.CaseNumber}" action="{!goToDetail}" target="_blank"> 
+                                    <apex:param name="CaseId" value="{!c.Id}" assignTo="{!CaseId}"/>
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                {!c.Subject}
+                            </td>
+                            <td>
+                                {!c.Status}
+                            </td>
+                            <td> 
+                                <apex:outputField value="{!c.CreatedDate}" />
+                            </td>
+                        </tr>
+                        </apex:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </apex:form>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="top: 50px;">
+          <div class="modal-dialog" style="width: 80% !important;">
+            <div class="modal-content" style="background-color: #FFFFFF;">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">New Case</h4>
+              </div>
+                <apex:form >
+              <div class="modal-body" style="width:108%;">
+                             <div class="row">
+                             <apex:repeat value="{!$ObjectType.Case.FieldSets.CommunityFieldset2}" var="f">
+                                <div class="col-md-5">
+                                    <div class="panel panel-info">
+                                       <div class="panel-heading pageLabel">{!f.label}</div>
+                                       <div class="panel-body">
+                                            <apex:inputField styleClass="form-control" style="width:90%;" rendered="{!f.Type != 'textarea'}" value="{!myCase[f]}"/>
+                                            <apex:inputTextArea styleClass="form-control" style="width:90%; height:90px;" rendered="{!f.Type == 'textarea'}" value="{!myCase[f]}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </apex:repeat>
+                            </div>
+              </div>
+              <div class="modal-footer">
+                <div class="row">
+                <!-- TODO - hook event into a successful create -->
+                <apex:commandButton styleclass="btn " action="{!saveCase}" value="Create Case"/>
+                </div>
+              </div>
+            </apex:form>
+            </div>
+          </div>
+        </div>
+      </div>
+</apex:page>

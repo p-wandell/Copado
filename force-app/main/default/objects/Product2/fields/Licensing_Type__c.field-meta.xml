@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Licensing_Type__c</fullName>
+    <description>Components, Flows, &amp; Bolts = Un-managed IP</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Components, Flows, &amp; Bolts = Un-managed IP</inlineHelpText>
+    <label>Licensing Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Family</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Un-managed IP</fullName>
+                <default>false</default>
+                <label>Un-managed IP</label>
+            </value>
+            <value>
+                <fullName>One-Time Use</fullName>
+                <default>false</default>
+                <label>One-Time Use</label>
+            </value>
+            <value>
+                <fullName>Managed Services</fullName>
+                <default>false</default>
+                <label>Managed Services</label>
+            </value>
+            <value>
+                <fullName>Fixed Fee</fullName>
+                <default>false</default>
+                <label>Fixed Fee</label>
+            </value>
+            <value>
+                <fullName>Resell/Hosted Services</fullName>
+                <default>false</default>
+                <label>Resell/Hosted Services</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Service</controllingFieldValue>
+            <valueName>Managed Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Product</controllingFieldValue>
+            <valueName>Un-managed IP</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Product</controllingFieldValue>
+            <valueName>One-Time Use</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Product</controllingFieldValue>
+            <valueName>Fixed Fee</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Product</controllingFieldValue>
+            <valueName>Resell/Hosted Services</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

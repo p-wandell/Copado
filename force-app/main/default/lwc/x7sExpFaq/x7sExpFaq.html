@@ -1,0 +1,27 @@
+<!--
+ - Copyright (c) 2020. 7Summits Inc.
+ -->
+
+<!-- 7S Faq -->
+<template>
+    <section class={computedSectionClass}>
+        <lightning-accordion if:true={useAccordion} allow-multiple-sections-open active-section-name={section}>
+            <lightning-accordion-section name={computedSectionName} label={question}>
+                <div class="slds-p-top_x-small">
+                    <lightning-formatted-rich-text value={answer}></lightning-formatted-rich-text>
+                </div>
+            </lightning-accordion-section>
+        </lightning-accordion>
+
+        <dl if:false={useAccordion}>
+            <dt class="slds-m-bottom_small">
+                <h3><span class="slds-truncate">{question}</span></h3>
+            </dt>
+            <dd>
+                <div class="slds-p-top_x-small">
+                    <lightning-formatted-rich-text value={answer}></lightning-formatted-rich-text>
+                </div>
+            </dd>
+        </dl>
+    </section>
+</template>

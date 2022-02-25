@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>PLR_Demo_Request_Alert</fullName>
+        <description>PLR Demo Request Alert</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Demo_Requests</recipient>
+            <type>group</type>
+        </recipients>
+        <recipients>
+            <recipient>andre.joly@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>joe.fortino@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>nick.ulfers@7summits.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Demo_Request_Notification</template>
+    </alerts>
+    <alerts>
+        <fullName>PLR_Requested</fullName>
+        <description>PLR Requested</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Pursuit_Leads</recipient>
+            <type>group</type>
+        </recipients>
+        <recipients>
+            <recipient>andre.joly@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>joe.fortino@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>nick.ulfers@7summits.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/Pursuit_Lead_Requested</template>
+    </alerts>
+    <alerts>
+        <fullName>Preferred_Pursuit_Lead</fullName>
+        <description>Preferred Pursuit Lead</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Pursuit_Leads</recipient>
+            <type>group</type>
+        </recipients>
+        <recipients>
+            <recipient>andre.joly@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>joe.fortino@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>nick.ulfers@7summits.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/Preferred_Pursuit_Lead_Requested</template>
+    </alerts>
+    <alerts>
+        <fullName>Pursuit_Lead_Assigned</fullName>
+        <description>Pursuit Lead Assigned</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <field>Assigned_Pursuit_Lead__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Secondary_Pursuit_Lead__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>LOE_SOW_PLR/Pursuit_Lead_Assigned</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Compelling_Event</fullName>
+        <field>Compelling_Event__c</field>
+        <formula>Opportunity__r.Compelling_Event__c</formula>
+        <name>Compelling Event</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Current_Situation_PLR</fullName>
+        <field>Current_Situation__c</field>
+        <formula>Opportunity__r.Current_Situation__c</formula>
+        <name>Current Situation - PLR</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Ideal_Solution</fullName>
+        <field>Ideal_Solution__c</field>
+        <formula>Opportunity__r.Ideal_Solution__c</formula>
+        <name>Ideal Solution</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Ideal_Solution_Benefits</fullName>
+        <field>Ideal_Solution_Benefits__c</field>
+        <formula>Opportunity__r.Ideal_Solution_Benefits__c</formula>
+        <name>Ideal Solution Benefits</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Impacts</fullName>
+        <field>Impacts__c</field>
+        <formula>Opportunity__r.Impacts__c</formula>
+        <name>Impacts</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PLR_Assigned_Status</fullName>
+        <description>When a Pursuit Lead is assigned, the status of the request is auto populated to &quot;Assigned&quot;</description>
+        <field>Status__c</field>
+        <literalValue>(2) Assigned</literalValue>
+        <name>PLR Assigned Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PLR_Pending_Status</fullName>
+        <field>Status__c</field>
+        <literalValue>Pending</literalValue>
+        <name>PLR Pending Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Problems</fullName>
+        <field>Problems__c</field>
+        <formula>Opportunity__r.Problems__c</formula>
+        <name>Problems</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Pursuit_Lead_Auto_Populate</fullName>
+        <field>Pursuit_Lead__c</field>
+        <formula>Assigned_Pursuit_Lead__r.FirstName + &quot; &quot; + Assigned_Pursuit_Lead__r.LastName</formula>
+        <name>Pursuit Lead Auto Populate</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>Opportunity__c</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Complete_Date</fullName>
+        <description>Update the Compete Date field - datestamp</description>
+        <field>Completed_Date__c</field>
+        <formula>Now()</formula>
+        <name>Update Complete Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Primary_Pursuit_Lead</fullName>
+        <description>Update Managed Services Primary pursuit lead to Joe Norman (MS Lead).</description>
+        <field>Assigned_Pursuit_Lead__c</field>
+        <lookupValue>joe.norman@7summitsinc.com</lookupValue>
+        <lookupValueType>User</lookupValueType>
+        <name>Update Primary Pursuit Lead</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>Managed Services</fullName>
+        <actions>
+            <name>PLR_Assigned_Status</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Update_Primary_Pursuit_Lead</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Managed_Services_Request__c</field>
+            <operation>equals</operation>
+            <value>YES</value>
+        </criteriaItems>
+        <description>Assign managed services to Joe Norman</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>PLR Assigned Status</fullName>
+        <actions>
+            <name>PLR_Assigned_Status</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Assigned_Pursuit_Lead__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <description>PLR field &quot;Status&quot; auto populates as Assigned when field &quot;Primary Assigned Pursuit Lead&quot; is populated</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>PLR Demo Request</fullName>
+        <actions>
+            <name>PLR_Demo_Request_Alert</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Demo_Needed__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <description>Automation for when a Demo is needed on a Pursuit Lead Request.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>PLR Name on Opp</fullName>
+        <actions>
+            <name>Pursuit_Lead_Auto_Populate</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>True</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>PLR Pending Status</fullName>
+        <actions>
+            <name>PLR_Pending_Status</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Assigned_Pursuit_Lead__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <description>PLR field &quot;Status&quot; auto populates as Pending when field &quot;Primary Assigned Pursuit Lead&quot; is blank</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>PLR Preferred Request</fullName>
+        <actions>
+            <name>Preferred_Pursuit_Lead</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Preferred_Pursuit_Lead__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <description>When a PLR is submitted with field &quot;Preferred Pursuit Lead&quot; populated, an email is sent to the Pursuit Leads Group</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>PLR Requested</fullName>
+        <actions>
+            <name>PLR_Requested</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Due_Date__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Assigned_Pursuit_Lead__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <description>When a PLR is submitted, an email is sent to the Pursuit Leads Group</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Pursuit Lead Assigned</fullName>
+        <actions>
+            <name>Pursuit_Lead_Assigned</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Assigned_Pursuit_Lead__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Secondary_Pursuit_Lead__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <description>When a pursuit lead is assigned, the creator of the request record and the assigned Pursuit Leads are notified.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Selling Through Curiosity Field Updates</fullName>
+        <actions>
+            <name>Compelling_Event</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Current_Situation_PLR</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Ideal_Solution</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Ideal_Solution_Benefits</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Impacts</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Problems</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Populates Selling Through Curiosity field values from associated Opportunity</description>
+        <formula>OR(
+NOT(ISBLANK(Opportunity__r.Compelling_Event__c)),
+NOT(ISBLANK(Opportunity__r.Current_Situation__c)),
+NOT(ISBLANK(Opportunity__r.Ideal_Solution__c)),
+NOT(ISBLANK(Opportunity__r.Ideal_Solution_Benefits__c)),
+NOT(ISBLANK(Opportunity__r.Impacts__c)),
+NOT(ISBLANK(Opportunity__r.Problems__c))
+)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Update Complete Date</fullName>
+        <actions>
+            <name>Update_Complete_Date</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Pursuit_Lead_Request__c.Status__c</field>
+            <operation>equals</operation>
+            <value>(9) Complete,(10) Deferred / Cancelled,(11) Duplicate</value>
+        </criteriaItems>
+        <description>Update the &quot;Completed Date&quot; field when the Status field is set to &quot;Complete&quot;</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+</Workflow>

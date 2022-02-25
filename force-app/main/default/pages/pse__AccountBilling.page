@@ -1,0 +1,7 @@
+<apex:page standardController="Account" tabStyle="pse__Billing_Event__c" title="{!$Label.pse__billing_by_account}" showHeader="false" sidebar="false" lightningStylesheets="true">
+
+    <apex:composition template="pse__BillingTemplate">
+    </apex:composition>
+
+
+</apex:page>

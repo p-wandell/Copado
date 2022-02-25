@@ -1,0 +1,39 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper
+			custom-class={customClass}
+			variant={viewlayoutVariant}
+			aria-label={labelAriaWrapper}
+			auto-slds-card={autoSlds}
+			>
+	<c-x7s-shr-card
+			record-id={recordId}
+			image-src={imageUrl}
+			image-height={imageHeight}
+			variant={viewlayoutVariant}
+			custom-class={customClass}
+			hide-image={hideImage}
+			layout={layoutValue}>
+
+		<slot>
+			<!--Display Idea Description-->
+			<lightning-formatted-rich-text
+					value={ideaDesc}>
+			</lightning-formatted-rich-text>
+
+			<!-- CUSTOM FIELDS -->
+			<template if:true={showCustomFields}>
+				<template for:each={customFields} for:item='customField'>
+					<div key={customField.fieldLabel}>
+						<c-x7s-ideas-show-custom-fields custom-field={customField}
+						                                hide-empty-custom-fields={hideEmptyCustomFields}>
+						</c-x7s-ideas-show-custom-fields>
+					</div>
+				</template>
+			</template>
+		</slot>
+	</c-x7s-shr-card>
+	</c-x7s-shr-component-wrapper>
+</template>

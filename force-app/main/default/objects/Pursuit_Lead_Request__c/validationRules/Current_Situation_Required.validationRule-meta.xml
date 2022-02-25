@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Current_Situation_Required</fullName>
+    <active>true</active>
+    <description>Current Situation is requiried on the Opportunity in order to create a PLR record.</description>
+    <errorConditionFormula>AND(
+Opportunity__r.CloseDate&gt;=DATE(2020,04,15),
+ISBLANK(Opportunity__r.Current_Situation__c))</errorConditionFormula>
+    <errorDisplayField>Current_Situation__c</errorDisplayField>
+    <errorMessage>Current Situation is requiried on the Opportunity in order to create a PLR record. Please update the associated Opportunity record.</errorMessage>
+</ValidationRule>

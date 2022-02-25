@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Required</fullName>
+    <active>true</active>
+    <description>If the type of request is anything other than &quot;Non-Client Related&quot;, an account value is required.</description>
+    <errorConditionFormula>AND(
+OR(
+ISPICKVAL( Request_Type__c, &quot;Demo / Pre-Sales&quot;), ISPICKVAL(Request_Type__c, &quot;Project / Implementation&quot;)),
+ISBLANK( Account__c )
+)</errorConditionFormula>
+    <errorDisplayField>Account__c</errorDisplayField>
+    <errorMessage>Based on the type of request, an Account value is required. Please also select the specific Opportunity, if known.</errorMessage>
+</ValidationRule>

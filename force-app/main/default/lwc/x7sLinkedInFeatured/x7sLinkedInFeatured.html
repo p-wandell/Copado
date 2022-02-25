@@ -1,0 +1,35 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S LinkedIn Featured -->
+<template>
+    <div role="complementary" aria-label={navigationLandmarkAriaLabel}>
+        <c-x7s-shr-component-wrapper
+                class="x7s-video-gallery-plus"
+                description={subTitle}
+                title={title}
+                title-align={align}
+                variant={variant}>
+
+            <lightning-spinner if:true={loading} alternative-text="Loading"></lightning-spinner>
+
+            <lightning-layout vertical-align="stretch" multiple-rows="true">
+                <template if:true={posts} for:each={posts} for:item="post">
+                    <lightning-layout-item key={post.guid} flexibility="grow" padding="around-small" class={rowClass}>
+                        <iframe
+                                title={post.uniquePostTitleForScreenReader}
+                                src={post.url}
+                                height={postHeight}
+                                frameborder="0"
+                                allowfullscreen=""></iframe>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+
+            <div if:true={showMoreLink} slot="footer">
+                <a class="slds-button slds-button_brand" href={moreLink} target="_blank">{moreText}</a>
+            </div>
+        </c-x7s-shr-component-wrapper>
+    </div>
+</template>

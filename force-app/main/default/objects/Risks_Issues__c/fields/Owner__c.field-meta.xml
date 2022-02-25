@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Owner__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The Owner of the Risk or Issue. The person who will be mitigating or fixing the item.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The Owner of the Risk or Issue. The person who will be mitigating or fixing the item.</inlineHelpText>
+    <label>Owner</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Risks &amp; Issues</relationshipLabel>
+    <relationshipName>Risks_Issues</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

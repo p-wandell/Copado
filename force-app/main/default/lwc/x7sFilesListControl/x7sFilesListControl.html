@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+  -->
+<template>
+	<c-x7s-shr-list-control
+		list-id={listId}
+		default-sort={defaultSort}
+		hide-pagination={hidePagination}
+		hide-sort={hideSort}
+		hide-view-selector={hideViewSelector}
+		sort-options={sortOptions}
+		sort-variant={getSortVariant}
+		pagination-variant={paginationVariantInLower}
+		custom-class={componentClass}
+		auto-slds-card
+		variant={variant}
+		aria-label={labels.listControlAriaLabel}>
+
+		<div if:false={hideViewSelector} slot='view'>
+			<lightning-button-group>
+				<template if:true={showCard}>
+					<lightning-button-icon icon-name="utility:tile_card_list"
+					                       title={labels.titleViewCard}
+					                       alternative-text={labels.altViewCard}
+					                       variant={tileVariant}
+					                       onclick={handleCardView}>
+					</lightning-button-icon>
+				</template>
+				<template if:true={showList}>
+					<lightning-button-icon icon-name="utility:list"
+					                       title={labels.titleViewList}
+					                       alternative-text={labels.altViewList}
+					                       variant={listVariant}
+					                       onclick={handleListView}>
+					</lightning-button-icon>
+				</template>
+				<template if:true={showTable}>
+					<lightning-button-icon icon-name="utility:table"
+					                       title={labels.titleViewTable}
+					                       alternative-text={labels.altViewTable}
+					                       variant={tableVariant}
+					                       onclick={handleTableView}>
+					</lightning-button-icon>
+				</template>
+			</lightning-button-group>
+		</div>
+	</c-x7s-shr-list-control>
+</template>

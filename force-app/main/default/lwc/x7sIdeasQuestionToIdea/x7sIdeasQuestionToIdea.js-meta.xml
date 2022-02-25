@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Idea Convert</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="zoneName" label="Zone Name" type="String" default="ideas7s" description="Enter the zone name" required="true"/>
+            <property name="ideaListURL" label="Ideas List URL" default="/ideas/" type="String" description="URL for Ideas List page" required="true"/>
+            <property name="questionToIdeaButtonLabel" label="Convert to Idea Button Label" type="String" description="Convert to Idea Button Label"/>
+            <property name="showRequestedBy" label="Show Requested By" type="Boolean" description="Requested By for Idea Detail Page"/>
+            <property name="topicRequired" label="Require a Topic" type="Boolean" description="Make topic as required field"/>
+            <property name="useTopics" label="Display a Topic" type="Boolean" description="Enable to display a topic selection"/>
+            <property name="allowCategories" label="Allow Categories" type="Boolean" description="Enable optional category selection"/>
+            <property name="recordId" label="Record Id" type="String" default="{!recordId}" description="Set to {!recordId} to pass the page's record Id."/>
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,lightning__RecordPage">
+            <property name="zoneName" label="Zone Name" type="String" default="ideas7s" description="Enter the zone name" required="true"/>
+            <property name="ideaListURL" label="Ideas List URL" default="/ideas/" type="String" description="URL for Ideas List page" required="true"/>
+            <property name="questionToIdeaButtonLabel" label="Convert to Idea Button Label" type="String" description="Convert to Idea Button Label"/>
+            <property name="showRequestedBy" label="Show Requested By" type="Boolean" description="Requested By for Idea Detail Page"/>
+            <property name="topicRequired" label="Require a Topic" type="Boolean" description="Make topic as required field"/>
+            <property name="useTopics" label="Display a Topic" type="Boolean" description="Enable to display a topic selection"/>
+            <property name="allowCategories" label="Allow Categories" type="Boolean" description="Enable optional category selection"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

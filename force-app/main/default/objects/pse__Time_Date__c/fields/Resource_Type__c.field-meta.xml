@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resource_Type__c</fullName>
+    <description>Resource Type from the contact record associated with the Time Date record.</description>
+    <externalId>false</externalId>
+    <formula>Text(pse__Timecard__r.pse__Resource__r.Resource_Type__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Resource Type from the contact record associated with the Time Date record.</inlineHelpText>
+    <label>Resource Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

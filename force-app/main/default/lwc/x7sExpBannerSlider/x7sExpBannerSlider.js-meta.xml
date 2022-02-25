@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>Banner carousel/slider</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Banner Slider</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property type="String" name="backgroundImageUrl1" label="Slide 1: Background Image URL"  description="Slider Background Image URL" />
+            <property type="String" name="alignItems1" label="Slide 1: Text Alignment"  datasource="Left,Center,Right" description="Choose vertical alignment of left and right column" />
+            <property type="String" name="headline1" label="Slide 1: Headline"  description="A big heading to show on top" />
+            <property type="String" name="subHeadline1" label="Slide 1: Sub Headline"  description="A smaller heading beneath" />
+            <property type="String" name="paragraph1" label="Slide 1: Paragraph Text"  description="Paragraph text to use for messaging." />
+            <property type="String" name="buttonText1" label="Slide 1: Button Text"  description="The label on the CTA button" />
+            <property type="String" name="buttonURL1" label="Slide 1: Button URL"  description="The URL for the CTA button" />
+            <property type="String" name="button2Text1" label="Slide 1: Button 2 Text"  description="The label on the 2nd CTA button" />
+            <property type="String" name="button2URL1" label="Slide 1: Button 2 URL"  description="The URL for the 2nd CTA button" />
+            <property type="Boolean" name="darkText1" label="Slide 1: Dark Text (if using a light BG)" />
+            <property type="Boolean" name="showSlide1" label="Show Slide 1?" />
+
+            <property type="String" name="backgroundImageUrl2" label="Slide 2: Background Image URL"  description="Slider Background Image URL" />
+            <property type="String" name="alignItems2" label="Slide 2: Text Alignment"  datasource="Left,Center,Right" description="Choose vertical alignment of left and right column" />
+            <property type="String" name="headline2" label="Slide 2: Headline"  description="A big heading to show on top" />
+            <property type="String" name="subHeadline2" label="Slide 2: Sub Headline"  description="A smaller heading beneath" />
+            <property type="String" name="paragraph2" label="Slide 2: Paragraph Text"  description="Paragraph text to use for messaging." />
+            <property type="String" name="buttonText2" label="Slide 2: Button Text"  description="The label on the CTA button" />
+            <property type="String" name="buttonURL2" label="Slide 2: Button URL"  description="The URL for the CTA button" />
+            <property type="String" name="button2Text2" label="Slide 2: Button 2 Text"  description="The label on the 2nd CTA button" />
+            <property type="String" name="button2URL2" label="Slide 2: Button 2 URL"  description="The URL for the 2nd CTA button" />
+            <property type="Boolean" name="darkText2" label="Dark Text (if using a light BG)" />
+            <property type="Boolean" name="showSlide2" label="Show Slide 2?" />
+
+            <property type="String" name="backgroundImageUrl3" label="Slide 3: Background Image URL"  description="Slider Background Image URL" />
+            <property type="String" name="alignItems3" label="Slide 3: Text Alignment"  datasource="Left,Center,Right" description="Choose vertical alignment of left and right column" />
+            <property type="String" name="headline3" label="Slide 3: Headline"  description="A big heading to show on top" />
+            <property type="String" name="subHeadline3" label="Slide 3: Sub Headline"  description="A smaller heading beneath" />
+            <property type="String" name="paragraph3" label="Slide 3: Paragraph Text"  description="Paragraph text to use for messaging." />
+            <property type="String" name="buttonText3" label="Slide 3: Button Text"  description="The label on the CTA button" />
+            <property type="String" name="buttonURL3" label="Slide 3: Button URL"  description="The URL for the CTA button" />
+            <property type="String" name="button2Text3" label="Slide 3: Button 2 Text"  description="The label on the 2nd CTA button" />
+            <property type="String" name="button2URL3" label="Slide 3: Button 2 URL"  description="The URL for the 2nd CTA button" />
+            <property type="Boolean" name="darkText3" label="Slide 3: Dark Text (if using a light BG)" />
+            <property type="Boolean" name="showSlide3" label="Show Slide 3?" />
+
+            <property type="String" name="overlayColor" label="Overlay Color" description="Enter valid web color" />
+            <property type="String" name="overlayOpacity" label="Overlay Opacity" description="0 is transparent, .9 is almost solid" datasource="0,.1,.2,.3,.4,.5,.6,.7,.8,.9" />
+            <property type="String" name="transition" label="Transition" description="Show we move from slide to slide." datasource="Fade,Slide" />
+            <property type="String" name="autoplaySpeed" label="Slider Speed" description="0 = no Autoplay" />
+            <property type="Boolean" name="showDots" label="Show dots?" description="Show navigational dots or not." />
+            <property type="Boolean" name="showArrows" label="Show arrows?" description="Show navigational arrows or not." />
+            <property type="String" name="height" label="Slider Height (%, px, vh)" description="Height of the slider." />
+            <property type="String" name="customClassName" label="Custom Class Name" description="Custom CSS class name. Usually remains blank." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

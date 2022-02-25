@@ -1,0 +1,172 @@
+<apex:page standardController="ffr__SummarizationTemplate__c" extensions="ffr.SummarizationController" sidebar="true" docType="html-5.0">
+	<c:extjs_bootstrap applicationName="SummarizationTemplate" staticResource="{!$Resource.ffr__SummarizationTemplate}" developmentPrefix="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}">
+		<script>
+			window['$RemoteAction'] = window['$RemoteAction'] || {};
+			window['$Params'] = window['$Params'] || {};
+			window['$Label'] = window['$Label'] || {};
+
+			<!-- Remote Actions -->
+			$RemoteAction.SummarizationController = $RemoteAction.SummarizationController || {};
+			$RemoteAction.SummarizationController.save = '{!$RemoteAction.SummarizationController.save}';
+			$RemoteAction.SummarizationController.saveAndRun = '{!$RemoteAction.SummarizationController.saveAndRun}';
+			$RemoteAction.SummarizationController.lookup = '{!$RemoteAction.SummarizationController.lookup}';
+			$RemoteAction.SummarizationController.destinationLookup = '{!$RemoteAction.SummarizationController.destinationLookup}';
+			$RemoteAction.SummarizationController.getDataview = '{!$RemoteAction.SummarizationController.getDataview}';
+			$RemoteAction.SummarizationController.getDestinationObjectFields = '{!$RemoteAction.SummarizationController.getDestinationObjectFields}';
+
+			<!-- Params -->
+			$Params.Template = '{!JSENCODE(Template)}';
+			$Params.DataviewData = '{!JSENCODE(DataviewData)}';
+			$Params.ListPageUrl = '{!JSENCODE(ListPageUrl)}';
+			$Params.NewPageUrl = '{!JSENCODE(NewPageUrl)}';
+			$Params.hasEditPermissions = Boolean({!hasEditPermissions});
+			$Params.Namespace = '{!JSENCODE(Namespace)}';
+			$Params.ProcessLabels = '{!JSENCODE(ProcessLabels)}';
+			$Params.DestinationFieldList = '{!JSENCODE(DestinationFields)}';
+			$Params.PeriodsEnabled = Boolean({!PeriodsEnabled});
+			$Params.CurrentPeriodName = '{!JSENCODE(CurrentPeriodName)}';
+			$Params.PeriodsPerYear = Number({!PeriodsPerYear});
+			$Params.PeriodObjectName = '{!JSENCODE(PeriodObjectName)}';
+			$Params.DisplayTypeMap = '{!JSENCODE(DisplayTypeMap)}';
+
+			<!-- Labels -->
+			<!-- General Labels -->
+			$Label.BaseReferencePeriodError = '{!JSENCODE($Label.BaseReferencePeriodError)}';
+			$Label.SummarizationNewTitle = '{!JSENCODE($Label.SummarizationNewTitle)}';
+			$Label.SummarizationEditTitle = '{!JSENCODE($Label.SummarizationEditTitle)}';
+			$Label.SummarizationMapTabLabel = '{!JSENCODE($Label.SummarizationMapTabLabel)}';
+			$Label.SummarizationRowsPanel = '{!JSENCODE($Label.SummarizationRowsPanel)}';
+			$Label.SummarizationRowsPanelDescription = '{!JSENCODE($Label.SummarizationRowsPanelDescription)}';
+			$Label.SummarizationErrorTitle = '{!JSENCODE($Label.SummarizationErrorTitle)}';
+			$Label.SummarizationTemplateLoadingDataview = '{!JSENCODE($Label.SummarizationTemplateLoadingDataview)}';
+			$Label.SummarizationRowsPanelDescriptionInfo = '{!JSENCODE($Label.SummarizationRowsPanelDescriptionInfo)}';
+			$Label.SummarizationGeneralTabTitle = '{!JSENCODE($Label.SummarizationGeneralTabTitle)}';
+			$Label.SummarizationGeneralTabBasePeriod = '{!JSENCODE($Label.SummarizationGeneralTabBasePeriod)}';
+			$Label.ReportingBasePeriodTooltipText = '{!JSENCODE($Label.ReportingBasePeriodTooltipText)}';
+
+			$Label.ToolbarHelp = '{!JSENCODE($Label.ToolbarHelp)}';
+			$Label.ToolbarToggleFullscreen = '{!JSENCODE($Label.ToolbarToggleFullscreen)}';
+
+			<!-- Field Labels -->
+			$Label.SummarizationNameLabel = '{!JSENCODE($ObjectType.SummarizationTemplate__c.fields.Name.label)}';
+			$Label.SummarizationDataViewLabel = '{!JSENCODE($ObjectType.SummarizationTemplate__c.fields.SourceDataview__c.label)}';
+			$Label.SummarizationDestinationLabel= '{!JSENCODE($ObjectType.SummarizationTemplate__c.fields.Destination__c.label)}';
+			$Label.SummarizationMappingGridProcessLabel = '{!JSENCODE($ObjectType.SummarizationTemplateFieldProcess__c.fields.Process__c.label)}';
+			$Label.SummarizationMappingGridFieldLabel = '{!JSENCODE($Label.SummarizationMappingGridFieldLabel)}';
+			$Label.SummarizationMappingGridDataviewFieldLabel = '{!JSENCODE($Label.SummarizationMappingGridDataviewFieldLabel)}';
+			$Label.SummarizationTemplateGridColumnFilter = '{!JSENCODE($Label.SummarizationTemplateGridColumnFilter)}';
+			$Label.SummarizationWarningTitle = '{!JSENCODE($Label.SummarizationWarningTitle)}';
+
+			<!-- Button Labels -->
+			$Label.GoToListButton = '{!JSENCODE($Label.GoToListButton)}';
+			$Label.SummarizationSaveButton = '{!JSENCODE($Label.SummarizationSaveButton)}';
+			$Label.SummarizationSaveAndBuildButton = '{!JSENCODE($Label.SummarizationSaveAndBuildButton)}';
+			$Label.SummarizationAddColumnsButton = '{!JSENCODE($Label.SummarizationAddColumnsButton)}';
+			$Label.SummarizationAddAllColumnsButton = '{!JSENCODE($Label.SummarizationAddAllColumnsButton)}';
+			$Label.SummarizationDeleteColumnsButton = '{!JSENCODE($Label.SummarizationDeleteColumnsButton)}';
+			$Label.SummarizationCloneButton = '{!JSENCODE($Label.SummarizationCloneButton)}';
+			$Label.SummarizationOK = '{!JSENCODE($Label.SummarizationOK)}';
+			$Label.SummarizationCancel = '{!JSENCODE($Label.SummarizationCancel)}';
+
+			<!-- Messages -->
+			$Label.SummarizationNoDestination = '{!JSENCODE($Label.SummarizationNoDestination)}';
+			$Label.SummarizationNoDataview = '{!JSENCODE($Label.SummarizationNoDataview)}';
+			$Label.SummarizationNoTemplateName = '{!JSENCODE($Label.SummarizationNoTemplateName)}';
+			$Label.SummarizationNoMappedFields = '{!JSENCODE($Label.SummarizationNoMappedFields)}';
+			$Label.SummarizationNoDataviewField = '{!JSENCODE($Label.SummarizationNoDataviewField)}';
+			$Label.SummarizationNoDestinationField = '{!JSENCODE($Label.SummarizationNoDestinationField)}';
+			$Label.SummarizationNoProcess = '{!JSENCODE($Label.SummarizationNoProcess)}';
+			$Label.SummarizationSaveMessage = '{!JSENCODE($Label.SummarizationSaveMessage)}';
+			$Label.SummarizationLoadMessage = '{!JSENCODE($Label.SummarizationLoadMessage)}';
+			$Label.SummarizationNameToLong = '{!JSENCODE($Label.SummarizationNameToLong)}';
+			$Label.SummarizationErrorDataviewInvalid = '{!JSENCODE($Label.SummarizationErrorDataviewInvalid)}';
+			$Label.SummarizationErrorNoPresentableFields = '{!JSENCODE($Label.SummarizationErrorNoPresentableFields)}';
+			$Label.SummarizationWarning = '{!JSENCODE($Label.SummarizationWarning)}';
+			$Label.SummarizationCloneWarningMessage = '{!JSENCODE($Label.SummarizationCloneWarningMessage)}';
+			$Label.SummarizationTemplateLoadingDestination = '{!JSENCODE($Label.SummarizationTemplateLoadingDestination)}';
+			$Label.SummarizationWarningNoGroupByProcessSelected ='{!JSENCODE($Label.SummarizationWarningNoGroupByProcessSelected)}';
+
+			<!-- ToolTips -->
+			$Label.SummarizationColGridProcessToolTip = '{!JSENCODE($Label.SummarizationColGridProcessToolTip)}';
+
+			<!-- Save and build pop up -->
+			$Label.GoToListButton = '{!JSENCODE($Label.GoToListButton)}';
+			$Label.SummarizationSaveAndBuildPopTitle = '{!JSENCODE($Label.SummarizationSaveAndBuildPopTitle)}';
+			$Label.SummarizationSaveAndBuildPopMessage = '{!JSENCODE($Label.SummarizationSaveAndBuildPopMessage)}';
+
+			<!-- Filter Selection -->
+			$Label.ValueDropZoneText = '{!JSENCODE($Label.ValueDropZoneText)}'
+			$Label.InquiryTemplateColumnFilterDialogOk = '{!JSENCODE($Label.InquiryTemplateColumnFilterDialogOk)}';
+			$Label.FilterPanelField = '{!JSENCODE($Label.FilterPanelField)}';
+			$Label.FilterPanelAnd = '{!JSENCODE($Label.FilterPanelAnd)}';
+			$Label.FilterPanelOr = '{!JSENCODE($Label.FilterPanelOr)}';
+			$Label.FilterProperties = '{!JSENCODE($Label.FilterSelectionTitle)}';
+			$Label.FilterCancel = '{!JSENCODE($Label.FilterCancel)}';
+			$Label.FilterOk = '{!JSENCODE($Label.FilterSelectionOk)}';
+			$Label.FilterField = '{!JSENCODE($Label.FilterField)}';
+			$Label.FilterOperator = '{!JSENCODE($Label.FilterOperator)}';
+			$Label.FilterValue = '{!JSENCODE($Label.FilterValue)}';
+			$Label.FilterFrom = '{!JSENCODE($Label.FilterFrom)}';
+			$Label.FilterTo = '{!JSENCODE($Label.FilterTo)}';
+			$Label.FilterPrompt = '{!JSENCODE($Label.FilterPrompt)}';
+			$Label.FilterOpEquals = '{!JSENCODE($Label.FilterOpEquals)}';
+			$Label.FilterOpNotEquals = '{!JSENCODE($Label.FilterOpNotEquals)}';
+			$Label.FilterOpLessThan = '{!JSENCODE($Label.FilterOpLessThan)}';
+			$Label.FilterOpGreaterThan = '{!JSENCODE($Label.FilterOpGreaterThan)}';
+			$Label.FilterOpLessOrEqual = '{!JSENCODE($Label.FilterOpLessOrEqual)}';
+			$Label.FilterOpGreaterOrEqual = '{!JSENCODE($Label.FilterOpGreaterOrEqual)}';
+			$Label.FilterOpContains = '{!JSENCODE($Label.FilterOpContains)}';
+			$Label.FilterOpDoesNotContain = '{!JSENCODE($Label.FilterOpDoesNotContain)}';
+			$Label.FilterOpStartsWith = '{!JSENCODE($Label.FilterOpStartsWith)}';
+			$Label.FilterOpRange = '{!JSENCODE($Label.FilterOpRange)}';
+			$Label.FilterOpNotRange = '{!JSENCODE($Label.FilterOpNotRange)}';
+			$Label.FilterEmptyExpression = '{!JSENCODE($Label.FilterEmptyExpression)}';
+			$Label.FilterFieldSingleFormat = '{!JSENCODE($Label.FilterFieldSingleFormat)}';
+			$Label.FilterFieldRangeFormat = '{!JSENCODE($Label.FilterFieldRangeFormat)}';
+			$Label.FilterBooleanTrue = '{!JSENCODE($Label.FilterBooleanTrue)}';
+			$Label.FilterBooleanFalse = '{!JSENCODE($Label.FilterBooleanFalse)}';
+			$Label.FilterInvalidDateValue = '{!JSENCODE($Label.FilterInvalidDateValue)}';
+			$Label.FilterInvalidTimeValue = '{!JSENCODE($Label.FilterInvalidTimeValue)}';
+			$Label.FilterRangeValidation = '{!JSENCODE($Label.FilterRangeValidation)}';
+			$Label.FilterFieldFilterTooltip = '{!JSENCODE($Label.FilterFieldFilterTooltip)}';
+
+			$Label.FilterColumnFilterDialogHelpText = '{!JSENCODE($Label.FilterColumnFilterDialogHelpText)}';
+			$Label.FilterRowsPanelDescriptionInfo = '{!JSENCODE($Label.FilterRowsPanelDescriptionInfo)}';
+			$Label.FilterColumnFilterCriteriaTitle = '{!JSENCODE($Label.FilterColumnFilterCriteriaTitle)}';
+			$Label.FilterColumnFilterDialogReset = '{!JSENCODE($Label.FilterColumnFilterDialogReset)}';
+			$Label.FilterColFilterWindowTitle = '{!JSENCODE($Label.FilterColFilterWindowTitle)}';
+
+			<!-- Soft Date Component -->
+			$Label.DatePickerHardDateTabTitle = '{!JSENCODE($Label.DatePickerHardDateTabTitle)}';
+			$Label.DatePickerSoftDateTabTitle = '{!JSENCODE($Label.DatePickerSoftDateTabTitle)}';
+			$Label.DatePickerSoftDateNLabel = '{!JSENCODE($Label.DatePickerSoftDateNLabel)}';
+			$Label.DatePickerSoftDateNBlank = '{!JSENCODE($Label.DatePickerSoftDateNBlank)}';
+			$Label.DatePickerSelectButton = '{!JSENCODE($Label.DatePickerSelectButton)}';
+			$Label.SoftDateLastWeek = '{!JSENCODE($Label.SoftDateLastWeek)}';
+			$Label.SoftDateLastYear = '{!JSENCODE($Label.SoftDateLastYear)}';
+			$Label.SoftDateNextWeek = '{!JSENCODE($Label.SoftDateNextWeek)}';
+			$Label.SoftDateNextYear = '{!JSENCODE($Label.SoftDateNextYear)}';
+			$Label.SoftDateThisWeek = '{!JSENCODE($Label.SoftDateThisWeek)}';
+			$Label.SoftDateThisYear = '{!JSENCODE($Label.SoftDateThisYear)}';
+			$Label.SoftDateToday = '{!JSENCODE($Label.SoftDateToday)}';
+			$Label.SoftDateTomorrow = '{!JSENCODE($Label.SoftDateTomorrow)}';
+			$Label.SoftDateYesterday = '{!JSENCODE($Label.SoftDateYesterday)}';
+			$Label.SoftDateLastNDaysWithN = '{!JSENCODE($Label.SoftDateLastNDaysWithN)}';
+			$Label.SoftDateNextNDaysWithN = '{!JSENCODE($Label.SoftDateNextNDaysWithN)}';
+			$Label.FilterInvalidDateValueAllowSoft = '{!JSENCODE($Label.FilterInvalidDateValueAllowSoft)}';
+
+			<!-- Soft Period Component -->
+			$Label.SoftPeriodIllegalPeriodName = '{!JSENCODE($Label.SoftPeriodIllegalPeriodName)}';
+			$Label.SoftPeriodIllegalYearOffset = '{!JSENCODE($Label.SoftPeriodIllegalYearOffset)}';
+			$Label.SoftPeriodIllegalPeriod = '{!JSENCODE($Label.SoftPeriodIllegalPeriod)}';
+			$Label.SoftPeriodIllegalPeriodOffset = '{!JSENCODE($Label.SoftPeriodIllegalPeriodOffset)}';
+			$Label.SoftPeriodOffsetMinus = '{!JSENCODE($Label.SoftPeriodOffsetMinus)}';
+			$Label.SoftPeriodOffsetPlus = '{!JSENCODE($Label.SoftPeriodOffsetPlus)}';
+			$Label.SoftPeriodSeparator = '{!JSENCODE($Label.SoftPeriodSeparator)}';
+			$Label.PeriodNameBadPeriod = '{!JSENCODE($Label.PeriodNameBadPeriod)}';
+			$Label.PeriodNameBadYear = '{!JSENCODE($Label.PeriodNameBadYear)}';
+			$Label.PeriodNameMissingSeparator = '{!JSENCODE($Label.PeriodNameMissingSeparator)}';
+			$Label.PeriodNameRequired = '{!JSENCODE($Label.PeriodNameRequired)}';
+		</script>
+	</c:extjs_bootstrap>
+</apex:page>

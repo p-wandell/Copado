@@ -1,0 +1,97 @@
+<!--
+  ~ Copyright (c) 2021.  7Summits Inc. All rights reserved.
+  -->
+
+<!-- X7S List Control -->
+<template>
+	<c-x7s-shr-component-wrapper
+		auto-slds-card={autoSldsCard}
+		custom-class={componentClass}
+		variant={variant}
+	>
+		<lightning-layout multiple-rows="false"
+		                  vertical-align="end"
+		                  pull-to-boundary="small">
+			<!-- view options -->
+			<template if:false={hideViewSelector}>
+				<lightning-layout-item class="x7s-list-control__item"
+									padding="horizontal-small">
+					<slot name="view">
+						<lightning-button-group>
+							<lightning-button-icon icon-name="utility:tile_card_list"
+												title={labels.titleViewCard}
+												alternative-text={labels.altViewCard}
+												variant={tileVariant}
+												onclick={handleCardView}>
+							</lightning-button-icon>
+							<lightning-button-icon icon-name="utility:list"
+												title={labels.titleViewList}
+												alternative-text={labels.altViewList}
+												variant={listVariant}
+												onclick={handleListView}>
+							</lightning-button-icon>
+						</lightning-button-group>
+					</slot>
+				</lightning-layout-item>
+			</template>
+
+			<!--sort options-->
+			<template if:true={showSort}>
+				<lightning-layout-item
+					class="x7s-list-control__item"
+				    padding="horizontal-small"
+					flexibility="no-shrink"
+				>
+					<div
+						if:true={isInlineVariant}
+						class="slds-grid slds-grid_vertical-align-center"
+					>
+						<div class="x7s-list-control__label-inline slds-form-element__label">{labels.labelSortBy}</div>
+						<div class="slds-media__body">
+							<lightning-combobox
+								label={labels.labelSortBy}
+								name="selectSort"
+								onchange={handleSortBy}
+								options={sortOptions}
+								value={defaultSort}
+								variant="label-hidden"
+							></lightning-combobox>
+						</div>
+					</div>
+					<lightning-combobox
+						if:false={isInlineVariant}
+						label={labels.labelSortBy}
+						name="selectSort"
+						onchange={handleSortBy}
+						options={sortOptions}
+						value={defaultSort}
+						variant={calculatedSortVariant}
+					></lightning-combobox>
+				</lightning-layout-item>
+			</template>
+
+			<!-- pagination -->
+			<lightning-layout-item
+				if:true={showPagination}
+				class="x7s-list-control__item"
+				padding="horizontal-small"
+				alignment-bump="left"
+			>
+				<c-x7s-shr-pagination
+					button-variant={buttonVariant}
+					variant={pagingVariant}
+					range={paginationRange}
+					current-page={pageNumber}
+					total-pages={totalPages}
+					total-items={moreTotal}
+					current-items={moreCount}
+					items-per-page="10"
+					onpage={pageHandler}
+					onprevious={previousHandler}
+					onnext={nextHandler}
+					onmore={moreHandler}
+				></c-x7s-shr-pagination>
+			</lightning-layout-item>
+		</lightning-layout>
+	</c-x7s-shr-component-wrapper>
+</template>

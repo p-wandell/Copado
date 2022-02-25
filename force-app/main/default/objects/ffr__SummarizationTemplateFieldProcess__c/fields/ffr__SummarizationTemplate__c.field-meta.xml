@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__SummarizationTemplate__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The summarization template to which this field mapping process belongs.</description>
+    <externalId>false</externalId>
+    <label>Summarization Template</label>
+    <referenceTo>ffr__SummarizationTemplate__c</referenceTo>
+    <relationshipLabel>SummarizationTemplateFieldProcesses</relationshipLabel>
+    <relationshipName>SummarizationTemplateFieldProcesses</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

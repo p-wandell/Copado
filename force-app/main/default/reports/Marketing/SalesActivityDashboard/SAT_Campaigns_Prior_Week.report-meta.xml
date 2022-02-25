@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_10636332</developerName>
+        <masterLabel>Sales Region</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>CAMPAIGN_OWNER</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Scott McKeon</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Mark DeGurian</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sean Lowe</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Max Hart</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Mort Sayyed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justin Birt</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Lewis Jones</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Chris Engelhardt</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Kyle Steffen</sourceValue>
+            </sourceValues>
+            <value>East</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Adam Brown</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Craig Friedhoff</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dani Syed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Scott Richmond</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rob Hogervorst</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sam Brown</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Andre Joly</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Jamie Volpe</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Miles Smith</sourceValue>
+            </sourceValues>
+            <value>Central</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Brad Hattendorf</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Stephen Tang</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Bryan Alipiev</sourceValue>
+            </sourceValues>
+            <value>West</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>David Walsh</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Archan Tikoti</sourceValue>
+            </sourceValues>
+            <value>Client Partner</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>CAMPAIGN_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>NUM_RESPONSES</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>NUM_OPPORTUNITIES</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT_WON</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Sales Activity Tracking Dashboard - Campaigns Prior Week Component</description>
+    <filter>
+        <criteriaItems>
+            <column>START_DATE</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>LAST_WEEK</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>CAMPAIGN_OWNER</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Michael McCormick</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_10636332</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>CAMPAIGN_OWNER</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>SAT: Campaigns Prior Week</name>
+    <params>
+        <name>scopeid</name>
+        <value></value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CampaignList</reportType>
+    <scope>orgAll</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+</Report>

@@ -1,0 +1,27 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component description="SVNSUMMITS_News_Like_Button"
+                    access="global"
+                    controller="SVNSUMMITS_NewsController"
+                    extends="c:SVNSUMMITS_News_Base"
+                    implements="force:hasRecordId">
+
+        <aura:attribute name="baseModel" type="String" access="global"/>
+        <aura:handler name="baseReady" event="c:SVNSUMMITS_News_BaseReady" action="{!c.doInit}" />
+
+        <aura:attribute name="recordId" type="String" access="global" default="{!recordId}"/>
+
+        <aura:attribute name="isLiking" type="Boolean" default="false" access="private"/>
+        <aura:attribute name="likeCount" type="Integer" default="0" access="global"/>
+
+        <lightning:buttonStateful
+                aura:id="likeButton"
+                labelWhenOff="{!$Label.c.ss_nws_button_Like + ' ' + v.likeCount}"
+                labelWhenOn="{!$Label.c.ss_nws_button_Liked + ' ' + v.likeCount}"
+                labelWhenHover="{!$Label.c.ss_nws_button_Unlike}"
+                iconNameWhenOff=""
+                iconNameWhenOn="utility:like"
+                iconNameWhenHover="utility:close"
+                state="{!v.isLiking}"
+                onclick="{!c.handleLikeClick}"/>
+
+    </aura:component>

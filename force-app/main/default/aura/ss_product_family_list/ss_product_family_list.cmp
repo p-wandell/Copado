@@ -1,0 +1,39 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francoiskorb on 11/21/17.
+ -->
+
+<aura:component description="ss_product_family_list"
+                implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                extends="c:ss_product_base"
+                controller="pc_familyController"
+                access="global">
+
+	<aura:attribute name="setting"        type="String" default=""      access="global"/>
+	<aura:attribute name="familyList"     type="Map"/>
+	<aura:attribute name="productListUrl" type="String" default="/7s-product-list" access="global"/>
+
+	<aura:registerEvent name="updateCartButton" type="c:ss_cart_button_event"/>
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+	<lightning:layout multipleRows="true"
+	                  horizontalAlign="spread"
+	                  class="familyList">
+
+		<aura:iteration items="{!v.familyList}" var="familyItem">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="4"
+			                      smallDeviceSize="12"
+			                      mediumDeviceSize="6"
+			                      padding="around-small">
+				<c:ss_product_family_tile familyItem="{!familyItem}"
+				                          productListUrl="{!v.productListUrl}"/>
+			</lightning:layoutItem>
+		</aura:iteration>
+
+	</lightning:layout>
+
+</aura:component>

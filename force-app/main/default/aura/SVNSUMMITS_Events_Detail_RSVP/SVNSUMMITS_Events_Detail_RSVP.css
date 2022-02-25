@@ -1,0 +1,67 @@
+/* Copyright ©2016-2017 7Summits Inc. All rights reserved. */
+.THIS .createBox {
+	width: 100%;
+	float: right;
+	padding: 20px !important;
+	margin-bottom: 7%;
+	vertical-align: middle !important;
+	text-align: center !important;
+}
+
+.THIS .groupImageAdjust {
+	height: 18px;
+	width: 17px;
+}
+
+.THIS .numberOfAttendDisplay {
+	font-weight: 300;
+	font-size: 24px;
+	line-height: 66px;
+}
+
+.THIS .btnBox {
+	width: 100% !important;
+	font: normal 12px Arial;
+	margin: 0 auto !important;
+	padding: 20px;
+}
+
+.THIS .yesBtn {
+	border-radius: 5px 0px 0px 5px;
+	border-right: 0px;
+}
+
+.THIS .noBtn {
+	border-radius: 0px 5px 5px 0px;
+	border-left: 0px;
+}
+
+.THIS .activeState {
+	background:token(colorBackgroundButtonBrand);
+	color: #FFFFFF;
+	height: 50px;
+	width: 120px;
+	color: #ffffff;
+	text-align: center;
+	cursor: pointer;
+	line-height: 50px;
+	border-width: thin;
+}
+
+.THIS .normalState {
+	background: token(colorBackgroundButtonDefault);
+	color: #707070;
+	height: 50px;
+	width: 60px;
+	color: #707070;
+	text-align: center;
+	cursor: pointer;
+	line-height: 50px;
+	border-width: thin;
+}
+
+@media screen and (max-width: 1023px) {
+	.THIS .createBox {
+		width: 100% !important;
+	}
+}

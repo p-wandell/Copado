@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Notify the SOW reviewer queue when a new request has NOT been accepted and 4hrs has passed.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>SOW Reviewer Acceptance Reminder 4hrs</name>
+    <style>none</style>
+    <subject>URGENT:  A New SOW Review Request is Still Pending Assignment</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

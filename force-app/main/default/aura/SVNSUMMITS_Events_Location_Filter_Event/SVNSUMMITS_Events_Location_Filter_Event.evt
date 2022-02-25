@@ -1,0 +1,8 @@
+<!--
+ - Created by francoiskorb on 9/5/17.
+ -->
+
+<aura:event type="APPLICATION"
+            description="SVNSUMMITS_Events_Location_Filter_Event">
+	<aura:attribute name="filterValue" type="String"/>
+</aura:event>

@@ -1,0 +1,25 @@
+<!--
+ - Copyright (c) 2019. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 2019-05-16.
+-->
+<!-- 7S Community Logo -->
+<template>
+    <section class={wrapperClass}>
+        <a href={link} onclick={linkClick} class="theme-logo-link">
+            <lightning-layout horizontal-align="" vertical-align="center" multiple-rows="" class="">
+                <lightning-layout-item class="theme-logo-wrapper">
+                <span class="theme-logo">
+                    <lightning-icon
+                            src={communityLogo}
+                            icon-name="" size="medium" alternative-text="Community Logo"></lightning-icon>
+                </span>
+                </lightning-layout-item>
+                <template if:true={showTitle}>
+                    <lightning-layout-item class="theme-title slds-p-left_x-small slds-show_medium">
+                        <h2>{communityTitle}</h2>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+        </a>
+    </section>
+</template>

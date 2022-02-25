@@ -1,0 +1,78 @@
+/**
+ * Hive_Lightning - Generates the assets used for 7S Hive Migration Lightning
+ * @version 1.0.0
+ * @author 7Summits
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.THIS {
+  position: relative;
+  background-size: cover;
+  /*******************/
+  /* Common CSS here */
+  /*******************/
+}
+@keyframes fadeIn {
+  0% {
+    z-index: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 0;
+  }
+  100% {
+    z-index: 1;
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    z-index: 1;
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    z-index: -1;
+    opacity: 0;
+  }
+}
+.THIS h1 {
+  font-size: 1.75rem;
+}
+@media (min-width: 48em) {
+  .THIS h1 {
+    font-size: 3.75rem;
+  }
+}
+.THIS h2 {
+  font-size: 1.2rem;
+}
+@media (min-width: 48em) {
+  .THIS h2 {
+    font-size: 2.75rem;
+  }
+}
+.THIS .peak-banner-overlay {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  content: ' ';
+}
+.THIS .slds-grid {
+  position: relative;
+}
+.THIS h1,
+.THIS h2 {
+  line-height: normal;
+}
+.THIS .slds-grid {
+  position: relative;
+}
+.THIS .slds-button {
+  margin-right: token(spacingLarge);
+}

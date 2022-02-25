@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Milestone_Amount_must_be_0</fullName>
+    <active>false</active>
+    <description>For any projects where &apos;Opp Project Type&apos; is not &apos;Customer Success&apos;, the Milestone Amount must be $0.</description>
+    <errorConditionFormula>AND( pse__Project__r.Opp_Project_Type__c  &lt;&gt; &quot;Customer Success&quot;, pse__Milestone_Amount__c &gt;0)</errorConditionFormula>
+    <errorMessage>For any projects where &apos;Opp Project Type&apos; is not &apos;Customer Success&apos;, the Milestone Amount must be $0.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,16 @@
+Dear Sherpa,
+
+The request to upgrade a client to the latest version of the IP they have purchased has been received. Please proceed with the standard process to obtain the latest code from the correct branch in the repository for each product.
+
+*****PLEASE NOTE: The upgrade/deployment/installation should be handled by the *project* team. There is no need to contact anyone on the Product team for this work.*****
+
+Summary: {!Product_Request__c.Request_Summary__c}
+Link: {!Product_Request__c.Link}
+
+Status: {!Product_Request__c.Status__c}
+
+Created by: {!Product_Request__c.CreatedBy}
+Created Date: {!Product_Request__c.CreatedDate}
+
+Project: {!Product_Request__c.Project__c}
+IP Included: {!Product_Request__c.Products_IP_Included__c}

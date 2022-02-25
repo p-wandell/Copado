@@ -1,0 +1,14 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<template>
+    <template if:true={filterValChk}>
+        <lightning-combobox name="selectMultiFilter"
+                            label={idealabelmyFilters}
+                            value={picklistValue}
+                            onchange={handleSelectedFilter}
+                            options={multiplePicklist}>
+       </lightning-combobox>
+    </template>
+</template>

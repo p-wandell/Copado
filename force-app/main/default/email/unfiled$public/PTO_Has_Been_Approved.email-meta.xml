@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>After a manager approves a user&apos;s PTO timecard, this email goes to user to notify of approval.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Letterhead_with_Logo</letterhead>
+    <name>PTO Has Been Approved</name>
+    <style>freeForm</style>
+    <subject>PTO Has Been Approved</subject>
+    <textOnly>Your PTO request has been approved by your manager. Your PTO Balances have now been updated to include these new PTO days.
+
+Details of Request:
+
+-Week:{!pse__Timecard_Header__c.pse__Start_Date__c}-{!pse__Timecard_Header__c.pse__End_Date__c}
+-Total Hours: {!pse__Timecard_Header__c.pse__Total_Hours__c}
+
+Your Current PTO Balance (including this request):
+
+-Total Year Allocation (Hours): {!PTO_Balance__c.Total_Allocation_This_Year__c}
+-PTO Used: {!PTO_Balance__c.PTO_Used__c}
+-PTO Scheduled: {!PTO_Balance__c.Scheduled_PTO_Hours__c}
+-Projected Year End Balance (Hours): {!PTO_Balance__c.Projected_Year_End_Balance__c}
+
+You can view the approved timecard record here. {!pse__Timecard_Header__c.Link}
+Please reach out to the Consulting Operations Team with any questions.</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

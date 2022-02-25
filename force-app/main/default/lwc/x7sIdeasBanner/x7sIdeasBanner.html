@@ -1,0 +1,33 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper custom-class={componentClass} 
+								 auto-slds-card={autoSlds} 
+								 aria-label={labelAriaWrapper}
+								 variant ={variant}>
+		<div class={bottomBorder}>
+			<c-x7s-shr-object-banner title={ideaBannerTitle}
+			                         icon-name={iconName}
+			                         hide-icon={hideIcon}
+			                         hide-title={hideTitle}
+			                         hide-search={hideSearch}
+			                         list-id={listId}
+			                         search-place-holder={searchPlaceHolder}>
+
+				<template if:true={objectCreatable}>
+					<div slot="action">
+						<lightning-button name="button"
+						                  title={buttonText}
+						                  onclick={navigateToPage}
+						                  value={buttonText}
+						                  label={buttonText}
+						                  variant="brand">
+						</lightning-button>
+					</div>
+				</template>
+
+			</c-x7s-shr-object-banner>
+		</div>
+	</c-x7s-shr-component-wrapper>
+</template>

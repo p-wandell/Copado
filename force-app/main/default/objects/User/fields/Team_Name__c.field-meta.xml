@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Team_Name__c</fullName>
+    <description>The team name assigned to the user</description>
+    <externalId>false</externalId>
+    <label>Team Name</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>Bellatrix</fullName>
+                <default>false</default>
+                <label>Bellatrix</label>
+            </value>
+            <value>
+                <fullName>Fomalhaut</fullName>
+                <default>false</default>
+                <label>Fomalhaut</label>
+            </value>
+            <value>
+                <fullName>Orion</fullName>
+                <default>false</default>
+                <label>Orion</label>
+            </value>
+            <value>
+                <fullName>Regulus</fullName>
+                <default>false</default>
+                <label>Regulus</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

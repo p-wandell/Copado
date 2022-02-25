@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<description>Present content from a remote RSS feed.</description>
+	<isExposed>true</isExposed>
+	<masterLabel>7S RSS Feed</masterLabel>
+	<targets>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightningCommunity__Default">
+			<property name="title" label="Title" type="String" />
+			<property name="titleAlign" label="Title Align" type="String" default="left" datasource="left,center,right" />
+			<property name="variant" label="Variant" type="String" default="default" datasource="default,slds-card,featured" />
+			<property name="description" label="Description" type="String" />
+			<property name="iconName" label="Icon Name" type="String" />
+
+			<property name="feedUrlEndpoint" label="Provide the RSS Feed Url. Ensure a remote site setting record exists for the URL in Salesforce." type="String"/>
+			<property name="feedRecordsToShow" label="Number of records to show. We'll grab as many as returned if no limit is specified." type="Integer" default="10" />
+
+			<property name="listEmptyText" label="Empty List Text: shown when the feed is empty." type="String" default="No RSS feed items found" />
+			<property name="listErrorText" label="Error text: shown when the feed fails." type="String" default="Failed to return any items. Ensure a remote site setting record is created for the URL you're using." />
+
+			<property name="customClass" label="Custom Class Name" type="String" description="Custom CSS class name. Usually remains blank." />
+			<property name="debug" label="Debug?" type="Boolean"
+					  description="Triggers console.logs if debugger is enabled" default="false" />
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

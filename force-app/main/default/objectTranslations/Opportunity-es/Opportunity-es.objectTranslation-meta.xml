@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldSets>
+        <label><!-- Opportunity Detail Fields on RR From Template Field Set --></label>
+        <name>pse__OppDetailOnRRFromTemplateFieldSet</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Opportunity Fields For Rate Card Set --></label>
+        <name>pse__Opportunity_Fields_For_Rate_Card_Set</name>
+    </fieldSets>
+    <validationRules>
+        <errorMessage><!-- Business Segment is required. --></errorMessage>
+        <name>Business_Segment_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Channel Rep is required. --></errorMessage>
+        <name>Channel_Rep_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Add the name of the competitor or platform this deal was lost to, in field &quot;Competition&quot; --></errorMessage>
+        <name>Competition_Loss</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Description is required in order to mark this opportunity Closed/Won. --></errorMessage>
+        <name>Description_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- CompanyId should be a numeric value --></errorMessage>
+        <name>LID__Check_CompanyId_Value</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Lead Source Detail is required. --></errorMessage>
+        <name>Lead_Source_Detail_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please provide the google document link to the final PDF executed Statement of Work prior to updating to Closed Won --></errorMessage>
+        <name>Link_to_Final_SOW_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Loss Detail is required --></errorMessage>
+        <name>Loss_Detail</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Loss Reason is required --></errorMessage>
+        <name>Loss_Reason</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Parent Opportunity is required. --></errorMessage>
+        <name>Parent_Opp_Required_for_CO</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The close date is outside of the standard date range. Please verify that the date is correct. --></errorMessage>
+        <name>Past_Date_Restriction</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- SF License Type is required in order to move this opportunity to Proposal. --></errorMessage>
+        <name>SF_Licence_Type_required_from_stage_4</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Populate missing data in the Selling Through Curiosity Section --></errorMessage>
+        <name>Selling_Through_Curiosity</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Solution Primary Audience is required --></errorMessage>
+        <name>Solution_Primary_Audience</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Team Recognition is required in order to mark this opportunity Closed/Won. --></errorMessage>
+        <name>Team_Recognition</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Forecast Category must be &quot;commit&quot; to check WAR. --></errorMessage>
+        <name>WAR_checkbox_validation</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please enter value as Bill To Tier is selected as Distributor. --></errorMessage>
+        <name>netsuite_conn__Validate_Distributor</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please enter value as Bill To Tier is selected as Reseller. --></errorMessage>
+        <name>netsuite_conn__Validate_Reseller</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Rate Card Percentage Discount must be between 0 and 100. --></errorMessage>
+        <name>pse__Discount_Rates_Must_Be_Between_0_to_100</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You cannot associate the rate card set with the opportunity. They must both use the same currency. --></errorMessage>
+        <name>pse__Opp_Rate_Card_Set_Currency_Mismatch</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Estimation_Workbook_Submission --></label>
+        <name>Estimation_Workbook_Submission</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Log_A_Call --></label>
+        <name>Log_A_Call</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Pursuit_Lead_Request --></label>
+        <name>Pursuit_Lead_Request</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Resource_Request --></label>
+        <name>Resource_Request</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_NetSuite_Opportunity --></label>
+        <name>netsuite_conn__Create_NetSuite_Opportunity</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_NetSuite_Order --></label>
+        <name>netsuite_conn__Create_NetSuite_Order</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_NetSuite_Project --></label>
+        <name>netsuite_conn__Create_NetSuite_Project</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- DeliveryStatus --></label>
+        <name>netsuite_conn__DeliveryStatus</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Send_Pardot_Emails --></label>
+        <name>pi__Send_Pardot_Emails</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Send_Single_Pardot_Email --></label>
+        <name>pi__Send_Single_Pardot_Email</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Apply_Rate_Card_Discount --></label>
+        <name>pse__Apply_Rate_Card_Discount</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_Change_Request --></label>
+        <name>pse__Create_Change_Request</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_Project --></label>
+        <name>pse__Create_Project</name>
+    </webLinks>
+</CustomObjectTranslation>

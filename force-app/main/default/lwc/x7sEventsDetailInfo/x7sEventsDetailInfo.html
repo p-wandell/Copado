@@ -1,0 +1,121 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+-->
+<template>
+	<template if:true={eventsListWrapper}>
+		<c-x7s-shr-component-wrapper 
+			custom-class={componentClass}
+			variant={variant}
+			title={eventInfoTitle}
+			shaded-header>
+			<slot>
+				<div class="slds-grid slds-grid_vertical slds-wrap slds-align_absolute-center">
+					<div class="slds-col boldStyle">
+						<!--Display event date-->
+						<lightning-icon icon-name="utility:event" 
+									alternative-text="Event Date" 
+									size="x-small"
+									title="Event Date">
+						</lightning-icon>
+						&nbsp;<lightning-formatted-date-time 
+									value={event.localeStartDate}
+									month="short"
+									day="2-digit"
+									time-zone={timeZone}>
+						</lightning-formatted-date-time>
+						<template if:true={event.showStartYear}>
+							,&nbsp;<lightning-formatted-date-time 
+									value={event.localeStartDate}
+									year="numeric"
+									time-zone={timeZone}>
+							</lightning-formatted-date-time>
+						</template>
+						<template if:true={event.showEndDate}>
+							&nbsp;-&nbsp;<lightning-formatted-date-time
+									value={event.localeEndDate}
+									month="short"	
+									day="2-digit"
+									year="numeric"
+									time-zone={timeZone}>
+								</lightning-formatted-date-time>
+						</template>
+						<template if:false={event.showEndDate}>
+							,&nbsp;<lightning-formatted-date-time 
+										value={event.localeEndDate}
+										year="numeric"
+										time-zone={timeZone}>
+								</lightning-formatted-date-time>
+						</template>
+					</div>
+
+					<!--Display Event Time-->
+					<div class="slds-col slds-m-left_large">
+						<div if:true={isNotAllDayEvent}>
+							<lightning-formatted-date-time 
+									value={event.localeStartDate}
+									hour="2-digit"
+									minute="2-digit"
+									time-zone={timeZone}>
+							</lightning-formatted-date-time>
+							<template if:true={event.localeEndDate}>
+								&nbsp;-&nbsp;
+								<lightning-formatted-date-time 
+										value={event.localeEndDate}
+										hour="2-digit"
+										minute="2-digit"
+										time-zone={timeZone}>
+								</lightning-formatted-date-time>
+							</template>
+						</div>
+					</div>
+
+					<!--Display event location-->
+					<template if:true={IsLocationName}>
+						<div class="slds-col boldStyle slds-m-top_medium">
+							<lightning-icon icon-name="utility:world" 
+										alternative-text="Event Date" 
+										size="x-small"
+										title="Event Date">
+							</lightning-icon>
+							&nbsp;
+							<template if:true={IsLocationURL}>
+								<lightning-formatted-text value={event.Location_Name__c} 
+													onclick={navigateToLocation} 
+													class="slds-text-link"
+													linkify>
+								</lightning-formatted-text>
+							</template>
+							<template if:false={IsLocationURL}>
+								<lightning-formatted-text value={event.Location_Name__c}>
+								</lightning-formatted-text>
+							</template>
+						</div>
+					</template>
+					
+					<template if:true={isLocationAdd}>
+						<div class="slds-col">
+							<lightning-formatted-text value={event.Location_Address__c}>
+							</lightning-formatted-text>
+						</div>
+					</template>
+					<template if:true={isEventVenue}>
+						<div class="slds-col">
+							<lightning-formatted-text value={eventVenue}>
+							</lightning-formatted-text>
+						</div>
+					</template>
+					
+					<template if:false={hideAddToCalendar}>
+						<div class="slds-col slds-m-top_large slds-m-bottom_x-small">
+							<lightning-button label={addToCalendarButtonText}
+									icon-name="utility:event" 
+									icon-position="right"
+									onclick={addToCalendar}>
+							</lightning-button>
+						</div>
+					</template>
+				</div>
+			</slot>
+		</c-x7s-shr-component-wrapper>
+	</template>
+</template>

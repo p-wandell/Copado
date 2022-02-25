@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <validationRules>
+        <errorMessage><!-- The End Date must be earlier than the current time. --></errorMessage>
+        <name>ffct__EndDateShouldBeLessThanCurrentTime</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Start Date must be earlier than the current time. --></errorMessage>
+        <name>ffct__StartDateShouldBeLessThanCurrentDate</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The End Date must be later than the Start Date. --></errorMessage>
+        <name>ffct__StartDateShouldBeLessThanEndDate</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Migrate --></label>
+        <name>ffct__Migrate</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Prepare --></label>
+        <name>ffct__Prepare</name>
+    </webLinks>
+</CustomObjectTranslation>

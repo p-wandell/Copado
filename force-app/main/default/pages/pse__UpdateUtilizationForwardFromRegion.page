@@ -1,0 +1,3 @@
+<apex:page standardController="pse__Region__c" extensions="pse.UpdateUtilizationController" action="{!forwardToUpdateUtilization}">
+    <apex:outputText value="{!pse__Region__c.Name}" rendered="false"/>
+</apex:page>

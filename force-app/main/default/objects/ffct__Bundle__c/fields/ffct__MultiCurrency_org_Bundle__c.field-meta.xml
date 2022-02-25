@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__MultiCurrency_org_Bundle__c</fullName>
+    <defaultValue>true</defaultValue>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <inlineHelpText>When selected, the bundle created will work on multiple currency organizations. When not selected, the bundle will work on both single currency and multiple currency organizations.</inlineHelpText>
+    <label>Is a Multiple Currency Org Bundle</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,17 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francoiskorb on 11/21/17.
+ -->
+
+<design:component label="7S Product Family List">
+	<design:attribute name="setting"
+	                  label="Catalog Setting Name"
+	                  description="Enter the name of product catalog custom metadata type record. Leave blank to use Default"/>
+
+	<design:attribute name="productListUrl"
+	                  label="Product List URL"
+	                  description="Product list URL to be filtered by product family"/>
+</design:component>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>指示此记录中的值是否适用于实际收入或预测收入。</help>
+    <label><!-- Revenue Type --></label>
+    <name>pse__Revenue_Type__c</name>
+    <picklistValues>
+        <masterLabel>Actuals</masterLabel>
+        <translation>实际值</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Forecast</masterLabel>
+        <translation>预测</translation>
+    </picklistValues>
+</CustomFieldTranslation>

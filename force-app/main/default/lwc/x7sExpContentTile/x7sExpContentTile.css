@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+
+.x7s-banner__text + .x7s-banner__buttons {
+    margin-top: var(--lwc-spacingLarge);
+}
+c-x7s-exp-html-headings {
+    display: block;
+}
+c-x7s-exp-html-headings + c-x7s-exp-html-headings,
+c-x7s-exp-html-headings + p {
+    margin-top: var(--lwc-spacingXSmall);
+}
+lightning-button + lightning-button {
+    margin-left: var(--lwc-spacingLarge);
+}
+@media screen and (max-width: 48em)
+{
+    /* Adds a top margin to sibling buttons and makes them full width so when stacked on mobile there is space between */
+    lightning-button + lightning-button
+    {
+        display: block;
+        width: 100%;
+        margin-top: var(--lwc-spacingLarge);
+    }
+}

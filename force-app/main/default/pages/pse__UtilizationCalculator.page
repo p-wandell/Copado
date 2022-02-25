@@ -1,0 +1,175 @@
+<apex:page controller="pse.UtilizationCalculatorController" lightningStylesheets="true">
+
+<style type="text/css">
+img.percentImage1 {
+ background: white url({!URLFOR($Resource.pse__progressImages, 'percentImage_back1.png')}) top left no-repeat;
+ padding: 0;
+ margin: 5px 0 0 0;
+ background-position: 1px 0;
+}
+.slds-vf-scope .multiSelectPicklistRow select[multiple] {width: 15rem !important;}
+.detailList .data2Col { width:82% !important;}
+.slds-vf-scope select[multiple] option {font-size: .875rem}
+.infoIcon {vertical-align: middle; margin: 5px 10px 5px 10px !important;}
+.info-block {border: 1px solid; border-color: #dddbda; border-radius: .25rem;}
+</style>
+<apex:outputPanel layout="none" rendered="{!$User.UIThemeDisplayed=='Theme4d'}">
+	<style>
+		.infoIcon {
+			width: 23px !important;
+			color: #706e6b;
+			height: 23px !important;
+		}
+		.info-block {
+			background-color: #f4f6f9;
+			padding: 0.75rem 1rem;
+			border: none;
+		}
+	</style>
+</apex:outputPanel>
+<apex:stylesheet value="{!URLFOR($Resource.pse__fflib_baf, '/stylesheets/progress-bar.css')}" />
+
+<script type="text/javascript">
+function onHistUteChange()
+{
+    jsHistChange();
+}
+
+function onSchedUteChange()
+{
+    jsSchedChange();
+}
+
+function onTimePeriodChange()
+{
+    wait(true);
+
+    jsTimePeriodChange();
+}
+
+// tracking these events is a hack to detect when a lookup input field has changed
+// via clicking the button to show the search popup. unfortunately, the onchange event only
+// detects a typed change. note the event chain we are detecting is click-blur-focus.
+var eventChain = '';
+
+function onFocus()
+{
+    if (eventChain == 'click-blur')
+    {
+        onTimePeriodChange();
+    }
+    eventChain = 'focus';
+}
+
+function onBlur()
+{
+    if (eventChain == 'click')
+        eventChain = 'click-blur';
+    else
+        eventChain = 'blur';
+}
+
+function onClick()
+{
+    eventChain = 'click';
+}
+</script>
+
+<apex:insert name="sectionHeader"/>
+
+<apex:pageMessages id="messages"/>
+
+<c:WaitComponent />
+
+<apex:form >
+
+<apex:actionFunction action="{!onUtilizationParamChange}" name="jsHistChange" rerender="messages,histUteSection"/>
+<apex:actionFunction action="{!onUtilizationParamChange}" name="jsSchedChange" rerender="messages,schedUteSection"/>
+<apex:actionFunction action="{!onTimePeriodChange}" name="jsTimePeriodChange" rerender="messages,infoUteSection,schedUteSection,histUteSection" oncomplete="wait(false);"/>
+
+<apex:outputPanel layout="block" styleClass="info-block" rendered="{!showEntryMode}">
+	<table>
+		<tr>
+			<td><apex:image value="/s.gif" styleClass="infoIcon"/></td>
+			<td><apex:outputText value="{!$Label.pse__utilization_message_instructions}" /></td>
+		</tr>
+	</table>
+</apex:outputPanel>
+<p />
+
+<apex:pageBlock title="{!$Label.pse__utilization_label_utilization}" mode="edit" rendered="{!showEntryMode}">
+    <apex:pageBlockButtons >
+        <apex:commandButton value="{!$Label.pse__common_label_calculate}" action="{!calculate}"/>
+        <apex:commandButton value="{!$Label.pse__utilization_label_schedule}" action="{!doSchedule}"/>
+        <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancel}" immediate="true"/>
+    </apex:pageBlockButtons>
+    <apex:pageBlockSection title="{!$Label.pse__common_label_information}" columns="2" id="infoUteSection">
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel value="{!$Label.pse__common_label_name}" for="requiredInputText"/><c:RequiredInputText value="{!criteria.Name}"/>
+        </apex:pageBlockSectionItem>
+        <apex:outputField value="{!criteria.pse__Region__c}" rendered="{!criteria.pse__Region__c != null}"/>
+        <apex:outputField value="{!criteria.pse__Practice__c}" rendered="{!criteria.pse__Practice__c != null}"/>
+        <apex:outputField value="{!criteria.pse__Group__c}" rendered="{!criteria.pse__Group__c != null}"/>
+        <apex:outputField value="{!criteria.pse__Resource__c}" rendered="{!criteria.pse__Resource__c != null}"/>
+        <apex:inputField value="{!criteria.pse__Is_Report_Master__c}"/>
+        <apex:inputField value="{!criteria.pse__Delete_Prior_Calculation__c}"/>
+        <apex:inputField value="{!criteria.pse__Include_Sublevels__c}"/>
+        <apex:outputText value="" />
+        <apex:inputField value="{!criteria.pse__Type__c}" onchange="javascript:onTimePeriodChange();"/>
+        <apex:inputField value="{!criteria.pse__Historical_Utilization_Cut_Off_Date__c}" onchange="javascript:onTimePeriodChange();"/>
+        <apex:inputField value="{!criteria.pse__Time_Period_Types__c}" required="false"/>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection title="{!$Label.pse__utilization_label_summary_by_role}" columns="2" id="summaryByRole" rendered="{!CalcRoleSummary}">
+        <apex:inputField value="{!criteria.pse__Default_Opportunity_Probability__c}"  />
+        <apex:inputField value="{!criteria.pse__Minimum_Opportunity_Probability__c}"  />
+        <apex:inputField value="{!criteria.pse__Excluded_Roles__c}"/>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection title="{!$Label.pse__utilization_label_compute_sub_total}" columns="1" id="subTotalUteSection" rendered="{!CalcCrossProducts}">
+        <apex:inputField value="{!criteria.pse__Subtotal_by_Region__c}"    rendered="{!criteria.pse__Region__c == null}"/>
+        <apex:inputField value="{!criteria.pse__Subtotal_by_Practice__c}"  rendered="{!criteria.pse__Practice__c == null}"/>
+        <apex:inputField value="{!criteria.pse__Subtotal_by_Group__c}"     rendered="{!criteria.pse__Group__c == null}"/>
+        <apex:inputField value="{!criteria.pse__Include_Sublevels_in_Subtotals__c}"/>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection title="{!$Label.pse__utilization_label_hist_ute}" columns="2" id="histUteSection">
+        <apex:inputField value="{!criteria.pse__Calculate_Historical_Utilization__c}" onchange="javascript:onHistUteChange();"/>
+        <apex:pageBlockSectionItem />
+        <apex:inputField value="{!criteria.pse__Historical_Utilization_Start_Date__c}" required="true" rendered="{!criteria.pse__Calculate_Historical_Utilization__c}"/>
+        <apex:inputField value="{!criteria.pse__Historical_Utilization_End_Date__c}" required="true" rendered="{!criteria.pse__Calculate_Historical_Utilization__c}"/>
+    </apex:pageBlockSection>
+    <apex:pageBlockSection title="{!$Label.pse__utilization_label_sched_ute}" columns="2" id="schedUteSection">
+        <apex:inputField value="{!criteria.pse__Calculate_Scheduled_Utilization__c}" onchange="javascript:onSchedUteChange();"/>
+        <apex:pageBlockSectionItem />
+        <apex:inputField value="{!criteria.pse__Scheduled_Utilization_Start_Date__c}" required="true" rendered="{!criteria.pse__Calculate_Scheduled_Utilization__c}"/>
+        <apex:inputField value="{!criteria.pse__Scheduled_Utilization_End_Date__c}" required="true" rendered="{!criteria.pse__Calculate_Scheduled_Utilization__c}"/>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection title="{!$Label.pse__utilization_label_schedule}" columns="1" collapsible="true">
+        <c:ApexSchedule schedPattern="{!schedulePattern}"/>
+    </apex:pageBlockSection>
+
+
+</apex:pageBlock>
+
+<apex:outputPanel rendered="{!NOT(showEntryMode)}" id="progressPanel">
+    <div align="center" class="ffdc-apexlib-progress ffdc-apexlib-progress-default" >
+        <div class="ffdc-apexlib-progress-inner" style="width:20%">
+            <div class="ffdc-apexlib-progress-strip"></div>
+            <div class="ffdc-apexlib-progress-bar" style="width: {!percentComplete}%;"></div>
+        </div>
+        <div class="ffdc-apexlib-progress-message">
+            <apex:outputText value="{!statusString}"/>
+            <p />
+            <apex:outputText value="{!stageString}"/>
+        </div>
+    </div>
+</apex:outputPanel>
+
+<apex:actionPoller action="{!checkProgress}" id="poller" interval="5" rerender="progressPanel,messages,poller"
+    rendered="{!NOT(showEntryMode)}"/>
+
+</apex:form>
+
+</apex:page>

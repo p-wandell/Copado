@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>Child_Clone_Setting__c</field>
+        <value xsi:type="xsd:string">N</value>
+    </values>
+    <values>
+        <field>Full_Clone_Error_Text__c</field>
+        <value xsi:type="xsd:string">The adventure was not successfully cloned. Please report this to an administrator and ask the admin to check debug logs.</value>
+    </values>
+    <values>
+        <field>Full_Clone_Success_Text__c</field>
+        <value xsi:type="xsd:string">The adventure and all related child records were successfully cloned.</value>
+    </values>
+</CustomMetadata>

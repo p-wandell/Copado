@@ -1,0 +1,113 @@
+<apex:page id="page" showHeader="false" sidebar="false">
+    <apex:remoteObjects >
+      <apex:remoteObjectModel name="Big_Document__c" jsShorthand="Document" fields="Id,Name__c,Id_Text__c,Content__c"/>
+      <apex:remoteObjectModel name="FeedItem" jsShorthand="Item" fields="Id,ParentId,Body,Type,LinkUrl,Title"/>
+    </apex:remoteObjects>    
+    <c:SSTab_CommunitySiteIncludes />
+     <script type='text/javascript' src='/canvas/sdk/js/publisher.js'/>
+    <apex:form id="contentform">
+    <script type="text/javascript" src="{!URLFOR($Resource.ckeditor, '/ckeditor/ckeditor.js')}"/>
+　　 <!-- jQUery-->
+    <script src="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/lib/jQuery/jquery-1.11.0.min.js')}"></script>
+    <script src="{!URLFOR($Resource.datatables, 'datatables/jquery.twbsPagination.min.js')}"></script>
+    <!-- bootstrap -->
+    <script src="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/lib/bootstrap/bootstrap-3.1.1-dist/js/bootstrap.min.js')}"></script>
+    <script>
+        $j = jQuery.noConflict();
+    </script>
+    <div id="content">
+    <div class="row"><a onclick="openModal();" href="#">Click to View List of Documents <span id="listofrecords" class="badge"></span></a></div>
+    <div class="row"><input id="namevalue" type="text" class="form-control" placeholder="Name"/></div>
+    <div class="row"><apex:inputTextArea id="content"/></div>
+    <div class="row"><a onclick="return save();" id="create-case-home" style="background: #8ab529;" class="btn btn-lg btn-block">Save</a></div>
+    </div>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog" style="width: 96% !important;">
+            <div class="modal-content" style="background-color: #FFFFFF;">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">List of Documents </h4>
+              </div>
+              <div class="modal-body">
+                <apex:outputPanel layout="none" >
+                    <div class="table-responsive">
+                        <table id="myDocuments" class="table table-hover">
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <!--<ul id="pagination-demo" class="pagination-sm"></ul>-->
+                    </div>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </div>
+        </div>
+    </apex:form>
+    <script type="text/javascript">
+        CKEDITOR.replace( '{!$Component.page.contentform.content}', {
+            toolbar: 'Basic',
+            uiColor: '#9AB8F3',
+            height: '320px',
+            resize_enabled: false
+        });
+
+        function save() {
+            var Document = new SObjectModel.Document();
+            Document.set("Name__c", $j('#namevalue').val());
+            Document.set("Id_Text__c", '{!$CurrentPage.parameters.Id}');
+            Document.set("Content__c", CKEDITOR.instances['{!$Component.page.contentform.content}'].getData());
+            Document.create(function(err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(Document.get('Id'));
+                    var Item = new SObjectModel.Item();
+                    Item.set("ParentId", '{!$CurrentPage.parameters.Id}');
+                    Item.set("Body", 'created a Big Document');
+                    Item.set("Type", 'LinkPost');
+                    Item.set("LinkUrl", '/' + Document.get('Id'));
+                    Item.set("Title", 'Theres a big new document out there');
+                    Item.create(function(err) {
+                        Sfdc.canvas.publisher.publish({name : 'publisher.refresh',  payload : {feed: true}});
+                        CKEDITOR.instances['{!$Component.page.contentform.content}'].updateElement();
+                        CKEDITOR.instances['{!$Component.page.contentform.content}'].setData('');
+                        $j('#namevalue').val('');
+                        query();
+                    });
+                }
+            });
+            return false;
+        }
+        function query() { 
+          var documents = new SObjectModel.Document();
+          documents.retrieve({ 
+                  limit:100, 
+                  where : {
+                      Id_Text__c: {
+                          eq: '{!$CurrentPage.parameters.Id}'
+                      }
+                  }
+              }, 
+              function(err, recs) {
+                console.log(err);
+                console.log(recs);
+                $j("#myDocuments tr").remove();
+                $j("#listofrecords").text(recs.length);
+                recs.forEach(function(rec) {
+                    $j("#myDocuments tbody").append( "<tr>"+ "<td><a target='_blank' href='/"+rec.get("Id")+"'>"+rec.get("Name__c")+"</a></td>"+ "</tr>");
+                });
+                /*$j('#myDocuments').twbsPagination({
+                        totalPages: 10,
+                        visiblePages: 3,
+                        onPageClick: function (event, page) {
+                            $j('#page-content').text('Page ' + page);
+                        }
+                    });*/
+            });
+        }
+        var openModal = function() {
+            $j('#myModal').modal('toggle');
+        };
+        query();
+    </script>
+</apex:page>

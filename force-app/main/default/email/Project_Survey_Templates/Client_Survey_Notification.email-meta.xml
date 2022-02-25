@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Client notification email to inform them that there is a survey for them to take</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>X7S_IBM_Logo_Header_Footer</letterhead>
+    <name>Client Survey Notification</name>
+    <style>freeForm</style>
+    <subject>7Summits Project Survey</subject>
+    <textOnly>Hello ###FIRSTNAME###,
+
+Please take a moment to fill out ###SURVEYLINK### to let us know how we&apos;re doing.
+
+Thank you,
+###PROJECTMANAGER###</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

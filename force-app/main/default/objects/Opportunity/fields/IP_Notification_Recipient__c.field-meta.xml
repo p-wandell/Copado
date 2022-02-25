@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IP_Notification_Recipient__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The contact that should be the point of contact for a client that has purchased IP.</description>
+    <externalId>false</externalId>
+    <label>IP Notification Recipient</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Opportunities (IP Notification Recipient)</relationshipLabel>
+    <relationshipName>Opportunities2</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

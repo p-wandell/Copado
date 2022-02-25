@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>위험</value>
+    </caseValues>
+    <nameFieldLabel>위험 번호</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- Closed date must be blank if status is set to Open --></errorMessage>
+        <name>pse__Clear_closed_date_with_open_status</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Closed date for the risk must be after the date it was raised. --></errorMessage>
+        <name>pse__Closed_date_greater_than_created_date</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Closed date can not be blank if status set to closed. --></errorMessage>
+        <name>pse__Closed_date_mandatory_with_closed_status</name>
+    </validationRules>
+</CustomObjectTranslation>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <description>7S Files List Control</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Files List Control</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage, lightning__HomePage, lightningCommunity__Default">
+            <property name="displayVariant" label="Display Option" type="String" description="Select the default format of the card. Options are None (flat), Featured (drop shadow), and Outline (flat with border)." datasource="None,Featured,Outline"/>
+            <property name="showViewSelector" label="Show View Selector" description="Allow users to select the Vertical (Card), Horizontal (List), and Table view types." type="Boolean"/>
+            <property name="showTable" label="Show Table View"  description="Allow users to display files and folders in Table view." type="Boolean"/>
+            <property name="showList" label="Show List View" description="Allow users to display files and folders in List view." type="Boolean"/>
+            <property name="showCard" label="Show Card View"  description="Allow users to display files and folders in Card view." type="Boolean"/>
+            <property name="showPagination" label="Show Pagination" type="Boolean" description="Select to show pagination."/>
+            <property name="paginationVariant" label="Pagination Type" type="String" datasource="Default, Paging" description="'Default' provides standard previous/next functionality. 'Paging' provides individual page numbers." />
+            <property name="showSort" label="Show Sort by" type="Boolean" description="Select to display the Sort By tool."/>
+            <property name="defaultSort" label="Default Sorting" type="String" datasource="Name (A to Z),Name (Z to A),Type (A to Z),Type (Z to A),File Size (Smallest to Largest),File Size (Largest to Smallest),Date (Newest),Date (Oldest)" description="Select the default Sort By option."/>
+            <property name="sortVariant" type="String" label="Sort Label Variant" description="Select 'Standard' to display the Sort By Label or 'Label-hidden' to hide it." datasource="Standard, Label-hidden"/>
+            <property name="customClass" label="Custom Class" type="String" description="Class for applying custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Unique ID for the list results.  Allows multiple list components to exist on a page.  This property relates this component to a specific list."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

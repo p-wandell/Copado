@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Other_Details_if_Type_is_Other</fullName>
+    <active>true</active>
+    <description>Require Other Details if Type is Other</description>
+    <errorConditionFormula>AND(
+ISPICKVAL(Type__c , &quot;Other&quot;), ISBLANK(Other_Details__c),  RecordType.Name == &quot;Project Deliverable&quot;)</errorConditionFormula>
+    <errorMessage>If you&apos;ve selected a Type of Other, please populate &quot;Other Details&quot;</errorMessage>
+</ValidationRule>

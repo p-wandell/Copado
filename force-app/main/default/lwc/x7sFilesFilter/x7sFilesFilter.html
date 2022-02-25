@@ -1,0 +1,170 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+  -->
+  <template>
+	<c-x7s-shr-component-wrapper custom-class={componentClass} variant={displayVariant}
+	                             aria-label={labels.filterAriaLabel}
+	                             auto-slds-card>
+		<lightning-layout multiple-rows="true" vertical-align="center">
+			<template if:true={showCreatedDate}>
+				<lightning-layout-item class="slds-p-right_small" size={lightningLayoutSize}
+				                       small-device-size={smallDeviceSize}
+				                       medium-device-size={mediumDeviceSize}
+				                       large-device-size={largeDeviceSize}>
+					<lightning-input type="date" name="selectDate" value={selectedFromDate} data-dateval={fromDate}
+					                 label={labels.labelFromCreatedDate} onchange={handleFromCreatedDateChange}
+					                 placeholder={labels.labelFromCreatedDatePlaceholder}></lightning-input>
+				</lightning-layout-item>
+				<br>
+				<lightning-layout-item size={lightningLayoutSize}
+				                       small-device-size={smallDeviceSize}
+				                       medium-device-size={mediumDeviceSize}
+				                       large-device-size={largeDeviceSize}
+									   class="slds-p-right_small"
+									   >
+					<lightning-input type="date" name="selectDate" value={selectedToDate}
+					                 label={labels.labelToCreatedDate} data-dateval={toDate}
+					                 onchange={handleToCreatedDateChange}
+					                 placeholder={labels.labelToCreatedDatePlaceholder}></lightning-input>
+				</lightning-layout-item>
+
+				<lightning-layout-item class="slds-m-top_large">
+					<lightning-button-icon alternative-text={labels.labelClearDateButton}
+					                       icon-name="utility:close"
+					                       onclick={clearDates}
+					                       variant="container"
+					                       disabled
+					                       tooltip={labels.labelClearDateButton}
+					                       size="medium"
+					                       class={createdDate}>
+					</lightning-button-icon>
+				</lightning-layout-item>
+			</template>
+
+			<template if:true={showModifiedDate}>
+				<lightning-layout-item size={lightningLayoutSize}
+				                       small-device-size={smallDeviceSize}
+				                       medium-device-size={mediumDeviceSize}
+				                       large-device-size={largeDeviceSize}
+									   class="slds-p-right_small">
+						<lightning-input type="date" name="selectDate" value={selectedModFromDate}
+						                 data-dateval={fromModifiedDate} label={labels.labelFromLastModifiedDate}
+						                 onchange={handleModFromdateChange}
+						                 placeholder={labels.labelFromLastModifiedPlaceholder}></lightning-input>				</lightning-layout-item>
+				<lightning-layout-item size={lightningLayoutSize}
+				                       small-device-size={smallDeviceSize}
+				                       medium-device-size={mediumDeviceSize}
+				                       large-device-size={largeDeviceSize}
+									   class="slds-p-right_small">
+					<lightning-input type="date" name="selectDate" value={selectedModToDate}
+					                 label={labels.labelToLastModifiedDate} data-dateval={toModifiedDate}
+					                 onchange={handleModTodateChange}
+					                 placeholder={labels.labelToLastModifiedDateDatePlaceholder}></lightning-input>
+				</lightning-layout-item>
+				<lightning-layout-item class="slds-m-top_large">
+					<lightning-button-icon alternative-text={labels.labelClearDateButton}
+					                       icon-name="utility:close"
+					                       onclick={clearModDates}
+					                       variant="container"
+					                       disabled
+					                       tooltip={labels.labelClearDateButton}
+					                       size="medium"
+					                       class={modifiedDate}>
+					</lightning-button-icon>
+				</lightning-layout-item>
+			</template>
+
+			<template if:true={isShowFileType}>
+				<lightning-layout-item size={lightningLayoutSize}
+				                       small-device-size={smallDeviceSize}
+				                       medium-device-size={mediumDeviceSize}
+				                       large-device-size={largeDeviceSize}>
+					<div class="slds-p-right_small" style="padding-top:4.5px;">
+						<c-x7s-files-filter-multi-select-type
+							items={fileTypeData}
+							selected-item-ids={selectedTypeIds}
+							ontypechangeevent={handleFileTypeChangeEvent}
+							itemlabel={labels.labelFileType}
+							label-name={labels.labelFileTypePlaceholder}
+						>
+						</c-x7s-files-filter-multi-select-type>
+					</div>
+				</lightning-layout-item>
+			</template>
+
+			<template if:true={isShowFileSize}>
+				<lightning-layout-item size={lightningLayoutSize}
+				                       small-device-size={smallDeviceSize}
+				                       medium-device-size={mediumDeviceSize}
+				                       large-device-size={largeDeviceSize}>
+					<div class="slds-p-right_small">
+						<lightning-combobox
+							label={labels.labelFileSize}
+							options={fileSizeData}
+							value={selectedSizeValue}
+							onchange={handleSizeFilterChangeEvent}
+							placeholder={labels.labelFileSizePlaceholder}>
+						</lightning-combobox>
+					</div>
+				</lightning-layout-item>
+			</template>
+
+			<template if:true={showOwner}>
+				<lightning-layout-item size={lightningLayoutSize}
+				                       small-device-size={smallDeviceSize}
+				                       medium-device-size={mediumDeviceSize}
+				                       large-device-size={largeDeviceSize}
+				>
+					<div class="slds-p-right_small">
+						<lightning-combobox
+							data-id="Created By"
+							label={labels.labelCreatedBy}
+							options={userValue}
+							onchange={handleOwnerChangeEvent}
+							variant="standard"
+							placeholder={labels.labelCreatedByPlaceholder}
+							value={selectedOwnerId}
+						>
+						</lightning-combobox>
+					</div>
+				</lightning-layout-item>
+			</template>
+
+			<template if:true={showModifier}>
+				<lightning-layout-item size={lightningLayoutSize}
+				                       small-device-size={smallDeviceSize}
+				                       medium-device-size={mediumDeviceSize}
+				                       large-device-size={largeDeviceSize}
+				>
+					<div class="slds-p-right_small">
+						<lightning-combobox
+							data-id="Last Modified By"
+							label={labels.labelLastModifiedBy}
+							options={modifierUerValue}
+							onchange={handleModifierChangeEvent}
+							variant="standard"
+							placeholder={labels.labelLastModifiedByPlaceholder}
+							value={selectedModifierId}
+						>
+						</lightning-combobox>
+					</div>
+				</lightning-layout-item>
+			</template>
+
+
+			<template if:true={showClear}>
+				<lightning-layout-item class="slds-m-top_large">
+					<lightning-button icon-name="utility:close"
+					                  class="slds-p-right_small slds-p-bottom_x-small"
+					                  name="clearAllFilters"
+					                  label={labels.labelClearAllButton}
+					                  title={labels.labelClearAllButton}
+					                  onclick={clearAll}
+					                  disabled={disableClear}
+					                  variant="brand">
+					</lightning-button>
+				</lightning-layout-item>
+			</template>
+		</lightning-layout>
+	</c-x7s-shr-component-wrapper>
+</template>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>リソース要求マイルストーンジャンクション</value>
+    </caseValues>
+    <nameFieldLabel>RRマイルストーン名</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- We cannot associate a milestone with the resource request because they do not belong to the same project. --></errorMessage>
+        <name>pse__RR_Milestone_Project_Mismatch</name>
+    </validationRules>
+</CustomObjectTranslation>

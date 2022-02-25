@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Technology__c</fullName>
+    <description>Choose which technology is being used on this opportunity</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Choose which technology is being used on this opportunity</inlineHelpText>
+    <label>Retired 12-31-2015 Technology</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Product_Category__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Jive</fullName>
+                <default>false</default>
+                <label>Jive</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>SFDC</fullName>
+                <default>false</default>
+                <label>SFDC</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <controllingFieldValue>Software</controllingFieldValue>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>Jive</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <controllingFieldValue>Software</controllingFieldValue>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>Other</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Services</controllingFieldValue>
+            <controllingFieldValue>Software</controllingFieldValue>
+            <controllingFieldValue>Solutions</controllingFieldValue>
+            <controllingFieldValue>IP Framework</controllingFieldValue>
+            <valueName>SFDC</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

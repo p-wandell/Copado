@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Request IP upgrade</description>
+    <fieldOverrides>
+        <field>Project__c</field>
+        <formula>pse__Proj__c.Id</formula>
+    </fieldOverrides>
+    <fieldOverrides>
+        <field>Request_Type__c</field>
+        <literalValue>IP Upgrade</literalValue>
+    </fieldOverrides>
+    <fieldOverrides>
+        <field>Status__c</field>
+        <literalValue>Approved</literalValue>
+    </fieldOverrides>
+    <icon>IP_Upgrade_Icon</icon>
+    <label>Request IP Upgrade</label>
+    <optionsCreateFeedItem>true</optionsCreateFeedItem>
+    <quickActionLayout>
+        <layoutSectionStyle>TwoColumnsLeftToRight</layoutSectionStyle>
+        <quickActionLayoutColumns>
+            <quickActionLayoutItems>
+                <emptySpace>false</emptySpace>
+                <field>Request_Summary__c</field>
+                <uiBehavior>Edit</uiBehavior>
+            </quickActionLayoutItems>
+            <quickActionLayoutItems>
+                <emptySpace>false</emptySpace>
+                <field>Products_IP_Included__c</field>
+                <uiBehavior>Edit</uiBehavior>
+            </quickActionLayoutItems>
+        </quickActionLayoutColumns>
+        <quickActionLayoutColumns/>
+    </quickActionLayout>
+    <successMessage>Success! This request has been sent; please look for an email notification.</successMessage>
+    <targetObject>Product_Request__c</targetObject>
+    <targetParentField>Project__c</targetParentField>
+    <type>Create</type>
+</QuickAction>

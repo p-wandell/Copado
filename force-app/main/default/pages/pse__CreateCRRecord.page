@@ -1,0 +1,95 @@
+<apex:page standardController="Opportunity" extensions="pse.CreateCRController" tabStyle="pse__Proj__c" action="{!initFromProjectDetail}" lightningStyleSheets="true">
+    <apex:variable var="isLightningView" value="{!$User.UIThemeDisplayed=='Theme4d'}" />
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:outputPanel rendered="{!isLightningView}" layout="none">
+	    <style>
+			.dateInput input[type='text'] {
+		    	min-width: 13rem !important;
+		    }
+		    .detailList .dataCol textarea {
+			    max-height: 5rem !important;
+			    min-height: 5rem !important;
+			}
+		</style>    
+	</apex:outputPanel>
+	<apex:outputPanel rendered="{!!isLightningView}" layout="none">
+		<style>
+			.dateInput input[type='text'] {
+		    	min-width: 13rem !important;
+		    }
+			.detailList .dataCol textarea {
+			    max-width: 16rem !important;
+			    min-width: 16rem !important;
+			    max-height: 3rem !important;
+			    min-height: 3rem !important;
+			}
+			.detailList .dataCol select {
+			    max-width: 18rem !important;
+			    min-width: 18rem !important;
+			}
+		</style>    
+	</apex:outputPanel>
+	
+    <apex:sectionHeader title="{!$Label.pse__create_change_request_label_create_change_request}" help="{!$Page.pse__CreatingaChangeRequestHelp}" />
+    <apex:form >
+        <apex:pageMessages />
+        <apex:pageBlock title="{!$Label.pse__create_change_request_label_change_request_details}" mode="edit" rendered="{!NOT(ISNULL(formBean.opportunity))}">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="{!$Label.pse__common_label_previous}" action="{!previousFromChangeRequest}" rendered="{!showPrevBtnOnCRRecord}" immediate="true" />
+                <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancelFromChangeRequest}" immediate="true" />
+                <apex:commandButton value="{!$Label.pse__common_label_create}" action="{!saveFromChangeRequest}" />
+            </apex:pageBlockButtons>
+            
+            <!-- Basic Header fields -->
+            <apex:pageBlockSection title="{!$Label.pse__opp_add_res_req_from_template_label_opportunity_details}">
+                <apex:inputField value="{!formBean.opportunity.Name}" />
+                <apex:outputField value="{!formBean.opportunity.pse__Primary_Project__c}" />
+                <apex:inputField value="{!formBean.opportunity.pse__Parent_Opportunity__c}" />
+                <apex:outputField value="{!formBean.opportunity.AccountId}" />
+                <apex:inputField value="{!formBean.opportunity.Amount}" required="true" />
+                <apex:inputField value="{!formBean.opportunity.CloseDate}" required="true" />
+                <apex:inputField value="{!formBean.opportunity.pse__Pre_Billed_Amount__c}" rendered="{!USE_NEW_PREBILL_FIELD}" />
+                <apex:inputField value="{!formBean.opportunity.pse__PreBilledAmount__c}" rendered="{!NOT(USE_NEW_PREBILL_FIELD)}" />
+                <apex:inputField value="{!formBean.opportunity.StageName}" required="true" />
+                <apex:inputField value="{!formBean.opportunity.pse__Region__c}" required="{!formBean.isRegionRequired}" />
+                <apex:inputField value="{!formBean.opportunity.Type}" />
+                <apex:inputField value="{!formBean.opportunity.pse__Practice__c}" required="{!formBean.isPracticeRequired}" />
+                <apex:inputField value="{!formBean.opportunity.LeadSource}" />
+                <apex:inputField value="{!formBean.opportunity.pse__Group__c}" required="{!formBean.isGroupRequired}" />
+                <apex:outputField value="{!formBean.opportunity.pse__Is_Services_Opportunity__c}" />
+                <apex:inputField value="{!formBean.opportunity.OwnerId}" required="true" />
+                <apex:outputField value="{!formBean.opportunity.pse__Is_Change_Request__c}" />
+                <apex:inputField value="{!formBean.opportunity.NextStep}" />
+                <apex:inputField value="{!formBean.opportunity.IsPrivate}" />
+                <apex:pageBlockSectionItem labelStyle="left">
+                    <apex:outputLabel value="{!$Label.pse__common_label_description}" />
+                    <apex:inputTextarea value="{!formBean.opportunity.Description}" />
+                </apex:pageBlockSectionItem>
+                <apex:outputField value="{!formBean.opportunity.CurrencyIsoCode}" />
+            </apex:pageBlockSection>
+            
+            <!-- Budget details-->
+            <apex:pageBlockSection title="{!$Label.pse__create_project_budget_details_header}">
+                <apex:inputField value="{!formBean.budgetWrapper.budget.Name}" required="true" />
+                <apex:outputField value="{!formBean.budgetWrapper.budget.pse__Account__c}" />
+                <apex:inputField value="{!formBean.budgetWrapper.budget.pse__Amount__c}" required="true" />
+                <apex:outputField value="{!formBean.budgetWrapper.budget.pse__Project__c}" />
+                <apex:inputField value="{!formBean.budgetWrapper.budget.pse__Expense_Amount__c}" />
+                <apex:inputField value="{!formBean.budgetWrapper.budget.pse__Effective_Date__c}" required="true" />
+                <apex:inputField value="{!formBean.budgetWrapper.budget.pse__Pre_Billed_Amount__c}" rendered="{!USE_NEW_PREBILL_FIELD}" />
+                <apex:pageBlockSectionItem labelStyle="left">
+                    <apex:outputLabel value="{!$Label.pse__create_project_from_template_label_budget_type}" for="budgetType" />
+                    <apex:selectList value="{!formBean.budgetWrapper.budget.pse__Type__c}" size="1" id="budgetType">
+                        <apex:selectOptions value="{!formBean.budgetWrapper.types}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!formBean.budgetWrapper.budget.pse__PreBilledAmount__c}" rendered="{!NOT(USE_NEW_PREBILL_FIELD)}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__common_label_description}" />
+                    <apex:inputTextarea value="{!formBean.budgetWrapper.budget.pse__Description__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!formBean.budgetWrapper.budget.pse__Status__c}" required="true" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

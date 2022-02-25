@@ -1,0 +1,216 @@
+<!-- Copyright (c) 2018-2019 FinancialForce.com, inc.  All rights reserved. -->
+<apex:page title="{!$Label.pse__gantt_pilot_app_title}" showHeader="true" sidebar="false" standardController="pse__Proj__c" extensions="pse.GanttController" tabStyle="pse__Proj__c" lightningStylesheets="true">
+	<apex:pageMessages />
+
+	<c:ExtJsFilterPanelCommon />
+
+	<c:extjs_bootstrap2 staticResource="{!$Resource.pse__Gantt}"
+			applicationName="Gantt"
+			developmentPrefix=""
+			rendered="{!AND(isFeatureEnabled,hasReadCrudAndFlsPermissions,OR(HasViewPermissionControl,HasEditPermissionControl))}">
+
+		<script>
+			window.$Label = window.$Label || {};
+
+			// Labels from Custom Labels
+			$Label.common_and_x_more = '{!JSENCODE($Label.common_and_x_more)}';
+			$Label.common_error_occurred = '{!JSENCODE($Label.common_error_occurred)}';
+			$Label.common_label_add = '{!JSENCODE($Label.common_label_add)}';
+			$Label.common_label_allocation = '{!JSENCODE($Label.common_label_allocation)}';
+			$Label.common_label_allocation_hours = '{!JSENCODE($Label.common_label_allocation_hours)}';
+			$Label.common_label_allocation_percentage = '{!JSENCODE($Label.common_label_allocation_percentage)}';
+			$Label.common_label_assignment = '{!JSENCODE($Label.common_label_assignment)}';
+			$Label.common_label_cancel = '{!JSENCODE($Label.common_label_cancel)}';
+			$Label.common_label_close = '{!JSENCODE($Label.common_label_close)}';
+			$Label.common_label_delete = '{!JSENCODE($Label.common_label_delete)}';
+			$Label.common_label_end = '{!JSENCODE($Label.common_label_end)}';
+			$Label.common_label_error = '{!JSENCODE($Label.common_label_error)}';
+			$Label.common_label_error_line1 = '{!JSENCODE($Label.common_label_error_line1)}';
+			$Label.common_label_error_line2 = '{!JSENCODE($Label.common_label_error_line2)}';
+			$Label.common_label_estimated_hours = '{!JSENCODE($Label.common_label_estimated_hours)}';
+			$Label.common_label_find = '{!JSENCODE($Label.common_label_find)}';
+			$Label.common_label_from = '{!JSENCODE($Label.common_label_from)}';
+			$Label.common_label_hours = '{!JSENCODE($Label.common_label_hours)}';
+			$Label.common_label_no = '{!JSENCODE($Label.common_label_no)}';
+			$Label.common_label_ok = '{!JSENCODE($Label.common_label_ok)}';
+			$Label.common_label_percent = '{!JSENCODE($Label.common_label_percent)}';
+			$Label.common_label_please_wait = '{!JSENCODE($Label.common_label_please_wait)}';
+			$Label.common_label_resource_name = '{!JSENCODE($Label.common_label_resource_name)}';
+			$Label.common_label_role = '{!JSENCODE($Label.common_label_role)}';
+			$Label.common_label_start = '{!JSENCODE($Label.common_label_start)}';
+			$Label.Common_Label_To = '{!JSENCODE($Label.Common_Label_To)}';
+			$Label.common_label_type = '{!JSENCODE($Label.common_label_type)}';
+			$Label.common_label_yes = '{!JSENCODE($Label.common_label_yes)}';
+			$Label.common_list_separator = '{!JSENCODE($Label.common_list_separator)}';
+			$Label.Gantt_24_7_Calendar = '{!JSENCODE($Label.Gantt_24_7_Calendar)}';
+			$Label.Gantt_Action_Column_Header = '{!JSENCODE($Label.Gantt_Action_Column_Header)}';
+			$Label.Gantt_actual_hours = '{!JSENCODE($Label.Gantt_actual_hours)}';
+			$Label.Gantt_Add_Task = '{!JSENCODE($Label.Gantt_Add_Task)}';
+			$Label.Gantt_Allocated_Assignment_Title = '{!JSENCODE($Label.Gantt_Allocated_Assignment_Title)}';
+			$Label.Gantt_Allocated_Assignment_Warning = '{!JSENCODE($Label.Gantt_Allocated_Assignment_Warning)}';
+			$Label.Gantt_Allocation_Invalid_Inconsistent = '{!JSENCODE($Label.Gantt_Allocation_Invalid_Inconsistent)}';
+			$Label.Gantt_Allocation_Invalid_Total = '{!JSENCODE($Label.Gantt_Allocation_Invalid_Total)}';
+			$Label.Gantt_Allocation_Summary = '{!JSENCODE($Label.Gantt_Allocation_Summary)}';
+			$Label.Gantt_Allocation_Summary_Hours = '{!JSENCODE($Label.Gantt_Allocation_Summary_Hours)}';
+			$Label.Gantt_Allocation_Summary_Allocated_Hours = '{!JSENCODE($Label.Gantt_Allocation_Summary_Allocated_Hours)}';
+			$Label.Gantt_Allocation_Summary_Current_Hours = '{!JSENCODE($Label.Gantt_Allocation_Summary_Current_Hours)}';
+			$Label.Gantt_Allocation_Toggle_Equal_Split = '{!JSENCODE($Label.Gantt_Allocation_Toggle_Equal_Split)}';
+			$Label.Gantt_Allocation_Toggle_Hours = '{!JSENCODE($Label.Gantt_Allocation_Toggle_Hours)}';
+			$Label.Gantt_Allocation_Toggle_Percent = '{!JSENCODE($Label.Gantt_Allocation_Toggle_Percent)}';
+			$Label.Gantt_Allocation_Tooltip = '{!JSENCODE($Label.Gantt_Allocation_Tooltip)}';
+			$Label.Gantt_Apply = '{!JSENCODE($Label.Gantt_Apply)}';
+			$Label.Gantt_Assigned_Checkbox = '{!JSENCODE($Label.Gantt_Assigned_Checkbox)}';
+			$Label.Gantt_assigned_resources = '{!JSENCODE($Label.Gantt_assigned_resources)}';
+			$Label.Gantt_collapse = '{!JSENCODE($Label.Gantt_collapse)}';
+			$Label.Gantt_Current_Time_Line_Tooltip = '{!JSENCODE($Label.Gantt_Current_Time_Line_Tooltip)}';
+			$Label.Gantt_Cyclic_Dependencies_Found = '{!JSENCODE($Label.Gantt_Cyclic_Dependencies_Found)}';
+			$Label.Gantt_Cyclic_Dependencies_Title = '{!JSENCODE($Label.Gantt_Cyclic_Dependencies_Title)}';
+			$Label.Gantt_Day_Plural = '{!JSENCODE($Label.Gantt_Day_Plural)}';
+			$Label.Gantt_Day_Singular = '{!JSENCODE($Label.Gantt_Day_Singular)}';
+			$Label.Gantt_Days_Abbreviation = '{!JSENCODE($Label.Gantt_Days_Abbreviation)}';
+			$Label.Gantt_Delete_Tasks = '{!JSENCODE($Label.Gantt_Delete_Tasks)}';
+			$Label.Gantt_duration = '{!JSENCODE($Label.Gantt_duration)}';
+			$Label.Gantt_end_date = '{!JSENCODE($Label.Gantt_end_date)}';
+			$Label.Gantt_expand = '{!JSENCODE($Label.Gantt_expand)}';
+			$Label.Gantt_Exporting = '{!JSENCODE($Label.Gantt_Exporting)}';
+			$Label.Gantt_External = '{!JSENCODE($Label.Gantt_External)}';
+			$Label.Gantt_Feedback = '{!JSENCODE($Label.Gantt_Feedback)}';
+			$Label.Gantt_Filter_Tasks = '{!JSENCODE($Label.Gantt_Filter_Tasks)}';
+			$Label.Gantt_Finish_To_Finish_Dependency = '{!JSENCODE($Label.Gantt_Finish_To_Finish_Dependency)}';
+			$Label.Gantt_Finish_To_Start_Dependency = '{!JSENCODE($Label.Gantt_Finish_To_Start_Dependency)}';
+			$Label.Gantt_Full_Screen = '{!JSENCODE($Label.Gantt_Full_Screen)}';
+			$Label.Gantt_Held_Checkbox = '{!JSENCODE($Label.Gantt_Held_Checkbox)}';
+			$Label.Gantt_Help = '{!JSENCODE($Label.Gantt_Help)}';
+			$Label.Gantt_Hour_Plural = '{!JSENCODE($Label.Gantt_Hour_Plural)}';
+			$Label.Gantt_Hour_Singular = '{!JSENCODE($Label.Gantt_Hour_Singular)}';
+			$Label.Gantt_Hours_Abbreviation = '{!JSENCODE($Label.Gantt_Hours_Abbreviation)}';
+			$Label.Gantt_indent_task = '{!JSENCODE($Label.Gantt_indent_task)}';
+			$Label.Gantt_Invalid_Duration = '{!JSENCODE($Label.Gantt_Invalid_Duration)}';
+			$Label.Gantt_Lag = '{!JSENCODE($Label.Gantt_Lag)}';
+			$Label.Gantt_Lock_Question_Text = '{!JSENCODE($Label.Gantt_Lock_Question_Text)}';
+			$Label.Gantt_Lock_Question_Title = '{!JSENCODE($Label.Gantt_Lock_Question_Title)}';
+			$Label.Gantt_Manage_Task_Assignments = '{!JSENCODE($Label.Gantt_Manage_Task_Assignments)}';
+			$Label.Gantt_Multiple_Task_Msg = '{!JSENCODE($Label.Gantt_Multiple_Task_Msg)}';
+			$Label.Gantt_Multiple_Task_Title = '{!JSENCODE($Label.Gantt_Multiple_Task_Title)}';
+			$Label.Gantt_New_Task_Text = '{!JSENCODE($Label.Gantt_New_Task_Text)}';
+			$Label.Gantt_No_Links = '{!JSENCODE($Label.Gantt_No_Links)}';
+			$Label.Gantt_outdent_task = '{!JSENCODE($Label.Gantt_outdent_task)}';
+			$Label.Gantt_Pilot_App_Title = '{!JSENCODE($Label.Gantt_Pilot_App_Title)}';
+			$Label.Gantt_Print_Add_PageNumber_Label = '{!JSENCODE($Label.Gantt_Print_Add_PageNumber_Label)}';
+			$Label.Gantt_Print_BuiltPage = '{!JSENCODE($Label.Gantt_Print_BuiltPage)}';
+			$Label.Gantt_Print_Column_Picker_Label = '{!JSENCODE($Label.Gantt_Print_Column_Picker_Label)}';
+			$Label.Gantt_Print_Control_Pagination = '{!JSENCODE($Label.Gantt_Print_Control_Pagination)}';
+			$Label.Gantt_Print_DateRange_Section_Title = '{!JSENCODE($Label.Gantt_Print_DateRange_Section_Title)}';
+			$Label.Gantt_Print_Dialog_Title = '{!JSENCODE($Label.Gantt_Print_Dialog_Title)}';
+			$Label.Gantt_Print_DisableAdBlock_Body = '{!JSENCODE($Label.Gantt_Print_DisableAdBlock_Body)}';
+			$Label.Gantt_Print_DisableAdBlock_Title = '{!JSENCODE($Label.Gantt_Print_DisableAdBlock_Title)}';
+			$Label.Gantt_Print_DPI_Label = '{!JSENCODE($Label.Gantt_Print_DPI_Label)}';
+			$Label.Gantt_Print_Export_From_Label = '{!JSENCODE($Label.Gantt_Print_Export_From_Label)}';
+			$Label.Gantt_Print_Export_To_Label = '{!JSENCODE($Label.Gantt_Print_Export_To_Label)}';
+			$Label.Gantt_Print_FetchingRows = '{!JSENCODE($Label.Gantt_Print_FetchingRows)}';
+			$Label.Gantt_Print_Field_Row_Range = '{!JSENCODE($Label.Gantt_Print_Field_Row_Range)}';
+			$Label.Gantt_Print_Help = '{!JSENCODE($Label.Gantt_Print_Help)}';
+			$Label.Gantt_Print_Option_All_Expanded_Rows = '{!JSENCODE($Label.Gantt_Print_Option_All_Expanded_Rows)}';
+			$Label.Gantt_Print_Option_Complete_Chart = '{!JSENCODE($Label.Gantt_Print_Option_Complete_Chart)}';
+			$Label.Gantt_Print_Option_Visible_Rows = '{!JSENCODE($Label.Gantt_Print_Option_Visible_Rows)}';
+			$Label.Gantt_Print_Orientation_Label = '{!JSENCODE($Label.Gantt_Print_Orientation_Label)}';
+			$Label.Gantt_Print_Orientation_Landscape_Text = '{!JSENCODE($Label.Gantt_Print_Orientation_Landscape_Text)}';
+			$Label.Gantt_Print_Orientation_Portrait_Text = '{!JSENCODE($Label.Gantt_Print_Orientation_Portrait_Text)}';
+			$Label.Gantt_Print_Pagination_Multipage = '{!JSENCODE($Label.Gantt_Print_Pagination_Multipage)}';
+			$Label.Gantt_Print_Pagination_Multipage_Vertically = '{!JSENCODE($Label.Gantt_Print_Pagination_Multipage_Vertically)}';
+			$Label.Gantt_Print_Pagination_Single_Page = '{!JSENCODE($Label.Gantt_Print_Pagination_Single_Page)}';
+			$Label.Gantt_Print_Paper_Format_Label = '{!JSENCODE($Label.Gantt_Print_Paper_Format_Label)}';
+			$Label.Gantt_Print_Range_Field_Label = '{!JSENCODE($Label.Gantt_Print_Range_Field_Label)}';
+			$Label.Gantt_Print_View_Type_Complete_Schedule = '{!JSENCODE($Label.Gantt_Print_View_Type_Complete_Schedule)}';
+			$Label.Gantt_Print_View_Type_Current_View = '{!JSENCODE($Label.Gantt_Print_View_Type_Current_View)}';
+			$Label.Gantt_Print_View_Type_Date_Range = '{!JSENCODE($Label.Gantt_Print_View_Type_Date_Range)}';
+			$Label.Gantt_Project_Line_End = '{!JSENCODE($Label.Gantt_Project_Line_End)}';
+			$Label.Gantt_Project_Line_Start = '{!JSENCODE($Label.Gantt_Project_Line_Start)}';
+			$Label.Gantt_Quarter_Abbreviation = '{!JSENCODE($Label.Gantt_Quarter_Abbreviation)}';
+			$Label.Gantt_Readonly_Message = '{!JSENCODE($Label.Gantt_Readonly_Message)}';
+			$Label.Gantt_redo = '{!JSENCODE($Label.Gantt_redo)}';
+			$Label.Gantt_Resourcing_Link = '{!JSENCODE($Label.Gantt_Resourcing_Link)}';
+			$Label.Gantt_Resourcing_Link_Tooltip = '{!JSENCODE($Label.Gantt_Resourcing_Link_Tooltip)}';
+			$Label.Gantt_resultMessage_saveFailed = '{!JSENCODE($Label.Gantt_resultMessage_saveFailed)}';
+			$Label.Gantt_save = '{!JSENCODE($Label.Gantt_save)}';
+			$Label.Gantt_save_mask_Msg = '{!JSENCODE($Label.Gantt_save_mask_Msg)}';
+			$Label.Gantt_Select_Link = '{!JSENCODE($Label.Gantt_Select_Link)}';
+			$Label.Gantt_Select_Resource = '{!JSENCODE($Label.Gantt_Select_Resource)}';
+			$Label.Gantt_Select_Role = '{!JSENCODE($Label.Gantt_Select_Role)}';
+			$Label.Gantt_start_date = '{!JSENCODE($Label.Gantt_start_date)}';
+			$Label.Gantt_Start_To_Finish_Dependency = '{!JSENCODE($Label.Gantt_Start_To_Finish_Dependency)}';
+			$Label.Gantt_Start_To_Start_Dependency = '{!JSENCODE($Label.Gantt_Start_To_Start_Dependency)}';
+			$Label.Gantt_Task_Assignment_Manager = '{!JSENCODE($Label.Gantt_Task_Assignment_Manager)}';
+			$Label.Gantt_Task_Assignment_Manager_Title_Multi_Select = '{!JSENCODE($Label.Gantt_Task_Assignment_Manager_Title_Multi_Select)}';
+			$Label.Gantt_today = '{!JSENCODE($Label.Gantt_today)}'
+			$Label.Gantt_Toolbar_print = '{!JSENCODE($Label.Gantt_Toolbar_print)}';
+			$Label.Gantt_Toolbar_ResourceDemand_Menu_Assignments = '{!JSENCODE($Label.Gantt_Toolbar_ResourceDemand_Menu_Assignments)}';
+			$Label.Gantt_Toolbar_ResourceDemand_Menu_HRR = '{!JSENCODE($Label.Gantt_Toolbar_ResourceDemand_Menu_HRR)}';
+			$Label.Gantt_Toolbar_ResourceDemand_Menu_RR = '{!JSENCODE($Label.Gantt_Toolbar_ResourceDemand_Menu_RR)}';
+			$Label.Gantt_undo = '{!JSENCODE($Label.Gantt_undo)}';
+			$Label.Gantt_Unlabelled_Column = '{!JSENCODE($Label.Gantt_Unlabelled_Column)}';
+			$Label.Gantt_Unsupported_Dependencies_Found = '{!JSENCODE($Label.Gantt_Unsupported_Dependencies_Found)}';
+			$Label.Gantt_Unsupported_Dependencies_Title = '{!JSENCODE($Label.Gantt_Unsupported_Dependencies_Title)}';
+			$Label.Gantt_view_detail = '{!JSENCODE($Label.Gantt_view_detail)}';
+
+			// Labels from Objects
+			$Label.Task_Name_Field_Label = '{!JSENCODE($ObjectType.Project_Task__c.Fields.Name.Label)}';
+			$Label.Task_Work_Calendar_Field_Label = '{!JSENCODE($ObjectType.Project_Task__c.Fields.Work_Calendar__c.Label)}';
+
+			window.$RemoteAction = window.$RemoteAction || {};
+			$RemoteAction.GanttController = {
+				breakLocks: '{!$RemoteAction.GanttController.breakLocks}',
+				createFilterSets: '{!$RemoteAction.GanttController.createFilterSets}',
+				deleteDependencies: '{!$RemoteAction.GanttController.deleteDependencies}',
+				deleteFilterSets: '{!$RemoteAction.GanttController.deleteFilterSets}',
+				deleteProjectTaskAssignments: '{!$RemoteAction.GanttController.deleteProjectTaskAssignments}',
+				deleteTasks: '{!$RemoteAction.GanttController.deleteTasks}',
+				getDependencies: '{!$RemoteAction.GanttController.getDependencies}',
+				getLockData: '{!$RemoteAction.GanttController.getLockData}',
+				getLookupRecords: '{!$RemoteAction.GanttController.getLookupRecords}',
+				getLookupRecordsLike: '{!$RemoteAction.GanttController.getLookupRecordsLike}',
+				getPicklistOptions: '{!$RemoteAction.GanttController.getPicklistOptions}',
+				getProjectTaskAssignments: '{!$RemoteAction.GanttController.getProjectTaskAssignments}',
+				getProjectsWithTasks: '{!$RemoteAction.GanttController.getProjectsWithTasks}',
+				getResources: '{!$RemoteAction.GanttController.getResources}',
+				getResourcingLinks: '{!$RemoteAction.GanttController.getResourcingLinks}',
+				getRoles: '{!$RemoteAction.GanttController.getRoles}',
+				getWorkCalendars: '{!$RemoteAction.GanttController.getWorkCalendars}',
+				insertDependencies: '{!$RemoteAction.GanttController.insertDependencies}',
+				insertProjectTaskAssignments: '{!$RemoteAction.GanttController.insertProjectTaskAssignments}',
+				insertTasks: '{!$RemoteAction.GanttController.insertTasks}',
+				readFilterSets: '{!$RemoteAction.GanttController.readFilterSets}',
+				searchResources: '{!$RemoteAction.GanttController.searchResources}',
+				updateDependencies: '{!$RemoteAction.GanttController.updateDependencies}',
+				updateFilterSets: '{!$RemoteAction.GanttController.updateFilterSets}',
+				updateProjectTaskAssignments: '{!$RemoteAction.GanttController.updateProjectTaskAssignments}',
+				updateTasks: '{!$RemoteAction.GanttController.updateTasks}'
+			};
+
+			window.$Params = window.$Params || {};
+
+			$Params.Gantt = {
+				assignmentBatchSize: {!ProjectTaskAssignmentBatchSize},
+				customColumns: JSON.parse('{!JSENCODE(CustomColumns)}'),
+				hasEditPermissionControl: {!HasEditPermissionControl},
+				resourcingLinkAssignmentType: {!ResourcingLinkAssignmentType},
+				resourcingLinkHeldResourceRequestType: {!ResourcingLinkHeldResourceRequestType},
+				resourcingLinkUnheldResourceRequestType: {!ResourcingLinkUnheldResourceRequestType},
+				resourcingLinkResourceRequestWithAssignmentType: {!ResourcingLinkResourceRequestWithAssignmentType},
+				taskBatchSize: {!TaskBatchSize},
+				writePermission: JSON.parse('{!JSENCODE(WritePermission)}')
+			};
+			$Params.NamespacePrefix = '{!Namespace}';
+			$Params.projectId = '{!projectId}';
+
+			window.$URLs = {
+				createResourceRequestsModeAssignments : '{!JSENCODE(CreateAssignmentPage)}',
+				createResourceRequestsModeHeldResourceRequests : '{!JSENCODE(CreateHeldResourceRequestPage)}',
+				createResourceRequestsModeResourceRequests : '{!JSENCODE(CreateResourceRequestPage)}',
+				baseURL: '{!JSENCODE($Site.BaseUrl)}',
+				prefix: '{!JSENCODE($Site.prefix)}'
+			};
+
+		</script>
+	</c:extjs_bootstrap2>
+</apex:page>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<description>7S News List Control</description>
+	<isExposed>true</isExposed>
+	<masterLabel>7S News List Control</masterLabel>
+
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightning__AppPage, lightning__HomePage, lightningCommunity__Default">
+			<property name="showViewSelector" label="Show View Selector" type="Boolean"/>
+			<property name="showPagination" label="Show Pagination" type="Boolean"/>
+			<property name="showSort" label="Show Sort By" type="Boolean"/>
+			<property name="defaultSort" type="String" label="Default Sort" description="Select the default sort option."
+			          datasource="Most Recent,Oldest First"/>
+			<property name="sortVariant"  type="String" label="Sort Label Variant"
+			          description="Select the sort option label appearance."
+			          datasource="standard, label-hidden"/>
+			<property name="customClass" label="Custom Class" type="String" description="Used for custom styling."/>
+			<property name="listId" label="List Id" type="String" description="Id of specific List"/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

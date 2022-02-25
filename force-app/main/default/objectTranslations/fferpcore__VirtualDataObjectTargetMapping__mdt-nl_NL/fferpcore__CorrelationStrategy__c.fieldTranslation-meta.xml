@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>De strategie die wordt gebruikt om te bepalen hoe bestaande kinderdoelen moeten worden aangepakt.</help>
+    <label><!-- Correlation Strategy --></label>
+    <name>fferpcore__CorrelationStrategy__c</name>
+    <picklistValues>
+        <masterLabel>Append</masterLabel>
+        <translation>Toevoegen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Replace</masterLabel>
+        <translation>Vervangen</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Update</masterLabel>
+        <translation>Bijwerken</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UpdateTotal</masterLabel>
+        <translation>UpdateTotal</translation>
+    </picklistValues>
+</CustomFieldTranslation>

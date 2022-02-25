@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <email>staci.salazar@7summitsinc.com</email>
+    <name>Operations Request</name>
+    <queueMembers>
+        <users>
+            <user>bethany.perkins@7summitsinc.com</user>
+            <user>candace.aikens@7summitsinc.com</user>
+            <user>jeff.murnan@7summitsinc.com</user>
+            <user>kerri.mclaughlin@7summitsinc.com</user>
+            <user>michelle@7summitsinc.com</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>Operations_Requests__c</sobjectType>
+    </queueSobject>
+</Queue>

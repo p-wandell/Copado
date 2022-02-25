@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>appirio_core__Config_Group__c.appirio_core__ConfigOptions__r$Name</field>
+    </columns>
+    <columns>
+        <field>appirio_core__Config_Group__c.appirio_core__ConfigOptions__r$appirio_core__Version__c</field>
+    </columns>
+    <columns>
+        <field>appirio_core__Config_Group__c.appirio_core__ConfigOptions__r$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>appirio_core__Config_Group__c.appirio_core__ConfigOptions__r$appirio_core__Type__c</field>
+    </columns>
+    <columns>
+        <field>appirio_core__Config_Group__c.appirio_core__ConfigOptions__r$appirio_core__Allow_Multiple_Values__c</field>
+    </columns>
+    <columns>
+        <field>appirio_core__Config_Group__c.appirio_core__ConfigOptions__r.appirio_core__Values__r$appirio_core__Value__c</field>
+    </columns>
+    <columns>
+        <field>appirio_core__Config_Group__c.appirio_core__ConfigOptions__r$appirio_core__Description__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>PSA Configurations by Config Group v1</description>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>appirio_core__Config_Group__c$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>PSA Configurations by Config Group v1</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>psa_report__PSA_Configs__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>false</showGrandTotal>
+    <showSubTotals>false</showSubTotals>
+    <sortColumn>appirio_core__Config_Group__c.appirio_core__ConfigOptions__r$Name</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>appirio_core__Config_Group__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <applicationVisibilities>
+        <application>fferpcore__ERP_Common_Concepts</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <applicationVisibilities>
+        <application>fferpcore__ERP_Common_Concepts_Lightning</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <description>Delete analysis items.</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>fferpcore__AnalysisItem__c.fferpcore__UniquenessConstraint__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>ERP Common Concepts - Analysis Item - Delete</label>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>fferpcore__AnalysisItem__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <pageAccesses>
+        <apexPage>fferpcore__AnalysisItemHelp</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>fferpcore__HelpLoader</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <recordTypeVisibilities>
+        <recordType>fferpcore__AnalysisItem__c.fferpcore__Analysis_1</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>fferpcore__AnalysisItem__c.fferpcore__Analysis_2</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>fferpcore__AnalysisItem__c.fferpcore__Analysis_3</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>fferpcore__AnalysisItem__c.fferpcore__Analysis_4</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <tabSettings>
+        <tab>fferpcore__AnalysisItem__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

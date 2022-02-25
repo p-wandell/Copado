@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Status for de oplysninger, der skal anvendes til Salesforce User.</help>
+    <label><!-- Status --></label>
+    <name>fferpcore__Status__c</name>
+    <picklistValues>
+        <masterLabel>Assigned</masterLabel>
+        <translation>Tildelt</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Assigning</masterLabel>
+        <translation>Tildeling</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Assign</masterLabel>
+        <translation>Kunne ikke tildele</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed to Remove</masterLabel>
+        <translation>Kunne ikke fjernes</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Assignment</masterLabel>
+        <translation>Afventer opgave</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Removal</masterLabel>
+        <translation>Afventer fjernelse</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Removed</masterLabel>
+        <translation>Fjernet</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Removing</masterLabel>
+        <translation>Fjernelse</translation>
+    </picklistValues>
+</CustomFieldTranslation>

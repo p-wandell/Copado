@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>2nd level for Skill Capacity permission set</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>PSA - Skills Capacity</label>
+    <pageAccesses>
+        <apexPage>pse__SkillHelp</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>pse__SkillsCapacity</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <tabSettings>
+        <tab>pse__Skills_Capacity</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

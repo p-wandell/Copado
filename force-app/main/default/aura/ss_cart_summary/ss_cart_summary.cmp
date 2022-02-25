@@ -1,0 +1,236 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 9/29/17.
+ -->
+
+<aura:component description="ss_cart_summary"
+                implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                controller="sc_listController"
+                extends="c:ss_product_base"
+                access="global">
+
+	<ltng:require styles="{!join(',', $Resource.ss_product_catalog)}"/>
+
+	<aura:attribute name="setting"          type="String"  default=""      access="global"/>
+	<aura:attribute name="showHeader"       type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showTax"          type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showShipping"     type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showTotal"        type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showDiscount"     type="Boolean" default="false" access="global"/>
+	<aura:attribute name="skipPayment"      type="Boolean" default="false" access="global"/>
+	<aura:attribute name="showCheckout"     type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showEstimate"     type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showTerms"        type="Boolean" default="true"  access="global"/>
+
+	<aura:attribute name="iconName"         type="String"  default="custom:custom93"/>
+	<aura:attribute name="checkoutUrl"      type="String"  default="/7s-product-checkout"   access="global"/>
+	<aura:attribute name="orderDetailUrl"   type="String"  default=""      access="global"/>
+
+	<aura:attribute name="model"            type="Map"     access="public"/>
+	<aura:attribute name="cartItems"        type="Map"     access="public"/>
+
+	<aura:attribute name="usePoints"        type="Boolean" default="false"  access="public"/>
+	<aura:attribute name="discount"         type="String"  default=".10"    access="public"/>
+	<aura:attribute name="subTotal"         type="String"  default="0"      access="public"/>
+	<aura:attribute name="estimatedTax"     type="String"  default="0"      access="public"/>
+	<aura:attribute name="estimateShipping" type="String"  default="0"      access="public"/>
+	<aura:attribute name="estimatedTotal"   type="String"  default="0"      access="public"/>
+
+	<aura:attribute name="subLabelClass"    type="String"  default="slds-text-title slds-text-color_weak"/>
+	<aura:attribute name="estimateClass"    type="String"  default="slds-text-color_weak"/>
+	<aura:attribute name="cartImage"        type="String"  default="{!$Resource.ss_product_catalog + '/cart-image-empty.png'}"/>
+	<aura:attribute name="labelCheckout"    type="String"  default="{!$Label.c.ss_pc_button_checkout}"/>
+	<aura:attribute name="labelPlaceOrder"  type="String"  default="{!$Label.c.ss_pc_button_placeOrder}"/>
+	<aura:attribute name="toastPlacedOrder" type="String"  default="{!$Label.c.ss_pc_label_placedOrder}"/>
+
+	<aura:registerEvent name="updateCartButton" type="c:ss_cart_button_event"/>
+
+	<aura:handler event="c:ss_cart_event"     action="{!c.init}"/>
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="stretch"
+	                  class="slds-box slds-box_small slds-theme_shade summary">
+
+		<!-- Header-->
+		<aura:if isTrue="{!v.showHeader}">
+			<lightning:layoutItem size="12"
+			                      padding="around-small"
+			                      class="slds-border--bottom">
+				<lightning:layout multipleRows="true"
+				                  horizontalAlign="center"
+				                  verticalAlign="stretch">
+
+					<lightning:layoutItem size="12"
+					                      padding="around-small"
+					                      class="slds-align_absolute-center">
+						<lightning:avatar src="{!v.cartImage}"
+						                  alternativeText="Cart summary"
+						                  fallbackIconName="{!v.iconName}"
+						                  size="large"/>
+					</lightning:layoutItem>
+
+					<lightning:layoutItem size="12"
+					                      padding="around-small"
+					                      class="slds-text-heading_small slds-align_absolute-center">
+							{!$Label.c.ss_pc_cart_summary_header}
+					</lightning:layoutItem>
+					<lightning:layoutItem size="12"
+					                      class="slds-text-body_small slds-align_absolute-center">
+						{!$Label.c.ss_pc_cart_summary_text1}
+						<br/>
+						{!$Label.c.ss_pc_cart_summary_text2}
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Sub total -->
+		<lightning:layoutItem size="12"
+		                      class="slds-border--bottom slds-p-bottom_medium slds-p-top_medium">
+			<lightning:layout horizontalAlign="spread"
+							  multipleRows="false">
+				<lightning:layoutItem>
+					{!$Label.c.ss_pc_label_cartSummary_subTotal}
+				</lightning:layoutItem>
+				<lightning:layoutItem>
+					<aura:if isTrue="{!v.usePoints}">
+						{!v.model.subTotal}
+						<aura:set attribute="else">
+							<lightning:formattedNumber value="{!v.model.subTotal}"
+							                           style="currency"/>
+						</aura:set>
+					</aura:if>
+				</lightning:layoutItem>
+			</lightning:layout>
+		</lightning:layoutItem>
+
+		<!-- Tax -->
+		<aura:if isTrue="{!v.showTax}">
+			<lightning:layoutItem size="12"
+			                      class="slds-p-bottom_medium">
+
+				<lightning:layout multipleRows="true">
+					<lightning:layoutItem size="12">
+						<lightning:layout multipleRows="false"
+						                  horizontalAlign="spread">
+							<lightning:layoutItem size="8">
+									{!$Label.c.ss_pc_label_cartSummary_estimatedTax}
+							</lightning:layoutItem>
+							<lightning:layoutItem class="{!v.estimateClass}">
+								<lightning:formattedNumber value="{!v.estimatedTax}"
+								                           style="currency"/>
+							</lightning:layoutItem>
+						</lightning:layout>
+					</lightning:layoutItem>
+
+					<aura:if isTrue="{!v.showEstimate}">
+						<lightning:layoutItem size="12"
+						                      class="{!v.subLabelClass}">
+								{!$Label.c.ss_pc_subLabel_cartSummary_estimatedTax}
+						</lightning:layoutItem>
+					</aura:if>
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Shipping -->
+		<aura:if isTrue="{!v.showShipping}">
+			<lightning:layoutItem size="12"
+			                      class="slds-p-bottom_medium">
+				<lightning:layout multipleRows="true">
+					<lightning:layoutItem size="12">
+						<lightning:layout multipleRows="false"
+						                  horizontalAlign="spread">
+							<lightning:layoutItem size="8">
+								{!$Label.c.ss_pc_label_cartSummary_estimatedShipping}
+							</lightning:layoutItem>
+							<lightning:layoutItem class="{!v.estimateClass}">
+								<lightning:formattedNumber value="{!v.estimateShipping}"
+								                           style="currency"/>
+							</lightning:layoutItem>
+						</lightning:layout>
+						<aura:if isTrue="{!v.showEstimate}">
+							<lightning:layoutItem size="12"
+							                      class="{!v.subLabelClass}">
+									{!$Label.c.ss_pc_subLabel_cartSummary_estimatedShipping}
+							</lightning:layoutItem>
+						</aura:if>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+
+		</aura:if>
+
+		<!-- Discount -->
+		<aura:if isTrue="{! and(v.model.enableDiscount, v.showDiscount)}">
+			<lightning:layoutItem size="12"
+			                      class="slds-border_top slds-border_bottom slds-p-top_medium slds-p-bottom_medium">
+				<lightning:layout horizontalAlign="spread"
+				                  multipleRows="false">
+					<lightning:layoutItem>
+						{!$Label.c.ss_pc_label_cartSummary_discount}
+						(<lightning:formattedNumber value="{!v.discount}"
+						                            style="percent"/>)
+					</lightning:layoutItem>
+					<lightning:layoutItem >
+						<lightning:formattedNumber value="{!v.model.discountTotal}"
+						                           style="currency"/>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Total -->
+		<aura:if isTrue="{!v.showTotal}">
+			<lightning:layoutItem size="12"
+			                      class="slds-border_top slds-border_bottom slds-p-top_medium slds-p-bottom_medium">
+				<lightning:layout horizontalAlign="spread"
+				                  multipleRows="false">
+					<lightning:layoutItem>
+							{!$Label.c.ss_pc_label_cartSummary_estimatedTotal}
+					</lightning:layoutItem>
+					<lightning:layoutItem>
+						<aura:if isTrue="{!v.usePoints}">
+								{!v.estimatedTotal}
+							<aura:set attribute="else">
+								<lightning:formattedNumber value="{!v.model.estimatedTotal}"
+								                           style="currency"/>
+							</aura:set>
+						</aura:if>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Check out-->
+		<aura:if isTrue="{!v.showCheckout}">
+			<lightning:layoutItem size="12"
+			                      class="slds-p-top_x-large">
+				<lightning:layout horizontalAlign="end">
+					<lightning:layoutItem>
+						<lightning:button onclick="{!c.gotoCheckout}"
+						                  name="checkoutButton"
+						                  label="{!v.labelCheckout}"
+						                  title="Checkout"
+						                  disabled="{!v.model.items.length == 0}"
+						                  variant="brand"/>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+
+			<aura:if isTrue="{!v.showTerms}">
+				<lightning:layoutItem size="12"
+				                      class="slds-align--absolute-center slds-p-top_x-large">
+					<span class="{!v.subLabelClass}" style="text-align: center">
+							{!$Label.c.ss_pc_cartSummary_agreement}
+					</span>
+				</lightning:layoutItem>
+			</aura:if>
+		</aura:if>
+
+	</lightning:layout>
+</aura:component>

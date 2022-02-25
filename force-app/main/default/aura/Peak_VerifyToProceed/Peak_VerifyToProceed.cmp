@@ -1,0 +1,35 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="readyToProceed" type="Boolean" default="false" access="global" />
+    <aura:attribute name="overlayColor" type="String" default="#ffffff" access="global" />
+    <aura:attribute name="overlayOpacity" type="String" default=".9" access="global" />
+    <aura:attribute name="darkText" type="Boolean" default="true" access="global" />
+    <aura:attribute name="contentTitle" type="String" default="Content Title" access="global" />
+    <aura:attribute name="contentText" type="String" default="Text" access="global" />
+    <aura:attribute name="contentButtonText" type="String" default="CTA" access="global" />
+    <aura:attribute name="contentTileClassname" type="String" default="content-tile" access="global" />
+
+    <aura:attribute name="CustomClassName" type="String" default="" access="global" />
+    <aura:attribute name="CustomIdName" type="String" default="" access="global" />
+
+    <aura:handler name="init" action="{!c.initPeakVerifyToProceed}" value="{!this}" />
+
+    <section class="{!'peak-component ' + v.CustomClassName}" id="{!v.CustomIdName}">
+        <aura:if isTrue="{!v.readyToProceed}">
+            <aura:set attribute="else">
+                <div class="overlay slds-text-align_center" style="{!'background:'+v.overlayColor+'; opacity: '+v.overlayOpacity}"></div>
+                <div class="content">
+                    <div class="{!v.contentTileClassname}">
+                        <h3>
+                            <c:Peak_Base labelText="{!v.contentTitle}" />
+                        </h3>
+                        <p class="slds-m-vertical_small">
+                            <c:Peak_Base labelText="{!v.contentText}" />
+                        </p>
+                        <button class="slds-button slds-button_brand" onclick="{!c.hideOverlay}"><c:Peak_Base labelText='{!v.contentButtonText}'/></button>
+                    </div>
+                </div>
+            </aura:set>
+        </aura:if>
+    </section>
+</aura:component>

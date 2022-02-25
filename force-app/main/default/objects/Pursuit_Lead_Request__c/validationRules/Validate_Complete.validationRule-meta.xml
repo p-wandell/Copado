@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Complete</fullName>
+    <active>true</active>
+    <description>PL Status cannot be set to Complete If Opportunity Stage is not past stage 6.</description>
+    <errorConditionFormula>AND( NOT(OR(
+CONTAINS(&quot;7 Verbal Agreement&quot;,Opportunity_Stage__c),
+CONTAINS(&quot;8 Closed Won&quot;,Opportunity_Stage__c),
+CONTAINS(&quot;9 Closed Lost&quot;,Opportunity_Stage__c),
+CONTAINS(&quot;10 No Opportunity&quot;,Opportunity_Stage__c)
+)),
+
+
+ISPICKVAL( Status__c , &quot;(9) Complete&quot;))</errorConditionFormula>
+    <errorMessage>Pursuit Lead Cannot be completed until Opportunity Stage is beyond Verbal Agreement (stage 7).</errorMessage>
+</ValidationRule>

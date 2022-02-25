@@ -1,0 +1,94 @@
+<!--Menu component -->
+<apex:component >
+	<nav class="navbar navbar-default {!IF(ISPICKVAL($User.UserType,'Guest'), 'visible-xs', '')}" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu-navbar">
+		        <span class="sr-only">{!$Label.toggleNavigation}</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand visible-xs" href="#">{!$Label.goToPage}</a>
+		    </div>
+		    <div class="collapse navbar-collapse" id="menu-navbar" style="font-size:16px;">
+				<!-- TODO: implement dynamic menu using Custom Setting in Apex Controller -->
+				<ul class="nav navbar-nav">
+					<apex:outputPanel layout="none" rendered="{!NOT(ISPICKVAL($User.UserType,'Guest'))}">
+						<li id="tab-home" class="">
+							<a href="/">
+								<span>{!$Label.home}</span>
+							</a>
+						</li>
+						<li id="tab-profile" class="">
+							<!--<a href="/MyProfile">-->
+							<a href="/MyProfile">
+								<span>{!$Label.myProfile}</span>
+							</a>
+						</li>
+						<li id="tab-cases" class="">
+							<a href="/Cases">
+								<span>{!$Label.myCases}</span>
+							</a>
+						</li>
+						<li id="tab-groups" class="">
+							<!--<a href="/Groups">-->
+							<a href="/Groups">
+								<span>{!$Label.myGroup}</span>
+							</a>
+						</li>
+						<li id="tab-answers" class="">
+							<a href="/Answers#!/feedtype=MINE">
+								<span>{!$Label.qAndA}</span>
+							</a>
+						</li>
+						<!--<li class="">
+							<a href="/SS_CommunitySiteIdeas">
+								<span>Ideas</span>
+							</a>
+						</li>-->
+						<li id="tab-logout" class="">
+		  					<apex:outputLink value="/Logout">{!$Label.site.logout}</apex:outputLink>
+		  				</li>
+				  	</apex:outputPanel>
+					<apex:outputPanel layout="none" rendered="{!ISPICKVAL($User.UserType,'Guest')}">
+						<li id="tab-login" class="">
+							<a href="/Login?startURL=%2F">
+								<span>{!$Label.site.login}</span>
+							</a>
+						</li>
+						<li id="tab-register" class="">
+							<a href="/Register">
+								<span>{!$Label.site.register}</span>
+							</a>
+						</li>
+					</apex:outputPanel>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<script type="text/javascript">
+        $j = jQuery.noConflict();
+
+        $j(document).ready(function() {
+            var tabId;
+            if (window.location.pathname.indexOf('Cases') >= 0) {
+                tabId = 'tab-cases';
+            } else if (window.location.pathname == '/') {
+                tabId = 'tab-home';
+            } else if (window.location.pathname.indexOf('Logout') >= 0) {
+                tabId = 'tab-logout';
+            } else if (window.location.pathname.indexOf('Answers') >= 0) {
+                tabId = 'tab-answers';
+			} else if (window.location.pathname.indexOf('Login') >= 0) {
+                tabId = 'tab-login';
+			} else if (window.location.pathname.indexOf('Register') >= 0) {
+                tabId = 'tab-register';
+			}
+
+            if (tabId != null) {
+                $j('#' + tabId).addClass('tab-selected');
+            }
+        });
+    </script>
+</apex:component>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Adventure Launch</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="adventure" label="Adventure" type="String"/>
+            <property name="titleText" label="Title Text" type="String" description="This will accept rich text or custom labels. To include labels use: $Label.labelName. "/>
+            <property name="description" label="Description" type="String" description="This will accept rich text or custom labels. To include labels use: $Label.labelName. "/>
+            <property name="imageType" type="String" label="Image Type" datasource="None, Image Reference, CMS Image" description="Select background image reference,  Select 'None' to clear background image."/>
+            <property name="imageReference" type="String" label="Image Reference" description="Enter a full image path for a background image. (Optional)"/>
+            <property name="cmsContentKey" type="ContentReference" label="CMS Image" filter="cms_image" description="Click to select or update a CMS image.  To clear the image, change the Image Type."/>
+            <property name="backgroundColor" label="Background Color" type="String"/>
+            <property name="textColor" label="Text Color" type="String"/>
+            <property name="tileHeight" label="Height (px)" type="String"/>
+            <property name="tileWidth" label="Width (px)" type="String"/>
+            <property name="borderRadius" label="Image - Border Radius" type="String" description="Use a percentage like '50%' for a circle, or '0px' for a square." />
+            <property name="customClass" label="Custom Class Name" type="String" description="Custom CSS class name. Usually remains blank." />
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage">
+            <property name="adventure" label="Adventure" type="String"/>
+            <property name="titleText" label="Title Text" type="String" description="This will accept rich text or custom labels. To include labels use: $Label.labelName. "/>
+            <property name="description" label="Description" type="String" description="This will accept rich text or custom labels. To include labels use: $Label.labelName. "/>
+            <property name="imageType" type="String" label="Image Type" datasource="None, Image Reference" description="Select background image reference,  Select 'None' to clear background image."/>
+            <property name="imageReference" type="String" label="Image Reference" description="Enter a full image path for a background image. (Optional)"/>
+            <property name="backgroundColor" label="Background Color" type="String"/>
+            <property name="textColor" label="Text Color" type="String"/>
+            <property name="tileHeight" label="Height (px)" type="String"/>
+            <property name="tileWidth" label="Width (px)" type="String"/>
+            <property name="borderRadius" label="Image - Border Radius" type="String" description="Use a percentage like '50%' for a circle, or '0px' for a square." />
+            <property name="customClass" label="Custom Class Name" type="String" description="Custom CSS class name. Usually remains blank." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

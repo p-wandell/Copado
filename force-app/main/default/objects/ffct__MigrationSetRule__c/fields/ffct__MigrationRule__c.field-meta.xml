@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__MigrationRule__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Holds the associated Migration Rule.</description>
+    <externalId>false</externalId>
+    <label>Migration Rule</label>
+    <referenceTo>ffct__MigrationRule__c</referenceTo>
+    <relationshipLabel>Migration Set Rules</relationshipLabel>
+    <relationshipName>MigrationSetRules</relationshipName>
+    <relationshipOrder>1</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Status van het facturatiedocument. De status kan Concept of Voltooid zijn. Wanneer de status is voltooid, kunt u alleen de vervaldatum van het document, klantreferentie en beschrijving bewerken.</help>
+    <label><!-- Document Status --></label>
+    <name>fferpcore__DocumentStatus__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>Compleet</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Discarded</masterLabel>
+        <translation>Afgedankte</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Draft</masterLabel>
+        <translation>Droogte</translation>
+    </picklistValues>
+</CustomFieldTranslation>

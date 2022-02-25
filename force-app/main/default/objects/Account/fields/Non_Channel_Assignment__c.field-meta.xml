@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Non_Channel_Assignment__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If checked, either the Lead Account/Company is not owned by a SF RVP/AE and therefore the Lead is assigned outside of the mapping process, or the Account/Company is owned by a SF RVP/AE but the Lead is NOT assigned to the 7S AE/CP who maps to the SF RVP/AE.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If checked, either the Lead Account/Company is not owned by a SF RVP/AE and therefore the Lead is assigned outside of the mapping process, or the Account/Company is owned by a SF RVP/AE but the Lead is NOT assigned to the 7S AE/CP who maps to the SF RVP/A</inlineHelpText>
+    <label>Non Channel Assignment</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

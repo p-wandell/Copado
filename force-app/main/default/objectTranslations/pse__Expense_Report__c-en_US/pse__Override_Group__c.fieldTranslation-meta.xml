@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Overrides the Group to which the child Expense Transactions will roll up for Group Actuals, even if the Project is in a different Group. Typically an Expense&apos;s Transactions roll up to its Project&apos;s or Resource&apos;s Group based on &apos;follows&apos; rules. --></help>
+    <label><!-- Override Group --></label>
+    <name>pse__Override_Group__c</name>
+    <relationshipLabel><!-- Override Group For Expense Reports --></relationshipLabel>
+</CustomFieldTranslation>

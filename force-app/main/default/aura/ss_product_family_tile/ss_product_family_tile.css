@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2017. 7Summits inc.
+ */
+
+/**
+ * Created by francois korb on 11/22/17.
+ */
+.THIS .productImage {
+	height:205px;
+	width: auto;
+	background: no-repeat center;
+	background-size: cover;
+}
+
+.THIS .overlay {
+	transition: .3s all;
+	border-radius: 3px;
+}
+
+.THIS .bg {
+	position: relative;
+}
+
+.THIS .overlay {
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.5em;
+	position: absolute;
+	word-wrap: break-word;
+	padding-top: 25%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: auto;
+	opacity: 0;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.6);
+}
+
+.THIS .overlay:hover {
+	opacity:1;
+}

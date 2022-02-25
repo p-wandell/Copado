@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_95769549</developerName>
+        <masterLabel>Size of SOW Budget</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>pse__Proj__c.SOW_Budget__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>100,000</to>
+            </sourceValues>
+            <value>Less than $100k</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>100,000</from>
+                <to>300,000</to>
+            </sourceValues>
+            <value>$100k - 300k</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>300,000</from>
+                <to>500,000</to>
+            </sourceValues>
+            <value>$300k - 500k</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>500,000</from>
+                <to>700,000</to>
+            </sourceValues>
+            <value>$500k - 700k</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>700,000</from>
+                <to>1,000,000</to>
+            </sourceValues>
+            <value>$700k - $1 million</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>1,000,000</from>
+            </sourceValues>
+            <value>Over $1M</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Average</aggregateTypes>
+        <field>pse__Proj__c.Job_to_Date_Project_Margin__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.SOW_Project_Margin__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.Estimate_at_Complete_Project_Margin__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>CUST_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notContain</operator>
+            <value>7S</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Proj__c.Job_to_Date_Project_Margin__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>0</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_95769549</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Margins by Project Size</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$pse__Proj__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Proj__c.pse__End_Date__c</dateColumn>
+        <interval>INTERVAL_PREVFY</interval>
+    </timeFrameFilter>
+</Report>

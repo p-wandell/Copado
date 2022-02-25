@@ -1,0 +1,171 @@
+<apex:page standardController="pse__Proj__c" showHeader="false" applyHtmlTag="true" applyBodyTag="false" extensions="ProjectStatisticsExtension">
+    <head>
+        <!-- <apex:slds /> -->
+        
+        <style type="text/css">
+            table.phaseSummary { border-spacing: 0; }
+            tr.status { height: 25px; }
+            tr.spacer { height: 50px; }
+            td.span.Green { background-color: forestgreen; empty-cells: show; width: 95%; border-radius: 5px; }
+            td.span.Yellow { background-color: yellow; empty-cells: show; width: 95%; border-radius: 5px; }
+            td.span.Red { background-color: red; empty-cells: show; width: 95%; border-radius: 5px; }
+            th { font-weight: bold; }
+            td.milestone { width: 22%; font-weight: bold; }
+            td.hours { width: 6%; text-align: right; font-size: small; }
+            td.dollars { width: 6%; text-align: right; font-size: small; }
+            th.milestone { background-color: darkgrey; text-align: center; }
+            th.baseline { background-color: lightcoral; text-align: center; }
+            th.estimates { background-color: gold; text-align: center; }
+            th.actuals { background-color: lightblue; text-align: center; }
+            th.etc { background-color: lightseagreen; text-align: center; }
+            th.eac { background-color: lightgreen; text-align: center; }
+            th.vairaince { background-color: lightsalmon; text-align: center; }
+            th.expenses { background-color: lightsteelblue; text-align: center; }
+            tr.totalRow { font-weight: bold; background-color: lightgray; }
+            td.reportChart { width: 40%; }
+            td.dashboardLightLabel { text-align: center; width:12%; }
+        </style>
+    </head>
+    <body class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        
+        <table width="100%">
+            <tr>
+                <th class="dashboardLightLabel">Risk Level</th>
+                <th class="dashboardLightLabel">Scope</th>
+                <th class="dashboardLightLabel">Timeline</th>
+                <th class="dashboardLightLabel">Budget</th>
+                <th class="dashboardLightLabel">Resources</th>
+                <th class="dashboardLightLabel">Quality</th>                                
+                <th class="dashboardLightLabel">DevOps</th>
+                <th width="4%">&nbsp;&nbsp;</th>
+                <th class="dashboardLightLabel">CSAT&nbsp;&nbsp;<apex:outputText value="({0, number, #0.00})" rendered="{!IF(pse__Proj__c.CSAT_Status__c!=null, 'true', 'false')}"><apex:param value="{!pse__Proj__c.CSAT_Score__c}" /></apex:outputText></th>
+            </tr>
+            <tr class="status">
+                <td width="12%"><span style="width: 95%" class="{!IF(pse__Proj__c.Risk_Level_Status__c=='Green', 'Green', IF(pse__Proj__c.Risk_Level_Status__c=='Yellow', 'Yellow', IF(pse__Proj__c.Risk_Level_Status__c=='Red', 'Red', 'NA')))}"></span></td>
+                <td width="12%"><span style="width: 95%" class="{!IF(pse__Proj__c.Scope_Status__c=='Green', 'Green', IF(pse__Proj__c.Scope_Status__c=='Yellow', 'Yellow', IF(pse__Proj__c.Scope_Status__c=='Red', 'Red', 'NA')))}"></span></td>
+                <td width="12%"><span style="width: 95%" class="{!IF(pse__Proj__c.Timeline_Status__c=='Green', 'Green', IF(pse__Proj__c.Timeline_Status__c=='Yellow', 'Yellow', IF(pse__Proj__c.Timeline_Status__c=='Red', 'Red', 'NA')))}"></span></td>
+                <td width="12%"><span style="width: 95%" class="{!IF(pse__Proj__c.Forecast_Status__c=='Green', 'Green', IF(pse__Proj__c.Forecast_Status__c=='Yellow', 'Yellow', IF(pse__Proj__c.Forecast_Status__c=='Red', 'Red', 'NA')))}"></span></td>
+                <td width="12%"><span style="width: 95%" class="{!IF(pse__Proj__c.Resourcing_Status__c=='Green', 'Green', IF(pse__Proj__c.Resourcing_Status__c=='Yellow', 'Yellow', IF(pse__Proj__c.Resourcing_Status__c=='Red', 'Red', 'NA')))}"></span></td>
+                <td width="12%"><span style="width: 95%" class="{!IF(pse__Proj__c.Quality_Status__c=='Green', 'Green', IF(pse__Proj__c.Quality_Status__c=='Yellow', 'Yellow', IF(pse__Proj__c.Quality_Status__c=='Red', 'Red', 'NA')))}"></span></td>
+                <td width="12%"><span style="width: 95%" class="{!IF(pse__Proj__c.DevOps_Status__c=='Green', 'Green', IF(pse__Proj__c.DevOps_Status__c=='Yellow', 'Yellow', IF(pse__Proj__c.DevOps_Status__c=='Red', 'Red', 'NA')))}"></span></td>
+                <th width="4%">&nbsp;&nbsp;</th>
+                <td width="12%"><span style="width: 95%" class="{!IF(pse__Proj__c.CSAT_Status__c=='Green', 'Green', IF(pse__Proj__c.CSAT_Status__c=='Yellow', 'Yellow', IF(pse__Proj__c.CSAT_Status__c=='Red', 'Red', 'NA')))}"></span></td>
+            </tr>
+            <tr>
+                <td colspan="10" align="center">
+                    <table width="95%">
+                        <tr>
+                            <td class="reportChart"><analytics:reportChart reportId="00O1E000006bW7f" size="medium" filter="[{column:'FK_pse__Proj__c.pse__Project_ID__c',operator:'equals',value:'{!project.pse__Project_ID__c}'}]" /></td>
+                            <td style="width: 20%;"></td>
+                            <td class="reportChart"><analytics:reportChart reportId="00O1E000006bW7g" size="medium" filter="[{column:'pse__Proj__c.pse__Project_ID__c',operator:'equals',value:'{!project.pse__Project_ID__c}'}]"/></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class='spacer'>
+                <td colspan="10"></td>
+            </tr>
+<!--
+            <tr>
+                <td colspan="10" align="center">
+                	<table width="95%" class="phaseSummary">
+                        <tr>
+                            <th class="milestone">Phase Summary</th>
+                            <th class="baseline" colspan="2">Baseline</th>
+                            <th class="estimates" colspan="2">Estimates</th>
+                            <th class="actuals" colspan="2">Job to Date (JTD)</th>
+                            <th class="etc" colspan="2">Estimate to Complete (ETC)</th>
+                            <th class="eac" colspan="2">Estimate at Complation (EAC)</th>
+                            <th class="vairaince" colspan="2">Variance to SOW</th>
+                            <th class="expenses">Expenses</th>
+                        </tr>
+                        <tr>
+                            <th class="milestone"></th>
+                            <th class="baseline">SOW</th>
+                            <th class="baseline">SOW</th>
+                            <th class="estimates">EST</th>
+                            <th class="estimates">EST</th>
+                            <th class="actuals">Actual</th>
+                            <th class="actuals">Actual</th>
+                            <th class="etc">Projected</th>
+                            <th class="etc">Projected</th>
+                            <th class="eac">Billable</th>
+                            <th class="eac">Billable</th>
+                            <th class="vairaince">Variance</th>
+                            <th class="vairaince">Variance</th>
+                            <th class="expenses"></th>
+                        </tr>
+                        <apex:repeat value="{!PhaseSummary}" var="p">
+                            <tr>
+                                <td class="milestone">{!p.milestone}</td>
+                                <td class="hours baseline"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.sowHours}" /></apex:outputText></td>
+                                <td class="dollars baseline"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.sowDollars}" /></apex:outputText></td>
+                                <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.estHours}" /></apex:outputText></td>
+                                <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.estDollars}" /></apex:outputText></td>
+								<td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.actualHours}" /></apex:outputText></td>
+                                <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.actualDollars}" /></apex:outputText></td>
+                                <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.etcHours}" /></apex:outputText></td>
+                                <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.etcDollars}" /></apex:outputText></td>
+                                <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.eacHours}" /></apex:outputText></td>
+                                <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.eacDollars}" /></apex:outputText></td>
+                                <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.varianceHours}" /></apex:outputText></td>
+                                <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.varianceDollars}" /></apex:outputText></td>
+                                <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!p.expenses}" /></apex:outputText></td>
+                            </tr>
+                        </apex:repeat>
+                        <tr class="totalRow">
+                            <td>{!totals.milestone}</td>
+                            <td class="hours baseline"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.sowHours}" /></apex:outputText></td>
+                            <td class="dollars baseline"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.sowDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.estHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.estDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.actualHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.actualDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.etcHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.etcDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.eacHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.eacDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.varianceHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.varianceDollars}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!totals.expenses}" /></apex:outputText></td>
+                        </tr>
+                        <tr class="totalRow">
+                            <td>{!nonBill.milestone}</td>
+                            <td class="hours baseline"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.sowHours}" /></apex:outputText></td>
+                            <td class="dollars baseline"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.sowDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.estHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.estDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.actualHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.actualDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.etcHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.etcDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.eacHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.eacDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.varianceHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.varianceDollars}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!nonBill.expenses}" /></apex:outputText></td>
+                        </tr>
+                        <tr class="totalRow">
+                            <td>{!projectTotals.milestone}</td>
+                            <td class="hours baseline"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.sowHours}" /></apex:outputText></td>
+                            <td class="dollars baseline"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.sowDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.estHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.estDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.actualHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.actualDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.etcHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.etcDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.eacHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.eacDollars}" /></apex:outputText></td>
+                            <td class="hours"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.varianceHours}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.varianceDollars}" /></apex:outputText></td>
+                            <td class="dollars"><apex:outputText value="{0, number, ###,##0.00}"><apex:param value="{!projectTotals.expenses}" /></apex:outputText></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+-->
+        </table>
+    </body>
+</apex:page>

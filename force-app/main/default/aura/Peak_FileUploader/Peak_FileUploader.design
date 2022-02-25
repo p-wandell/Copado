@@ -1,0 +1,25 @@
+<!--
+ - Copyright (c) 2018. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 3/17/18.
+-->
+
+<design:component label="7S File Uploader">
+
+    <design:attribute name="parentId" label="Parent Record Id" default="{!recordId}" description='This is the id of the record you would like attach the uploaded files to. If this is placed on a record detail page enter "{!recordId}" to have the files upload to that specific record.'/>
+
+    <design:attribute name="showFileLists" label="Show Valid And Invalid File Lists" description="When checked this will display the valid and invalid file lists. This will allow the user to remove/delete files. This will also show if files don't meet the criteria to be uploaded. It is not recommended to uncheck this option." default="true"/>
+
+    <design:attribute name="title" label="Title" description="This is the text that will be displayed as the title. If blank the title will not display"/>
+    <design:attribute name="message" label="Message Text" description='This is a description of where the files will be uploaded, what file types are accepted and max file size. If you want to include max file size enter "{0}" anywhere in the message string. If you want to include a list of valid file extensions enter "{1}" anywhere in the message string.'/>
+    <design:attribute name="uploadLabel" label="Upload Label" description="This is the text that will be display just above the upload button. If left blank the will not be displayed."/>
+    <design:attribute name="allTypesText" label="All Types Text" description="If there are not file extension restrictions this is the text that will replace the valid file extensions list."/>
+    <design:attribute name="validListText" label="Valid List Title" description="This is the text that will display above the valid file list. If left blank it will not display"/>
+    <design:attribute name="invalidListText" label="Invalid List Title" description="This is the text that will display above the invalid file list. If left blank it will not display"/>
+    <design:attribute name="deleteText" label="Delete Text" description="This is the text that will be displayed as the delete file link. If blank the title will not display"/>
+    <design:attribute name="removeText" label="Remove Test" description="This is the text that will be displayed to remove the file from a file list. If blank the title will not display"/>
+    <design:attribute name="errorSize" label="Size Error Text" description='This is the text that will displayed if the file failed to upload due to improper file size. If you want to include the max file size enter "{0}" anywhere in the error text string.'/>
+    <design:attribute name="errorExt" label="Extension Error Text" description='This is the text that will displayed if the file failed to upload due to improper file extension. If you want to include the list of valid file extensions enter "{0}" anywhere in the error text string.'/>
+
+    <design:attribute name="CustomClassName" label="Custom Class Name" description="Custom CSS class name. Usually remains blank." />
+    <design:attribute name="CustomIdName" label="Custom ID Name" description="Custom, distinct CSS ID name. Usually remains blank." />
+</design:component>

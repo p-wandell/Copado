@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Lo stato fiscale di questo account per gli account IVA / GST.</help>
+    <label><!-- Tax Status --></label>
+    <name>fferpcore__VatStatus__c</name>
+    <picklistValues>
+        <masterLabel>EC Non-registered</masterLabel>
+        <translation>EC Non registrato</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>EC Registered</masterLabel>
+        <translation>Registrato CE</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Export</masterLabel>
+        <translation>Esportare</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Home</masterLabel>
+        <translation>Casa</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,23 @@
+<aura:component extends="c:Peak_ChecklistBase" implements="forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="title" type="String" default="Your Checklist"/>
+    <aura:attribute name="description" type="String"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doChecklistsInit}"/>
+    
+    <div class="{!'peak-component ' + v.CustomClassName}" id="{!v.CustomIdName}">
+        <div class="slds-text-heading_medium slds-text-title_caps"><b>{!v.title}</b></div>
+        <div class="slds-text-color_weak slds-p-vertical_small">{!v.description}</div>
+        <div>
+            <aura:if isTrue="{!!empty(v.peakResponse.results)}">
+                <aura:iteration items="{!v.peakResponse.results}" var="checklist">
+                    <aura:iteration items="{!checklist.Peak_Checklist_Tasks__r}" var="task">
+                        <c:Peak_ChecklistTask task="{!task}"/>
+                    </aura:iteration>
+
+                </aura:iteration>
+            </aura:if>
+        </div>
+
+    </div>
+</aura:component>

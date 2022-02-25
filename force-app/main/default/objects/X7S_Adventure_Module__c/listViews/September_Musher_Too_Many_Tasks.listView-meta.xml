@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>September_Musher_Too_Many_Tasks</fullName>
+    <columns>NAME</columns>
+    <columns>Number_of_Tasks__c</columns>
+    <columns>Task_Progress__c</columns>
+    <columns>Adventure__c</columns>
+    <columns>Adventure_Step__c</columns>
+    <columns>Source_Module_ID__c</columns>
+    <columns>OBJECT_ID</columns>
+    <columns>CREATEDBY_USER</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Source_Module_ID__c</field>
+        <operation>equals</operation>
+        <value>aCe1E0000008OtaSAE</value>
+    </filters>
+    <filters>
+        <field>Number_of_Tasks__c</field>
+        <operation>greaterThan</operation>
+        <value>4</value>
+    </filters>
+    <label>September Musher - Too Many Tasks</label>
+    <sharedTo>
+        <group>X7S_Adventure_Admins</group>
+    </sharedTo>
+</ListView>

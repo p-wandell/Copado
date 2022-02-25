@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Définit la fonctionnalité pour appliquer les préférences. Les valeurs sont les suivantes: 0 (pour le planificateur de projet), 1 (pour le planificateur de ressources), 2 (pour les tâches), 3 (pour la carte de pointage) ou 5 (pour la tâche).</help>
+    <label><!-- Feature --></label>
+    <name>pse__Feature__c</name>
+    <picklistValues>
+        <masterLabel>0</masterLabel>
+        <translation>0</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>1</masterLabel>
+        <translation>1</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>2</masterLabel>
+        <translation>2</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>3</masterLabel>
+        <translation>3</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>4</masterLabel>
+        <translation>4</translation>
+    </picklistValues>
+</CustomFieldTranslation>

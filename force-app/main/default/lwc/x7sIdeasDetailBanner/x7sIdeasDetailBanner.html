@@ -1,0 +1,97 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper
+			custom-class={customClass}
+			variant={displayVariant}
+			aria-label={labels.labelAriaWrapper}
+			auto-slds-card={autoSlds}
+			>
+
+		<c-x7s-shr-record-banner title={ideaTitle} topics={topics}>
+
+			<!--Buttons-->
+			<div slot="actions">
+				<template if:true={canFollow}>
+					<lightning-button-stateful
+							label-when-off={labels.labelIdeaButtonfollow}
+							label-when-on={labels.labelIdeaButtonfollowing}
+							label-when-hover={labels.labelIdeaButtonUnfollow}
+							icon-name-when-off="utility:add"
+							icon-name-when-on="utility:check"
+							icon-name-when-hover="utility:close"
+							selected={isFollowing}
+							onclick={handleFollowClick}
+							aria-live="assertive">
+					</lightning-button-stateful>
+				</template>&nbsp;
+				<template if:true={showListButton}>
+					<lightning-button-icon 
+										alternative-text={labels.labelExploreOtherIdeas}
+										icon-name="utility:list"
+										title={labels.labelExploreOtherIdeas}
+										onclick={handleExploreIdeas}>
+            		</lightning-button-icon>
+				</template>
+			</div>
+			<template if:true={showMetaSlot}>
+				<div slot="meta">
+					<lightning-layout horizontal-align="spread" pull-to-boundary="small" multiple-rows>
+						<lightning-layout-item class="slds-var-p-around_xx-small">
+							<ul class="slds-list_horizontal slds-has-dividers_right slds-has-block-links slds-wrap">
+								<template if:true={showAuthorCatSlot}>
+									<li class="slds-item">
+										<lightning-layout multiple-rows>
+											<template if:true={displayPostDateAuthor}>
+												<lightning-layout-item>
+													<lightning-relative-date-time value={ideaCreatedDate}>
+													</lightning-relative-date-time>&nbsp;
+												</lightning-layout-item>
+												<lightning-layout-item>
+													{labels.labelIdeaBy}&nbsp;
+												</lightning-layout-item>
+												<lightning-layout-item>
+													<a href={userProfileURL}>{ideaUserName}</a>
+												</lightning-layout-item>
+											</template>
+										</lightning-layout>
+									</li>
+								</template>
+								<template if:true={showCategories}>
+									<li class="slds-item">
+										<lightning-formatted-text value={categories}>
+										</lightning-formatted-text>&nbsp;
+									</li>
+								</template>
+								<template if:true={showTheme}>
+									<li class="slds-item">
+										<lightning-formatted-text value={ideaTheme}>
+										</lightning-formatted-text>&nbsp;
+									</li>
+								</template>
+								<li class="slds-item">
+									<lightning-formatted-text value={ideaStatus}>
+									</lightning-formatted-text>&nbsp;
+								</li>
+								<template if:true={canEdit}>
+									<li class="slds-item slds-text-link">
+										<lightning-formatted-text value={labels.labelEdit} onclick={handleEdit} linkify>
+										</lightning-formatted-text>
+									</li>
+								</template>
+								<template if:true={canDelete}>
+									<li class="slds-item slds-text-link">
+										<lightning-formatted-text value={labels.labelDelete} onclick={handleDelete}
+										                          linkify>
+										</lightning-formatted-text>
+									</li>
+								</template>
+							</ul>
+						</lightning-layout-item>
+					</lightning-layout> 
+				</div>
+			</template>
+		</c-x7s-shr-record-banner>
+	</c-x7s-shr-component-wrapper>
+</template>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>スキル/認定</value>
+    </caseValues>
+    <nameFieldLabel>スキル/認定名</nameFieldLabel>
+    <recordTypes>
+        <description><!-- A level in a hierarchy. Skills and certifications can belong to a category. --></description>
+        <label><!-- Category --></label>
+        <name>pse__Category</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- A document relating to a status or a level of achievement. --></description>
+        <label><!-- Certification --></label>
+        <name>pse__Certification</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- An ability, proficiency, or expertise, in a subject area. --></description>
+        <label><!-- Skill --></label>
+        <name>pse__Skill</name>
+    </recordTypes>
+    <webLinks>
+        <label><!-- CascadeDelete --></label>
+        <name>pse__CascadeDelete</name>
+    </webLinks>
+</CustomObjectTranslation>

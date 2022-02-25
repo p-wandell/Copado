@@ -1,0 +1,8 @@
+<apex:page standardController="pse__Proj__c" lightningStylesheets="true">
+	<!-- Added this components to include jquery library and required script for tooltip -->
+	<c:fflib_thirdparty jQuery="true" jQueryUI="true"/>
+	<c:QuickTooltip tooltipTextAttrName="data-tooltip"/>
+	<apex:form >
+		<c:CostAndRevenueSummary sobjectRecord="{!pse__Proj__c}"/>
+	</apex:form>
+</apex:page>

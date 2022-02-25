@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Marketing_Partnership__c</fullName>
+    <description>Can we use their logo only, or Full - case studies, webinars, etc for our marketing purposes?</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Can we use their logo only, or Full - case studies, webinars, etc for our marketing purposes?</inlineHelpText>
+    <label>Marketing Partnership</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>None</fullName>
+                <default>true</default>
+                <label>None</label>
+            </value>
+            <value>
+                <fullName>Logo Only</fullName>
+                <default>false</default>
+                <label>Logo Only</label>
+            </value>
+            <value>
+                <fullName>Full</fullName>
+                <default>false</default>
+                <label>Full</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
