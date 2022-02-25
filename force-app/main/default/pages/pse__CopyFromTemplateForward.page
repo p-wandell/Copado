@@ -1,0 +1,2 @@
+<apex:page standardController="pse__Proj__c"  action="{!URLFOR($Page.PSACreateProjectFromTemplate,'',[Id=Proj__c.Id,isRedirected=true])}">
+</apex:page>

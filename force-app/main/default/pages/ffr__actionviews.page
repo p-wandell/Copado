@@ -1,0 +1,81 @@
+<apex:page controller="ffr.ActionViewsController" tabStyle="ActionViews__tab" showHeader="true" sidebar="true" docType="html-5.0">
+	<apex:includeScript value="{!$Resource.ffr__ExcelBuilder}"></apex:includeScript>
+
+	<c:extjs_bootstrap applicationName="ActionViews" staticResource="{!$Resource.ffr__ActionViews}" developmentPrefix="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}">
+		<script>
+			window['$RemoteAction'] = window['$RemoteAction'] || {};
+			window['$Params'] = window['$Params'] || {};
+			window['$Label'] = window['$Label'] || {};
+			window['$IFrameURL'] = window['$IFrameURL'] || {};
+			$Params.ExtraClasspaths = [];
+			$Params.ExtraAliases = {};
+			var Ext = Ext || {};
+			Ext.buildSettings = { baseCSSPrefix: "f-", scopeResetCSS: true };
+
+			<!-- Remote Actions -->
+			$RemoteAction.ActionViewsController = $RemoteAction.ActionViewsController || {};
+			$RemoteAction.ActionViewsController.saveRcpData = '{!$RemoteAction.ActionViewsController.saveRcpData}';
+			$RemoteAction.ActionViewsController.rcpComponentServerCommand = '{!$RemoteAction.ActionViewsController.rcpComponentServerCommand}';
+			$RemoteAction.ActionViewsController.rcpComponentServerRead = '{!$RemoteAction.ActionViewsController.rcpComponentServerRead}';
+			$RemoteAction.ActionViewsController.getRcpWithData = '{!$RemoteAction.ActionViewsController.getRcpWithData}';
+
+			<!-- Params -->
+			$Params.ListPageUrl = '{!JSENCODE(ListPageUrl)}';
+			$Params.EditPageUrl = '{!JSENCODE(EditPageUrl)}';
+			$Params.PeriodsEnabled = Boolean({!PeriodsEnabled});
+			$Params.CurrentPeriodName = '{!JSENCODE(CurrentPeriodName)}';
+			$Params.PeriodsPerYear = Number({!PeriodsPerYear});
+			$Params.PeriodObjectName = '{!JSENCODE(PeriodObjectName)}';
+			$Params.TemplateId = '{!JSENCODE(TemplateId)}';
+			$Params.RequiredPicklistFields = '{!JSENCODE(RequiredPicklistFields)}';
+			$Params.ExtraParameters = '{!JSENCODE(ExtraParameters)}';
+			$Params.ActionViewsApex = '{!JSENCODE(ActionViewsApex)}';
+			$Params.ActionViewPaletteComponent = '{!JSENCODE(ActionViewPaletteComponent)}';
+
+			<!-- Labels -->
+			<!-- General Labels -->
+			$Label.ActionViews = '{!JSENCODE($Label.ActionViews)}';
+			$Label.ToolbarHelp = '{!JSENCODE($Label.ToolbarHelp)}';
+			$Label.ToolbarToggleFullscreen = '{!JSENCODE($Label.ToolbarToggleFullscreen)}';
+
+			<!-- Button Labels -->
+			$Label.GoToListButton = '{!JSENCODE($Label.GoToListButton)}';
+			$Label.ActionViewsEditButton = '{!JSENCODE($Label.ActionViewsEditButton)}';
+			$Label.RCPRefresh = '{!JSENCODE($Label.RCPRefresh)}';
+			$Label.RCPClose = '{!JSENCODE($Label.RCPClose)}';
+			$Label.RCPNoDataFoundOnRow = '{!JSENCODE($Label.RCPNoDataFoundOnRow)}';
+			$Label.RcpPaletteSectionRemoved = '{!JSENCODE($Label.RcpPaletteSectionRemoved)}';
+			$Label.RcpComponentDataInaccessible = '{!JSENCODE($Label.RcpComponentDataInaccessible)}';
+
+			<!-- Component labels -->
+			<apex:repeat value="{!requiredLabels}" var="labelName" id="componentLabels">
+				$Label.{!labelName} = '{!JSENCODE(requiredLabels[labelName])}';
+			</apex:repeat>
+
+			<!-- IFrame Resource URLs -->
+			<apex:repeat value="{!iFrameResourceNames}" var="resName" id="resourceUrls">
+				$IFrameURL.{!resName} = '{!JSENCODE($IFrameResource[iFrameResourceNames[resName]])}';
+			</apex:repeat>
+		</script>
+
+		<!-- DEVELOPMENT -->
+		<apex:outputPanel layout="none" rendered="{!NOT(LEN($Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c) == 0)}">
+			<apex:repeat value="{!sectionsExtLoadingInfo}" var="packageInfo" id="packageLoadingDev">
+				<apex:stylesheet value="{!$Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c}/packages/local/{!packageInfo.PackageName}/build/resources/{!packageInfo.PackageName}-all.css"/>
+				<script>
+					$Params.ExtraClasspaths.push({!packageInfo.DeveloperModeClassPaths});
+				</script>
+			</apex:repeat>
+		</apex:outputPanel>
+	</c:extjs_bootstrap>
+
+	<apex:dynamicComponent componentValue="{!dependentComponents}"/>
+
+	<!-- PRODUCTION -->
+	<apex:outputPanel rendered="{!LEN($Setup.ffr__ClientDeveloperSettings__c.ffr__ResourcePrefix__c) == 0}" layout="none">
+		<apex:repeat value="{!sectionsExtLoadingInfo}" var="packageInfo" id="packageLoadingProd">
+			<apex:stylesheet value="{!URLFOR(packageInfo.StaticResource, '/resources/' + packageInfo.PackageName + '-all.css')}"/>
+			<script src="{!URLFOR(packageInfo.StaticResource, '/' + packageInfo.PackageName + '.js')}"></script>
+		</apex:repeat>
+	</apex:outputPanel>
+</apex:page>

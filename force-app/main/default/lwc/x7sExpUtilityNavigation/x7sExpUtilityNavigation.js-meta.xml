@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>Utility navigation component with mobile menu option</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Utility Navigation</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="container" label="Container" description="Wrap the navigation in a centered page container" type="String" datasource="none, default, small, medium, large, x-large"/>
+            <property name="align" label="Alignment" type="String" datasource="left, center, right"/>
+            <property name="mobileHamburger" label="Show mobile hamburger icon?" description="Display a hamburger menu on mobile" type="Boolean"/>
+            <property name="backgroundColor" label="Background color" type="String"/>
+            <property name="inverse" label="Inverse" description="Use inverse text color if a dark background color is defined" type="Boolean"/>
+            <property name="userLink1" label="User Link 1" type="String"/>
+            <property name="userLink1Text" label="User Link 1 Text" type="String"/>
+            <property name="userLink1IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="userLink1OpenInNewPage" label="Open User Link 1 in new page?" type="Boolean"/>
+            <property name="userLink2" label="User Link 2" type="String"/>
+            <property name="userLink2Text" label="User Link 2 Text" type="String"/>
+            <property name="userLink2IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="userLink2OpenInNewPage" label="Open User Link 2 in new page?" type="Boolean"/>
+            <property name="userLink3" label="User Link 3" type="String"/>
+            <property name="userLink3Text" label="User Link 3 Text" type="String"/>
+            <property name="userLink3IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="userLink3OpenInNewPage" label="Open User Link 3 in new page?" type="Boolean"/>
+            <property name="userLink4" label="User Link 4" type="String"/>
+            <property name="userLink4Text" label="User Link 4 Text" type="String"/>
+            <property name="userLink4IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="userLink4OpenInNewPage" label="Open User Link 4 in new page?" type="Boolean"/>
+            <property name="userLink5" label="User Link 5" type="String"/>
+            <property name="userLink5Text" label="User Link 5 Text" type="String"/>
+            <property name="userLink5IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="userLink5OpenInNewPage" label="Open User Link 5 in new page?" type="Boolean"/>
+            <property name="userLink6" label="User Link 6" type="String"/>
+            <property name="userLink6Text" label="User Link 6 Text" type="String"/>
+            <property name="userLink6IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="userLink6OpenInNewPage" label="Open User Link 6 in new page?" type="Boolean"/>
+            <property name="userLink7" label="User Link 7" type="String"/>
+            <property name="userLink7Text" label="User Link 7 Text" type="String"/>
+            <property name="userLink7IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="userLink7OpenInNewPage" label="Open User Link 7 in new page?" type="Boolean"/>
+            <property name="userLink8" label="User Link 8" type="String"/>
+            <property name="userLink8Text" label="User Link 8 Text" type="String"/>
+            <property name="userLink8IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="userLink8OpenInNewPage" label="Open User Link 8 in new page?" type="Boolean"/>
+            <property name="guestLink1" label="Guest Link 1" type="String"/>
+            <property name="guestLink1Text" label="Guest Link 1 Text" type="String"/>
+            <property name="guestLink1IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="guestLink1OpenInNewPage" label="Open Guest Link 1 in new page?" type="Boolean"/>
+            <property name="guestLink2" label="Guest Link 2" type="String"/>
+            <property name="guestLink2Text" label="Guest Link 2 Text" type="String"/>
+            <property name="guestLink2IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="guestLink2OpenInNewPage" label="Open Guest Link 2 in new page?" type="Boolean"/>
+            <property name="guestLink3" label="Guest Link 3" type="String"/>
+            <property name="guestLink3Text" label="Guest Link 3 Text" type="String"/>
+            <property name="guestLink3IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="guestLink3OpenInNewPage" label="Open Guest Link 3 in new page?" type="Boolean"/>
+            <property name="guestLink4" label="Guest Link 4" type="String"/>
+            <property name="guestLink4Text" label="Guest Link 4 Text" type="String"/>
+            <property name="guestLink4IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="guestLink4OpenInNewPage" label="Open Guest Link 4 in new page?" type="Boolean"/>
+            <property name="guestLink5" label="Guest Link 5" type="String"/>
+            <property name="guestLink5Text" label="Guest Link 5 Text" type="String"/>
+            <property name="guestLink5IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="guestLink5OpenInNewPage" label="Open Guest Link 5 in new page?" type="Boolean"/>
+            <property name="guestLink6" label="Guest Link 6" type="String"/>
+            <property name="guestLink6Text" label="Guest Link 6 Text" type="String"/>
+            <property name="guestLink6IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="guestLink6OpenInNewPage" label="Open Guest Link 6 in new page?" type="Boolean"/>
+            <property name="guestLink7" label="Guest Link 7" type="String"/>
+            <property name="guestLink7Text" label="Guest Link 7 Text" type="String"/>
+            <property name="guestLink7IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="guestLink7OpenInNewPage" label="Open Guest Link 7 in new page?" type="Boolean"/>
+            <property name="guestLink8" label="Guest Link 8" type="String"/>
+            <property name="guestLink8Text" label="Guest Link 8 Text" type="String"/>
+            <property name="guestLink8IsButton" label="Is button?" description="Display a button instead of a link." type="Boolean"/>
+            <property name="guestLink8OpenInNewPage" label="Open Guest Link 8 in new page?" type="Boolean"/>
+            <property name="customClass" label="CSS Class" type="String" description="Apply additional SLDS or custom CSS class"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

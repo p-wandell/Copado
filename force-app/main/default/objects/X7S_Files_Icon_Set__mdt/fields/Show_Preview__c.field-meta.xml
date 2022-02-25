@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Show_Preview__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If enabled and the file type is supported, a thumbnail preview is displayed in place of the icon. If no preview is available, an icon is displayed.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>If enabled and the file type is supported, a thumbnail preview is displayed in place of the icon. If no preview is available, an icon is displayed.</inlineHelpText>
+    <label>Show Preview</label>
+    <type>Checkbox</type>
+</CustomField>

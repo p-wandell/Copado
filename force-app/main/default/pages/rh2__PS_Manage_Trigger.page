@@ -1,0 +1,205 @@
+<apex:page controller="rh2.PS_Manage_Trigger_Controller" title="Rollup Helper Real Time Enablement" action="{!startupManageTrigger}" sidebar="false"  applyBodyTag="false" docType="html-5.0" showHeader="true">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	
+	<head> 
+    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    	<apex:includeScript value="{!URLFOR($Resource.rh2__PT_JSZip, '/dist/jszip.js')}"/>
+    	<apex:includeScript value="{! URLFOR($Resource.HS_Jquery, 'jquery-1.12.1.min.js')}" />
+ 
+    	<apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/hs_breadcrumbs.js')}" />  
+    	<apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }" />
+    	<apex:stylesheet value="{! URLFOR($Resource.PT_Resources_v1, '/css/customMessage.css') }" />
+ 
+	</head>
+	<style>		
+ 
+		.customMessage {
+		    margin: 5px 0!important;		    
+		}
+ 
+	</style>
+     
+	<script type="text/javascript">
+		var zipFile = new JSZip();
+		zipFile.generate();
+		
+		var rh = rh || {};
+        var overwriteFlag;
+                
+        rh.j$ = jQuery.noConflict();
+        rh.j$(document).ready(function() {
+            if({!mdapiVars.MetadataConnectionWarning}){
+              createRemoteSite('{!$Api.Session_ID}', 'mdapi', '{!deployVars.host}', '{!JSENCODE(deployVars.host)}');
+			}
+			
+			overridePageMessagesNormalSize();
+
+       		selectBreadcrumb_HS();
+       		
+       		if({!pgBehavior.renderButton} == false && {!deployVars.deployed} == false) { 
+            	document.getElementById("deploy").disabled = true;
+				document.getElementById("remove").disabled = true;
+			}			   
+        });
+	</script>
+ 
+	<apex:form id="form">
+	<apex:slds />
+	<div class="slds-scope " role="main"> 	
+		
+		<div class="slds-card ">
+  			<header class="slds-card__header">
+	       		<nav role="navigation">
+    				<ol class="slds-breadcrumb slds-list_horizontal">
+    					<li class="slds-list__item slds-text-heading_label home-crumb"><a href="{!URLFOR($Page.PS_landingPage)}">{!$Label.Home}</a></li>
+   		   				<li class="slds-list__item slds-text-heading_label setting-crumb"><a href="{!URLFOR($Page.PS_Allsettings)}">{!$Label.AllRollupSetting}</a></li>
+       				</ol>
+        		</nav>
+  			</header>
+  		</div>
+  		
+		<div class="slds-page-header">
+  			<div class="slds-grid">
+    			<div class="slds-col slds-has-flexi-truncate">
+      				<div class="slds-media">    					
+        				<div class="slds-media__body">
+         					 <p class="slds-text-heading_label">{!$Label.RollupHelper}</p>
+          					<div class="slds-grid">
+            					<h1 class="slds-text-heading_medium slds-m-right_small slds-truncate slds-align-middle" >{!$Label.AddRemoveRealtime} {!deployVars.deployObjectName}</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+		<apex:outputpanel rendered="{!deployVars.deployed}" id="deployedMessage">
+			<apex:pageMessages escape="false" />
+			<div class="slds-grid">
+				<div class="slds-col slds-size_1-of-3"></div>
+				<apex:outputPanel styleClass="slds-box slds-theme_default slds-grid_align-center slds-m-top_medium slds-col slds-size_1-of-3" rendered="{!AND(deployVars.deployed, pgBehavior.renderButton)}">
+					<div align="center">
+						<p>
+							{!$Label.rh2__apextrigger} <b> {!deployVars.triggerName} </b> {!$Label.rh2__isinstalled}
+						</p>
+						<apex:outputPanel rendered="{!deployVars.testDeployed}">
+							<p>  		
+								{!$Label.rh2__apexclass} <b> {!deployVars.triggerTestName} </b> {!$Label.rh2__isinstalled}		
+							</p>
+							<p>
+								{!$Label.rh2__click} <b>{!$Label.rh2__remove}</b> {!$Label.rh2__clickremovetouninstall}
+							</p>
+						</apex:outputPanel>
+					</div>
+				</apex:outputPanel>
+				<div class="slds-col slds-size_1-of-3"></div>			
+			</div>
+		</apex:outputpanel>
+		<apex:outputpanel rendered="{!IF(AND(NOT(deployVars.deployed), pgBehavior.renderButton), TRUE, FALSE)}" id="notDeployedMessage">
+			<apex:pageMessages escape="false" />
+			<center>
+			<div class="slds-box slds-size_1-of-3 slds-theme_default slds-grid_align-center slds-m-top_medium" align="center">
+  				<p>
+					{!$Label.ApexTrigger} <b> {!deployVars.triggerName} </b> {!$Label.DoesNotExist}.
+				  </p>
+				<apex:outputPanel rendered="{!!deployVars.testDeployed}">
+					<p>  		
+						{!$Label.rh2__apexclass} <b> {!deployVars.triggerTestName} </b> {!$Label.rh2__doesnotexist}.	
+					</p>
+				</apex:outputPanel>
+				<p>
+					{!$Label.Click} <b> {!$Label.rh2__deploy} {!deployVars.deployObjectName} {!$Label.rh2__trigger}</b> {!$Label.ToInstallTheApexTrigger}.
+				</p>
+				<p>	
+					<br/> 
+					<b>{!$Label.SkipRunningTests}?</b> &nbsp;
+					<apex:inputCheckbox value="{!runSpecifiedTests}">
+						<apex:actionSupport event="onchange" action="{!updateTestSetting}" rerender="testAlert"/>
+					</apex:inputCheckbox>
+				</p>
+			</div>
+			</center>		
+			<apex:outputPanel id="testAlert">
+				<apex:outputPanel rendered="{!runSpecifiedTests}">
+				<center>
+					<div class="slds-size_1-of-3 slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+						<b>{!$Label.rh2__pleasenoteitisrecommended}</b>
+					</div>
+				</center>
+				</apex:outputPanel>
+			</apex:outputPanel>
+		</apex:outputpanel>
+        <apex:outputpanel rendered="{!IF(AND(deployVars.deployed, NOT(pgBehavior.renderButton)), TRUE, FALSE)}" id="preDeployedMessage">
+            
+		<div class="slds-grid">
+			<div class="slds-col slds-size_1-of-3"></div>
+			<div class="slds-box slds-col slds-size_1-of-3 slds-theme_default slds-m-top_medium" align="center">
+  				<p>
+					{!$Label.ApexTrigger} <b> {!deployVars.defaultTriggerName} </b> {!$Label.WasDeployedByDefault}
+  				</p>
+  				<p>
+					{!$Label.TheseTriggersAreNot}
+  				</p>
+  				<p>
+					{!$Label.Click} <b>{!$Label.rh2__back}</b> {!$Label.ClickBackToReturn}
+				</p>
+			</div>
+			<div class="slds-col slds-size_1-of-3"></div>			
+		</div>
+ 
+		</apex:outputpanel>
+    	<div class="slds-grid slds-grid_align-center">
+    		<apex:outputPanel styleclass="slds-col slds-m-top_medium" rendered="{!pgBehavior.displayButtons}" style="margin-left:auto; margin-right:auto;">   			 			
+				<apex:commandLink rendered="{!!deployVars.Deployed}" styleClass="slds-button slds-button_brand" id="deploy" onclick="generateZip(); overridePageMessagesNormalSize();" rerender="none">
+					<apex:outputText >{!$Label.rh2__deploy} {!deployVars.deployObjectName} {!$Label.rh2__trigger}</apex:outputText>
+				</apex:commandLink>
+				<apex:commandLink rendered="{!deployVars.Deployed && pgBehavior.renderButton}" styleClass="slds-button slds-button_brand" id="remove" onclick="generateZip(); overridePageMessagesNormalSize();" rerender="none">
+					<apex:outputText rendered="{!deployVars.Deployed}">{!$Label.rh2__remove} {!deployVars.deployObjectName} {!$Label.rh2__trigger}</apex:outputText>
+				</apex:commandLink>
+				&nbsp;
+				<apex:commandButton styleClass="slds-button slds-button_neutral" value="{!$Label.rh2__back}" action="{!backPressed}" />
+			</apex:outputPanel>
+		</div>
+		<div class="slds-grid slds-m-vertical_small"><span></span></div>
+		<div class="slds-card">
+     		<header class="slds-card__header slds-grid">
+     			<div class="slds-col">
+               		<h3 class="slds-text-heading_small slds-truncate">{!$Label.RealtimeTriggersInOrg}</h3>
+               	</div>		
+     		</header>
+     		<body>
+    			 <section class="slds-card__body slds-grid">
+    			 	<table class="slds-table slds-table_bordered slds-max-medium-table_stacked" id="table" >
+    			 	<tbody>
+    			 		<apex:repeat value="{!apexTriggersToDisplayMap}" var="trigKey">
+   				 			<tr>
+   				 			<td>
+   								<a href="/{!apexTriggersToDisplayMap[trigKey]}" target="_blank">{!trigKey}</a>
+							</td>
+							</tr>
+						</apex:repeat>
+    			 	</tbody>
+   				 	</table>
+   				 </section>
+   			</body>
+     	</div>	
+		
+		<apex:actionPoller action="{!checkAsyncRequestVF}" interval="5" rerender="form, deployedMessage" oncomplete="overridePageMessagesNormalSize();" rendered="{!!pgBehavior.displayButtons}" id="poller"/>
+ 
+		<apex:actionFunction name="deployZip" action="{!deployZip}" rendered="{!pgBehavior.displayButtons}" rerender="form, deployedMessage, poller" oncomplete="overridePageMessagesNormalSize();">
+			<apex:param name="data" assignTo="{!ZipData}" value=""/>
+		</apex:actionFunction> 
+        
+        
+		<c:zip name="generateZip" id="czip" oncomplete="deployZip(data);" rendered="{!pgBehavior.displayButtons}">
+			<c:zipEntry path="package.xml" data="{!PackageXml}"/>
+			<c:zipEntry path="destructiveChanges.xml" data="{!DestructiveChangesXml}" rendered="{!deployVars.Deployed}"/>
+			<c:zipEntry path="classes/{!deployVars.triggerTestName}.cls-meta.xml" data="{!TriggerTestCodeMetadata}" rendered="{!NOT(deployVars.Deployed)}"/>
+			<c:zipEntry path="classes/{!deployVars.triggerTestName}.cls" data="{!TriggerTestCode}" rendered="{!NOT(deployVars.Deployed)}"/>
+			<c:zipEntry path="triggers/{!deployVars.triggerName}.trigger-meta.xml" data="{!TriggerCodeMetadata}" rendered="{!NOT(deployVars.Deployed)}"/>
+			<c:zipEntry path="triggers/{!deployVars.triggerName}.trigger" data="{!TriggerCode}" rendered="{!NOT(deployVars.Deployed)}"/>
+		</c:zip>
+		
+	</div>
+	</apex:form>
+</html>
+</apex:page>

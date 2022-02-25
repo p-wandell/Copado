@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ */
+.x7s-list_list {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-gap: 1rem;
+}
+.x7s-list_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-gap: 1rem;
+}

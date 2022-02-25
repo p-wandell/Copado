@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Indicates whether the values in this record apply to actual or forecast revenue. --></help>
+    <label><!-- Revenue Type --></label>
+    <name>pse__Revenue_Type__c</name>
+    <picklistValues>
+        <masterLabel>Actuals</masterLabel>
+        <translation><!-- Actuals --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Forecast</masterLabel>
+        <translation><!-- Forecast --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

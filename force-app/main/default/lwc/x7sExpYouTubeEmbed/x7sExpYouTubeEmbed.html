@@ -1,0 +1,10 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S YouTube Embed -->
+<template>
+    <c-x7s-exp-html-headings if:true={title} align={titleAlignment} tag="h4" text={title}></c-x7s-exp-html-headings>
+    <div if:true={youTubeId} class={componentClass} lwc:dom="manual"></div>
+    <lightning-card if:false={youTubeId} title="Empty YouTube ID found. Please specify a YouTube ID."></lightning-card>
+</template>

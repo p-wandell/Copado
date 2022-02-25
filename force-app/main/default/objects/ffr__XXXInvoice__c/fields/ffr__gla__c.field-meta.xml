@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__gla__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>General Ledger Account</label>
+    <referenceTo>ffr__XXXGLA__c</referenceTo>
+    <relationshipLabel>XXX Invoices GLAs</relationshipLabel>
+    <relationshipName>InvoicesGLAs</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

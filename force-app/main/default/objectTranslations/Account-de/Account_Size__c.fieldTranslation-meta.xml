@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Determined by annual revenue. (&gt;$1billion is Enterprise, &lt;$1billion is Mid-Market) --></help>
+    <label><!-- Account Size ($) --></label>
+    <name>Account_Size__c</name>
+    <picklistValues>
+        <masterLabel>Enterprise</masterLabel>
+        <translation><!-- Enterprise --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mid-Market</masterLabel>
+        <translation><!-- Mid-Market --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

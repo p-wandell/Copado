@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<description>A graph that displays a circular progress bar. </description>
+	<isExposed>true</isExposed>
+	<masterLabel>7S Progress Circle</masterLabel>
+	<targets>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightningCommunity__Default">
+			<property name="totalProgress" type="Integer" label="Total Progress" min="1" description="Total number of values towards progress." />
+			<property name="actualProgress" type="Integer" label="Actual Progress" description="Actual number of completed values towards progress." />
+			<property name="resultFormat" type="String" label="Result Format" datasource="Percentage,Actual Number,Mix,Percentage Mix,none" description="This controls what will display in the center of the progress circle. For example, Percentage will display the percentage only." />
+			<property name="size" type="Integer" label="Size" description="Sets the width and height. Default 100." />
+			<property name="strokeWidth" type="Integer" label="Line Width" description="Controls the width of the line. Default 5." />
+			<property name="strokeLineCap" type="String" label="Line Ending" datasource="butt,round" description="Controls the shape of the ends of lines." />
+			<property name="direction" type="String" label="Direction" datasource="clockwise,counter-clockwise" description="Controls the direction of the progress line." />
+			<property name="progressColor" type="String" label="Progress Color" description="This is the color of the progress portion of the tracker. The default color is the community's brand color." />
+			<property name="remainingColor" type="String" label="Remaining Color" description="This is the color of the remaining portion of the tracker. The default color is the community's border color." />
+			<property name="innerCircleColor" type="String" label="Inner Circle Color" description="This will be the background color of inner circle. Default is none." />
+			<property name="thresholdPercent" type="Integer" label="Threshold Percent" min="0" max="100" description="Optionally set a threshold percentage which can change the color of the progress tracker." />
+			<property name="thresholdColor" type="String" label="Threshold Color" description="This is the color of the tracker after the threshold percentage." />
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

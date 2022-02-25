@@ -1,0 +1,104 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S File Uploader -->
+<template>
+	<c-x7s-shr-component-wrapper if:true={isInit}
+			class="x7s-file-uploader"
+			title={title}
+			variant={variant}
+			description={formattedDescription}
+			title-align={titleAlign}
+			custom-class={customClass}
+			aria-label="main wrapper"
+	>
+		<lightning-layout if:true={isInit} multiple-rows="true" class="spinner-container">
+			<lightning-layout-item size="12">
+				<lightning-layout class="file-input">
+					<lightning-layout-item flexibility="grow">
+						<lightning-input
+							type="file"
+							label={uploadLabel}
+							name="file"
+							multiple
+							accept={fileInfo.extensions}
+							onchange={handleFilesChange}
+							disabled={isLoading}
+							variant={fileInputVariant}>
+						</lightning-input>
+					</lightning-layout-item>
+				</lightning-layout>
+			</lightning-layout-item>
+			<!-- List Valid Files - BEGIN -->
+			<lightning-layout-item if:true={doHaveValidFiles} padding="" size="12" class="slds-p-top_small">
+				<lightning-layout horizontal-align="" vertical-align="" multiple-rows="true">
+					<lightning-layout-item if:true={validListText} padding="" size="12">
+						<h4>{validListText}</h4>
+					</lightning-layout-item>
+					<lightning-layout-item padding="" size="12" class="file-details">
+						<template for:each={validList} for:item="file">
+							<lightning-layout key={file.guid} vertical-align="center" class="slds-truncate">
+								<lightning-layout-item padding="" size="" class="file-name slds-p-right_xx-small slds-truncate">
+									<p class="slds-truncate" title={file.name}>
+										{file.name}
+									</p>
+								</lightning-layout-item>
+								<lightning-layout-item padding="" size="" class="file-info slds-text-color_weak">
+									<p>
+										(
+										<span class="file-size slds-p-right_xx-small">{file.formattedSize}</span>
+										|
+										<span if:true={inForm} class="file-delete slds-p-left_xx-small"><a href="#" onclick={handleDeleteFile} data-name={file.name} data-valid={file.valid}>{deleteText}</a></span>
+										<span if:false={inForm} class="file-remove slds-p-left_xx-small"><a href="#" onclick={handleDeleteFile} data-name={file.name} data-valid={file.valid}>{deleteText}</a></span>
+										)
+									</p>
+								</lightning-layout-item>
+							</lightning-layout>
+						</template>
+					</lightning-layout-item>
+				</lightning-layout>
+			</lightning-layout-item>
+			<!-- List Valid Files - END -->
+
+			<!-- List Invalid Files - BEGIN -->
+			<lightning-layout-item if:true={doHaveInvalidFiles} padding="" size="12" class="slds-p-top_small">
+				<lightning-layout horizontal-align="" vertical-align="" multiple-rows="true">
+					<lightning-layout-item if:true={invalidListText} padding="" size="12">
+						<h4>{invalidListText}</h4>
+					</lightning-layout-item>
+					<lightning-layout-item padding="" size="12" class="file-details">
+						<template for:each={invalidList} for:item="file">
+							<lightning-layout key={file.guid} vertical-align="center" class="slds-truncate">
+								<lightning-layout-item padding="" size="" class="file-name slds-p-right_xx-small slds-truncate">
+									<p class="slds-truncate slds-text-color_error" title={file.name}>
+										{file.name}
+									</p>
+								</lightning-layout-item>
+								<lightning-layout-item padding="" size="" class="file-info slds-text-color_weak">
+									<p>
+										(
+										<span class="file-size slds-p-right_xx-small">{file.formattedSize}</span>
+										|
+										<span class="file-remove slds-p-left_xx-small"><a href="#" onclick={handleRemoveFile} data-name={file.name} data-valid={file.valid}>{deleteText}</a></span>
+										)
+									</p>
+								</lightning-layout-item>
+								<lightning-layout-item padding="" size="" class="help-icon slds-text-color_error">
+									<lightning-helptext content={file.errorMessageFormatted}></lightning-helptext>
+								</lightning-layout-item>
+							</lightning-layout>
+						</template>
+					</lightning-layout-item>
+				</lightning-layout>
+			</lightning-layout-item>
+			<!-- List Invalid Files - END -->
+
+			<lightning-layout-item if:true={isLoading} padding="" size="12" class="container-item">
+				<lightning-spinner alternative-text={labels.loading} size="small" variant="brand"></lightning-spinner>
+			</lightning-layout-item>
+		</lightning-layout>
+
+		<lightning-spinner if:false={isInit} alternative-text={labels.loading} size="small" variant="brand"></lightning-spinner>
+	</c-x7s-shr-component-wrapper>
+</template>

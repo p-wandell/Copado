@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>지역 계획</value>
+    </caseValues>
+    <nameFieldLabel>지역 계획 번호</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- A Region Plan record must use the same currency as its parent Region. --></errorMessage>
+        <name>pse__Plan_must_have_same_currency_as_Region</name>
+    </validationRules>
+</CustomObjectTranslation>

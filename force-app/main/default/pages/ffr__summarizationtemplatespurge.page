@@ -1,0 +1,41 @@
+<apex:page standardController="ffr__SummarizationTemplate__c" extensions="ffr.SummarizationTemplatesPurgeController" recordSetVar="templates" lightningStylesheets="true" docType="html-5.0">
+	 <style>
+		.goBreadcrumb{
+			font-family:'Verdana','Geneva',sans-serif;
+			font-size:91.3%;
+			height:15px;
+			margin-top:-15px;
+			vertical-align:middle;
+		}
+		.goBreadcrumb a{
+			padding-left:4px;
+		}
+	 </style>
+
+	 <!-- page specific code -->
+	<apex:form id="purgeform">
+		<apex:sectionHeader title="{!$Label.ffr__summarizationtemplatedatapurge}"  help="{!helpLink}"/>
+
+		<DIV class="goBreadcrumb">
+		&nbsp;&#171;<a href="{!URLFOR($Action.SummarizationTemplate__c.Tab,$ObjectType.SummarizationTemplate__c)}">{!$Label.SummarizationTemplatesBackToList}</a>
+		</DIV>
+
+		<apex:pageBlock >
+			<apex:pageMessages />
+			<apex:pageBlockTable value="{!templates}" var="template" rendered="{!CanShowButton}">
+				<apex:column headerValue="{!$ObjectType.ffr__SummarizationTemplate__c.fields.Name.label}">
+					<apex:outputLink value="/{!template.id}"><apex:outputText value="{!template.Name}"/></apex:outputLink>
+				</apex:column>
+				<apex:column value="{!template.ffr__SourceDataview__c}"/>
+				<apex:column value="{!template.ffr__Destination__c}"/>
+				<apex:column value="{!template.ffr__Status__c}"/>
+				<apex:column value="{!template.ffr__LastSuccessfulBuild__c}"/>
+			</apex:pageBlockTable>
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.ffr__summarizationpurge}" action="{!deleteTemplateData}" id="deleteTemplateData_h" reRender="" rendered="{!CanShowButton}"/>
+				<apex:commandButton value="{!$Label.ffr__cancel}" action="{!cancel}" id="cancel_h" immediate="true" reRender="" rendered="{!CanShowButton}"/>
+				<apex:commandButton value="{!$Label.ffr__nativeuibuttongoback}" action="{!cancel}" id="goBack_h" immediate="true" reRender="" rendered="{!(!CanShowButton)}"/>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

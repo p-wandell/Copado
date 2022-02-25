@@ -1,0 +1,45 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+  -->
+<template>
+  	<c-x7s-shr-component-wrapper>
+		<div class={bodyClass}>
+			<!-- view options -->
+			<div if:true={showViewOptions} class={viewOptionClass}>
+				<lightning-button-group>
+					<lightning-button-icon icon-name="utility:tile_card_list"
+										title={labels.titleViewCard}
+										alternative-text={labels.altViewCard}
+										variant={tileVariant}
+										onclick={handleCardView}>
+					</lightning-button-icon>
+					<lightning-button-icon icon-name="utility:list"
+										title={labels.titleViewList}
+										alternative-text={labels.altViewList}
+										variant={listVariant}
+										onclick={handleListView}>
+					</lightning-button-icon>
+					<lightning-button-icon icon-name="utility:monthlyview"
+										title={labels.labelCalenderView}
+										alternative-text={labels.labelCalenderView}
+										variant={calenderVariant}
+										onclick={handleCalenderView}>
+					</lightning-button-icon>
+				</lightning-button-group>
+			</div>
+			<div if:false = {isCalendarView} class="slds-col">
+				<c-x7s-shr-list-control list-id={listId}
+										custom-class={customClass}
+										default-sort={sortBy}
+										has-next-set={hasNext}
+										has-previous-set={hasPrevious}
+										hide-sort={hideSort}
+										hide-view-selector={hideViewSelector}
+										hide-pagination={hidePagination}
+										sort-options={sortOptions}
+										sort-variant={sortVariant}>
+				</c-x7s-shr-list-control>
+			</div>
+		</div>
+	</c-x7s-shr-component-wrapper>
+</template>

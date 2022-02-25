@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_87020063</developerName>
+        <masterLabel>Partner Team</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity$Account.Partner_Sales_Rep__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Craig Davis</sourceValue>
+            </sourceValues>
+            <value>Davis: Lrg Ent Prof Svcs</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Damie Berkey</sourceValue>
+            </sourceValues>
+            <value>Berkey: Lrg Ent West</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Garrett Weymouth</sourceValue>
+            </sourceValues>
+            <value>Weymouth: CMT Ent Tech</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Mike Anderson</sourceValue>
+            </sourceValues>
+            <value>Anderson: FINS Strat Banking</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Seth Waterman</sourceValue>
+            </sourceValues>
+            <value>Waterman: Nat Ent East TOLA</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Tahira Emanuel</sourceValue>
+            </sourceValues>
+            <value>Emanuel: FINS EBU Bank/Wealth</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>John Vakos</sourceValue>
+            </sourceValues>
+            <value>Vakos: FINS EBU Insurance</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Mark Berens</sourceValue>
+            </sourceValues>
+            <value>Berens: Lrg Ent Central</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Christina Kirkpatrick</sourceValue>
+            </sourceValues>
+            <value>Kirkpatrick: High Tech Strat</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Zach Keenan</sourceValue>
+            </sourceValues>
+            <value>Keenan: Comms/Media Ent Strat</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_21953592</developerName>
+        <masterLabel>Pipe Stage</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity$StageName</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1 Prospect</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2 Qualified</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3 Opportunity Shaped</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>4 Proposal</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>5 Agreements Delivered</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6 Negotiating</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>7 Verbal Agreement</sourceValue>
+            </sourceValues>
+            <value>Open Pipe</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>8 Closed Won</sourceValue>
+            </sourceValues>
+            <value>Won Pipe</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>9 Closed Lost</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>10 No Opportunity</sourceValue>
+            </sourceValues>
+            <value>Lost Pipe</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>HorizontalBar</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>BucketField_87020063</groupingColumn>
+        <location>CHART_BOTTOM</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>Opportunity$Account.Owner</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Account</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity$Amount</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Solution_Primary_Audience__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$StageName</field>
+    </columns>
+    <columns>
+        <field>Opportunity$CloseDate</field>
+    </columns>
+    <columns>
+        <field>Opportunity.pse__Projects__r$pse__Project_Manager__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$Account.Partner_Sales_Rep__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>BucketField_21953592</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Open Pipe</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_21953592</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_87020063</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity$Account.Partner_Sales_Rep__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Partner Sales Open Pipe</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunities_Projects__c</reportType>
+    <roleHierarchyFilter>Executive</roleHierarchyFilter>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$CloseDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

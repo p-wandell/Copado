@@ -1,0 +1,59 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+-->
+<template>
+    <lightning-layout multiple-rows="false" vertical-align="center">
+        <!-- READ ONLY -->
+		<template if:true={readOnly}>
+			<template for:each={selectedItems} for:item="item">
+				<lightning-layout-item key={item.id}>
+					<a title={item.name} data-id={item.id} onclick={gotoItemUrl}>
+						{item.name}
+					</a>
+					&nbsp;
+				</lightning-layout-item>
+			</template>
+		</template>
+
+		<!-- EDIT MODE -->
+		<template if:false={readOnly}>
+			<lightning-layout-item size="12">
+				<div if:true={itemlabel}>
+					<lightning-formatted-text value={itemlabel} class="slds-text-color_weak">
+					</lightning-formatted-text>
+				</div>
+
+				<div class="selections slds-pill_container">
+					<ul class="slds-listbox slds-listbox_horizontal" role="listbox"
+						aria-label="Selected Options:" aria-orientation="horizontal">
+						<template for:each={selectedItems} for:item="item">
+							<li class="slds-listbox-item" role="presentation" key={item.id}>
+								<lightning-pill label={item.name}
+												name={item.id}
+												onremove={removeSelection}>
+								</lightning-pill>
+							</li>
+						</template>
+						<li class="slds-listbox-item"><a onclick={showOptions}>{labelName}</a></li>
+					</ul>
+				</div>
+				<template if:true={isOptionsVisible}>
+					<div class="options">
+						<ul>
+							<template for:each={availableItems} for:item="item">
+								<li key={item.id}>
+									<lightning-button variant="base"
+												onclick={doSelection}
+												label={item.name}
+												value={item.id}>
+									</lightning-button>
+								</li>
+							</template>
+						</ul>
+					</div>
+					<div class="overlay" onclick={hideOptions}></div>
+				</template>
+			</lightning-layout-item>
+		</template>
+	</lightning-layout>
+</template>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Marketing_Posts</fullName>
+    <columns>NAME</columns>
+    <columns>Publish_DateTime__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>GroupId__c</field>
+        <operation>equals</operation>
+        <value>0F91E000000TdPISA0</value>
+    </filters>
+    <label>Marketing Posts</label>
+    <language>en_US</language>
+</ListView>

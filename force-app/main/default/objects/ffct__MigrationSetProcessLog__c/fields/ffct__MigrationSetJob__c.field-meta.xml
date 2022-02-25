@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__MigrationSetJob__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Holds the Migration Set Job on whose processing logs were generated.</description>
+    <externalId>false</externalId>
+    <label>Migration Set Job</label>
+    <referenceTo>ffct__MigrationSetJob__c</referenceTo>
+    <relationshipLabel>Migration Set Process Logs</relationshipLabel>
+    <relationshipName>MigrationSetProcessLogs</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

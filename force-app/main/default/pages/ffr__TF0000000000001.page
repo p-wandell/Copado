@@ -1,0 +1,159 @@
+<!-- User Note: TF0000000000001 Reporting Data Capture Template. Use This Template To Ensure You Capture All Of The Data Required When Building A New Report Definition. -->
+<!-- User Note: The Template Is Designed To Show Display All The Data In A Report Definition To A User To Ensure The Correct Information Is Being Queried -->
+<!-- User Note: This Template Should Be Used By Default On Any New Reports Being Created And For Any Tests Being Performed Against Existing Report Definitions -->
+<!-- User Note: Special Features: All Labels From The Report Definition Are Displayed On This Template -->
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}" contenttype="{!SaveReportAS}">
+<!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+<!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+<!-- User Note: You Can Create Your Own Stylsheet In The Static Resources And Apply It To Your Reports -->
+<!-- User Note: The Style Has Been Designed To Allow Variations Within Different Types Of Reports -->
+<!-- User Note: Change The Last Character From D To S On The Style Classes Applied To Each Line Will Produce A Summary Report -->
+<!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:stylesheet value="{!StyleSheetName}"/>
+<!-- User Note: I Want To Format Values On A Report In Different Ways -->
+<!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+<!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brakets/Minus 3Charcterinternationalcurrencycode/None-->
+<!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+<!-- User Note: You Can Add Your Own Formats To The List Below Try To Keep A Good Coding Structure-->
+<apex:variable var="V2NCB" value="#,###,###,##0.00;(#,###,###,##0.00);0.00"/>
+<apex:variable var="P2NCB" value="#,###,###,##0.00%;(#,###,###,##0.00%);0.00%"/>
+<apex:variable var="V0NCB" value="#,###,###,##0;(#,###,###,##0);0"/>
+<apex:variable var="P0NCB" value="#,###,###,##0%;(#,###,###,##0%);0%"/>
+<apex:variable var="V2RCB" value="(#,###,###,##0.00);#,###,###,##0.00;0.00"/>
+<apex:variable var="P2RCB" value="(#,###,###,##0.00%);#,###,###,##0.00%;0.00%"/>
+<apex:variable var="V0RCB" value="(#,###,###,##0);#,###,###,##0;0"/>
+<apex:variable var="P0RCB" value="(#,###,###,##0%);#,###,###,##0%;0%"/>
+<apex:variable var="V2NCBUSD" value="$#,###,###,##0.00;$(#,###,###,##0.00);$0.00"/>
+<apex:variable var="V2RCBUSD" value="$(#,###,###,##0.00);$#,###,###,##0.00;$0.00"/>
+<!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+<!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+<!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+<!-- User Note: It Is Possible To Use Individual Variables Against A Line This Method Allows You To Make A Single Change To All Related Formats  -->
+<apex:variable var="VN" value="{!V2NCB}"/>
+<apex:variable var="PN" value="{!P2NCB}"/>
+<apex:variable var="VR" value="{!V2RCB}"/>
+<apex:variable var="PR" value="{!P2RCB}"/>
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- REGION 02: REPORT HEADER START -->
+<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+<!-- User Note: Show The Error Messages From The Reporting Engine -->
+
+<apex:PageMessages />
+<div class="chatterPosition"></div>
+<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+<!-- User Note: When Creating New Templates This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+<table class="ffrgridd">
+	<tr>
+    	<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+    </tr>
+    <tr>
+        <td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+        <td align="right">{!NOW()}</td>
+    </tr>
+    <tr><td class="ffrgridspacer2"></td></tr>
+    <tr>
+        <td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+        <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+    </tr>
+    <tr><td class="ffrgridspacer2"></td></tr>
+    <tr>
+        <td align="left"><apex:outputField value="{!ffr__ReportingDefinition__c.ffr__Description__c}"/></td>
+        <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+    </tr>
+</table>
+<!-- User Note: Create a new table to display the prompt information -->
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridspacer2"></td></tr>
+    <tr>
+        <td align="left">
+                <table class="ffrgrid">
+                <apex:repeat value="{!promptList}" var="prompt" >
+                <tr>
+                    <td align="left">{!prompt.label}</td>
+                    <td align="left" class="ffrgridspacer"></td>
+                    <td align="left"><strong>{!prompt.value}</strong></td>
+                </tr>
+                </apex:repeat>
+                </table>
+        </td>
+  </tr>
+</table>
+<!-- User Note: Insert a space after the header -->
+<table class="ffrgrid">
+<tr><td class="ffrgridspacer"></td></tr>
+</table>
+<!-- REGION 02: REPORT HEADER END -->
+<!-- REGION 03: REPORT BODY-->
+<!-- User Note: Itterate Over All Of The Data Ranges, Groups And Rows And Return The Data -->
+<!-- User Note: Display The Report Definition > Data Range > Name Label-->
+<apex:outputpanel rendered="{!!hasMessages}">
+    <apex:repeat value="{!reportingDataKeyList}" var="reportingDataKey">
+        <apex:variable var="dataRange" value="{!reportingData[reportingDataKey]}"/>
+        <h2 class="ffrtitle">{!reportingDataRanges[reportingDataKey].Name}</h2>
+        <table class="ffrgrid">
+            <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Reporting Values (GroupBy) Labels-->
+                <apex:repeat value="{!dataRange.groupLabelList}" var="groupLabel">
+                    <th class="ffrgridtitleleftd">{!groupLabel}</th>
+                </apex:repeat>
+                <th class="ffrgridspacer"></th>
+    <!-- User Note: Display The Report Definition > Data Range > Filter Mapping (Column) Labels And The Related Values Labels-->
+                <apex:repeat value="{!dataRange.columnLabelList}" var="columnLabel">
+                    <apex:repeat value="{!dataRange.valueLabelList}" var="valueLabel">
+                        <th class="ffrgridtitlerightd">{!columnLabel}<br/>{!valueLabel}</th>
+                    </apex:repeat>
+                </apex:repeat>
+            </tr>
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+                <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Filter Mapping (Rows)Labels-->
+                    <td class="ffrgridtitleleftd">{!row.label}</td>
+                </tr>
+                <apex:repeat value="{!row.lineList}" var="line" >
+                    <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Values(Group) Actual Data -->
+                        <apex:repeat value="{!line.groupList}" var="group" >
+                            <td class="ffrgridrowlabeld">{!group}</td>
+                        </apex:repeat>
+                        <td class="ffrgridspacerd"/>
+                        <apex:repeat value="{!line.columnList}" var="column">
+                            <apex:repeat value="{!column.valueList}" var="value">
+     <!-- User Note: Display The Report Definition Values(Sum) Actual Data -->
+                                <td class="ffrgridrowd"> <c:NumberFormatter value="{!value}" pattern="{!VN}"/>
+                                </td>
+                            </apex:repeat>
+                        </apex:repeat>
+                    </tr>
+                </apex:repeat>
+                <tr><td class="ffrgridspacerd"></td></tr>
+            </apex:repeat>
+        </table>
+    </apex:repeat>
+    <!-- User Note: Display All Of The Reporting Labels That Have Been Placed Onto The Report Definition -->
+    <table class="ffrgridd">
+    <apex:repeat value="{!SortLabelList}" var="key" >
+        <tr>
+            <td class="ffrgridrowlabeld">{!key} = {!label[key]}</td>
+        </tr>
+    </apex:repeat>
+    </table>
+</apex:outputpanel>
+<!-- REGION 03: REPORT BODY END -->
+<!-- REGION 05: REPORT PAGE END -->
+
+<!-- REGION 06: REPORT CHATTER START -->
+<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

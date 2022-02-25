@@ -1,0 +1,1025 @@
+<apex:page standardController="pse__Utilization_Engine__c" extensions="pse.UtilizationEngineController" sidebar="false" lightningStylesheets="true">
+
+<style>
+tr td {
+ border: none;
+ padding: 4px 2px 4px 5px;
+ text-align: right;
+}
+table.detailList td.dataCol { text-align: left;}
+</style>
+
+
+<apex:pageBlock >
+
+<apex:pageBlockSection >
+            	
+<apex:outputField value="{!pse__Utilization_Engine__c.pse__Resource__c}" />
+<apex:outputField value="{!pse__Utilization_Engine__c.pse__Period__c}" />
+
+</apex:pageBlockSection>
+
+
+<table>
+<tr><td>FLd</td><td>Y</td></tr>
+
+<apex:repeat value="{!ue}" var="u">
+
+<tr>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data__c}" /></td>
+</tr>
+
+</apex:repeat>
+
+</table>
+
+
+<br/>           	
+<br/>           	
+          	
+
+<table>
+<tr>
+<td>Fld</td>
+<td>M1</td>
+<td>M2</td>
+<td>M3</td>
+<td>M4</td>
+<td>M5</td>
+<td>M6</td>
+<td>M7</td>
+<td>M8</td>
+<td>M9</td>
+<td>M10</td>
+<td>M11</td>
+<td>M12</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+
+<tr>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12__c}" /></td>
+</tr>
+
+</apex:repeat>
+
+
+</table>
+
+
+<br/>           	
+<br/>           	
+
+
+
+
+<table>
+
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+<td>31</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M1</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_30__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_1_31__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td><apex:outputText rendered="{!isLeapYear}">29</apex:outputText></td>
+</tr>
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M2</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_2_29__c}" rendered="{!isLeapYear}"/></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+<td>31</td>
+</tr>
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M3</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_30__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_3_31__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M4</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_4_30__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+<td>31</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M5</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_30__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_5_31__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M6</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_6_30__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+<td>31</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M7</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_30__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_7_31__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+<td>31</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M8</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_30__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_8_31__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M9</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_9_30__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+<td>31</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M10</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_30__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_10_31__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M11</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_11_30__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/>
+<br/>
+
+<table>
+<tr>
+<td>Month</td>
+<td>Fld</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+<td>31</td>
+</tr>
+
+<apex:repeat value="{!ue}" var="u">
+<tr>
+<td>M12</td>
+<td><apex:outputField value="{!u.pse__Type__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_1__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_2__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_3__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_4__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_5__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_6__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_7__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_8__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_9__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_10__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_11__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_12__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_13__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_14__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_15__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_16__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_17__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_18__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_19__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_20__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_21__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_22__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_23__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_24__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_25__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_26__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_27__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_28__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_29__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_30__c}" /></td>
+<td><apex:outputField value="{!u.pse__data_12_31__c}" /></td>
+</tr>
+</apex:repeat>
+</table>
+
+</apex:pageBlock>
+
+
+
+</apex:page>

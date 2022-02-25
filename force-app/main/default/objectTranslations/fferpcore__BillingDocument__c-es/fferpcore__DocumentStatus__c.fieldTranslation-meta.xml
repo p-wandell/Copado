@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Estado del documento de facturación. El estado puede ser Borrador o Completo. Cuando se completa el estado, solo puede editar la Fecha de vencimiento del documento, la Referencia del cliente y la Descripción.</help>
+    <label><!-- Document Status --></label>
+    <name>fferpcore__DocumentStatus__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>Completar</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Discarded</masterLabel>
+        <translation>Descartado</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Draft</masterLabel>
+        <translation>Borrador</translation>
+    </picklistValues>
+</CustomFieldTranslation>

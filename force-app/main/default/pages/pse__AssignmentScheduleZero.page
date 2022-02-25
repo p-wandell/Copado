@@ -1,0 +1,26 @@
+<apex:page standardController="pse__Assignment__c" extensions="pse.AssignmentScheduleZeroController" 
+  	showHeader="false" standardStylesheets="false" sidebar="false" action="{!initFromAssignment}" lightningStylesheets="true">
+
+<apex:pageMessages id="msgs" />	
+<html>
+<title>{!$Label.pse__assignment_label_zero_out_schedule_hours}</title>
+<body>
+<apex:form >
+<apex:actionFunction action="{!zeroOutScheduleHours}" name="jsZeroOutScheduleHours" rerender="msgs" />
+</apex:form> 
+<script type="text/javascript">
+
+    var confirmAction = function (){
+        var userConfirm = confirm('{!JSINHTMLENCODE($Label.pse__assignment_label_zero_assignment_schedule_confirm)}');
+        if (userConfirm == true){
+            jsZeroOutScheduleHours();        
+        }else {
+            /*Send back*/
+            window.history.back();                
+        }
+    }
+    setTimeout('confirmAction()',2000); 
+</script>
+</body>
+</html>
+</apex:page>

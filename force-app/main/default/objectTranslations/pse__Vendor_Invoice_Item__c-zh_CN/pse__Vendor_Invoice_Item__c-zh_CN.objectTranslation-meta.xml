@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>供应商发票项目</value>
+    </caseValues>
+    <nameFieldLabel>名称</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- Amount field does not match Quantity times Unit Price --></errorMessage>
+        <name>pse__Amount_Calculation_Error</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Invoice items may only be applied to Budget Headers with the type Vendor Purchase Order or Vendor Purchase Order Change Order --></errorMessage>
+        <name>pse__Budget_Check_Type</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Currency does not match the budget&apos;s currency --></errorMessage>
+        <name>pse__Budget_Currency_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The budget&apos;s project must match the project --></errorMessage>
+        <name>pse__Budget_Project_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Budget Header is required and cannot be changed once set --></errorMessage>
+        <name>pse__Budget_required_and_constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The selected project&apos;s account must match the account of the Vendor Invoice --></errorMessage>
+        <name>pse__Invoice_Account_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The currency must match the currency of the Vendor Invoice --></errorMessage>
+        <name>pse__Invoice_Currency_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Invoice Item Exchange Rate overrides are not permitted when an invoice level override is employed. --></errorMessage>
+        <name>pse__Invoice_Override_in_Effect</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Amount and Date fields cannot be changed for submitted vendor invoices --></errorMessage>
+        <name>pse__Invoice_Submitted_Check</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot create new items for a submitted vendor invoice --></errorMessage>
+        <name>pse__Invoice_Submitted_No_New_Items</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Project is required and cannot be changed once set --></errorMessage>
+        <name>pse__Project_is_constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Item Exchange Rate Override must be supplied when checking the Override check box. --></errorMessage>
+        <name>pse__Rate_Required_when_Overriding</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- New_Invoice_Items --></label>
+        <name>pse__New_Invoice_Items</name>
+    </webLinks>
+</CustomObjectTranslation>

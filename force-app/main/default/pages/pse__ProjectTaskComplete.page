@@ -1,0 +1,22 @@
+<apex:page standardController="pse__Project_Task__c" extensions="pse.ProjectTaskController"
+  showHeader="{!hasError}" standardStylesheets="true" sidebar="false" lightningStylesheets="true">
+<html>
+<title>{!$Label.pse__project_task_project_task_complete_title}</title>
+<body>
+<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+<apex:pageMessages />
+
+<apex:form >
+<apex:outputPanel rendered="{!hasError}">
+<div align="center"><apex:commandButton action="{!cancel}" value="{!$Label.pse__project_task_label_back}"/></div>
+</apex:outputPanel>
+    <apex:actionFunction action="{!completeAction}" name="jsFormAction"/>
+</apex:form>
+<apex:outputText rendered="{!NOT(hasError)}">
+<script type="text/javascript">
+    setTimeout('jsFormAction()',1000);
+</script>
+</apex:outputText>
+</body>
+</html>
+</apex:page>

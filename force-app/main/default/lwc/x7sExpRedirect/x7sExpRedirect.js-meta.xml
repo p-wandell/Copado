@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>x7sExpRedirect</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Redirect</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="Type"
+                      type="String"
+                      datasource="record page, object list, community page, external site"
+                      default=""
+                      description="type of page being navigated to (record detail, object list, community page or external URL)">
+
+            </property>
+            <property name="Target"
+                      type="String"
+                      default=""
+                      description="Record pages require the record Id. Community pages require the page name. Object list requires the API name of the object. External URLs require the full address.">
+
+            </property>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

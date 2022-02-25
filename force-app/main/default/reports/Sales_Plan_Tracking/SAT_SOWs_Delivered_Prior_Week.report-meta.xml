@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>RowCount</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Proposal Delivered</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_45754482</developerName>
+        <masterLabel>Sales Region</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>OPP_OWNER</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Scott McKeon</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Max Hart</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Mark DeGurian</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sean Lowe</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Mort Sayyed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justin Birt</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Lewis Jones</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Chris Engelhardt</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Kyle Steffen</sourceValue>
+            </sourceValues>
+            <value>East</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Adam Brown</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Craig Friedhoff</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Dani Syed</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Rob Hogervorst</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Sam Brown</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Scott Richmond</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Andre Joly</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Jamie Volpe</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Miles Smith</sourceValue>
+            </sourceValues>
+            <value>Central</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Brad Hattendorf</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Stephen Tang</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Bryan Alipiev</sourceValue>
+            </sourceValues>
+            <value>West</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>David Walsh</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Archan Tikoti</sourceValue>
+            </sourceValues>
+            <value>Client Partners</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>FORMULA1</column>
+        </chartSummaries>
+        <chartType>HorizontalBarGrouped</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>OPP_OWNER</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_BOTTOM</location>
+        <secondaryGroupingColumn>NEWVAL</secondaryGroupingColumn>
+        <showAxisLabels>false</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>CREATED</field>
+    </columns>
+    <columns>
+        <field>CREATED_DATE</field>
+    </columns>
+    <columns>
+        <field>field_key</field>
+    </columns>
+    <columns>
+        <field>OPPORUNITY.NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Sales Activity Tracking Dashboard - SOWs Delivered Prior Week component</description>
+    <filter>
+        <criteriaItems>
+            <column>field_key</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Stage</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>NEWVAL</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>5 Agreements Delivered</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_45754482</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>OPP_OWNER</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>NEWVAL</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>SAT: SOWs Delivered Prior Week</name>
+    <params>
+        <name>include</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityFieldAuditHistory</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>CREATED_DATE</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_LASTWEEK</interval>
+    </timeFrameFilter>
+</Report>

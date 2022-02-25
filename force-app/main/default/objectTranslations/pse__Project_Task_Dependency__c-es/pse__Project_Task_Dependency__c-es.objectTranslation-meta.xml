@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Proyecto Task Dependency</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Dependencias de tareas del proyecto</value>
+    </caseValues>
+    <fieldSets>
+        <label><!-- Require Lock For Editing --></label>
+        <name>pse__Require_Lock_For_Editing</name>
+    </fieldSets>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Número de dependencia de tareas del proy</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- The lag unit of a dependency can&apos;t be in hours when the duration of the successor task is in day units. Change the lag unit of the dependency, or change the duration unit of the successor task. --></errorMessage>
+        <name>pse__Validate_Lag_Unit</name>
+    </validationRules>
+</CustomObjectTranslation>

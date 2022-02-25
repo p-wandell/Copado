@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Approve</fullName>
+    <availability>online</availability>
+    <displayType>massActionButton</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Approve</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <requireRowSelection>true</requireRowSelection>
+    <url>{!REQUIRESCRIPT(&quot;/soap/ajax/36.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/36.0/apex.js&quot;)}
+
+var selectedIds = {!GETRECORDIDS($ObjectType.Contract)};
+
+sforce.connection.sessionId = &apos;{!$Api.Session_ID}&apos;;
+var result = sforce.apex.execute(&quot;BulkApprovalWebService&quot;,&quot;bulkApprove&quot;,{recordIds : selectedIds.join(&apos;,&apos;)});
+result = JSON.parse(result);
+if(result.status !== &apos;200&apos;){
+  alert(result.error);
+} else {
+  location.reload(true);
+}</url>
+</WebLink>

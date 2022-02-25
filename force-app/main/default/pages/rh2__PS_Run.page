@@ -1,0 +1,178 @@
+<apex:page standardController="rh2__RH_Job__c" title="Rollup Helper Run Page" extensions="rh2.PS_DefineJob_Controller" sidebar="false"  applyBodyTag="false" docType="html-5.0" showHeader="true">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	
+	<head> 
+    	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+         <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/RollupRun.js') }"/>
+    	 <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }"/>
+         <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/hs_breadcrumbs.js')}" />
+         <apex:includeScript value="{! URLFOR($Resource.HS_Jquery, 'jquery-1.12.1.min.js')}" />
+     </head>
+
+  <script>
+        
+        //Verify namespace is ready
+        var rh = rh || {};
+        rh.rollupRun = new RollupRun();
+        rh.rollupRun.batchSize = {!maxBatchSize};
+        rh.estimateRecordsDuration = estimateRecordsDuration;
+        var overwriteFlag;
+            
+        
+        rh.j$ = jQuery.noConflict();
+        rh.j$(document).ready(function() {
+            calcMaxRecords('{! JSENCODE(selectedFilter)}');
+
+            selectBreadcrumb_HS();
+        });
+
+        function calcMaxRecords(selectedFilter){
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.PS_DefineJob_Controller.maxRecords}',
+                           '{! JSENCODE(parentObjectName) }', selectedFilter, estimateRecordsDuration, {escape:true, timeout:120000});
+        }
+        
+        function confirmRunOnce(overwrite, blankOverwrite, fieldName) 
+        {
+                     
+            if(overwrite == true && blankOverwrite == true)
+            {
+            return confirm("{!$Label.rh2__warningrunningthisrollup} " + fieldName + " {!$Label.rh2__fieldtobeoverwritten}");
+            }
+
+            if(overwrite == true && blankOverwrite == false){
+            return confirm("{!$Label.rh2__warningrunningthisrollup} " + fieldName  +  " {!$Label.rh2__fieldtobeoverwrittenblank} " + fieldName  + " {!$Label.rh2__blankoverwritefield}");
+            }
+
+
+            return true;       
+        }
+
+         function setPositionOfTooltip(tooltip, label){
+            var xPos = 0;
+            var yPos = 0;
+            var height = 0;
+            
+            var item = document.getElementById(label);
+            
+            while(item){
+            
+                xPos += (item.offsetLeft - item.scrollLeft + item.clientLeft);
+                yPos += (item.offsetTop - item.scrollTop + item.clientTop);
+                
+                item = item.offsetParent;
+            }
+            var tt = document.getElementById(tooltip);
+            var height = rh.j$('#' + tooltip).outerHeight(true);
+            
+            tt.style.top = yPos - height - 5 + 'px';
+          
+            tt.style.left = xPos - 20 + 'px';
+        }
+        
+        function setShowTooltipFormatting(tooltip){
+            var tt = document.getElementById(tooltip);
+            
+            tt.style.display = 'block';
+            tt.style.overflow = 'visible';
+            tt.style.wordWrap = 'break-word';
+        }
+  </script>
+  
+    <body>
+    	<apex:form >
+        <apex:actionFunction name="rerenderFilterLinks" rerender="filterLinks" status="loading"/>
+        <apex:actionStatus id="loading" onstart="loading(true)" onstop="loading(false)" />
+        <apex:slds />
+	 	<div class="slds-scope" role="main"> 	  
+	 		<div class="slds-card">
+  				<header class="slds-card__header">
+	       			<nav role="navigation">
+    					<ol class="slds-breadcrumb slds-list_horizontal">
+                            <li class="slds-list__item slds-text-heading_label home-crumb"><a href="{!URLFOR($Page.PS_landingPage)}">{!$Label.Home}</a></li>
+   		   					<li class="slds-list__item slds-text-heading_label setting-crumb"><a href="{!URLFOR($Page.PS_Allsettings)}">{!$Label.AllRollupSetting}</a></li>
+       					</ol>
+        			</nav>
+  				</header>
+  			</div>
+ 			<div class="slds-card">
+				<header class="slds-card__header slds-grid">
+           			<div class="slds-col">
+               			<h3 class="slds-text-heading_small slds-truncate">{!$Label.RunRollup}</h3>
+             		</div>
+             			
+         			<div class="slds-col_padded" align="right">   					           			
+             			<apex:commandLink styleClass="slds-button slds-button_neutral" rendered="{!IsSourceObjectTriggerable}" action="{!goToEnableRealtime}">{!$Label.rh2__managerealtime}</apex:commandLink> 
+            			<apex:commandButton styleClass="slds-button slds-button_neutral" action="{!URLFOR($Page.PS_AllSettings)}" value="{!$Label.rh2__cancel}" />
+         			</div>        				
+                 </header>
+                <apex:outputPanel rendered="{!NOT(rollupSetting.rh2__exceptionMessage__c == null)}" styleClass="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning">
+                    <div>
+                        <h2>{!$Label.RollupExceptionFound}</h2>
+                        <h2>{!rollupSetting.exceptionMessage__c}</h2>
+                        <h2>{!$Label.ExceptionMayAffectProcessing} {!$Label.IfYouNeedFurtherAssistancePleaseContact}&nbsp; <apex:outputLink value="mailto:support@passagetech.com">support@passagetech.com</apex:outputLink>.</h2>
+                    </div>
+                </apex:outputPanel>
+         		<section class="slds-card__body">
+                    <apex:pageMessages />
+         			<div class="slds-grid slds-grid_align-center">                        
+         				<div class="slds-col slds-shrink">        			
+         					<div class="slds-box slds-theme_default slds-shrink">
+         						<div class="slds-grid slds-grid_align-center">
+	         						<span class="slds-text-heading_small" align="middle">{!targetField} {!$Label.Rollup}</span>
+	                   				<apex:inputHidden value="{!rh2__RH_Job__c.rh2__Rollup_Name__c}" />	                  
+	               	 			</div>
+	               				<br/>
+	                			<div class="slds-grid slds-grid_align-center">
+	                				<span class="slds-col"> {!$Label.RunningThisRollup}</span>&nbsp;
+                                </div>
+	               				<div class="slds-grid slds-grid_align-center">             					
+             					  <span style="color:red" id="estWaitTime"/> &nbsp;
+                                  <a onmouseover="setShowTooltipFormatting('help-estimate'); setPositionOfTooltip('help-estimate', 'tooltipRollover');  " onmouseout="document.getElementById('help-estimate').style.display = 'none';"  id="tooltipRollover">
+                                    <img class="slds-icon slds-icon_x-small" src="/apexpages/slds/latest/assets/icons/utility/info_60.png"></img>
+                                  </a>
+                                  <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" id="help-estimate" style="position:fixed; z-index:99; display:none !important;">
+                                            <div class="slds-popover__body">
+                                                {!$Label.AnyRunInformation}</div></div>
+                                        
+                                       <br/>
+                     			  </div>
+                     			<div class="slds-grid slds-grid_align-center">	
+             						<apex:outputPanel id="runOncePanel"/>           					        					
+  								</div>       <br/>
+
+                                <center>
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label" for="filterList"> {!$Label.rh2__parentfilteroptional}:</label> 
+                                        <apex:selectList value="{!selectedFilter}" onchange="calcMaxRecords(this.value); rerenderFilterLinks();" size="1" style="width:100% !important;" styleClass="slds-form-element__control">
+                                            <apex:selectOptions value="{!ValidFiltersForObject}"/>
+                                        </apex:selectList>  						
+                                        <apex:outputPanel id="filterLinks">
+                                            <apex:outputPanel rendered="{!existingFilterSelected}">
+                                                <apex:commandLink style="padding-left:10px; padding-right:10px;" action="{!goToEditFilter}" value="{!$Label.rh2__edit}"/>|
+                                            </apex:outputPanel> 
+                                            <apex:commandLink style="padding-left:10px;" action="{!goToNewFilter}" value="{!$Label.rh2__new}"/>
+                                        </apex:outputPanel>
+                                    </div>
+                                </center> <br/>
+                                <center>
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label"> {!$Label.rh2__notificationemailoptional}:</label><br/> 
+                                        <apex:inputText style="width:100% !important;" value="{!notificationEmail}"/>
+                                    </div>
+                                </center><br/>
+                                <center><apex:commandButton styleClass="slds-button slds-button_brand" id="runButton" value="{!$Label.rh2__startrolluprun}" action="{!runForAllRecords}" onClick="if (!confirmRunOnce({!overwrite}, {!blankOverwrite}, '{!targetField}')) return false;"/> </center>                        
+                              
+                                <apex:inputHidden value="{!maxRecords}" id="maxRecords"/>    
+                                <apex:inputHidden value="{!rh2__RH_Job__c.rh2__ParentFilter__c}" />              		
+             				</div> 
+             			</div>
+             		</div>                   
+            	</section> 
+            	
+             </div>	
+             <c:Loading_Spinner opacity="1"/>
+         </div>
+	 	</apex:form>
+	</body>
+</html>
+</apex:page>

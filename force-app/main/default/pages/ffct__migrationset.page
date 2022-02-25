@@ -1,0 +1,80 @@
+<apex:page sidebar="false" standardController="ffct__MigrationSet__c" extensions="ffct.MigrationSetControllerExtension" action="{!isToolMustBeActivated}">
+
+    <apex:form id="frm">
+    <apex:sectionHeader title="{!$ObjectType.ffct__MigrationSet__c.label}" help="helploader?topicid=1047"/>
+    <apex:pagemessages id="pgMsg" escape="false"/>
+    
+    <apex:outputPanel >
+		<c:connectedappbuilder connectedAppConfiguration="{!ConInfo.AppConfiguration}" componentId="pgMsg" rendered="{!!ConInfo.IsAuthSettingConfigured}"/>
+    </apex:outputPanel>
+    
+    <apex:pageBlock Id="migrationBlock" rendered="{!ConInfo.IsAuthSettingConfigured && ProcessStatus!='show_confirmation'}">
+    
+    <apex:pageBlockSection collapsible="false" id="migrationSetDetailsSection" title="{!$Label.ffct__migrationdetails}">
+	    <apex:outputField value="{!MigrationSetObj.Name}" />
+	    <apex:outputField value="{!MigrationSetObj.OwnerId}" />
+	    <apex:outputField value="{!MigrationSetObj.ffct__StartDate__c}" />
+	    <apex:outputField value="{!MigrationSetObj.ffct__EndDate__c}" />
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection collapsible="false" columns="1" id="bundlizerProgressSection" title="{!$Label.ffct__bundlingmigrationsetprogressinformation}" rendered="{!ProcessStatus=='bundling_inprogress'}" >
+        <c:fflib_batchInfo id="jobStatus" 
+        	batchControlRecordId="{!MigrationSetJobId}"
+            batchJobClass="MigrationSetBundlizer"/>
+    </apex:pageBlockSection>
+    
+    <apex:outputPanel id="hideProgress">
+        <apex:outputPanel rendered="{!ProcessStatus=='complete'}">
+            <apex:actionPoller action="{!showConnection}" interval="5" rerender="frm"/>
+        </apex:outputPanel>
+    </apex:outputPanel>
+    <apex:outputPanel id="trackPanel" rendered="{!ProcessStatus=='bundling_inprogress'}">
+        <apex:actionPoller action="{!hideBundlizersProgressOnComplete}" interval="5" rerender="hideProgress"/>
+    </apex:outputPanel>
+	<apex:pageBlockSection title="{!$Label.ffct__customizebundles}" id="bundlePanel" columns="1" collapsible="true"  rendered="{!bundlizerInfo != null && bundlizerInfo.Bundles!=null && bundlizerInfo.ShowBundles}">
+    	<apex:pageBlockTable value="{!bundlizerInfo.Bundles}" var="bundle">
+            <apex:column headervalue="{!$Label.ffct__name}">
+                <apex:outputLink target="_blank" value="{!URLFOR($Action.ffct__Bundle__c.View,bundle.Id)}">{!bundle.Name}</apex:outputLink>
+            </apex:column>
+            <apex:column headervalue="{!$Label.ffct__description}">{!bundle.ffct__Bundle_Description__c}</apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlockSection>
+
+    <script> twistSection(document.getElementById('{!$Component.migrationBlock.bundlePanel}').getElementsByTagName('img')[0]) </script>
+    
+    <apex:pageBlockSection collapsible="false" columns="2" title="Connection Details" rendered="{!ProcessStatus=='show_connection'}">
+   		<apex:pageBlockSectionItem >
+				<apex:outputLabel >{!$Label.ffct__selectconnection}</apex:outputLabel>
+           		<apex:selectList value="{!ConInfo.TargetConnectionId}" label="{!$Label.ffct__targetorganizationconnection}" multiselect="false" size="1" style="max-width:212px;">
+          			<apex:selectOptions value="{!allConnections}"></apex:selectOptions>
+      			</apex:selectList>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel >
+     		<div style="border-left: 1px solid #8e9dbe;width: 5px;float: left;min-height: 28px;margin-left: -60px;"><div style="background: white;margin-left: -10px;margin-top: 5px;font-size: 12px;">OR</div></div>
+     			<apex:outputLabel style="margin-left: -32px;float: left;margin-right: 20px;color: #4a4a56;font-size: 91%;font-weight: bold;">{!$Label.ffct__setupnewconnection}</apex:outputLabel>
+     			<apex:outputLink value="/apex/setupconnection" styleClass="btn" style="text-decoration: none;color: #333;">
+     				{!$Label.ffct__create} 
+     				<apex:param name="returningFeature" value="{!URLENCODE(PageUrl)}" /> 
+     			</apex:outputLink>
+ 		</apex:outputPanel> 
+	</apex:pageBlockSection>
+	    
+   	<apex:pageBlockButtons location="bottom" rendered="{!ProcessStatus=='show_connection'}">
+		<apex:commandButton action="{!execute}" value="{!$Label.ffct__execute}"/>
+		<apex:commandButton action="{!Cancel}" value="{!$Label.ffct__cancel}"/>
+    </apex:pageBlockButtons>           
+    </apex:pageBlock>
+    
+       	<apex:pageBlock id="confirmBlock" rendered="{!ProcessStatus='show_confirmation'}">
+       		<apex:outputLabel value="{!$Label.ffct__migrationsetpreparebundleconfirmation}" style="font-size : 1.2em;font-weight:bold;" />
+       		<apex:pageBlockbuttons location="bottom">
+       			<apex:commandbutton value="{!$Label.ffct__migrationsetcreatebundles}" action="{!createBundlesAgain}"/>
+       			<apex:commandbutton value="{!$Label.ffct__cancel}" action="{!continueWithExistingBundles}"/>
+       		</apex:pageBlockbuttons>
+       	</apex:pageBlock>
+    
+    <apex:outputLink style="color: #015BA7;" value="{!URLFOR($Action.ffct__MigrationSet__c.View,ffct__MigrationSet__c.Id)}" rendered="{!HasMessages && ConInfo.IsAuthSettingConfigured}">
+         {!$Label.ffct__gotomigrationset}
+    </apex:outputLink>
+    </apex:form>
+</apex:page>

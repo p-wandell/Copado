@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>請求伝票のステータス。状況は「ドラフト」または「完了」になります。ステータスが完了すると、文書期限、顧客参照、および説明のみを編集できます。</help>
+    <label><!-- Document Status --></label>
+    <name>fferpcore__DocumentStatus__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>コンプリート</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Discarded</masterLabel>
+        <translation>捨てた</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Draft</masterLabel>
+        <translation>ドラフト</translation>
+    </picklistValues>
+</CustomFieldTranslation>

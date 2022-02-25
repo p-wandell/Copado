@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Skills</fullName>
+    <columns>NAME</columns>
+    <columns>pse__Description__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>pse__Skill__c.pse__Skill</value>
+    </filters>
+    <label>Skills</label>
+</ListView>

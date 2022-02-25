@@ -1,0 +1,89 @@
+<!--
+  - Copyright (c) 2020. 7Summits Inc.
+-->
+<template>
+    <c-x7s-shr-component-wrapper 
+        title={wrapper.volunteerNeed.Name}
+        description={wrapper.volunteerNeed.Criteria__c}
+        remove-body-padding>
+        <slot>
+            <lightning-layout horizontal-align="spread">
+                <lightning-layout-item class="slds-text-color_weak bodyclass">
+                    <div if:true={showVolRegisteredcount}>
+                        <lightning-formatted-number value={wrapper.volunteerNeed.Volunteer_Registrations__r.length}>
+                        </lightning-formatted-number>&nbsp;
+                        <lightning-formatted-text value={labels.labelVolunteering}>
+                        </lightning-formatted-text>
+                    </div>
+                    <div if:true={showVolNeededcount}>
+                        <lightning-formatted-number value={volunteersNeeded} class="boldStyle">
+                        </lightning-formatted-number>&nbsp;
+                        <lightning-formatted-text value={labels.labelMoreVolunteersNeeded} class="boldStyle"> 
+                        </lightning-formatted-text>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item>
+                    <template if:true={showSignUpBtn}>
+                        <template if:true={wrapper.currentUserRegistered}>
+                            <lightning-button-stateful
+                                label-when-off={labels.labelSignUp}
+                                label-when-on={labels.labelYoureSignedup}
+                                label-when-hover={labels.labelRemoveMe}
+                                icon-name-when-off=""
+                                icon-name-when-on="utility:check"
+                                icon-name-when-hover="utility:close"
+                                onclick={removeVolunteer}
+                                selected={isSelected}>
+                            </lightning-button-stateful>
+                        </template>
+                        <template if:false={wrapper.currentUserRegistered}>
+                            <lightning-button onclick={registerVolunteer}
+                                        label={labels.labelSignUp}
+                                        variant="brand">
+                            </lightning-button>
+                        </template>
+                    </template>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={wrapper.volunteerNeed.Volunteer_Registrations__r}>
+                <lightning-layout class="slds-m-vertical_x-small">
+                    <lightning-layout-item>
+                        <template for:each={wrapper.volunteerNeed.Volunteer_Registrations__r} for:item="registration">
+                            <template if:true={registration.showAvatar}>
+                                <a href={registration.avatarLink} title={registration.User__r.Name} key={registration.Id}>
+                                    <lightning-avatar src={registration.User__r.SmallPhotoUrl} 
+                                            size="medium" 
+                                            variant="circle" 
+                                            fallback-icon-name="standard:user"
+                                            class="slds-m-right_x-small">
+                                    </lightning-avatar>
+                                </a>
+                            </template>
+                        </template>
+                    </lightning-layout-item>
+                    <lightning-layout-item>
+                        <template if:true={showMorebtn}>
+                            <template if:true={showingMore}>
+                                <lightning-button onclick={showToggle}
+                                        label={labels.labelshowless}
+                                        icon-name="utility:forward"
+                                        icon-position="right"
+                                        variant="text">
+                                </lightning-button>
+                            </template>
+                            <template if:false={showingMore}>
+                                <lightning-button onclick={showToggle}
+                                        label={labels.labelshowMore}
+                                        icon-name="utility:forward"
+                                        icon-position="right"
+                                        variant="text">
+                                </lightning-button>
+                            </template>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </slot>
+    </c-x7s-shr-component-wrapper>
+    <hr class="hrStyle">
+</template>

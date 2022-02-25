@@ -1,0 +1,15 @@
+Hi {!pse__Timecard_Header__c.pse__Resource__c}- 
+
+Your Timecard has been Rejected for: 
+
+Project: {!pse__Timecard_Header__c.pse__Project__c} 
+Week Ending: {!pse__Timecard_Header__c.pse__End_Date__c} 
+Assignment: {!pse__Timecard_Header__c.pse__Assignment__c} 
+Milestone: {!pse__Timecard_Header__c.pse__Milestone__c} 
+Notes: {!pse__Timecard_Header__c.pse__Timecard_Notes__c} 
+
+Rejection Comments: {!ApprovalRequest.Comments} 
+
+Please click the link below, fix any issues and Resubmit: 
+
+{!pse__Timecard_Header__c.Link}

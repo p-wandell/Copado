@@ -1,0 +1,117 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+  <template>
+    <c-x7s-shr-card 
+                    custom-class={customClass}
+                    image-height="140px"
+                    layout={layout}
+                    variant={tileVariant}
+                    text-align={textAlign}
+                    hide-image={hide_image}
+                    use-avatar={useAvatar}>
+    <slot>
+   
+      <lightning-layout>
+        <lightning-layout-item size={moduleTitleItemSize} class="slds-p-top_small">
+          
+              <div>
+                <span class={moduleTitleCSS} style="float:left;text-align: left;">
+                  {stepModule.title}
+                  <template if:false={truncate}>
+                      <template if:true={showModuleTooltip}>
+                        <template if:true={stepModule.tooltip}>
+                          <lightning-helptext style="padding-left:5px;vertical-align: text-bottom" content={stepModule.tooltip}></lightning-helptext>
+                        </template>
+                      </template>
+                    </template>
+                </span>
+                <template if:true={truncate}>
+                  <template if:true={showModuleTooltip}>
+                    <template if:true={stepModule.tooltip}>
+                      <span style={moduleTooltip}><lightning-helptext style="vertical-align: text-bottom" content={stepModule.tooltip}></lightning-helptext></span>
+                    </template>
+                  </template>
+                </template>  
+              </div>         
+        </lightning-layout-item>
+
+         <!--Module Progress Ring-->
+        <template if:false={moduleProgressType}> 
+            <lightning-layout-item size="2">
+              <!--  <c-x7s-adventure-module-progress-ring data-id={stepModule.id} task-progress={taskProgress}> </c-x7s-adventure-module-progress-ring> -->
+              <template if:true={taskCheckboxSetup}>
+                <c-x7s-adventure-progress-ring value={taskProgress} size="small"></c-x7s-adventure-progress-ring>
+              </template>
+            </lightning-layout-item>
+        </template>  
+      </lightning-layout>
+     
+      <!--Module Progress bar -->
+      <template if:true={moduleProgressType}>
+        <lightning-layout class="slds-p-bottom_x-small">
+          <lightning-layout-item size="12" >
+            <template if:true={taskCheckboxSetup}>
+                <p class="slds-text-align_left module-progress slds-p-bottom_medium" >{proggressBarLabel}</p>
+                <lightning-progress-bar value={taskProgress} size="medium" class="transition"></lightning-progress-bar>
+            </template>
+          </lightning-layout-item>
+        </lightning-layout>
+      </template>
+
+     
+  <!--    <template if:true={taskCheckboxSetup}>
+        <p class="slds-text-align_right slds-text-title_bold" >{proggressBarLabel}</p>
+        <lightning-progress-bar value={taskProgress} size="large"></lightning-progress-bar>
+      </template>       -->  
+     <!--Module Description-->
+     
+      <lightning-layout class="slds-p-bottom_x-small slds-p-top_xx-small">
+        <lightning-layout-item class="slds-text-align_left">
+          <template if:true={showLinks}>
+              <template if:true={stepModule.descriptionLink}>
+                  <a onclick={linkClick} data-href={stepModule.descriptionLink}>
+                      {stepModule.descriptionLabel}
+                  </a>
+              </template>
+              <template if:false={stepModule.descriptionLink}>
+                  {stepModule.descriptionLabel}
+              </template>
+          </template>
+        </lightning-layout-item> 
+      </lightning-layout>
+      
+      
+      <lightning-layout> 
+        <lightning-layout-item padding="" size="12" >
+
+          <template if:true={stepModule.moduleTasks}>
+            <template for:each={stepModule.moduleTasks} for:item="moduleTask">
+              <div key={moduleTask.Id}>
+                  <c-x7s-adventure-task    adventure-task ={moduleTask}
+                                           current-user-id ={currentUserId}
+                                           adventure-setup = {adventureSetup}
+                                           is-lex = {isLex}
+                                           task-checkbox-setup={taskCheckboxSetup}>
+                  </c-x7s-adventure-task>
+              </div>  
+            </template>
+          </template>
+
+          <template if:false={isTaskAssigned}>
+            <a style={ancherColor}>
+                <template if:true={myFilter}>
+                    {adventureSetup.No_Assigned_Tasks_Text__c}
+                </template>
+                <template if:false={myFilter}>
+                    {adventureSetup.No_Module_Tasks__c}
+                </template>
+            </a>
+          </template>
+
+        </lightning-layout-item>
+      </lightning-layout>
+
+    </slot>
+    </c-x7s-shr-card>
+</template>

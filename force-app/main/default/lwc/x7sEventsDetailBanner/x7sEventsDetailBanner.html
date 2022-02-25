@@ -1,0 +1,69 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+-->
+<template>
+    <c-x7s-shr-component-wrapper 
+		    custom-class={componentClass}
+		    variant={variant}>
+        <c-x7s-shr-record-banner title={eventTitle} topics={topicList}>
+            <div slot="meta">
+                <ul class="slds-list_horizontal slds-has-dividers_right slds-has-block-links">
+                    <template if:true={displayNumOfAttendees}>
+                        <li class="slds-item">
+                            <lightning-formatted-number value={numOfAttendees}>
+                            </lightning-formatted-number>&nbsp;
+                            <lightning-formatted-text value="Attendees">
+                            </lightning-formatted-text>&nbsp;
+                        </li>
+                    </template>
+                    <template if:true={isEditable}>
+                        <li class="slds-item slds-text-link">
+                            <lightning-formatted-text value={labels.labelEditEvent} onclick={callEditPage} linkify>
+                            </lightning-formatted-text>
+                        </li>
+                        <template if:true={showVolunteerButton}>
+                            <li class="slds-item slds-text-link">
+                                <lightning-formatted-text value={labels.labelEditVolOpportunities} onclick={callVolunteerPage} linkify>
+                                </lightning-formatted-text>
+                            </li>
+                        </template>
+                        <template if:true={showExploreEvent}>
+                            <li class="slds-item slds-text-link">
+                                <lightning-formatted-text value={exploreOtherEvents} onclick={navigateToListView} linkify>
+                                </lightning-formatted-text>
+                            </li>
+                        </template>
+                    </template>
+                </ul>
+                <!-- MODAL: Edit Volunteer Opportunities -->
+                <template if:true={isEditVolunteers}>
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__header">
+                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                        title={labels.labelModalClose} onclick={closeVolunteerPage}>
+                                    <lightning-icon icon-name="utility:close" size="medium"
+                                                    alternative-text={labels.labelModalClose}
+                                                    title={labels.labelModalClose}>
+                                    </lightning-icon>
+                                    <span class="slds-assistive-text">{labels.labelModalClose}</span>
+                                </button>
+                                <h2 class="slds-text-heading--medium">
+                                    <span class="fontFixColor">{eventTitle}</span> {labels.labelVolOpportunities}
+                                </h2>
+                            </div>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                                <div data-id="editVolunteerView" class="slds-grid slds-wrap">
+                                    <c-x7s-events-volunteer-need-form record-id={recordId}>
+                                    </c-x7s-events-volunteer-need-form>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop--open"></div>
+                </template>
+            </div>
+        </c-x7s-shr-record-banner>
+    </c-x7s-shr-component-wrapper>
+</template>

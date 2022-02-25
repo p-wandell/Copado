@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pursuit_Lead__c</fullName>
+    <description>Name of person heading this pursuit IF other than the opp owner</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Name of person heading this pursuit IF other than the opp owner</inlineHelpText>
+    <label>Pursuit Lead</label>
+    <length>32</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

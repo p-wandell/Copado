@@ -1,0 +1,27 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S My Account Team -->
+<template>
+    <section class={componentClass}>
+        <c-x7s-shr-component-wrapper title={title} description={description} title-align={titleAlignment} aria-label={label.labelAriaWrapper}>
+            <div if:false={message} if:true={loaded}>
+                <template for:each={teamList} for:item="member" for:index="index">
+                    <!-- Need child element with key attribute -->
+                    <div class="slds-media slds-p-bottom_x-large" key={member.User.Id}>
+                        <div class="slds-media__body">
+                            <h4>
+                                <a href="javascript:void(0)" data-id={member.User.Id} onclick={goToProfile}>{member.User.Name}</a>
+                            </h4>
+                            <div class="slds-text-color_weak">{member.TeamMemberRole}</div>
+                            <div><lightning-formatted-phone value={member.User.Phone} ></lightning-formatted-phone></div>
+                            <div><lightning-formatted-email value={member.User.Email} ></lightning-formatted-email></div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <p if:true={message}>{message}</p>
+        </c-x7s-shr-component-wrapper>
+    </section>
+</template>

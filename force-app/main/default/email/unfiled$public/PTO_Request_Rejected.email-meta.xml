@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Letterhead_with_Logo</letterhead>
+    <name>PTO Request Rejected</name>
+    <style>freeForm</style>
+    <subject>Your PTO Request was Rejected</subject>
+    <textOnly>Hi {!01I1E000000q7WX.00N1E00000660gH},
+
+Your PTO Request has been rejected.
+
+Rejection Comments: {!01I1E000000q7WX.00N1E00000660h5}
+
+Please click the link below, fix any issues, and resubmit:
+
+{!01I1E000000q7WX.Link}</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

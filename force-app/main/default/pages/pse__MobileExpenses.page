@@ -1,0 +1,546 @@
+<apex:page id="expPage"
+		   title="{!pageHeader}"
+		   tabStyle="pse__Expense__c" 
+		   standardController="pse__Expense__c"
+		   extensions="pse.MobileExpensesController" 
+		   lightningStylesheets="true"
+		   docType="html-5.0">
+		   
+<!-- This loads the svg and related xml schemas to enable correct displaying of svg images -->
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+
+<apex:stylesheet value="{!URLFOR($Resource.pse__assets, 'assets/css/icons.css')}"/>﻿
+
+	<style type="text/css">
+		div.headerSection {
+			display: flex;
+		    overflow: hidden;
+		    position: fixed;
+		    top: 0;
+			left: 0;
+			width: 100%;
+			padding-top: 5%;
+			padding-bottom: 5%;
+			z-index: 1;
+			background: rgb(255, 255, 255);
+			border-bottom: 2px solid rgb(221, 219, 218);
+		}
+		.errorMessageContainer {
+			padding: 10px 20px 0 20px;
+		}
+		.errorMessageText {
+			font-family: 'Helvetica';
+			font-weight : bold;
+			font-size : 13pt;
+		}
+		.slds-scope .pageHeader {
+			font-size: 20px;
+			font-weight: 300;
+		}
+		.lookupInput {
+			width: 100%;
+		}
+		.lookupOptions td {
+			padding-top: 10px;
+			padding-bottom: 10px;
+			border-bottom: 1px solid rgb(221, 219, 218);
+			border-top: 1px solid rgb(221, 219, 218);
+		}
+		body .lookupInput .lookupIcon {
+			top: 0.75rem;
+		}
+		/* This section is to fix various IOS issues such as the jumping issue */
+		html, body {
+		   height: 100%;
+		   overflow: auto;
+		   -webkit-overflow-scrolling: touch;
+	    }
+
+	</style>
+
+	<script type="text/javascript">
+
+		var imageAdded;
+
+		document.addEventListener("DOMContentLoaded", function(event) { 
+		    onPageLoad();
+		});
+
+		// note: one of the issues with the mobile development is that this method gets called each time the page is refreshed
+		// 		 e.g. on a submit (post), this has consequences in that we need to track the state of displaying the image
+		//       and if the save was successful and if we need to navigate away.
+		function onPageLoad() {
+			if ("{!notEditableMessage}") {
+				setTimeout(function() {
+    				history.back();
+				}, 3000);
+				return;
+			}
+
+			checkForSuccessfulSave();
+
+			// bring down previously saved image via a download URL (in order to not get viewstate issues)
+			if ("{!savedImageURL}") {
+			   this.displayImage("{!savedImageURL}");
+			}
+		}
+
+		function loadFile(event) {
+			var file = event.target.files[0],
+		    	imageURL = URL.createObjectURL(file);
+			
+			this.displayImage(imageURL);
+		    return true;
+		}
+
+		function displayImage(imageURL) {
+			var output = document.getElementById('output');
+			
+			if (imageURL === ':deleted:') {
+				return true;
+			}
+		    
+			this.imageAdded = true;		    
+			output.src = imageURL;
+			output.style.display = 'block';
+			document.getElementById('image-uploader-container').style.display = 'none';
+			document.getElementById('delete-icon').style.display = 'block';
+
+		    return true;
+		}
+
+		function imageDelete() {
+		    var output = document.getElementById('output'),
+			    imageUploader = document.getElementById('image-uploader-container'),
+			    deleteIcon = document.getElementById('delete-icon'),
+			    topForm = document.querySelector('[id$="topForm"]'),
+				imageUploaderStylingDiv = document.getElementById('imageUploaderStylingDiv');
+		    
+		    imageUploader.style.display = 'block';
+			imageUploaderStylingDiv.style.display = '';
+		    deleteIcon.style.display = 'none';
+
+		    output.src = '';
+			this.imageAdded = false;
+			output.style.display = 'none';
+			
+			topForm.reset();
+
+			// ensure controller 'savedImageURL' property is set to deleted, via setting this hidden field
+			document.querySelector('[id$="savedImageURL-hidden"]').value = ":deleted:"; 
+		    return true;
+		}
+		
+		function searchFormSelect() {
+			imageAndUploaderHide();
+			selectSearchFormApex();
+		}
+		
+		function imageAndUploaderHide() {
+			var output = document.getElementById('output'),
+			    imageUploader = document.getElementById('image-uploader-container'),
+				imageUploaderStylingDiv = document.getElementById('imageUploaderStylingDiv');
+				deleteIcon = document.getElementById('delete-icon');
+
+			output.style.display = 'none';
+			imageUploader.style.display = 'none';
+			imageUploaderStylingDiv.style.display = 'none';
+			deleteIcon.style.display = 'none';
+		}
+		
+		function imageOrUploaderShow() {
+			var output = document.getElementById('output'),
+			    imageUploader = document.getElementById('image-uploader-container'),
+				imageUploaderStylingDiv = document.getElementById('imageUploaderStylingDiv'),
+				deleteIcon = document.getElementById('delete-icon');
+								
+			if (output.src === null || output.src === '' || this.imageAdded === false) {
+				imageUploader.style.display = 'block';
+				imageUploaderStylingDiv.style.display = '';
+			} else {
+				output.style.display = 'block';
+				deleteIcon.style.display = 'block';
+			}	
+		}	
+
+		function checkForSuccessfulSave() {
+			var redirectUrl = document.querySelector('[id$="oncompleteredirecturl-hidden"]').value, 
+				saveButton = document.querySelector('[id$="savebutton"]');
+
+			if (redirectUrl) {
+				// save successful, disable save button and allow some time to see the success message added by the controller, before exiting screen ...
+				saveButton.disabled = true;
+				setTimeout(function() {
+    				sforce.one.navigateToURL(redirectUrl,true); // no errors so navigate back
+				}, 3000);
+			} else {
+				// remove load mask so we can see any errors 
+		    	showLoadMask(false);
+				this.imageAdded = false;
+			}
+		}
+
+		function onCancel() {
+			var cancelUrl = document.querySelector('[id$="cancelredirecturl-hidden"]').value;
+
+			showLoadMask(true);
+			sforce.one.navigateToURL(cancelUrl,true);
+			return true;
+		}
+
+		function saveCompleteHandler(expenseId) {
+			var redirectUrl = document.querySelector('[id$="oncompleteredirecturl-hidden"]').value;
+			if (redirectUrl) {
+				// Call the action function that submits the image
+				saveImage();
+			} else {
+				showLoadMask(false);
+			}
+		}
+
+		function overrideDefaultAction(ev, defaultButtonId) {
+			// When the user presses the ENTER key, activate the supplied default button
+			var defButton = document.querySelector('[id$=' + defaultButtonId + ']');
+			if (event.key === "Enter") {
+				defButton.click();
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		function showLoadMask( visible ) {
+			var loadMask = document.querySelector( '[id$="load-mask"]' );
+			loadMask.style.display = visible ? 'block' : 'none';
+		}
+
+	</script>
+
+	<body>
+
+		<apex:slds />
+
+		<apex:outputPanel rendered="{!NOT(ISNULL(notEditableMessage))}" styleClass="errorMessageContainer">
+			<apex:outputLabel value="{!notEditableMessage}" styleClass="errorMessageText"/>
+		</apex:outputPanel>
+
+		<apex:outputPanel rendered="{!ISNULL(notEditableMessage)}">
+			<!-- Empty divs for styling -->
+			<div class="slds-form-element slds-p-left_small slds-p-top_xx-large slds-p-right_small">
+				<!-- empty div -->
+			</div>
+			
+			<div class="slds-form-element slds-p-left_small slds-p-top_large slds-p-right_small">
+				<!-- empty div -->
+			</div>
+			
+			<!-- Image output -->
+			<div style="position:relative;" class="slds-col slds-align_absolute-center" >
+				<img id="output" />
+				<span id="delete-icon" style="display:none; position:absolute; top:5%; right:8%;" title="{!$Label.common_label_delete}">
+					<button class="slds-button slds-button_icon" onclick="imageDelete()">
+						<svg class="slds-icon slds-icon-text-default slds-align_absolute-center slds-icon_medium" aria-hidden="true">
+							<use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#clear"></use>
+						</svg>
+					</button>
+				</span>
+			</div>
+			
+			<!-- The two form approach on this page is to avoid view state errors when saving the image and re-rendering issues where the image would not persist when 
+				 re-rendering other parts of the page. Using this approach means that the image does not need to be held on the controller but is sent after the main expense
+				 record has been saved. -->
+			
+		    <apex:form id="topForm">
+				<apex:actionFunction name="saveImage" action="{!saveImage}" />
+				<apex:actionFunction name="recalculateAutoMileageAmount" action="{!recalculateAutoMileageAmount}" />
+
+				<!-- Image input -->
+				<div id="image-uploader-container" class="slds-col slds-text-align_center slds-p-top_xx-large">
+					<span class="slds-icon_container slds-icon-utility-attach" title="{!$Label.expense_add_photo_or_attachment}">
+						<apex:inputFile styleClass="slds-file-selector__input slds-assistive-text"
+							id="fileUploadInput01"
+							value="{!receiptFileContents.VersionData}"
+							filename="{!receiptFileContents.Title}"
+							contentType="{!receiptFileContents.FileType}"
+							onchange="loadFile(event)"/>
+						<apex:outputLabel styleClass="slds-file-selector__body" for="fileUploadInput01">
+							<svg class="slds-icon slds-icon-text-default slds-align_absolute-center slds-icon_medium" aria-hidden="true">
+								<use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#attach"></use>
+								<p class="ff-blue-icon-label-text">{!$Label.expense_add_photo_or_attachment}</p>
+							</svg>
+						</apex:outputLabel>
+					</span>
+				</div>
+					
+				<!-- Empty divs for styling -->
+				<div id="imageUploaderStylingDiv" class="slds-form-element slds-p-left_small slds-p-top_xx-large slds-p-right_small">
+					<!-- empty div -->
+				</div>
+
+				<div hidden="true">
+					<!-- Redirection URL to be used when the user presses Cancel -->				
+					<apex:input id="cancelredirecturl-hidden" value="{!cancelRedirectUrl}" required="false"/>
+
+					<!-- the 'savedImageURL' below, is used to control deletion in controller (if blank then existing image will need deleting) -->
+					<apex:input type="text" id="savedImageURL-hidden" value="{!savedImageURL}" />
+				</div>
+					
+			</apex:form>
+
+			<apex:form id="new-expense-form" >
+			
+					<!-- The default action happens to be the very first command button on the form. So if the user presses Enter on their keyboard
+						the first button would be activated, in this case Cancel, causing them to lose information. To have Save as the default
+						action (without changing the layout) we have a pretend Save button, which remains hidden, and keep this as the first
+						command button on the form.
+					-->
+					<apex:commandButton id="savebutton-hidden" style="visibility:hidden;"
+							onclick="showLoadMask(true);"
+							action="{!save}"
+							oncomplete="saveCompleteHandler();"
+							rerender="mainForm,lookupPanel,searchForm,messages"/>
+
+					<apex:actionFunction name="save" action="{!save}" />
+					<apex:actionFunction name="selectSearchFormApex" action="{!selectSearchForm}" reRender="mainForm,lookupPanel,searchForm" />
+					<apex:actionFunction name="autoMileageRateAndRecalculateAmount" action="{!getAutoMileageRateAndRecalculateAmount}" reRender="autoMileagePanel,amountText,messages" />
+					
+					<div class="headerSection">
+						<div class="slds-col slds-align_absolute-center">
+							<apex:commandButton value="{!$Label.pse__common_label_cancel}" onclick="onCancel();"/>
+						</div>
+						<div class="slds-col slds-align_absolute-center">
+							<h2 class="pageHeader">{!pageHeader}</h2>
+						</div>
+						<div class="slds-col slds-align_absolute-center">
+							<div class="slds-col slds-no-flex slds-grid slds-align_absolute-center">
+								<apex:commandButton id="savebutton" styleClass="slds-button slds-button_brand" 
+									value="{!$Label.pse__common_label_save}"
+									onclick="showLoadMask(true);"
+									action="{!save}"
+									oncomplete="saveCompleteHandler();"
+									rerender="mainForm,lookupPanel,searchForm,messages"/>
+							</div>
+						</div>
+					</div>
+					
+					<apex:pageMessages id="messages"/>
+				
+					<apex:outputPanel id="mainForm"
+									  style="display:{!IF(formSelector==MAIN_FORM,'inline','none')};">
+						<apex:pageBlock mode="edit">
+
+							<apex:inputHidden id="oncompleteredirecturl-hidden" value="{!onCompleteRedirectUrl}" required="false"/>
+						
+							<!-- In this page block section there are a few event listener methods calls. These call JS methods which then call apex methods.
+							 	 I have used this method rather than an action support, as was previously used, because some javascript code is needed to run 
+								 at the same time as calling the apex controller method and actions supports cannot call JS -->
+							<apex:pageBlockSection columns="1">
+
+								<!-- handle the 'project' and 'assignment' separately as we need to combine the two into one lookup control -->
+								<apex:outputPanel id="projAssignNamePanel"
+												  style="width:100%;"
+												  styleClass="lookupInput">
+
+									<apex:outputLabel value="{!$Label.pse__edit_expenses_label_project_assignment}" />
+
+									<apex:input type="text" id="projAssignInputComponent"
+												style="width:100%;"
+												value="{!projectOrAssignmentName}"
+												onmousedown="searchFormSelect()">
+									</apex:input>
+									<apex:image title="{!$Label.pse__edit_expenses_label_project_assignment}"
+												id="projOrAssLookUp"
+												onmouseover="this.className = 'lookupIconOn'; this.className = 'lookupIconOn';"
+												onmouseout="this.className = 'lookupIcon'; this.className = 'lookupIcon';"
+												onclick="searchFormSelect()"
+												style="position: absolute; top: 2rem;"
+												styleClass="lookupIcon"
+												value="/s.gif">
+									</apex:image>
+								</apex:outputPanel>
+
+								<!-- handle the 'date' separately -->
+    							<apex:outputPanel layout="block" styleClass="requiredInput">
+									<apex:outputPanel layout="block" styleClass="requiredBlock"></apex:outputPanel>
+									<apex:outputLabel value="{!$Label.pse__common_label_date}" for="date" style="width: 100%"/>
+									<apex:input type="date" 
+												id="date"
+												style="width:100%" 
+												label=""
+												value="{!expenseDate}">
+												<apex:actionSupport event="onchange" action="{!getAutoMileageRateAndRecalculateAmount}" reRender="autoMileagePanel,amountText"/>
+									</apex:input>
+								</apex:outputPanel>
+
+								<!-- handle the 'type' separately as we need special actionSupport processing -->
+    							<apex:outputPanel layout="block" styleClass="requiredInput">
+									<apex:outputPanel layout="block" styleClass="requiredBlock"></apex:outputPanel>
+									<apex:outputLabel value="{!$Label.pse__common_label_type}" for="type" />
+									<apex:inputField value="{!expense.pse__Type__c}" id="type" style="width:100%" label="">
+										<apex:actionSupport event="onchange" action="{!getAutoMileageRateAndRecalculateAmount}" reRender="autoMileagePanel,amountText"/>
+									</apex:inputField>
+								</apex:outputPanel>
+
+								<apex:panelGrid id="autoMileagePanel"
+												columns="2"
+												columnClasses="autoPanelCol1,autoPanelCol2"
+												style="display:{!IF(showRatePanel, 'inline', 'none')};">
+									<apex:outputLabel value="{!$Label.pse__expense_label_distance}" for="distText" />
+									<apex:panelGroup >
+										<apex:outputLabel value="{!$Label.pse__expense_label_unit} {!rateDisplay}" for="unitField" />
+										<span styleClass="labelCol" id="rateUnit"></span>
+									</apex:panelGroup>
+									<apex:inputField id="distText"  style="width:90%;"
+													 value="{!expense.pse__Distance__c}">
+										<apex:actionSupport event="onchange" action="{!recalculateAutoMileageAmount}" reRender="amountText" />
+									</apex:inputField>
+									<apex:inputField value="{!expense.pse__Rate_Unit__c}"
+													 id="unitField" >
+										<apex:actionSupport event="onchange" action="{!getAutoMileageRateAndRecalculateAmount}" reRender="autoMileagePanel,amountText" />
+									</apex:inputField>
+								</apex:panelGrid>
+
+								<!-- handle the 'Amount' separately -->
+    							<apex:outputPanel layout="block" styleClass="requiredInput">
+									<apex:outputPanel layout="block" styleClass="requiredBlock"></apex:outputPanel>
+									<apex:outputLabel value="{!$Label.pse__common_label_amount}" for="amountText" />
+									<apex:inputField id="amountText"
+													 required="false"
+													 style="width:100%" styleClass="keypad"
+													 label=""
+													 value="{!expense.pse__Amount__c}" />
+								</apex:outputPanel>
+
+								<!-- process all the other fields from the 'mobile' field set -->
+								<apex:repeat value="{!additionalExpenseFields}" var="aef">
+									<apex:outputPanel rendered="{!aef.isAccessible}"
+										style="width: {!aef.width}"
+										layout="block"
+										styleClass="{!IF(OR(aef.schemaFieldSetMember.required, aef.schemaFieldSetMember.DBRequired),'requiredInput','')}">
+										<apex:outputPanel layout="block"
+											styleClass="{!IF(OR(aef.schemaFieldSetMember.required, aef.schemaFieldSetMember.DBRequired),'requiredBlock','')}">
+										</apex:outputPanel>
+										<apex:outputLabel value="{!aef.label}" style="width: 100%"/>
+
+										<!-- Special case, if its a date, use 'type' and 'showDatePicker' attributes) -->
+										<apex:inputField value="{!expense[aef.schemaFieldSetMember.FieldPath]}" type="date" showDatePicker="false"
+											required="false" style="width: {!aef.width}" 
+											html-data-id="AdditionalFields_{!aef.schemaFieldSetMember.FieldPath}"
+											rendered="{!AND(aef.isCreateable,aef.displayType=='DATE')}"/>
+
+										<!-- Special case, if its the 'CurrencyIsoCode' field, we need to add a event handler (to update the Rate if changed) -->
+										<apex:inputField value="{!expense[aef.schemaFieldSetMember.FieldPath]}"
+											required="false" style="width: {!aef.width}"
+											html-data-id="AdditionalFields_{!aef.schemaFieldSetMember.FieldPath}"
+											rendered="{!AND(aef.isCreateable,aef.schemaFieldSetMember.FieldPath=='CurrencyIsoCode')}"
+											onchange="autoMileageRateAndRecalculateAmount();"/>
+
+										<!-- if the field is editable, create an apex:inputField -->
+										<apex:inputField value="{!expense[aef.schemaFieldSetMember.FieldPath]}"
+											required="false" style="width: {!aef.width}"
+											html-data-id="AdditionalFields_{!aef.schemaFieldSetMember.FieldPath}"
+											rendered="{!AND(aef.isCreateable,AND(aef.displayType!='DATE',aef.schemaFieldSetMember.FieldPath!='CurrencyIsoCode'))}" />										
+										<!-- if the field is not editable, create a text field -->
+										<apex:outputText value="{!expense[aef.schemaFieldSetMember.FieldPath]}" style="width: {!aef.width}" rendered="{!NOT(aef.isCreateable)}"/>
+
+									</apex:outputPanel>
+								</apex:repeat>
+							</apex:pageBlockSection>
+							
+						</apex:pageBlock>			
+					</apex:outputPanel>
+
+				<apex:outputPanel id="lookupPanel"
+								  style="display:{!IF(formSelector==SEARCH_FORM || formSelector==SEARCH_RESULTS,'inline','none')};white-space:nowrap;">
+					<apex:pageBlock mode="edit">
+						<apex:outputPanel >
+							<apex:panelGrid columns="2" style="white-space:nowrap;width:100%;align-items:baseline;">
+								<apex:panelGroup style="width:40%;">
+									<label for="searchField">{!$Label.pse__common_label_search}</label>
+									<!-- Override the default Save action by intercepting key presses and if the Enter button is pressed
+										activate the Go button. Note: if you simply call the function associated with the Go button then
+										the value in the field is not passed to the controller and the wrong filter would be applied.
+									-->
+									<apex:inputText id="searchField" value="{!searchString}" style="width:40%;"
+                                                     onkeypress="return overrideDefaultAction(event, 'goButton');" />
+									<apex:commandButton id="goButton"
+														value="{!$Label.pse__common_label_go}"
+														action="{!showSearchResults}"
+														reRender="mainForm,lookupPanel,searchForm"/>
+								</apex:panelGroup>
+								<apex:commandButton id="backButton"
+													value="{!$Label.pse__common_label_back}"
+													action="{!hideProjectAssignmentSelector}"
+													onclick="imageOrUploaderShow()"
+													style="float:right;"
+													reRender="mainForm,lookupPanel,searchForm"/>
+							</apex:panelGrid>
+						</apex:outputPanel>
+					</apex:pageBlock>
+				</apex:outputPanel>
+
+				<apex:outputPanel id="searchForm" style="display:{!IF(formSelector==SEARCH_FORM || formSelector==SEARCH_RESULTS,'inline','none')};">
+					<apex:pageBlock mode="edit">
+						<h2 style="display:{!IF(formSelector==SEARCH_FORM,'inline','none')};">{!$Label.pse__expense_recent_assignments}</h2>
+						<h2 style="display:{!IF(formSelector==SEARCH_RESULTS,'inline','none')};">{!$Label.pse__expense_matching_assignments}</h2>
+
+						<apex:outputPanel rendered="{!NOT(ISNULL(assignmentsToShow))}">
+							<apex:dataTable id="assignmentListTable" value="{!assignmentsToShow}" var="assignmentDetail"
+											rowClasses="odd,even" styleClass="tableClass lookupOptions">
+								<apex:column id="assCol"
+											 onmouseout="if (window.hiOff){hiOff(this);}"
+											 onmouseover="if (window.hiOn){hiOn(this);}">
+									<apex:commandLink id="assName" value="{!assignmentDetail.Name}" action="{!projectOrAssignmentSelected}" onclick="imageOrUploaderShow()" reRender="mainForm,lookupPanel,searchForm">
+										<apex:param assignTo="{!projectOrAssignmentName}" value="{!assignmentDetail.Name}" name="assName"/>
+										<apex:param assignTo="{!assignmentBillable}" value="{!assignmentDetail.isBillable}" name="assBillable"/>
+										<apex:param assignTo="{!projectCurrency}" value="{!assignmentDetail.currencyIsoCode}" name="projCurrency"/>
+										<apex:param assignTo="{!expense.Assignment__c}" value="{!assignmentDetail.Id}" name="assId"/>
+										<apex:param assignTo="{!expense.Project__c}" value="{!assignmentDetail.projectId}" name="projId"/>
+									</apex:commandLink>
+								</apex:column>
+							</apex:dataTable>
+						</apex:outputPanel>
+						<apex:outputPanel style="display:{!IF (ISNULL(assignmentsToShow), 'inline', 'none')};">
+							<br/>
+							<i style="display:{!IF(formSelector==SEARCH_FORM,'inline','none')};">{!$Label.pse__expense_no_recent_assignments}</i>
+							<i style="display:{!IF(formSelector==SEARCH_RESULTS,'inline','none')};">{!$Label.pse__expense_no_matching_assignments}</i>
+							<br/>
+						</apex:outputPanel>
+						<br/>
+						<apex:outputPanel >
+							<h2 style="display:{!IF(formSelector==SEARCH_FORM,'inline','none')};">{!$Label.pse__expense_global_projects}</h2>
+							<h2 style="display:{!IF(formSelector==SEARCH_RESULTS,'inline','none')};">{!$Label.pse__expense_matching_projects}</h2>
+
+							<apex:outputPanel rendered="{!NOT(ISNULL(projectsToShow))}">
+								<apex:dataTable id="globalProjectsTable" value="{!projectsToShow}" var="project"
+												rowClasses="odd,even" styleClass="tableClass lookupOptions">
+									<apex:column id="projCol"
+												 onmouseout="if (window.hiOff){hiOff(this);}"
+												 onmouseover="if (window.hiOn){hiOn(this);}">
+										<apex:commandLink id="projName" value="{!project.Name}" action="{!projectOrAssignmentSelected}" 
+											onclick="imageOrUploaderShow()" reRender="mainForm,lookupPanel,searchForm">
+											<apex:param assignTo="{!projectOrAssignmentName}" value="{!project.Name}" name="projName"/>
+											<apex:param assignTo="{!projectBillable}" value="{!project.isBillable}" name="projBillable"/>
+											<apex:param assignTo="{!projectCurrency}" value="{!project.currencyIsoCode}" name="projCurrency"/>
+											<apex:param assignTo="{!expense.Project__c}" value="{!project.Id}" name="projId"/>
+											<apex:param assignTo="{!expense.Assignment__c}" value="{!null}" name="assId"/>
+										</apex:commandLink>
+									</apex:column>
+								</apex:dataTable>
+							</apex:outputPanel>
+							<apex:outputPanel style="display:{!IF (ISNULL(projectsToShow), 'inline', 'none')};">
+								<br/>
+								<i style="display:{!IF(formSelector==SEARCH_FORM,'inline','none')};">{!$Label.pse__expense_no_global_projects}</i>
+								<i style="display:{!IF(formSelector==SEARCH_RESULTS,'inline','none')};">{!$Label.pse__expense_no_matching_projects}</i>
+								<br/>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:pageBlock>
+				</apex:outputPanel>
+
+			</apex:form>
+		</apex:outputPanel>
+	</body>
+	</html>
+	<c:DefaultLoadMask componentId="load-mask"/>
+</apex:page>

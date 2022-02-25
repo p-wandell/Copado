@@ -1,0 +1,217 @@
+<!-- Copyright (c) 2016-2019 FinancialForce.com, inc.  All rights reserved. -->
+<apex:page title="{!$Label.pse__teamscheduleplanner_title}" showHeader="true" sidebar="false" standardController="pse__Team__c" extensions="pse.TeamSchedulePlannerController">
+	<apex:pageMessages id="messageSection" />
+	<apex:outputPanel layout="none" rendered="{!isEverythingOk}">
+		<c:extjs_bootstrap staticResource="{!$Resource.pse__TeamSchedulePlanner}" applicationName="TP" developmentPrefix="">
+			<script>
+				// Globally set timeout value for all remoting methods
+				//Visualforce.remoting.timeout = 120000;
+				
+				window.$URLs = {
+					manageTeamPageUrl: '{!JSENCODE(URLFOR($Page.ManageTeam))}',
+					teamSchedulePlannerUrl: '{!JSENCODE(URLFOR($Page.TeamSchedulePlanner))}'
+				};
+				
+				window.$RemoteAction = {
+					TeamSchedulePlannerController: {
+						fetchTeams: '{!$RemoteAction.TeamSchedulePlannerController.fetchTeams}',
+						fetchTeamUtilizationByWeek: '{!$RemoteAction.TeamSchedulePlannerController.fetchTeamUtilizationByWeek}',
+						fetchTeamSlotsByWeek: '{!$RemoteAction.TeamSchedulePlannerController.fetchTeamSlotsByWeek}',
+						fetchTeamAssignmentsByWeek: '{!$RemoteAction.TeamSchedulePlannerController.fetchTeamAssignmentsByWeek}',
+                        saveTeamScheduleTemplate: '{!$RemoteAction.TeamSchedulePlannerController.saveTeamScheduleTemplate}',
+                        fetchTeamTemplates: '{!$RemoteAction.TeamSchedulePlannerController.fetchTeamTemplates}',
+                        fetchTeamTemplateSlots: '{!$RemoteAction.TeamSchedulePlannerController.fetchTeamTemplateSlots}',
+                        fetchTeamSchedulesByWeek: '{!$RemoteAction.TeamSchedulePlannerController.fetchTeamSchedulesByWeek}',
+                        saveTeamSchedules: '{!$RemoteAction.TeamSchedulePlannerController.saveTeamSchedules}',
+                        saveTeamAssignments: '{!$RemoteAction.TeamSchedulePlannerController.saveTeamAssignments}',
+                        sendSchedule: '{!$RemoteAction.TeamSchedulePlannerController.sendSchedule}',
+                        fetchSlotTypes: '{!$RemoteAction.TeamSchedulePlannerController.fetchSlotTypes}',
+                        updateNotesOnTeamSchedule: '{!$RemoteAction.TeamSchedulePlannerController.updateNotesOnTeamSchedule}',
+                        getTeamSchedulesToCopy: '{!$RemoteAction.TeamSchedulePlannerController.getTeamSchedulesToCopy}'
+					}
+				};
+				
+				window.$data = {
+					standardPicklistOptions: JSON.parse("{!JSENCODE(standardPicklistOptions)}")
+				};
+
+				window.TeamSchedulePlannerConfigs = {
+					teamContext: JSON.parse("{!JSENCODE(teamContext)}"),
+					currentResourceId: '{!currentResourceId}',
+					weekStartDate: '{!weekStartDate}',
+					currentDate: '{!currentDate}',
+					activeTabIndex: '{!activeTabIndex}',
+					isSendNotificationsEnabled: Boolean({!IsSendNotificationsEnabled}),
+					tooltips: {
+						fillScheduleTeamMembers: JSON.parse("{!JSENCODE(teamMembershipTooltipFieldSet)}")
+					},
+					isRestrictAssignmentDeletionEnabled: Boolean({!IsRestrictAssignmentDeletionEnabled})
+				};
+				
+				window.$Label = window.$Label || {};
+				$Label.TeamSchedulePlanner_Title 		         = '{!JSINHTMLENCODE($Label.TeamSchedulePlanner_Title)}';
+				$Label.TP_ScheduleDefinition_Title 		         = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Title)}';
+				$Label.TP_ScheduleStaffing_Title 		         = '{!JSINHTMLENCODE($Label.TP_ScheduleStaffing_Title)}';
+				$Label.TP_Btn_Save_Name 				         = '{!JSINHTMLENCODE($Label.TP_Btn_Save_Name)}';
+				$Label.TP_Btn_Reload_Name 			             = '{!JSINHTMLENCODE($Label.TP_Btn_Reload_Name)}';
+				$Label.TP_Staffing_Btn_Send_Schedule_Name 	     = '{!JSINHTMLENCODE($Label.TP_Staffing_Btn_Send_Schedule_Name)}';
+				$Label.TP_Staffing_Btn_Finalize_Assignments_Name = '{!JSINHTMLENCODE($Label.TP_Staffing_Btn_Finalize_Assignments_Name)}';
+				$Label.TP_Staffing_Column_Team_Member 		     = '{!JSINHTMLENCODE($Label.TP_Staffing_Column_Team_Member)}';
+				$Label.TP_Staffing_Column_Availability           = '{!JSINHTMLENCODE($Label.TP_Staffing_Column_Availability)}';
+				$Label.TP_Staffing_Column_Hours_Scheduled		 = '{!JSINHTMLENCODE($Label.TP_Staffing_Column_Hours_Scheduled)}';
+				$Label.TP_Staffing_Column_Weekday_Total			 = '{!JSINHTMLENCODE($Label.TP_Staffing_Column_Weekday_Total)}';
+				$Label.TP_Staffing_Column_Weekend_Total			 = '{!JSINHTMLENCODE($Label.TP_Staffing_Column_Weekend_Total)}';
+				$Label.TP_Staffing_Team_Member_Grid_Title	     = '{!JSINHTMLENCODE($Label.TP_Staffing_Team_Member_Grid_Title)}';
+				$Label.TP_Staffing_Manage_Team_Link			     = '{!JSINHTMLENCODE($Label.TP_Staffing_Manage_Team_Link)}';
+				$Label.TP_No_Team_Members_Label                  = '{!JSINHTMLENCODE($Label.TP_No_Team_Members_Label)}';
+				$Label.TP_Combo_Team_Label 				         = '{!JSINHTMLENCODE($Label.TP_Combo_Team_Label)}';
+				$Label.TP_Selected_Team_Timezone_Label				 = '{!JSINHTMLENCODE($Label.TP_Selected_Team_Timezone_Label)}';
+				$Label.TP_Staffing_Team_Schedule_Title 			 = '{!JSINHTMLENCODE($Label.TP_Staffing_Team_Schedule_Title)}';
+
+				$Label.TP_ScheduleDefinition_Btn_Create_Template = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Btn_Create_Template)}';
+				$Label.TP_ScheduleDefinition_Create_Schedule_Grid_Title = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Create_Schedule_Grid_Title)}';
+				$Label.TP_ScheduleDefinition_Schedule_Preview_Title = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Schedule_Preview_Title)}';
+				$Label.TP_ScheduleDefinition_Schedule_Preview_For_Day = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Schedule_Preview_For_Day)}';
+				$Label.TP_ScheduleDefinition_Template_Name_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Template_Name_Label)}';
+				$Label.TP_ScheduleDefinition_Slot_Grid_Title_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Slot_Grid_Title_Label)}';
+				$Label.TP_ScheduleDefinition_Time_Slot_Name_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Time_Slot_Name_Label)}';
+				$Label.TP_ScheduleDefinition_Time_Slot_Type_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Time_Slot_Type_Label)}';
+				$Label.TP_ScheduleDefinition_Start_Time_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Start_Time_Label)}';
+				$Label.TP_ScheduleDefinition_End_Time_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_End_Time_Label)}';
+				$Label.TP_ScheduleDefinition_Work_Hours_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Work_Hours_Label)}';
+				$Label.TP_ScheduleDefinition_Number_Of_Resources_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Number_Of_Resources_Label)}';
+				$Label.TP_ScheduleDefinition_Delete_Time_Slot_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Delete_Time_Slot_Label)}';
+				$Label.TP_ScheduleDefinition_Slot_Type_Help_Text = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Slot_Type_Help_Text)}';
+				$Label.TP_ScheduleDefinition_Work_Hours_Help_Text = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Work_Hours_Help_Text)}';
+				$Label.TP_ScheduleDefinition_Manage_Schedule_Templates = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Manage_Schedule_Templates)}';
+				$Label.TP_ScheduleDefinition_Create_Edit_Template_Title = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Create_Edit_Template_Title)}';
+				$Label.TP_ScheduleDefinition_Btn_Apply_Changes = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Btn_Apply_Changes)}';
+				$Label.TP_ScheduleDefinition_Msg_Header_Templates_Created = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Msg_Header_Templates_Created)}';
+				$Label.TP_ScheduleDefinition_Msg_Templates_Created = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Msg_Templates_Created)}';
+				$Label.TP_ScheduleDefinition_Msg_Header_Templates_Edited = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Msg_Header_Templates_Edited)}';
+				$Label.TP_ScheduleDefinition_Msg_Templates_Edited = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Msg_Templates_Edited)}';
+				$Label.TP_ScheduleDefinition_Msg_Header_Duplicate_Template_Names = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Msg_Header_Duplicate_Template_Names)}';
+				$Label.TP_ScheduleDefinition_Msg_Duplicate_Template_Names = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Msg_Duplicate_Template_Names)}';
+				$Label.TP_ScheduleDefinition_Template_Name_Validation_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Template_Name_Validation_Label)}';
+				$Label.TP_ScheduleDefinition_Create_Template_Required_Field_Missing_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Create_Template_Required_Field_Missing_Label)}';            
+            	$Label.TP_ScheduleDefinition_Create_Template_Start_Time_Validation_Message_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Create_Template_Start_Time_Validation_Message_Label)}';
+            	$Label.TP_ScheduleDefinition_Create_Template_End_Time_Validation_Message_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Create_Template_End_Time_Validation_Message_Label)}';
+            	$Label.TP_ScheduleDefinition_Create_Template_Hours_Validation_Message_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Create_Template_Hours_Validation_Message_Label)}';
+				$Label.TP_ScheduleDefinition_add_time_slot_label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_add_time_slot_label)}';
+				$Label.TP_ScheduleDefinition_Copy_From_Existing_Template = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_From_Existing_Template)}';				
+				$Label.TP_ScheduleDefinition_Template_Optional_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Template_Optional_Label)}';
+				$Label.TP_ScheduleDefinition_Template_Required_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Template_Required_Label)}';
+				$Label.TP_ScheduleDefinition_Create_Template_Resources_Validation_Message_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Create_Template_Resources_Validation_Message_Label)}';							
+				$Label.TP_ScheduleDefinition_Actions = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Actions)}';
+				$Label.TP_ScheduleDefinition_Last_Modified_Date = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Last_Modified_Date)}';
+				$Label.TP_ScheduleDefinition_Last_Used_Date = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Last_Used_Date)}';
+				$Label.TP_ScheduleDefinition_Copy_From_Existing_Template = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_From_Existing_Template)}';
+				$Label.TP_ScheduleDefinition_Template_Count = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Template_Count)}';
+				$Label.TP_ScheduleDefinition_No_Schedule_Template_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_No_Schedule_Template_Label)}';
+				$Label.TP_ScheduleDefinition_Delete_Template = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Delete_Template)}';
+				$Label.TP_ScheduleDefinition_Delete_Template_Message = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Delete_Template_Message)}';
+				$Label.TP_ScheduleDefinition_Date_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Date_Label)}';
+				$Label.TP_ScheduleDefinition_Schedule_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Schedule_Label)}';
+				$Label.TP_ScheduleDefinition_Status_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Status_Label)}';
+				$Label.TP_ScheduleDefinition_Change_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Change_Label)}';
+				$Label.TP_ManageTemplate_Unsaved_Changes_Msg = '{!JSINHTMLENCODE($Label.TP_ManageTemplate_Unsaved_Changes_Msg)}';
+				$Label.TP_Unsaved_Changes_Button_saveChanges = '{!JSINHTMLENCODE($Label.TP_Unsaved_Changes_Button_saveChanges)}';
+				$Label.TP_Unsaved_Changes_Button_discardChanges = '{!JSINHTMLENCODE($Label.TP_Unsaved_Changes_Button_discardChanges)}';
+				$Label.TP_Unsaved_Changes_Title = '{!JSINHTMLENCODE($Label.TP_Unsaved_Changes_Title)}';
+				$Label.TP_CreateSchedule_Unsaved_Changes_Msg = '{!JSINHTMLENCODE($Label.TP_CreateSchedule_Unsaved_Changes_Msg)}';
+				$Label.TP_ScheduleDefinition_Revert_To_Original = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Revert_To_Original)}';
+				$Label.TP_ScheduleDefinition_Choose_Schedule = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Choose_Schedule)}';
+				$Label.TP_ScheduleDefinition_Custom = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Custom)}';
+				$Label.TP_ScheduleDefinition_Custom_Schedule = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Custom_Schedule)}';
+				$Label.TP_ScheduleDefinition_Edit_Custom_schedule = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Edit_Custom_schedule)}';
+				$Label.TP_ScheduleDefinition_filled_Schedule_status = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_filled_Schedule_status)}';
+				$Label.TP_ScheduleDefinition_Time_of_Day_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Time_of_Day_Label)}';
+				$Label.TP_ScheduleDefinition_No_Schedule_Message_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_No_Schedule_Message_Label)}';
+				$Label.TP_ScheduleDefinition_No_Schedule_Defined_For_Date_Message_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_No_Schedule_Defined_For_Date_Message_Label)}';
+				$Label.TP_ScheduleDefinition_Template_Unsaved_Changes_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Template_Unsaved_Changes_Label)}';
+				$Label.TP_Template_Changes_Indicator_Message = '{!JSINHTMLENCODE($Label.TP_Template_Changes_Indicator_Message)}';
+				$Label.TP_ScheduleDefinition_Schedule_Assignments_Delete_Confirmation_Message = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Schedule_Assignments_Delete_Confirmation_Message)}';
+				$Label.TP_ScheduleDefinition_Change_Schedule_For_Day_Message = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Change_Schedule_For_Day_Message)}';
+				$Label.TP_ScheduleDefinition_Change_Schedule_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Change_Schedule_Label)}';
+				$Label.TP_ScheduleDefinition_Change_Template_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Change_Template_Label)}';
+				$Label.TP_ScheduleDefinition_Change_Staffing_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Change_Staffing_Label)}';
+
+				$Label.TP_Staffing_Unsaved_Changes_Msg = '{!JSINHTMLENCODE($Label.TP_Staffing_Unsaved_Changes_Msg)}';
+				$Label.TP_Visualforce_UnsavedChanges_msg = '{!JSINHTMLENCODE($Label.TP_Visualforce_UnsavedChanges_msg)}';
+				$Label.common_label_cancel = '{!JSINHTMLENCODE($Label.common_label_cancel)}';
+				$Label.common_label_delete = '{!JSINHTMLENCODE($Label.common_label_delete)}';
+				$Label.common_label_none = '{!JSINHTMLENCODE($Label.common_label_none)}';
+				$Label.TP_Staffing_Changes_Save_Msg = '{!JSINHTMLENCODE($Label.TP_Staffing_Changes_Save_Msg)}';
+				$Label.TP_Staffing_Column_Holiday_Total = '{!JSINHTMLENCODE($Label.TP_Staffing_Column_Holiday_Total)}';
+				$Label.TP_ScheduleDefinition_Create_Template_Slot_Name_Validation_Message_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Create_Template_Slot_Name_Validation_Message_Label)}';
+				$Label.TP_Create_Schedule_Changes_Save_Msg = '{!JSINHTMLENCODE($Label.TP_Create_Schedule_Changes_Save_Msg)}';
+				$Label.TP_Manage_Template_Changes_Save_Msg = '{!JSINHTMLENCODE($Label.TP_Manage_Template_Changes_Save_Msg)}';
+				$Label.TP_Send_Schedule_Save_Msg = '{!JSINHTMLENCODE($Label.TP_Send_Schedule_Save_Msg)}';
+				$Label.TP_Send_Schedule_Title = '{!JSINHTMLENCODE($Label.TP_Send_Schedule_Title)}';
+				$Label.TP_ScheduleDefinition_Template_Name_Custom_None_Validation_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Template_Name_Custom_None_Validation_Label)}';
+				$Label.TP_Lock_Staffing_Schedule	 			 = '{!JSINHTMLENCODE($Label.TP_Lock_Staffing_Schedule)}';
+				$Label.TP_Unlock_Staffing_Schedule	 	 		 = '{!JSINHTMLENCODE($Label.TP_Unlock_Staffing_Schedule)}';
+				$Label.TP_Staffing_Schedule_Title = '{!JSINHTMLENCODE($Label.TP_Staffing_Schedule_Title)}';
+				$Label.TP_ScheduleDefinition_Select_Template_Preview_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Select_Template_Preview_Label)}';
+				$Label.TP_ScheduleDefinition_Template_Preview_Title = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Template_Preview_Title)}';
+				$Label.TP_ScheduleDefinition_No_Template_Defined_For_Team_Message_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_No_Template_Defined_For_Team_Message_Label)}';
+				$Label.TP_Team_Readonly_Label = '{!JSINHTMLENCODE($Label.TP_Team_Readonly_Label)}';
+				$Label.TP_ScheduleDefinition_Slot_Grid_Title_Required_Field_Info_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Slot_Grid_Title_Required_Field_Info_Label)}';
+				$Label.TP_Send_Schedule_Blocked_Msg = '{!JSINHTMLENCODE($Label.TP_Send_Schedule_Blocked_Msg)}';
+				$Label.TP_Team_None_Access_Error_Msg = '{!JSINHTMLENCODE($Label.TP_Team_None_Access_Error_Msg)}';
+				$Label.TP_Delete_Assignments_Error_Message = '{!JSINHTMLENCODE($Label.TP_Delete_Assignments_Error_Message)}';
+				$Label.TP_Send_Schedule_No_EmailTemplate_Toast_Title =  '{!JSINHTMLENCODE($Label.TP_Send_Schedule_No_EmailTemplate_Toast_Title)}';			
+				$Label.TP_Send_Schedule_No_EmailTemplate_Toast =  '{!JSINHTMLENCODE($Label.TP_Send_Schedule_No_EmailTemplate_Toast)}';
+				$Label.TP_Delete_Assignments_Custom_Error_Message =  '{!JSINHTMLENCODE($Label.TP_Delete_Assignments_Custom_Error_Message)}';
+				$Label.TP_Template_Changes_Indicator_Message_Past_Week =  '{!JSINHTMLENCODE($Label.TP_Template_Changes_Indicator_Message_Past_Week)}';
+				$Label.TP_ScheduleDefinition_Copy_Schedule =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_Schedule)}';
+				$Label.TP_ScheduleDefinition_Days_To_Copy =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Days_To_Copy)}';
+				$Label.TP_ScheduleDefinition_Copy_From_Week =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_From_Week)}';
+				$Label.TP_ScheduleDefinition_Copy_To_Week =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_To_Week)}';
+				$Label.TP_ScheduleDefinition_Copy_Content =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_Content)}';
+				$Label.TP_ScheduleDefinition_Schedule_Only =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Schedule_Only)}';
+				$Label.TP_ScheduleDefinition_Schedule_And_Assignments =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Schedule_And_Assignments)}';
+				$Label.TP_ScheduleDefinition_Copied_Schedule_For_Week = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copied_Schedule_For_Week)}';
+				$Label.TP_ScheduleDefinition_Schedule_Copied = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Schedule_Copied)}';
+				$Label.TP_Copy_To_Week_TC_Exist =  '{!JSINHTMLENCODE($Label.TP_Copy_To_Week_TC_Exist)}';
+				$Label.TP_ScheduleDefinition_No_Slot_Types_Exist_Title =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_No_Slot_Types_Exist_Title)}';
+				$Label.TP_ScheduleDefinition_No_Slot_Types_Exist_Message =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_No_Slot_Types_Exist_Message)}';
+				$Label.TP_Link_To_Page = '{!JSINHTMLENCODE($Label.TP_Link_To_Page)}';
+				$Label.TP_ScheduleDefinition_Copy_Schedule_Assignments_Delete_Confirmation_Message = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_Schedule_Assignments_Delete_Confirmation_Message)}';
+				$Label.TP_ScheduleDefinition_Copy_Schedules_For_Week_Message =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_Schedules_For_Week_Message)}';
+				$Label.TP_ScheduleDefinition_Copy_Schedules_On_Same_Week_Error_Message =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_Schedules_On_Same_Week_Error_Message)}';
+				$Label.TP_ScheduleDefinition_Copy_Over_Schedule =  '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Copy_Over_Schedule)}';
+				$Label.TP_Swapping_Btn_Swap_Shift = '{!JSINHTMLENCODE($Label.TP_Swapping_Btn_Swap_Shift)}';
+				$Label.TP_Swapping_Swap_Shift_Slotview_Info_Label = '{!JSINHTMLENCODE($Label.TP_Swapping_Swap_Shift_Slotview_Info_Label)}';
+				$Label.TP_Swapping_Team_Shift_Title_Label = '{!JSINHTMLENCODE($Label.TP_Swapping_Team_Shift_Title_Label)}';
+				$Label.TP_ViewSchedule_Title = '{!JSINHTMLENCODE($Label.TP_ViewSchedule_Title)}';
+				$Label.TP_Slot_Hour_Notation_Label = '{!JSINHTMLENCODE($Label.TP_Slot_Hour_Notation_Label)}';
+				$Label.TP_Slot_Hours_Notation_Label = '{!JSINHTMLENCODE($Label.TP_Slot_Hours_Notation_Label)}';
+				$Label.TP_ScheduleDefinition_Start_Time_Required_Msg_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Start_Time_Required_Msg_Label)}';
+				$Label.TP_ScheduleDefinition_End_Time_Required_Msg_Label = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_End_Time_Required_Msg_Label)}';
+				$Label.TP_ScheduleDefinition_Assigned_Resource = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Assigned_Resource)}';
+				$Label.TP_ScheduleDefinition_Shift = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Shift)}';
+				$Label.TP_ScheduleDefinition_New_Resource = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_New_Resource)}';
+				$Label.TP_Swapping_Swap_Indicator_Tool_Tip_Label = '{!JSINHTMLENCODE($Label.TP_Swapping_Swap_Indicator_Tool_Tip_Label)}';
+				$Label.TP_ScheduleDefinition_Swap_Shift = '{!JSINHTMLENCODE($Label.TP_ScheduleDefinition_Swap_Shift)}';				
+				$Label.TP_ViewSchedule_Msg_Header_Swapped_Shifts = '{!JSINHTMLENCODE($Label.TP_ViewSchedule_Msg_Header_Swapped_Shifts)}';
+				$Label.TP_ViewSchedule_Msg_Swapped_Shifts = '{!JSINHTMLENCODE($Label.TP_ViewSchedule_Msg_Swapped_Shifts)}';
+				$Label.TP_ViewSchedule_Msg_Change_Shifts = '{!JSINHTMLENCODE($Label.TP_ViewSchedule_Msg_Change_Shifts)}';
+				$Label.TP_ViewSchedule_Msg_Header_Change_Shifts = '{!JSINHTMLENCODE($Label.TP_ViewSchedule_Msg_Header_Change_Shifts)}';
+				$Label.TP_ViewSchedule_No_Schedule_Defined_For_Date_Message_Label = '{!JSINHTMLENCODE($Label.TP_ViewSchedule_No_Schedule_Defined_For_Date_Message_Label)}';
+				$Label.TP_Label_Daily_Notes = '{!JSINHTMLENCODE($Label.TP_Label_Daily_Notes)}';
+				$Label.TP_Label_Daily_Notes_Title = '{!JSINHTMLENCODE($Label.TP_Label_Daily_Notes_Title)}';
+				$Label.TP_Copy_Schedule_Assignments_Delete_Confirmation_Message_With_Tc_Expenses = '{!JSINHTMLENCODE($Label.TP_Copy_Schedule_Assignments_Delete_Confirmation_Message_With_Tc_Expenses)}';
+			</script>
+		</c:extjs_bootstrap>
+	</apex:outputPanel>
+	<script>
+        window.addEventListener("beforeunload", function(e) {
+            if (window.isDirty) {
+                //cross-browser support for unload confirmation dialog. See https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload#Notes
+                (e || window.event).returnValue = $Label.TP_Visualforce_UnsavedChanges_msg;
+                return $Label.TP_Visualforce_UnsavedChanges_msg;
+            }
+        });
+    </script>
+</apex:page>

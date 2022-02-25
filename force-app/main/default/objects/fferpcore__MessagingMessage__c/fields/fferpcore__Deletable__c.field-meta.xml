@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>fferpcore__Deletable__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <formula>fferpcore__LastAttemptedDelivery__c &lt;= fferpcore__MessageType__r.fferpcore__ExpiryCutoff__c  &amp;&amp;
+(ISPICKVAL(fferpcore__State__c, &apos;Complete&apos;) || ISPICKVAL(fferpcore__State__c,&apos;Errors&apos;) || ISPICKVAL(fferpcore__State__c,&apos;Void&apos;))</formula>
+    <label>Deletable</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

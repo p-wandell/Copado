@@ -1,0 +1,58 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- X 7 S Json Feed -->
+<template>
+	<c-x7s-shr-component-wrapper
+		title={title}
+		variant={variant}
+		description={description}
+		title-align={titleAlign}
+		icon-name={iconName}
+		custom-class={customClass}
+		aria-label={label.labelAriaWrapper}
+		>
+		<div class="slds-is-relative">
+			<template if:true={loading}>
+				<c-x7s-exp-spinner></c-x7s-exp-spinner>
+			</template>
+			<template if:true={listIsEmpty}>
+				{listEmptyText}
+			</template>
+			<template if:false={listIsEmpty}>
+			<template for:each={feedItems} for:item="feedItem" for:index="index">
+				<c-x7s-exp-feed-item-test
+					if:true={feedTypeIsTest}
+					key={feedItem.Id}
+					title={feedItem.title}
+					href={feedItem.url}
+					author-name={feedItem.authorName}
+					date-time-field={feedItem.dateTimeField}
+					event-timestamp={feedItem.eventTimestamp}
+					description={feedItem.description}
+					full-description={feedItem.fullDescription}>
+				</c-x7s-exp-feed-item-test>
+				<c-x7s-exp-feed-item-blog
+					if:true={feedTypeIsBlog}
+					key={feedItem.Id}
+					title={feedItem.title.rendered}
+					href={feedItem.link}
+					publish-date={feedItem.publishDate}
+					publish-timestamp={feedItem.publishTimestamp}>
+				</c-x7s-exp-feed-item-blog>
+				<c-x7s-exp-feed-item-event
+					if:true={feedTypeIsEvents}
+					key={feedItem.Id}
+					title={feedItem.title.rendered}
+					href={feedItem.link}
+					date-time-field={feedItem.dateTimeField}
+					event-timestamp={feedItem.eventTimestamp}>
+				</c-x7s-exp-feed-item-event>
+
+				<hr key={feedItem.Id}>
+			</template>
+		</template>
+		</div>
+	</c-x7s-shr-component-wrapper>
+</template>

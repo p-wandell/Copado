@@ -1,0 +1,334 @@
+/* Copyright ©2016-2017 7Summits Inc. All rights reserved. */
+.THIS.primary{
+    background: #4ECDC4  !important;
+}
+.THIS .dtDayOfEvent{
+    color: #fff!important;
+    font-size: 11px;
+    font-weight: 150;
+}
+.THIS .row {
+              background: #fff;
+
+              border-bottom: 1px solid #CECECE!important;
+              /*padding: 10px;*/
+              margin-left: 2%;
+              margin-bottom: 10px;
+              min-height: 82px;
+              border-radius: 4px;
+        }
+.THIS .dtBlock2 {
+    width: 50px;
+    background: #564D4D;
+    color: #fff !important;
+}
+
+.THIS .colorWhite {
+    color: #fff !important;
+}
+.THIS .ui-widget3{
+        -moz-box-shadow: inset 0 0 10px #000000;
+        -webkit-box-shadow: inset 0 0 10px #000000;
+        box-shadow: 0 0 10px #807D7D;
+        border-radius: 5px;
+        width: 90%!important;
+        padding:10px!important;
+}
+.THIS .dtDisplay{
+    display: inline-block!important;
+    width: 50px;
+    background: #564D4D;
+    color: #fff !important;
+    margin-bottom: 13px;
+}
+.THIS .dtDayofWeek{
+    color: #fff !important;
+    font-size: 12px;
+}
+.THIS .dtMonth{
+    color: #fff !important;
+    font-size: 16px;
+}
+.THIS .dtDate{
+    font-size: 28px;;
+    color: #fff !important;
+}
+.THIS .eventNameDisplay{
+    color: #666666!important;
+    font-weight: 400;
+    font-size: 17px;
+}
+.THIS .cityDisplay{
+    color: #666666;
+    /*font-family: 'Open Sans Light', 'Open Sans';*/
+    font-weight: 300;
+    font-size: 14px;
+}
+.THIS .searchResultsDisplay{
+        float: left!important;
+        /* width: 250px;
+        margin-bottom: 20px;*/
+        background: #F2F2F2;
+        /*margin-right: 19px;
+        height: 184px;
+        display: table;*/
+
+}
+.THIS .searchResultsDisplay .dtDisplay
+{
+        height: 123px!important;
+        padding-top: 10px;
+        box-sizing: border-box!important;
+        display: table-cell!important;
+        width:70px;
+        vertical-align: top;
+}
+.THIS .searchResultsDisplay .blockDisplay
+{
+        padding-top: 10px;
+        box-sizing: border-box!important;
+        display: table-cell!important;
+}
+
+.THIS .displayMasterDiv{
+    width:100%;
+    float:right;
+}
+.THIS.displayMasterDivNon{
+    width:290px;
+    float:right;
+    -moz-box-shadow: inset 0 0 10px #000000;
+    -webkit-box-shadow: inset 0 0 10px #000000;
+    box-shadow: 0 0 5px #807D7D;
+    border-radius: 5px;
+    padding:10px!important;
+}
+
+.THIS .blockDisplay {
+    width:68%;
+
+}
+.THIS .optionButtonDisply{
+      width: 100%;
+      height: auto;
+      background: #cccccc;
+      padding: 8% 0 0 2%;
+}
+.THIS .optionButtonDesign{
+      border-radius: 16px;
+      background: #e5e5e5;
+      height: 22px;
+      color: #717171;
+      line-height: 22px;
+      text-transform: uppercase;
+      margin-top: -9%;
+      font-size: 11px;
+      padding-left: 12px;
+      padding-right: 12px;
+}
+.THIS .optionButtonDisplyNone{
+      display:none!important;
+}
+.THIS .dtSearchBlockDisply{
+      display: table;
+      width: 100%!important;
+      min-height: 140px!important;
+}
+.THIS .displyLine{
+      border-bottom: 4px solid #CECECE!important;
+}
+.THIS .displaySearchFilter{
+
+      display:none!important;
+}
+
+.THIS .SearchHeader{
+      width: 96.5%!important;
+}
+
+.THIS .searchHeaderFont{
+      font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+}
+.THIS .setButton{
+      bottom: 0px!important;
+      position: absolute;
+      margin-bottom:3px!important
+}
+.THIS .dropLastLine:last-child{
+  border-bottom: none!important
+}
+.THIS .displyViewAllButton{
+      text-align: center;
+}
+.THIS .displyIconImage{
+    height: 18px;
+    fill: #666666!important;
+    width: 1rem!important;
+    height: 1rem!important;
+
+}
+.THIS .slds-dropdown--small {
+    min-width: 12rem!important;
+}
+.THIS .menuIcnDiv{
+    float:right;
+}
+.THIS .menuDDwnList{
+    margin-left: 82%;
+    position:absolute;
+    display:none;
+}
+.THIS .tabcss{
+   font-size: 16px;
+   font-weight: bold;
+}
+.THIS .displyIconImage{
+  fill: #666666!important;
+  width: 0.7rem!important;
+  height: 0.7rem!important;
+}
+.THIS .customBtn{
+    color:#969696;
+    font-weight:normal!important;
+}
+.THIS .customBtn:first-child{
+  border-right:none!important;
+}
+.THIS .customBtn:hover{
+  color:#969696;
+  background-color: transparent;
+}
+.THIS .btnActive{
+  background:#f2f2f2!important;
+}
+.THIS .customBtn:focus{
+  box-shadow:none!important;
+  color:#969696!important;
+}
+.THIS .customBtn:active{
+  border:none!important;
+}
+.THIS .grayFill{
+  fill:#666666!important;
+  width: 1rem!important;
+  height: 1rem!important;
+}
+.THIS .slds-dropdown--small {
+    min-width: 12rem!important;
+}
+.THIS .CustomStyleMenu{
+    left: 81% !important;
+    /*min-width: 230px!important;*/
+}
+.THIS .CustomMenuSearch{
+    left: 76%!important;
+    min-width: 230px!important;
+    top: 26px;
+}
+.THIS .customButton{
+      border-radius: 0.25rem 0.25rem 0.25rem 0.25rem!important;
+}
+.THIS .showImg{
+    display:block;
+}
+.THIS .hideImg{
+    display:none;
+}
+.THIS .tickSymbol{
+    height:12px;
+    margin-top: 6px;
+}
+.THIS .featuredTileSet{
+  padding-top: 10px;
+  box-sizing: border-box!important;
+  display: table-cell!important;
+  width: 200px;
+  height: 320px;
+  vertical-align: middle;
+}
+.THIS .setTopicsOnImages{
+    margin-top: -21%;
+    font-size: 10px;
+}
+.THIS .setTitleFeatured{
+  text-align: center!important;
+  font-weight: 500!important;
+  font-size: 36px;
+}
+.THIS a {
+    color: #4183c4!important;
+    text-decoration: none;
+}
+.THIS .buttonlabel{
+    color:White!important;
+}
+.THIS .buttonText {
+    text-transform: uppercase;
+}
+
+.THIS .bg-image {position: absolute; top: 0; bottom: 0; width: 100%; background-repeat: no-repeat;background-size: cover;background-position: center;}
+.THIS .image-link-container {padding-top: 46%; overflow: hidden;  position: relative;}
+.THIS .dtDisplay_4plus1{height: 160px!important; padding-top: 10px; box-sizing: border-box!important; display: table!important; width: 70px;
+            vertical-align: top; background: #564d4d; color: #fff!important; margin-bottom: 0px; float:left!important;}
+.THIS .dtSearchBlockDisply1{display: block!important; width: 100%!important; min-height: 140px!important;}
+.THIS .optionButtonDisply4plus1{width: 100%; height: 40px!important; background: #cccccc; padding: 6% 2% 0 2%!important; text-align: right; white-space: nowrap;}
+
+.THIS .badgeFix1{position:absolute; text-align:center!important; z-index:100; margin-left:-15px!important;}
+.THIS .ax-shape {font-family: 'Open Sans Regular', 'Open Sans'; font-weight: 200; font-style: normal; font-size: 14px;
+        color: #333333; line-height: normal;position:absolute;}
+.THIS #u39 {position: absolute; left: 0px; top: 280px; width: 150px; height: 30px; font-size: 12px; color: #FFFFFF; text-align: center!important;}
+/*.THIS #u40 {position: absolute; left: 10px;top: 8px; width: 130px; white-space:nowrap; left:0; top: 6px; transform-origin: 65px 9px 0px;background-color: grey;z-index:50;}*/
+.THIS .prelative{
+    position:relative!important;
+}
+.THIS #u40 {
+	position: relative!important;
+    top: 8px;
+    min-width: 130px!important;
+    padding: 0 5px;
+    text-align: center!important;
+    background-color: grey;
+}
+.THIS .whiteColor{color:#fff!important;}
+.THIS .gridFix{margin-bottom:8px!important;}
+.THIS .wFont{color:#fff!important;}
+.THIS .width_Plus14{width:95%!important;}
+.THIS .btnPillFix{border:1px solid #005FB2!important; background:#fff!important;}
+.THIS .btnPillFix a{color:#005Fb2!important;}
+.THIS .tBtnFix{margin: -30px 10px 0 0!important; float: right;}
+.THIS .w100{width:100%!important;}
+.THIS .grid-item{margin: 0 1.125% 30px 1.125%;
+    padding: 0px!important;
+    position: relative;
+    float: left;
+    clear: none;
+    text-align: inherit;
+    width: 47%!important;}
+
+@media screen and (max-width: 1024px) {
+		.THIS .hFix{height:185px!important;}
+	}
+    @media screen and (max-width:1023px) {
+        .THIS .something{}
+    }
+
+    @media screen and (max-width: 773px) {
+    .THIS .something{}
+	}
+   @media screen and (min-width: 768px) and (max-width: 773px) {
+    .THIS .gFix{width:100%!important;}
+    .THIS .slds-col--padded {padding-right: 0rem; padding-left: 0rem;}
+	}
+   @media screen and (max-width: 768px) {
+    .THIS .gFix{width:100%!important;}
+	}
+   @media screen and (max-width: 767px) {
+      .THIS .width_Plus14{width:100%!important;}
+    .THIS .gridFix{margin:0 0% 8px 0%!important;}
+    .THIS .grid-item{width:100%!important;}
+    .THIS .searchResultsDisplay{width:100%!important;}
+	} 
+   @media screen and (max-width: 480px) {
+    .THIS .width_Plus14{width:100%!important;}
+    .THIS .searchResultsDisplay{width:100%!important;}
+	}

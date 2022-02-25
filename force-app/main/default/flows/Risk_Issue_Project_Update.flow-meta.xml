@@ -1,0 +1,853 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <processMetadataValues>
+            <name>apexSelection</name>
+            <value>
+                <stringValue>Set Project Status</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>myRule_4_A1</name>
+        <label>Execute the handler class</label>
+        <locationX>400</locationX>
+        <locationY>200</locationY>
+        <actionName>RisksAndIssuesInvokable</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>myDecision5</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>SObject</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>risks</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>maxOccurs</name>
+                <value>
+                    <numberValue>1.0</numberValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>objectType</name>
+                <value>
+                    <stringValue>Risks_Issues__c</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>SObject</stringValue>
+                </value>
+            </processMetadataValues>
+            <name>risks</name>
+            <value>
+                <elementReference>myVariable_current</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>49.0</apiVersion>
+    <decisions>
+        <processMetadataValues>
+            <name>index</name>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
+        </processMetadataValues>
+        <name>myDecision</name>
+        <label>myDecision</label>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>myDecision3</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <processMetadataValues>
+                    <name>inputDataType</name>
+                    <value>
+                        <stringValue>String</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>leftHandSideType</name>
+                    <value>
+                        <stringValue>String</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>operatorDataType</name>
+                    <value>
+                        <stringValue>String</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>rightHandSideType</name>
+                    <value>
+                        <stringValue>GlobalConstant</stringValue>
+                    </value>
+                </processMetadataValues>
+                <leftValueReference>myVariable_current.Name__c</leftValueReference>
+                <operator>EqualTo</operator>
+            </conditions>
+            <connector>
+                <targetReference>myRule_1_A1</targetReference>
+            </connector>
+            <label>Check for empty Name field</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <processMetadataValues>
+            <name>index</name>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </processMetadataValues>
+        <name>myDecision3</name>
+        <label>myDecision3</label>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>myDecision5</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_4</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_4</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_4_A1</targetReference>
+            </connector>
+            <label>Set Project Status From Risks</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <processMetadataValues>
+            <name>index</name>
+            <value>
+                <numberValue>2.0</numberValue>
+            </value>
+        </processMetadataValues>
+        <name>myDecision5</name>
+        <label>myDecision5</label>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>myDecision7</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_6</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_6</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_6_A1</targetReference>
+            </connector>
+            <label>Severity Level Red</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <processMetadataValues>
+            <name>index</name>
+            <value>
+                <numberValue>3.0</numberValue>
+            </value>
+        </processMetadataValues>
+        <name>myDecision7</name>
+        <label>myDecision7</label>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>myDecision9</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_8</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_8</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_8_A1</targetReference>
+            </connector>
+            <label>Severity Level Yellow</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <processMetadataValues>
+            <name>index</name>
+            <value>
+                <numberValue>4.0</numberValue>
+            </value>
+        </processMetadataValues>
+        <name>myDecision9</name>
+        <label>myDecision9</label>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_10</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_10</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_10_A1</targetReference>
+            </connector>
+            <label>Severity Level Green</label>
+        </rules>
+    </decisions>
+    <description>This Process Builder updates the health field on the Risk and Issues object to accurately update the health of the project Roll Up summaries</description>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>TEXT([Risks_Issues__c].Type__c)  &amp; &apos; - Manual&apos;</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_2_myRule_1_A1_3532828645</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!myVariable_current.Type__c})  &amp; &apos; - Manual&apos;</expression>
+    </formulas>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>OR(
+AND(
+OR(ISPICKVAL([Risks_Issues__c].Probability__c , &quot;High&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Probability__c , &quot;Medium-High&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Probability__c , &quot;Medium-Low&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Probability__c , &quot;Low&quot;)
+)
+,
+ISPICKVAL([Risks_Issues__c].Impact__c, &quot;Low&quot;)
+)
+,
+AND(ISPICKVAL([Risks_Issues__c].Probability__c , &quot;Low&quot;),ISPICKVAL([Risks_Issues__c].Impact__c, &quot;Medium&quot;))
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Mitigated&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Completed&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Closed - No Action&quot;)
+)</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_10</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+AND(
+OR(ISPICKVAL({!myVariable_current.Probability__c} , &quot;High&quot;)
+,
+ISPICKVAL({!myVariable_current.Probability__c} , &quot;Medium-High&quot;)
+,
+ISPICKVAL({!myVariable_current.Probability__c} , &quot;Medium-Low&quot;)
+,
+ISPICKVAL({!myVariable_current.Probability__c} , &quot;Low&quot;)
+)
+,
+ISPICKVAL({!myVariable_current.Impact__c}, &quot;Low&quot;)
+)
+,
+AND(ISPICKVAL({!myVariable_current.Probability__c} , &quot;Low&quot;),ISPICKVAL({!myVariable_current.Impact__c}, &quot;Medium&quot;))
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Mitigated&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Completed&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Closed - No Action&quot;)
+)</expression>
+    </formulas>
+    <formulas>
+        <name>formula_myRule_4</name>
+        <dataType>Boolean</dataType>
+        <expression>true</expression>
+    </formulas>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>OR(
+AND(
+OR(ISPICKVAL([Risks_Issues__c].Probability__c, &quot;High&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Probability__c, &quot;Medium-High&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Probability__c, &quot;Medium-Low&quot;)
+)
+,
+ISPICKVAL([Risks_Issues__c].Impact__c, &quot;High&quot;)
+,
+OR(
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Not Yet Started&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;In Planning&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;In Progress&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Escalated&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;On Hold&quot;))
+)
+,
+AND(
+ISPICKVAL([Risks_Issues__c].Probability__c, &quot;High&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Impact__c, &quot;Medium&quot;)
+,
+OR(
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Not Yet Started&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;In Planning&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;In Progress&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Escalated&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;On Hold&quot;))
+)
+)</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_6</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+AND(
+OR(ISPICKVAL({!myVariable_current.Probability__c}, &quot;High&quot;)
+,
+ISPICKVAL({!myVariable_current.Probability__c}, &quot;Medium-High&quot;)
+,
+ISPICKVAL({!myVariable_current.Probability__c}, &quot;Medium-Low&quot;)
+)
+,
+ISPICKVAL({!myVariable_current.Impact__c}, &quot;High&quot;)
+,
+OR(
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Not Yet Started&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;In Planning&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;In Progress&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Escalated&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;On Hold&quot;))
+)
+,
+AND(
+ISPICKVAL({!myVariable_current.Probability__c}, &quot;High&quot;)
+,
+ISPICKVAL({!myVariable_current.Impact__c}, &quot;Medium&quot;)
+,
+OR(
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Not Yet Started&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;In Planning&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;In Progress&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Escalated&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;On Hold&quot;))
+)
+)</expression>
+    </formulas>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>OR(
+AND(
+OR(ISPICKVAL([Risks_Issues__c].Probability__c , &quot;Medium-High&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Probability__c , &quot;Medium-Low&quot;)
+)
+,
+ISPICKVAL([Risks_Issues__c].Impact__c, &quot;Medium&quot;)
+,
+OR(
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Not Yet Started&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;In Planning&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;In Progress&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Escalated&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;On Hold&quot;))
+)
+,
+AND(
+ISPICKVAL([Risks_Issues__c].Probability__c , &quot;Low&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Impact__c, &quot;High&quot;)
+,
+OR(
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Not Yet Started&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;In Planning&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;In Progress&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;Escalated&quot;)
+,
+ISPICKVAL([Risks_Issues__c].Status__c , &quot;On Hold&quot;))
+)
+)</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_8</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+AND(
+OR(ISPICKVAL({!myVariable_current.Probability__c} , &quot;Medium-High&quot;)
+,
+ISPICKVAL({!myVariable_current.Probability__c} , &quot;Medium-Low&quot;)
+)
+,
+ISPICKVAL({!myVariable_current.Impact__c}, &quot;Medium&quot;)
+,
+OR(
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Not Yet Started&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;In Planning&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;In Progress&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Escalated&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;On Hold&quot;))
+)
+,
+AND(
+ISPICKVAL({!myVariable_current.Probability__c} , &quot;Low&quot;)
+,
+ISPICKVAL({!myVariable_current.Impact__c}, &quot;High&quot;)
+,
+OR(
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Not Yet Started&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;In Planning&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;In Progress&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;Escalated&quot;)
+,
+ISPICKVAL({!myVariable_current.Status__c} , &quot;On Hold&quot;))
+)
+)</expression>
+    </formulas>
+    <interviewLabel>Risk_Issue_Project_Update-3_InterviewLabel</interviewLabel>
+    <label>Risk &amp; Issue Project Update</label>
+    <processMetadataValues>
+        <name>ObjectType</name>
+        <value>
+            <stringValue>Risks_Issues__c</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>ObjectVariable</name>
+        <value>
+            <elementReference>myVariable_current</elementReference>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OldObjectVariable</name>
+        <value>
+            <elementReference>myVariable_old</elementReference>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>TriggerType</name>
+        <value>
+            <stringValue>onAllChanges</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Workflow</processType>
+    <recordUpdates>
+        <processMetadataValues>
+            <name>evaluationType</name>
+            <value>
+                <stringValue>always</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>extraTypeInfo</name>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>isChildRelationship</name>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>reference</name>
+            <value>
+                <stringValue>[Risks_Issues__c]</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>referenceTargetField</name>
+        </processMetadataValues>
+        <name>myRule_10_A1</name>
+        <label>Update health field to Green</label>
+        <locationX>1000</locationX>
+        <locationY>200</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <processMetadataValues>
+                <name>implicit</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </processMetadataValues>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>Picklist</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Health</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue></stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Picklist</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Health__c</field>
+            <value>
+                <stringValue>Green</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Risks_Issues__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <processMetadataValues>
+            <name>evaluationType</name>
+            <value>
+                <stringValue>always</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>extraTypeInfo</name>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>isChildRelationship</name>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>reference</name>
+            <value>
+                <stringValue>[Risks_Issues__c]</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>referenceTargetField</name>
+        </processMetadataValues>
+        <name>myRule_1_A1</name>
+        <label>Update the Name</label>
+        <locationX>100</locationX>
+        <locationY>200</locationY>
+        <connector>
+            <targetReference>myDecision3</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <processMetadataValues>
+                <name>implicit</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </processMetadataValues>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>String</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Name</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue></stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Formula</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Name__c</field>
+            <value>
+                <elementReference>formula_2_myRule_1_A1_3532828645</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Risks_Issues__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <processMetadataValues>
+            <name>evaluationType</name>
+            <value>
+                <stringValue>always</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>extraTypeInfo</name>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>isChildRelationship</name>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>reference</name>
+            <value>
+                <stringValue>[Risks_Issues__c]</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>referenceTargetField</name>
+        </processMetadataValues>
+        <name>myRule_6_A1</name>
+        <label>Update Health field to Red</label>
+        <locationX>600</locationX>
+        <locationY>200</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <processMetadataValues>
+                <name>implicit</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </processMetadataValues>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>Picklist</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Health</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue></stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Picklist</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Health__c</field>
+            <value>
+                <stringValue>Red</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Risks_Issues__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <processMetadataValues>
+            <name>evaluationType</name>
+            <value>
+                <stringValue>always</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>extraTypeInfo</name>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>isChildRelationship</name>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>reference</name>
+            <value>
+                <stringValue>[Risks_Issues__c]</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>referenceTargetField</name>
+        </processMetadataValues>
+        <name>myRule_8_A1</name>
+        <label>Update Health field to Yellow</label>
+        <locationX>800</locationX>
+        <locationY>200</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <processMetadataValues>
+                <name>implicit</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </processMetadataValues>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>Picklist</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Health</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue></stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Picklist</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Health__c</field>
+            <value>
+                <stringValue>Yellow</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Risks_Issues__c</object>
+    </recordUpdates>
+    <startElementReference>myDecision</startElementReference>
+    <status>Active</status>
+    <variables>
+        <name>myVariable_current</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Risks_Issues__c</objectType>
+    </variables>
+    <variables>
+        <name>myVariable_old</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Risks_Issues__c</objectType>
+    </variables>
+</Flow>

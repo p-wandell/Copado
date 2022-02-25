@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+:host {
+  font-size: 0.625rem;
+}
+.x7s-progress-circle_svg {
+  display: block;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.x7s-progress-circle_svg-base {
+  transition: all 0.75s ease-out;
+}
+.x7s-progress-circle_svg-base-default {
+  stroke: var(--lwc-colorBorder);
+}
+.x7s-progress-circle_svg-progress-bar {
+  fill: none;
+  transition: all 0.75s ease-out;
+}
+.x7s-progress-circle_svg-progress-bar-default {
+  stroke: var(--lwc-colorBrand);
+}
+.x7s-progress-circle_svg-text {
+  font-family: inherit;
+  font-size: 3em;
+}
+.x7s-progress-circle_svg-percent-text {
+  font-family: inherit;
+  font-size: 0.75rem;
+}
+.x7s-progress-circle_svg-mix-subtext {
+  font-family: inherit;
+  font-size: 0.6rem;
+}

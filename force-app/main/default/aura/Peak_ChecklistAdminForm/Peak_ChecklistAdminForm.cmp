@@ -1,0 +1,32 @@
+<aura:component extends="c:Peak_ChecklistBase" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" >
+	<aura:attribute name="listOfTasks" type="Peak_CommunityTaskMDTWrapper[]"/>
+	<aura:attribute name="listOfTaskGroups" type="Peak_CommunityTaskGroupMDTWrapper[]"/>
+	<aura:attribute name="checklist" type="Peak_Checklist__c" default="{'sobjectType':'Peak_Checklist__c'}"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doChecklistAdminInit}"/>
+
+    <lightning:recordEditForm objectApiName="Peak_Checklist__c">
+        <lightning:inputField aura:id="userLookUpId" fieldName="User__c"/> 
+    </lightning:recordEditForm>
+	<div class="slds-p-top_small">
+		<label class="slds-form-element__label">Select Task</label>
+		<lightning:tabset variant="scoped">
+			<lightning:tab label="Groups" id="groups">
+				<aura:iteration items="{!v.listOfTaskGroups}" var="tskGrp">
+					<div>
+						<lightning:input type="checkbox" label="{!tskGrp.label}" name="{!tskGrp.label}" checked="{!tskGrp.isSelected}"/>
+					</div>
+				</aura:iteration>
+			</lightning:tab>
+			<lightning:tab label="Tasks" id="tasks">
+				<aura:iteration items="{!v.listOfTasks}" var="tsk">
+					<div>
+						<lightning:input type="checkbox" label="{!tsk.label}" name="{!tsk.label}" checked="{!tsk.isSelected}"/>
+					</div>
+				</aura:iteration>
+			</lightning:tab>
+		</lightning:tabset>
+	</div>
+	<br/>
+	<lightning:button label="Save" onclick="{!c.doTaskAssignment}"/>
+</aura:component>

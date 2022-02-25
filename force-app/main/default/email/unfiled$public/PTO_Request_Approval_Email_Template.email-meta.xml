@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Letterhead_with_Logo</letterhead>
+    <name>PTO Request Approval Email Template</name>
+    <style>freeForm</style>
+    <subject>PTO Request Awaiting Your Approval</subject>
+    <textOnly>A PTO Request is awaiting your approval. Please click the link below to view the PTO request in PSA and approve or reject.
+
+
+{!pse__Timecard_Header__c.Link}
+
+
+Details of Request:
+
+-PTO Requested By: {!pse__Timecard_Header__c.pse__Resource__c}
+-Total Hours Requested: {!pse__Timecard_Header__c.pse__Total_Hours__c}
+-Week:{!pse__Timecard_Header__c.pse__Start_Date__c}-{!pse__Timecard_Header__c.pse__End_Date__c}
+          -Monday Hours: {!pse__Timecard_Header__c.pse__Monday_Hours__c}
+          -Tuesday Hours: {!pse__Timecard_Header__c.pse__Tuesday_Hours__c}
+          -Wednesday Hours: {!pse__Timecard_Header__c.pse__Wednesday_Hours__c}
+          -Thursday Hours: {!pse__Timecard_Header__c.pse__Thursday_Hours__c}
+          -Friday Hours: {!pse__Timecard_Header__c.pse__Friday_Hours__c}
+
+User&apos;s Current PTO Balance (before this request):
+-Total Year Allocation (Hours): {!01I1E000000bYqe.00N1E000005ypLV}
+-PTO Used: {!01I1E000000bYqe.00N1E000005ypLP}
+-PTO Scheduled: {!01I1E000000bYqe.00N1E000005ypLU}
+-Projected Year End Balance (Hours): {!01I1E000000bYqe.00N1E000005ypLQ}</textOnly>
+    <type>html</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Custom_Icon_Name__c</fullName>
+    <defaultValue>&apos;utility:info_alt&apos;</defaultValue>
+    <description>Name of a custom icon to use when Resource Type of &quot;Custom&quot; selected.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the name of a valid SLDS icon.  Used only when Resource Type of &quot;Custom&quot; is selected.</inlineHelpText>
+    <label>Custom Icon Name</label>
+    <length>255</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

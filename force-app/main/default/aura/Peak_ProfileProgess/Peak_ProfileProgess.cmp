@@ -1,0 +1,66 @@
+<aura:component description="Peak_ProfileProgress" implements="forceCommunity:availableForAllPageTypes" controller="Peak_ProfileProgressController" access="global">
+    <aura:handler event="forceCommunity:routeChange" action="{!c.init}" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:attribute name="isInit" type="boolean" default="false" />
+    <aura:attribute name="userId" type="string" />
+    <aura:attribute name="details" type="string" />
+    <aura:attribute name="totalFields" type="string" />
+    <aura:attribute name="completedFields" type="string" />
+
+    <aura:attribute name="requiredFields" type="string" default="AboutMe;Email;SmallPhotoUrl" access="global" />
+    <aura:attribute name="resultFormat" type="string" default="Percentage" access="global" />
+    <aura:attribute name="theme" type="string" access="global" />
+    <aura:attribute name="remainTheme" type="string" access="global" />
+    <aura:attribute name="circleColor" type="string" access="global" />
+    <aura:attribute name="threshold" type="boolean" default="false" access="global" />
+    <aura:attribute name="thresholdNumber" type="string" access="global" />
+    <aura:attribute name="beforeTheme" type="string" access="global" />
+    <aura:attribute name="afterTheme" type="string" access="global" />
+
+
+    <aura:attribute name="includeText" type="boolean" default="false" access="global" />
+    <aura:attribute name="header" type="string" access="global" />
+    <aura:attribute name="subHeader" type="string" access="global" />
+    <aura:attribute name="description" type="string" access="global" />
+    <aura:attribute name="linkText" type="string" access="global" />
+    <aura:attribute name="customUrl" type="string" access="global" />
+    <aura:attribute name="progressCircle" type="Aura.Component[]" required="false"/>
+
+
+    <aura:attribute name="CustomClassName" type="String" default="" access="global" />
+    <aura:attribute name="CustomIdName" type="String" default="" access="global" />
+
+
+
+    <aura:if isTrue="{!v.isInit}">
+        <section class="{!'peak-component ' + v.CustomClassName}" id="{!v.CustomIdName}">
+            <div class="progressWrapper slds-grid slds-wrap">
+                <div aura:id="progressWrapper" class="{!v.includeText ? 'slds-size_1-of-1 slds-large-size_1-of-2' : 'slds-size_1-of-1 slds-large-size_1-of-1'}">
+                        {!v.progressCircle}
+                </div>
+                <aura:if isTrue="{!v.includeText}">
+                    <div class="slds-size_1-of-1 slds-large-size_1-of-2">
+                        <aura:if isTrue="{!v.header != ''}">
+                            <h3 class="slds-p-bottom_xx-small">
+                                <c:Peak_Base labelText="{!v.header}"/>
+                            </h3>
+                        </aura:if>
+                        <div>
+                            <aura:if isTrue="{!v.subHeader != ''}">
+                                <h5><c:Peak_Base labelText="{!v.subHeader}"/></h5>
+                            </aura:if>
+                            <aura:if isTrue="{!v.description != ''}">
+                                <p>
+                                    <c:Peak_Base labelText="{!v.description}"/>
+                                </p>
+                            </aura:if>
+                            <aura:if isTrue="{!v.linkText != ''}">
+                                <a href="" data-link="{!v.customUrl}" onclick="{!c.linkClick}"><c:Peak_Base labelText="{!v.linkText}"/></a>
+                            </aura:if>
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+        </section>
+    </aura:if>
+</aura:component>

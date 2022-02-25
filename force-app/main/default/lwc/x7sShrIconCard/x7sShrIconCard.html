@@ -1,0 +1,57 @@
+<!--
+  ~ Copyright (c) 2020.  7Summits Inc. All rights reserved.
+  -->
+
+<template>
+    <a href={link}
+       class={componentClass}
+       onmouseenter={handleFocus}
+       onmouseleave={handleBlur}
+       onfocus={handleFocus}
+       onblur={handleBlur}
+       target={linkTarget}
+    >
+        <template if:true={showIcon}>
+            <span data-icon="true" class="x7s-icon-card__image-wrapper slds-col" style={imageWrapperStyle}>
+                <span class="x7s-icon-card__image" style={imageStyle}>
+                    <template if:true={useText}>
+                        <span if:true={iconName} class="x7s-icon-card__icon slds-current-color">{iconName}</span>
+                    </template>
+                    <template if:false={useText}>
+                        <lightning-icon
+                                if:true={iconName}
+                                icon-name={iconName}
+                                size={iconSize}
+                                class="x7s-icon-card__icon slds-current-color"></lightning-icon>
+                    </template>
+                    <span
+                            if:true={showOverlay}
+                            class="x7s-icon-card__overlay"
+                            style={overlayStyle}></span>
+                </span>
+            </span>
+        </template>
+
+        <template if:true={showImage}>
+            <span data-image="true" class="x7s-icon-card__image-wrapper slds-col" style={imageWrapperStyle}>
+                <span if:true={imageSrc} class="x7s-icon-card__image" style={imageStyle}>
+                    <span
+                            if:true={showOverlay}
+                            class="x7s-icon-card__overlay"
+                            style={overlayStyle}></span>
+                </span>
+            </span>
+        </template>
+
+        <span class="x7s-icon-card__info slds-col">
+            <span class="x7s-icon-card__title" style={titleStyle}>
+                <lightning-formatted-rich-text value={title}></lightning-formatted-rich-text>
+            </span>
+            <template if:true={showDescription}>
+                <span class="x7s-icon-card__description" style={descriptionStyle}>
+                    <lightning-formatted-rich-text value={description}> </lightning-formatted-rich-text>
+                </span>
+            </template>
+        </span>
+    </a>
+</template>

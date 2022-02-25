@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Workbook_Load_Completed</fullName>
+    <columns>Request_Name__c</columns>
+    <columns>Opportunity__c</columns>
+    <columns>CREATEDBY_USER</columns>
+    <columns>Completed_in_FF__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Operations_Requests__c.Project_Workbook_Load</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Completed</value>
+    </filters>
+    <label>Workbook Load Completed</label>
+    <language>en_US</language>
+</ListView>

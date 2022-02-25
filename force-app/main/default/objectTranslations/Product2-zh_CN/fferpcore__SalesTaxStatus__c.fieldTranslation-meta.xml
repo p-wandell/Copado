@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>SUT公司的此产品的纳税状态。</help>
+    <label><!-- Sales Tax Status --></label>
+    <name>fferpcore__SalesTaxStatus__c</name>
+    <picklistValues>
+        <masterLabel>Exempt</masterLabel>
+        <translation>豁免</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Exempt for Qualifying Accounts</masterLabel>
+        <translation>免除合格帐户</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Taxable</masterLabel>
+        <translation>应税</translation>
+    </picklistValues>
+</CustomFieldTranslation>

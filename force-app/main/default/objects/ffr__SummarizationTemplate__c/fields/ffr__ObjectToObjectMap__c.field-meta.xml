@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__ObjectToObjectMap__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>The object to object map that this summarization template is based on.</description>
+    <externalId>false</externalId>
+    <label>ObjectToObjectMap</label>
+    <referenceTo>ffr__ObjectToObjectMap__c</referenceTo>
+    <relationshipLabel>SummarizationTemplates</relationshipLabel>
+    <relationshipName>SummarizationTemplates</relationshipName>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

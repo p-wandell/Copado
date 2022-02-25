@@ -1,0 +1,193 @@
+<apex:page showHeader="true" sidebar="false" standardStylesheets="false" controller="ffct.CompareProfilesController" action="{!isToolMustBeActivated}" doctype="html-5.0">
+<apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-load.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-deflate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-inflate.js')}"/>
+<style type="text/css">
+    .labelClass {
+        text-align: right;
+        float: left;
+        margin-left: 25px;
+        margin-right: 20px;
+        width: 25%;
+    }
+    </style>
+<apex:sectionHeader title="Compare and Deploy Profiles and Permission Sets" help="helploader?topicid=1009"/>
+<head>   
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+    
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        var tempresult={Object : {}, Field : {},  Cls : {}, Vf : {}, Tab : {}};
+        var readyTbodyStr={Object : {}, Field : {}, Cls : {}, Vf : {},  Tab : {}};
+        var initTbodyStr={Object : {}, Field : {}, Cls : {}, Vf : {},  Tab : {}};
+        var compareTbodyStr={Object : {}, Field : {}, Cls : {}, Vf : {},  Tab : {}};
+        var key='';
+         
+    </script> 
+    <style type="text/css">
+    .body {  }
+	.loader { font-weight: bold; position: relative;  height: 15px; margin-right: auto; margin-bottom: 0px; margin-top: -20px; margin-left: auto; font-family: 'Josefin Sans', sans-serif; }
+	.Loadtitle { color: #176dc0; font-size: 100%; margin-bottom: 5px position: relative;}
+	.loadBar { width: 100%; height: 15px; background-color: #F0F0F0; position: relative; overflow: hidden; border-width:2px;	
+    border-style:groove;}
+	.loadingbar { width: 20%; height: 150px; background-color: #176dc0; position: absolute;
+} 
+    </style>
+   
+ </head>   
+ <body>
+ 	
+    <!-- Loading Bar DIV -->
+      <div class="modal js-loading-bar">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-body">     
+                    <div class="loader">
+				  		<div class="Loadtitle">{!$Label.Loading}</div>
+				  			<div class="loadBar">
+				    			<div class="loadingbar"></div>
+				  		</div>
+					</div>        
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- End Loading Bar DIV -->
+    <apex:form id="theForm">
+    <apex:pageMessages escape="false" id="messagesDiv"/>
+    <apex:actionStatus id="eventStatus"  >
+        <apex:facet name="start">
+            <apex:outputPanel >
+                <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                    <div style="position:absolute;top:60%;left:50%">
+                        <apex:image value="/img/loading32.gif"></apex:image>
+                    </div>
+                </div>
+            </apex:outputPanel>
+        </apex:facet>   
+    </apex:actionStatus>
+    <div class="container-fluid">
+        <apex:outputPanel >
+        <c:connectedappbuilder connectedAppConfiguration="{!AppConfiguration}" componentId="messagesDiv" rendered="{!!IsOAuthSettingConfigured}" />
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IsOAuthSettingConfigured && hasConnections && NOT(showCompare)}">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">{!$Label.ffct__targetconnections}</h3>
+              </div>
+                <apex:outputPanel id="selectConnection">
+              <div class="panel-body" style="padding: 6px;">
+                <div class="row">
+                  <div style="border-right: 1px solid #428bca;" class="col-lg-7">
+                    <div class="row">
+                    <div class="labelClass"><label>{!$Label.SelectConnection}</label></div>
+                    <apex:panelGrid columns="2">
+                        <apex:selectList value="{!selectedCon}" multiselect="false" size="1" style="max-width:220px;">
+                            <apex:selectOptions value="{!allConnections}"></apex:selectOptions>
+                            <apex:actionSupport event="onchange" action="{!getComparisionData}" reRender="theForm,theProfilePanel" status="eventStatus"></apex:actionSupport>
+                        </apex:selectList>
+                        <apex:commandLink value=" {!$Label.ffct__viewconnection}" action="{!setupNewConnection}" rendered="{!DisplayEditConnection && selectedCon!=null && len(selectedCon)>0}" style="margin-left: 8px;">
+                              <apex:param name="mode" value="viewMode"/>
+                        </apex:commandLink> 
+                    </apex:panelGrid>
+                    </div>
+                    <apex:outputPanel style="background: white;width: 16px;float: right;margin-top: -22px;margin-right: -21px;">OR</apex:outputPanel>
+                    <div class="row">
+                        <div class="labelClass"><label>{!$Label.ffct__selectoptioncompare}</label></div>
+                         <apex:selectRadio value="{!compareOption}" layout="pageDirection">
+                            <apex:selectOption itemValue="Profile" itemlabel="{!$Label.ffct__profiles}"/>
+                            <apex:selectOption itemValue="PermissionSet" itemlabel="{!$Label.ffct__permissionsets}"/>
+                                <apex:actionSupport event="onchange" action="{!getComparisionData}" reRender="theForm,theProfilePanel" status="eventStatus"></apex:actionSupport>
+                         </apex:selectradio>
+                    </div>
+                    </div>
+                    <div class="col-lg-4">
+                         <div class="row" style="margin-left: 15px;">
+                            <div style="float: left;margin-right: 15px;"><label>{!$Label.ffct__setupnewconnection}</label></div>
+                            <apex:commandButton value="{!$Label.ffct__create}" action="{!setupNewConnection}" style="padding-top:2px;padding-bottom:2px;margin-top:-1px;" immediate="true"></apex:commandButton>
+                          </div>
+                    </div> 
+                    </div>
+                </div>
+                
+                </apex:outputPanel>
+              </div>
+
+              <apex:outputPanel id="theProfilePanel" rendered="{!allTargetProfiles != null && allTargetProfiles.size > 0 && allSourceProfiles!=null && allSourceProfiles.size > 0}">
+                  <div class="panel panel-primary">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">{!compareListTitle}</h3>
+                      </div>
+                      <div class="panel-body">
+                        <apex:outputPanel rendered="{!allTargetProfiles = null || allTargetProfiles.size = 0}">
+                            <p class="lead">{!$Label.ffct__chooseconnection}</p>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!alltargetProfiles != null && alltargetProfiles.size > 0}">
+                        <table class="table striped">
+                            <thead>
+                                <tr>
+                                    <th>{!$Label.Source}</th>
+                                    <th>{!$Label.Target}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>        
+                            <tbody>
+                                <apex:variable var="count" value="{!0}" />
+                                <apex:repeat value="{!sourcetargets}" var="st">
+                                    <tr>
+                                        <td>
+                                            <apex:selectList value="{!st.sourceId}" multiselect="false" size="1">
+                                                <apex:selectOptions value="{!allSourceProfiles}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </td>   
+                                        <td>
+                                            <apex:selectList value="{!st.targetId}" multiselect="false" size="1">
+                                                <apex:selectOptions value="{!alltargetProfiles}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </td>
+                                        <td>
+                                            <apex:commandLink style="color:#015BA7;padding:3px 3px 3px 3px;" styleClass="listActionLink" value="Remove" action="{!removeProfile}" reRender="theProfilePanel" status="eventStatus">
+                                                <span class="glyphicon glyphicon-remove"></span>
+                                                <apex:param value="{!count}" name="recId"/>
+                                            </apex:commandLink>
+                                                
+                                        </td>   
+                                    </tr>
+                                    <apex:variable var="count" value="{!count+1}"/> 
+                                </apex:repeat>
+                                </tbody>
+                                <tfoot>
+                                    <tr><td><apex:commandLink value="Add Row" action="{!addProfile}" style="color:#015BA7;padding:3px 3px 3px 3px;" styleClass="listActionLink" reRender="theProfilePanel" status="eventStatus">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </apex:commandLink></td>
+                                    <td></td>
+                                    <td></td>
+                                    </tr>
+                                </tfoot>
+                                </table>
+                                
+                                <div class="row text-center">
+                                   <apex:commandButton value="{!CompareButtonTitle}" action="{!compareSourceTargetProfiles}"></apex:commandButton>
+                                </div>
+                                
+                                </apex:outputPanel>
+                            </div>  
+                            
+                        </div>
+                    </apex:outputPanel>  
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!showCompare}">
+            <c:compareprofiles Profiles="{!sourcetargets}" OrgConnection="{!connection}" compareOption="{!compareOption}"/>
+        </apex:outputPanel>
+    </div>
+    </apex:form>
+ </body>    
+
+
+</apex:page>

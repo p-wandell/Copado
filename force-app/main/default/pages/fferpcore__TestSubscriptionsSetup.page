@@ -1,0 +1,47 @@
+<apex:page standardController="fferpcore__TestSubscription__c" extensions="fferpcore.TestSubscriptionController" recordSetVar="original" lightningStylesheets="true">
+  <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+  <style>
+    .publicationTable td, .publicationTable th {
+      border-top: none;
+      box-shadow: none !important;       
+    }
+    .publicationTable td {
+      background-color: transparent !important;
+    }
+  </style>
+  <apex:sectionHeader title="{!$Label.fferpcore__erptestsubscriptionsetuptitle}" help="{!URLFOR($Page.fferpcore__TestSubscriptionHelp, null, null)}" />
+  <apex:pageMessage rendered="{!successful}"  severity="confirm" strength="2" summary="{!$Label.fferpcore__erptestsubscriptionsetupsuccessconfirmation}" />
+  <apex:pageMessage rendered="{!testSubscriptionsTotal == 0}"  severity="error" strength="2" summary="{!$Label.fferpcore__erpnorecordsselectedtosetuperror}" />
+  <apex:form >
+    <apex:pageBlock >  
+      <apex:pageBlockButtons >
+        <apex:commandButton value="{!$Label.fferpcore__erptestsubscriptionsetupbuttontext}" action="{!setupTestSubscriptions}" disabled="{!testSubscriptionsTotal == 0}"/>
+        <apex:commandButton value="{!$Label.fferpcore__erpcancel}" action="{!cancel}" immediate="true"/>
+      </apex:pageBlockButtons>
+      <apex:pageBlockTable value="{!testSubscriptions}" var="testSubscription">
+        <apex:column style="width:15%" headerValue="{!$Label.fferpcore__erptestsubscriptionsetupcolumnheadingname}">
+          <c:LookupHover sObjectId="{!testSubscription.Id}" text="{!testSubscription.Name}"/>
+        </apex:column>
+        <apex:column style="width:15%" headerValue="{!$Label.fferpcore__erptestsubscriptionsetupcolumnheadingmessagetypedevelopername}">
+          <apex:outputField value="{!testSubscription.MessageType__r.fferpcore__DeveloperName__c}"/>
+        </apex:column>
+        <apex:column style="width:10%" headerValue="{!$Label.fferpcore__erptestsubscriptionsetupcolumnheadingresponsetype}">
+          <apex:outputField value="{!testSubscription.fferpcore__ResponseType__c}"/>
+        </apex:column>
+        <apex:column style="width:60%" headerValue="{!$Label.fferpcore__erptestsubscriptionsetupcolumnheadingfowardmessages}">
+          <apex:pageblocktable value="{!testSubscription.ForwardMessages__r}" var="forwardMessage" rendered="{!(testSubscription.ForwardMessages__r.size != null && testSubscription.ForwardMessages__r.size > 0)}" styleClass="publicationTable">
+            <apex:column style="width:25%" headerValue="{!$Label.fferpcore__erptestsubscriptionsetupcolumnheadingname}">
+              <c:LookupHover sObjectId="{!forwardMessage.Id}" text="{!forwardMessage.Name}"/>
+            </apex:column>
+            <apex:column style="width:25%" headerValue="{!$Label.fferpcore__erptestsubscriptionsetupcolumnheadingmessagetypedevelopername}">
+              <apex:outputfield value="{!forwardMessage.MessageType__r.fferpcore__DeveloperName__c}"/>
+            </apex:column>
+            <apex:column style="width:50%" headerValue="{!$Label.fferpcore__erptestsubscriptionsetupcolumnheadingcorrelationid}">
+              <apex:outputField value="{!forwardMessage.fferpcore__CorrelationId__c}"/>
+            </apex:column>
+          </apex:pageblocktable>
+        </apex:column>
+      </apex:pageBlockTable>
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Custom_Demo_Due_Date_Validation</fullName>
+    <active>true</active>
+    <description>Validates that a Demo Due Date for a Custom demo type is more than 7 days out from the current date.</description>
+    <errorConditionFormula>OR( 
+
+AND( 
+ISNEW(), 
+ISPICKVAL( Demo_Type__c , &quot;Custom&quot;), 
+Demo_Due_Date__c &lt; TODAY()+7 
+), 
+
+AND( 
+ISCHANGED(Demo_Due_Date__c), 
+ISPICKVAL( Demo_Type__c , &quot;Custom&quot;), 
+Demo_Due_Date__c &lt; TODAY()+7) 
+)</errorConditionFormula>
+    <errorDisplayField>Demo_Due_Date__c</errorDisplayField>
+    <errorMessage>Whoa there! Demo Due Date for Custom demos must be 7 days out from the current date. Please update accordingly.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Beregningsberegning</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Beregningsberegninger</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+    </caseValues>
+    <gender>Feminine</gender>
+    <nameFieldLabel>Beregningsberegningsnavn</nameFieldLabel>
+    <recordTypes>
+        <description><!-- This record type is used when the calculation is of type &quot;Column&quot;. It allows you to create calculations based on the Columns included in the Reporting Definition. --></description>
+        <label><!-- Column --></label>
+        <name>ffr__Column</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- This record type is used when the calculation is of type &quot;Data Range Total&quot;. It allows you to create total calculations of the entire data range. --></description>
+        <label><!-- Data Range Total --></label>
+        <name>ffr__DataRangeTotal</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- This record type is used when the calculation is of type &quot;Row&quot;. It allows you to create calculations based on the Row Filters included in the Reporting Definition. --></description>
+        <label><!-- Row --></label>
+        <name>ffr__Row</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- This record type is used when the calculation is of type &quot;Subtotal&quot;. It allows you to create subtotal calculations. --></description>
+        <label><!-- Subtotal --></label>
+        <name>ffr__Subtotal</name>
+    </recordTypes>
+</CustomObjectTranslation>

@@ -1,0 +1,20 @@
+<!--
+ - Created by kentheberling on 5/9/18.
+ -->
+
+<aura:component description="Peak_FeedItemTest">
+
+    <aura:attribute type="Object" name="feedItem" />
+
+    <lightning:layout verticalAlign="center" class="event">
+        <lightning:layoutItem class="slds-text-align_center slds-m-horizontal_small date">
+            <p class="dow"><ui:outputDateTime value="{!v.feedItem.dateTimeField}" format="d"/></p>
+            <p class="month h6"><ui:outputDateTime value="{!v.feedItem.dateTimeField}" format="MMM"/></p>
+        </lightning:layoutItem>
+        <lightning:layoutItem class="slds-m-left_medium">
+            <h5 class="h5 feed-item-title"><ui:outputURL label="{!v.feedItem.title}" value="{!v.feedItem.url}" target="_blank" /></h5>
+            <p>{!v.feedItem.description}&nbsp;&bull;&nbsp;{!v.feedItem.fullDescription}</p>
+        </lightning:layoutItem>
+    </lightning:layout>
+
+</aura:component>

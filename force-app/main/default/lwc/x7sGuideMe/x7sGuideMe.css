@@ -1,0 +1,69 @@
+.text {
+    font-size: 18px;
+}
+
+.topText {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+}
+
+.header > div {
+    flex: 1;
+}
+
+.border {
+    border: 2px solid grey;
+    border-radius: 25px;
+}
+
+.buttonPosition {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    bottom: 0;
+}
+
+.buttonPosition > div {
+    flex: 1;
+}
+
+.headerPosition {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    bottom: 0;
+}
+
+.headerPosition > div {
+    flex: 1;
+}
+
+.bar {
+    width: 100%;
+}
+
+.contentLarge {
+    display: block;
+    overflow-y: auto;
+    height: 600px;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.contentSmall {
+    display: block;
+    overflow-y: auto;
+    height: 390px;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.descriptText {
+    width: 85%;
+}

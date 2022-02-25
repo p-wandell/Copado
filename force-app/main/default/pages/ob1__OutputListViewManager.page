@@ -1,0 +1,55 @@
+<apex:page controller="ob1.OutputAutomationController" showHeader="true" sidebar="true" cache="true" >
+
+<apex:form >
+
+<apex:pageBlock >
+
+ <apex:pageBlockSection title="Generate Report">
+       <apex:commandButton value="Generate Reports" action="{!submit}"/>
+ </apex:pageBlockSection>
+ 
+</apex:pageBlock>
+
+ <apex:pageBlock rendered="{!jobScheduled}" >
+	<apex:outputText >The job has been Scheduled.</apex:outputText>
+ </apex:pageBlock>
+
+ <apex:pageBlock rendered="{!jobSubmitted}" >
+	<apex:outputText >The job has been submitted.  This page will refresh every 10 seconds to update the status of the job.</apex:outputText>
+ </apex:pageBlock>
+
+  <apex:actionPoller action="{!reload}" interval="10" enabled="{!jobSubmitted}" rerender="theList, percentComplete" />
+
+ <apex:pageBlock rendered="{!NOT(isTooManyItems)}" id="theList" title="Generate reports for:">
+  <apex:pageBlockSection columns="1">
+  <apex:dataTable value="{!items}" var="i">
+
+		<apex:column style="width:33%;">
+		        <apex:facet name="header">Name</apex:facet>
+  			    <apex:outputText value="{!i.name}"/>
+		</apex:column>
+
+		<apex:column style="width:33%;" rendered="{!hasDescription}">
+		        <apex:facet name="header">Description</apex:facet>
+  			    <apex:outputText value="{!i.description}"/>
+		</apex:column>
+
+		<apex:column style="width:33%;" >
+		        <apex:facet name="header">Last Generated</apex:facet>
+  			    <apex:outputText value="{!i.lastSent}" />
+		</apex:column>
+
+
+	</apex:dataTable>
+	</apex:pageBlockSection>
+ </apex:pageBlock>
+
+ <apex:pageBlock rendered="{!isTooManyItems && jobSubmitted}" id="percentComplete" title="Percent complete:">
+  	<apex:outputText value="The job is {0}% complete." >
+  		<apex:param value="{!percentDone}"/>
+  	</apex:outputText>
+ </apex:pageBlock>
+ 
+ </apex:form>
+
+</apex:page>

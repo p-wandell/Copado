@@ -1,0 +1,24 @@
+<apex:page standardController="fferpcore__UserInformationAssignment__c" extensions="fferpcore.UserInformationAssignmentController" lightningStylesheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+    <apex:sectionHeader title="{!$Label.fferpcore__userinformationassignmentsectiontitle}" subtitle="{!$Label.fferpcore__userinformationassignmentsectionsubtitle}" help="{!HelpUrl}"/>
+    <apex:pageMessages />
+    <apex:form >
+        <apex:pageBlock title="{!$Label.fferpcore__userinformationassignmentblocktitle}">
+            <apex:pageBlockButtons location="both" >
+                <apex:commandButton action="{!save}" value="{!$Label.fferpcore__erpvisualforcesavebutton}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.fferpcore__erpvisualforcecancelbutton}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1" collapsible="false">
+                <apex:inputField value="{!fferpcore__UserInformationAssignment__c.fferpcore__UserInformation__c}" required="true"/>
+                <apex:selectList value="{!fferpcore__UserInformationAssignment__c.fferpcore__TemplateName__c}" multiselect="false" size="1" required="true">
+                    <apex:selectOptions value="{!templateOptions}"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="{!$Label.fferpcore__userinformationimportinformationsection}" columns="1" collapsible="false">
+                <apex:inputField value="{!fferpcore__UserInformationAssignment__c.fferpcore__Status__c}" required="true"/>
+                <apex:inputField value="{!fferpcore__UserInformationAssignment__c.fferpcore__Message__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

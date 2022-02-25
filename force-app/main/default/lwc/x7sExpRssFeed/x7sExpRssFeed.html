@@ -1,0 +1,39 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- X 7 S Rss Feed -->
+<template>
+	<c-x7s-shr-component-wrapper
+		title={title}
+		variant={variant}
+		description={description}
+		title-align={titleAlign}
+		icon-name={iconName}
+		custom-class={customClass}
+		aria-label={label.labelAriaWrapper}
+
+	>
+		<lightning-layout multiple-rows="true" pull-to-boundary="true" class="slds-is-relative">
+			<template if:true={loading}>
+				<c-x7s-exp-spinner></c-x7s-exp-spinner>
+			</template>
+			<template if:true={listIsEmpty}>
+				{listEmptyText}
+			</template>
+			<template if:false={listIsEmpty}>
+				<template for:each={feedItems} for:item="feedItem">
+					<lightning-layout-item key={feedItem.guid} size="12" flexibility="no-flex" class="rss-feed-item slds-m-bottom_medium">
+						<c-x7s-exp-feed-item-blog
+							title={feedItem.title}
+							href={feedItem.link}
+							author-name={feedItem.author}
+							publish-date={feedItem.publishDate}
+							publish-timestamp={feedItem.publishTimestamp}>
+						</c-x7s-exp-feed-item-blog>
+					</lightning-layout-item>
+				</template>
+			</template>
+		</lightning-layout>
+	</c-x7s-shr-component-wrapper>
+</template>

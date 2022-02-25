@@ -1,0 +1,13 @@
+<!--
+ - Created by kentheberling on 9/5/18.
+ -->
+
+<aura:component description="Peak_IfParagraph">
+
+    <aura:attribute default="" type="String" name="paragraph" />
+
+    <aura:if isTrue="{!v.paragraph != ''}">
+        <p class="slds-m-bottom_medium">{!v.paragraph}</p>
+    </aura:if>
+
+</aura:component>

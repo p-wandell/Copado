@@ -1,0 +1,235 @@
+<!--
+  - Copyright (c) 2018. 7Summits Inc.
+  -->
+<aura:component access="global"
+                implements="force:appHostable,flexipage:availableForAllPageTypes"
+                extends="c:SVNSUMMITS_Members_Base">
+    
+    <aura:attribute name="member"       type="Map" access="global"/>
+    <aura:attribute name="currentUser"  type="String" access="public"/>
+    <aura:attribute name="isInternal"   type="Boolean" access="public"/>
+    <aura:attribute name="isExternal"   type="Boolean" access="public"/>
+    <aura:attribute name="isGuest"      type="Boolean" access="public"/>
+    
+    <aura:attribute name="displayTitle" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="displayPhone" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="clickToCall"  type="Boolean" default="false" access="global"/>
+    <aura:attribute name="displayEmail" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="displayKnowledge"    type="Boolean" default="true" access="global"/>
+    <aura:attribute name="displayFollowButton" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="displayChatterStats" type="Boolean" default="true" access="global"/>
+    
+    <aura:attribute name="customLabel1" type="String" default="" access="public"/>
+    <aura:attribute name="customLabel2" type="String" default="" access="public"/>
+    <aura:attribute name="customLabel3" type="String" default="" access="public"/>
+    <aura:attribute name="customLabel4" type="String" default="" access="public"/>
+    <aura:attribute name="customLabel5" type="String" default="" access="public"/>
+    <aura:attribute name="customLabel6" type="String" default="" access="public"/>
+    
+    <aura:attribute name="customField1" type="String" default="" access="public"/>
+    <aura:attribute name="customField2" type="String" default="" access="public"/>
+    <aura:attribute name="customField3" type="String" default="" access="public"/>
+    <aura:attribute name="customField4" type="String" default="" access="public"/>
+    <aura:attribute name="customField5" type="String" default="" access="public"/>
+    <aura:attribute name="customField6" type="String" default="" access="public"/>
+
+    <aura:attribute name="tileSize" type="String" default="12" access="public"/>
+
+    <lightning:layoutItem size="12" largeDeviceSize="{!v.tileSize}" padding="around-small">
+        <section class="slds-box member-tile">
+            
+            <lightning:layout multipleRows="true"
+                              verticalAlign="center"
+                              horizontalAlign="center">
+                
+                <!-- MEMBER INFO -->
+                <lightning:layoutItem size="12"
+                                      class="slds-p-bottom--small slds-align--absolute-center">
+                    <a onclick="{!c.goToRecord}"
+                       data-id="{!v.member.Id}">
+                        <lightning:avatar src="{!v.member.FullPhotoUrl}"
+                                          alternativeText="{!v.member.Name}"
+                                          class="slds-align-top"
+                                          fallbackIconName="standard:account"
+                                          variant="circle"
+                                          size="large"/>
+                    </a>
+                </lightning:layoutItem>
+                
+                <!-- NAME -->
+                <lightning:layoutItem size="12"
+                                      class="member-tile_name slds-text-align_center slds-text-heading--small">
+                    <a onclick="{!c.goToRecord}"
+                       href="javascript:void(0)"
+                       data-id="{!v.member.Id}">
+                        {!v.member.Name}
+                    </a>
+                </lightning:layoutItem>
+                
+                <!-- TITLE -->
+                <aura:if isTrue="{!and(
+                                 and(
+                                    v.displayTitle,
+                                    v.member.Title
+                                ),
+                                 or(
+                                 v.isInternal,
+                                 and(v.isExternal,v.member.UserPreferencesShowTitleToExternalUsers),
+                                 and(v.isGuest,v.member.UserPreferencesShowTitleToGuestUsers)
+                                 )
+                                 )}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-text-body_small slds-text-align_center slds-p-top_xxx-small">
+                        {!v.member.Title}
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- PHONE -->
+                <aura:if isTrue="{!and(
+                                 and(
+                                    v.displayPhone,
+                                    v.member.Phone
+                                ),
+                                 or(
+                                 v.isInternal,
+                                 and(v.isExternal,v.member.UserPreferencesShowMobilePhoneToExternalUsers),
+                                 and(v.isGuest,v.member.UserPreferencesShowMobilePhoneToGuestUsers)
+                                 )
+                                 )}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-p-top_xxx-small slds-text-body_small slds-text-align_center">
+                        <aura:if isTrue="{!v.clickToCall}">
+                            <!--<lightning:clickToDial title="Click to dial" value="{! if(v.member.Phone[0] == '+', '', '+') + v.member.Phone}"/>-->
+                            <a href="{! 'tel:' + if(v.member.Phone[0] == '+', '', '+') + v.member.Phone}">
+                                {!if(v.member.Phone[0] == '+', '', '+') + v.member.Phone}
+                            </a>
+                            <aura:set attribute="else">
+                                {!v.member.Phone}
+                            </aura:set>
+                        </aura:if>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- EMAIL -->
+                <aura:if isTrue="{!and(
+                                 and(
+                                    v.displayEmail,
+                                    v.member.Email
+                                ),
+                                 or(
+                                 v.isInternal,
+                                 and(v.isExternal,v.member.UserPreferencesShowEmailToExternalUsers),
+                                 and(v.isGuest,v.member.UserPreferencesShowEmailToGuestUsers)
+                                 )
+                                 )}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-p-top_xxx-small slds-text-body_small slds-text-align_center slds-cell-wrap slds-truncate">
+                        <ui:outputEmail value="{!v.member.Email}">
+                            {!v.member.Email}
+                        </ui:outputEmail>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- CUSTOM FIELD 1-->
+                <aura:if isTrue="{!and(v.customField1.length > 0, v.member.customField1)}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-text-align_center slds-text-body_small">
+                        <c:SVNSUMMITS_Members_CustomField customLabel="{!v.customLabel1}"
+                                                          customField="{!v.member.customField1}"/>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- CUSTOM FIELD 2-->
+                <aura:if isTrue="{!and(v.customField2.length > 0, v.member.customField2)}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-text-align_center slds-text-body_small">
+                        <c:SVNSUMMITS_Members_CustomField customLabel="{!v.customLabel2}"
+                                                          customField="{!v.member.customField2}"/>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- CUSTOM FIELD 3-->
+                <aura:if isTrue="{!and(v.customField3.length > 0, v.member.customField3)}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-text-align_center slds-text-body_small">
+                        <c:SVNSUMMITS_Members_CustomField customLabel="{!v.customLabel3}"
+                                                          customField="{!v.member.customField3}"/>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- CUSTOM FIELD 4-->
+                <aura:if isTrue="{!and(v.customField4.length > 0, v.member.customField4)}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-text-align_center slds-text-body_small">
+                        <c:SVNSUMMITS_Members_CustomField customLabel="{!v.customLabel4}"
+                                                          customField="{!v.member.customField4}"/>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- CUSTOM FIELD 5-->
+                <aura:if isTrue="{!and(v.customField5.length > 0, v.member.customField5)}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-text-align_center slds-text-body_small">
+                        <c:SVNSUMMITS_Members_CustomField customLabel="{!v.customLabel5}"
+                                                          customField="{!v.member.customField5}"/>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- CUSTOM FIELD 6-->
+                <aura:if isTrue="{!and(v.customField6.length > 0, v.member.customField6)}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-text-align_center slds-text-body_small">
+                        <c:SVNSUMMITS_Members_CustomField customLabel="{!v.customLabel6}"
+                                                          customField="{!v.member.customField6}"/>
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <!-- KNOWLEDGEABLE -->
+                <aura:if isTrue="{!and(v.displayKnowledge, v.member.strKnowledgeTopics)}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-p-top_medium slds-text-align_center slds-text-body_small slds-text-color_weak">
+                        {!$Label.c.ss_mbr_Knowledgeable_about}
+                    </lightning:layoutItem>
+
+                    <lightning:layoutItem size="12"
+                                          class="slds-text-align_center slds-p-bottom_x-small">
+                        <aura:if isTrue="{!v.member.strKnowledgeTopics}">
+                            <a onclick="{!c.goToRecord}"
+                               href="javascript:void(0)"
+                               data-id="{!v.member.strKnowledgeTopicId}">
+                                {!v.member.strKnowledgeTopics}
+                            </a>
+                        </aura:if>
+
+                        <aura:if isTrue="{!v.member.strKnowledgeTopics1}">
+                            |
+                            <a onclick="{!c.goToRecord}"
+                               href="javascript:void(0)"
+                               data-id="{!v.member.strKnowledgeTopicId1}">
+                                {!v.member.strKnowledgeTopics1}
+                            </a>
+                        </aura:if>
+                    </lightning:layoutItem>
+                </aura:if>
+            </lightning:layout>
+            
+            <!-- FOLLOW BUTTON -->
+            <div class="member-tile_meta">
+                <aura:if isTrue="{!and(v.displayFollowButton, v.member.Id != v.currentUser)}">
+                    <lightning:layoutItem size="12"
+                                          class="member-tile_follow-button slds-text-align_center slds-p-top_small">
+                        <c:SVNSUMMITS_Members_Follow_Button member="{#v.member}"/>
+                    </lightning:layoutItem>
+                </aura:if>
+
+                <!-- CHATTER STATS -->
+                <aura:if isTrue="{!v.displayChatterStats}">
+                    <lightning:layoutItem size="12"
+                                          class="slds-p-top_small member-tile_stats">
+                        <c:SVNSUMMITS_Members_Stats member="{!v.member}"/>
+                    </lightning:layoutItem>
+                </aura:if>
+            </div>
+        </section>
+    </lightning:layoutItem>
+</aura:component>

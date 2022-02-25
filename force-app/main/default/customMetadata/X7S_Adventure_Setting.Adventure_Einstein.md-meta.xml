@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Adventure Einstein</label>
+    <protected>false</protected>
+    <values>
+        <field>Adventure_Admin_Permission_Name__c</field>
+        <value xsi:type="xsd:string">x7s_Adventure_Admin</value>
+    </values>
+    <values>
+        <field>Enable_Checkbox_Display__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Enable_New_Task_Flag__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Full_Clone_Error_Text__c</field>
+        <value xsi:type="xsd:string">This adventure was not successfully cloned. Please check debug logs.</value>
+    </values>
+    <values>
+        <field>Full_Clone_Success_Text__c</field>
+        <value xsi:type="xsd:string">This adventure and all related child records successfully cloned.</value>
+    </values>
+    <values>
+        <field>No_Assigned_Tasks_Text__c</field>
+        <value xsi:type="xsd:string">You have no assigned tasks in this module</value>
+    </values>
+    <values>
+        <field>No_Module_Tasks__c</field>
+        <value xsi:type="xsd:string">No task in this module</value>
+    </values>
+    <values>
+        <field>Override_Action_Color__c</field>
+        <value xsi:type="xsd:string">Blue</value>
+    </values>
+    <values>
+        <field>Override_Link_Color__c</field>
+        <value xsi:type="xsd:string">Red</value>
+    </values>
+    <values>
+        <field>Profile_for_Test_Purposes__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Restrict_View_of_Assigned_Adventures__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Task_Completion_Checked_Text__c</field>
+        <value xsi:type="xsd:string">This task has been successfully marked as complete.</value>
+    </values>
+    <values>
+        <field>Task_Completion_Unchecked_Text__c</field>
+        <value xsi:type="xsd:string">This task has been successfully marked as incomplete.</value>
+    </values>
+    <values>
+        <field>Tasks_Completed_Text__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

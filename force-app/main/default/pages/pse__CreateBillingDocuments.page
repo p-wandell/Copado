@@ -1,0 +1,33 @@
+<apex:page standardController="pse__Billing_Event__c"
+			extensions="pse.BillingDocumentsController"
+			action="{!Validate}"
+			recordSetVar="billingEvents"
+			lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:sectionHeader title="{!$Label.pse__billingeventintegrationhelptitle}" help="{!$Page.pse__CreateBillingEventIntegrationHelp}"/>
+	<apex:outputPanel id="messages">
+		<apex:pageMessages />
+		<!-- Not escaping this message as we want to show some custom HTML to render a list. The message has been secured in the controller method. -->
+		<apex:pageMessage escape="false" severity=" {!IF(hasValidBillingEvents, 'warning', 'error')}" summary="{!pageMessageSummary}" rendered="{!hasInvalidBillingEvents}" strength="1"/>
+	</apex:outputPanel>
+	<apex:pageBlock id="confirmationForm">
+		<apex:pageBlockButtons location="bottom">
+			<apex:form >
+				<apex:actionStatus id="status">
+					<apex:facet name="start">
+						<apex:outputPanel >
+							<apex:commandButton value="{!$Label.pse__common_label_processing}" disabled="true"/>
+							<apex:commandButton value="{!$Label.pse__common_label_processing}" disabled="true" rendered="{!showContinueButton}"/>
+						</apex:outputPanel>
+					</apex:facet>
+					<apex:facet name="stop">
+						<apex:outputPanel >
+							<apex:commandButton value="{!$Label.pse__common_label_return}" action="{!redirectListView}" rerender="confirmationForm" status="status"/>
+							<apex:commandButton value="{!$Label.pse__common_label_continue}" action="{!createBillingDocuments}" rerender="confirmationForm, messages" rendered="{!showContinueButton}" status="status"/>
+						</apex:outputPanel>
+					</apex:facet>
+				</apex:actionStatus>
+			</apex:form>
+		</apex:pageBlockButtons>
+	</apex:pageBlock>
+</apex:page>

@@ -1,0 +1,413 @@
+<apex:page id="RRForPTA" title="{!if(mode=='RR',$Label.pse__rr_from_pta_page_title_label,if(mode=='HldRR',$Label.pse__heldrr_from_pta_page_title_label,$Label.pse__asn_from_pta_page_title_label))}"
+ sidebar="false" standardController="pse__Resource_Request__c" extensions="pse.CreateResourceRequestForPTAController" lightningStylesheets="true">
+	<c:selectAllCheckboxes functionName="selectAllResourceRequests" />
+	<c:WaitComponent />
+	<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+	<script>
+		function checkSave(checkBoxIdPattern) {
+			var count = 0;
+			var inputElem = document.getElementsByTagName("input");
+			for (var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(checkBoxIdPattern) != -1)
+					if (inputElem[i].checked) {
+						count++;
+						break;
+					}
+			}
+			if (count < 1) {
+				if ({!mode == 'ASN'})
+					alert('{!JSINHTMLENCODE($Label.ASN_generation_no_row_selected_to_save_alert_message)}');
+				else if ({!mode == 'HldRR'})
+					alert('{!JSINHTMLENCODE($Label.HeldRR_generation_no_row_selected_to_save_alert_message)}');
+				else if ({!mode == 'RR'})
+					alert('{!JSINHTMLENCODE($Label.RR_generation_no_row_selected_to_save_alert_message)}');
+				return false;
+			}
+		}
+
+		function isPositiveInteger(field) {
+			var number = field.value,
+				floatN = parseFloat(number);
+
+			if ((number != '') && !((!isNaN(floatN)) && isFinite(number) && floatN > 0 && floatN % 1 == 0)) {
+				alert('{!JSINHTMLENCODE($Label.not_a_number_error)}');
+				field.value = '';
+			}
+		}
+
+	</script>
+	<!-- CSS added to display alternate row colors and Center align Text in PageblockTable -->
+	<style type="text/css">
+		.grandTotal {
+			background-color: #dedede;
+			border-bottom: 1px solid #ffffff !important;
+		}
+
+		.pageBlockTableScroll {
+			display: block;
+			overflow: auto;
+			width: 93vw;
+		}
+
+		.pageBlockTableScroll table th+th {
+			border-left: 1px solid #dedede !important;
+		}
+
+		.pageBlockTableScroll table div.errorMsg {
+			display: block !important;
+		}
+	</style>
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<apex:form id="RRPTA_Form">
+		<apex:actionFunction name="actionOnCheckBox" action="{!toggle}" reRender="selectionPanel" />
+		<apex:actionFunction name="actionTogenerate" action="{!generate}" />
+		<apex:pageMessages id="pageMessageId" />
+		<apex:pageBlock id="RRPTA_PB" rendered="{!displayContent}">
+			<apex:actionFunction name="onPreviewClick" action="{!toggle}" rerender="RRGenerationSection" oncomplete="confirmGenerate();" />
+			<apex:actionFunction name="onSave" action="{!save}" />
+			<apex:actionFunction name="onReset" action="{!reset}" immediate="true" />
+			<apex:actionFunction name="onCancelClick" action="{!cancel}" immediate="true" />
+			<apex:actionFunction name="onUpdatePreviewClick" action="{!updatePreview}" reRender="unsavedRRSection,unsavedAssignSection,pageMessageId" status="ajaxStatus" />
+			<apex:actionFunction name="onResetPreview" action="{!resetPreview}" reRender="unsavedRRSection,unsavedAssignSection,pageMessageId" status="ajaxStatus" />
+			<apex:actionFunction name="onGenerateResourceRequest" action="{!redirectToRRPage}" immediate="true" />
+			<apex:actionFunction name="onGenerateHeldResourceRequest" action="{!redirectToHeldRRPage}" immediate="true" />
+			<apex:actionFunction name="onGenerateASN" action="{!redirectToASNPage}" immediate="true" />
+
+			<!-- Project Details section -->
+			<apex:pageBlockSection columns="2" id="projectSection">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__rr_from_pta_proj_info_section_label}" />
+				</apex:facet>
+				<apex:repeat value="{!projectDetailOnRRForPTAFields}" var="fName">
+					<apex:outputField value="{!project[fName]}" />
+				</apex:repeat>
+			</apex:pageBlockSection>
+
+			<apex:outputPanel id="selectionPanel" layout="block" styleClass="{!IF($User.UIThemeDisplayed=='Theme3', 'slds-m-top_medium', '')}">
+				<apex:pageBlockSection columns="2" id="RRGenerationSection">
+					<apex:facet name="header">
+						<apex:outputText value="{!if(mode=='RR',$Label.pse__rr_from_pta_generate_section_label,if(mode=='HldRR',$Label.pse__heldrr_from_pta_generate_section_label,$Label.pse__asn_from_pta_generate_section_label))}" />
+					</apex:facet>
+					<apex:pageBlockSectionItem >
+						<apex:inputcheckbox value="{!byRole}" onclick="disableCheckbox();" styleClass="check" label="Role">
+						</apex:inputcheckbox>
+						<apex:outputLabel value="{!$ObjectType.pse__Project_Task_Assignment__c.Fields.pse__Resource_Role__c.Label}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:inputcheckbox value="{!byResource}" onclick="disableCheckbox();" styleClass="check" label="Resource">
+						</apex:inputcheckbox>
+						<apex:outputLabel value="{!$ObjectType.pse__Project_Task_Assignment__c.Fields.pse__Resource__c.Label}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:inputcheckbox value="{!byExternalResource}" onclick="disableCheckbox();" styleClass="check" label="External Resource">
+						</apex:inputcheckbox>
+						<apex:outputLabel value="{!$ObjectType.pse__Project_Task_Assignment__c.Fields.pse__External_Resource__c.Label}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem rendered="{!milestoneAllowed}">
+						<apex:inputcheckbox value="{!byMilestone}" label="Milestone" styleClass="check"></apex:inputcheckbox>
+						<apex:outputLabel value="{!$ObjectType.pse__Project_Task__c.Fields.pse__Milestone__c.Label}" />
+					</apex:pageBlockSectionItem>
+					<apex:repeat value="{!listFieldWrapper}" var="fieldwrapper">
+						<apex:pageBlockSectionItem rendered="{!milestoneAllowed}">
+							<apex:inputcheckbox value="{!fieldwrapper.isSelected}" label="{!fieldwrapper.label}" styleClass="check"></apex:inputcheckbox>
+							<apex:outputLabel value="{!fieldwrapper.label}" />
+						</apex:pageBlockSectionItem>
+					</apex:repeat>
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection columns="2" id="RRGenerationSection2">
+					<apex:pageBlockSectionItem >
+						<div style="padding-top:5px;"></div>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<div style="padding-top:5px;"></div>
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$Label.pse__max_gap_days_allowed}" />
+						<apex:inputText value="{!allowedGap}" onBlur="isPositiveInteger(this);" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem />
+					<apex:pageBlockSectionItem >
+						<apex:inputcheckbox value="{!excludeSaturday}" styleClass="check" label="excludeSaturday" />
+						<apex:outputLabel value="{!$Label.pse__rr_from_pta_ignore_saturdays}" />
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem />
+					<apex:pageBlockSectionItem >
+						<apex:inputcheckbox value="{!excludeSunday}" styleClass="check" label="excludeSunday" />
+						<apex:outputLabel value="{!$Label.pse__rr_from_pta_ignore_sundays}" />
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+				<script type="text/javascript">
+					function confirmGenerate() {
+						var doINeedToCall = true;
+						if ({!byExternalResource} && {!isExtResWithoutRole}) {
+							doINeedToCall = confirm('{!JSINHTMLENCODE($Label.RR_from_PTA_ext_resource_without_role_confirm)}');
+						}
+						if (doINeedToCall) {
+							actionTogenerate();
+						}
+					}
+
+					function disableCheckbox() {
+						var parentDiv = document.getElementById('{!$Component.RRForPTA.RRPTA_Form.RRPTA_PB}');
+						if (parentDiv != null) {
+							var inputElem = parentDiv.getElementsByTagName("input");
+							for (var i = 0; i < inputElem.length; i++) {
+								if (inputElem[i].className.indexOf('check') != -1) {
+									inputElem[i].disabled = true;
+								}
+							}
+						}
+						actionOnCheckBox();
+					}
+
+				</script>
+			</apex:outputPanel>
+
+			<!-- Unsaved generated resource request and held resource request section -->
+			<apex:pageBlockSection id="unsavedRRSection" columns="1" rendered="{!(wrapperList!=null) && (mode!='ASN')}">
+				<apex:facet name="header">
+					<apex:outputText value="{!if(mode=='RR',$Label.pse__rr_from_pta_save_discard_section_label,$Label.pse__heldrr_from_pta_save_discard_section_label)}" />
+				</apex:facet>
+				<apex:outputPanel styleClass="pageBlockTableScroll">
+					<apex:pageBlockTable value="{!wrapperList}" var="resReqWrapper" id="resourceRequestList">
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">
+								<input type="checkbox" onclick="selectAllResourceRequests(this, 'matchingResourceRequestRowSelector')" checked="true" />
+							</apex:facet>
+							<apex:inputcheckbox value="{!resReqWrapper.isSelected}" id="matchingResourceRequestRowSelector" rendered="{!Not(resReqWrapper.isGrandTotalRow)}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_resource_role_column}</apex:facet>
+							<apex:inputField value="{!resReqWrapper.rr.pse__Resource_Role__c}" required="true" rendered="{!NOT(resReqWrapper.isGrandTotalRow)}" />
+							<apex:outputText rendered="{!AND(resReqWrapper.isGrandTotalRow, NOT(resReqWrapper.isOriginalTotalRow))}" value="{!$Label.pse__common_label_grand_total}"></apex:outputText>
+							<apex:outputText rendered="{!AND(resReqWrapper.isGrandTotalRow, resReqWrapper.isOriginalTotalRow)}" value="{!$Label.pse__grand_total_original}"></apex:outputText>
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}" rendered="{!byResource && (mode=='RR')}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_suggested_resource_column}</apex:facet>
+							<apex:outputField value="{!resReqWrapper.rr.pse__Resource__c}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}" rendered="{!mode=='HldRR'}">
+							<apex:facet name="header">{!$Label.pse__heldrr_held_resource_column}</apex:facet>
+							<apex:outputField value="{!resReqWrapper.rr.pse__Resource__c}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}" rendered="{!byMilestone}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_milestone_column}</apex:facet>
+							<apex:outputField value="{!resReqWrapper.milestoneHolder.pse__Milestone__c}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_requested_hours_column}</apex:facet>
+							<apex:inputField value="{!resReqWrapper.rr.pse__SOW_Hours__c}" required="true" rendered="{!And(Not(resReqWrapper.isGrandTotalRow),or((mode=='RR'),And((mode=='HldRR'),Not(useLumpyScheduling))))}"
+							 style="width: 90px;" />
+							<apex:outputField value="{!resReqWrapper.rr.pse__SOW_Hours__c}" rendered="{!Not(And(Not(resReqWrapper.isGrandTotalRow),or((mode=='RR'),And((mode=='HldRR'),Not(useLumpyScheduling)))))}" />
+							<apex:outputText value="{!resReqWrapper.requestedHoursString}" rendered="{!resReqWrapper.isGrandTotalRow}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_requested_bill_rate}</apex:facet>
+							<apex:inputField value="{!resReqWrapper.rr.pse__Requested_Bill_Rate__c}" rendered="{!Not(resReqWrapper.isGrandTotalRow)}" style="width: 90px;" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}" rendered="{!NOT(hideHoursAvgCostRateColumn)}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_hours_avg_cost_rate_column}</apex:facet>
+							<apex:outputText value="{!resReqWrapper.avgCost}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}" rendered="{!NOT(hideHoursSuggestedBillRateColumn)}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_hours_suggested_bill_rate_column}</apex:facet>
+							<apex:outputText value="{!resReqWrapper.suggestedBill}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_start_date}</apex:facet>
+							<apex:inputField value="{!resReqWrapper.rr.pse__Start_Date__c}" rendered="{!Not(resReqWrapper.isGrandTotalRow)}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_end_date}</apex:facet>
+							<apex:inputField value="{!resReqWrapper.rr.pse__End_Date__c}" required="true" rendered="{!Not(resReqWrapper.isGrandTotalRow)}" />
+						</apex:column>
+						<apex:column styleClass="{!resReqWrapper.rowStyle}" rendered="{!mode=='RR'}">
+							<apex:facet name="header">{!$Label.pse__rr_notes}</apex:facet>
+							<apex:outputField value="{!resReqWrapper.rr.pse__Notes__c}" />
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+
+			<!-- Unsaved generated assignment section -->
+			<apex:pageBlockSection id="unsavedAssignSection" columns="1" rendered="{!(assignmentWrapperList!=null) && (mode=='ASN')}">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__asn_from_pta_save_discard_section_label}" />
+				</apex:facet>
+				<apex:outputPanel styleClass="pageBlockTableScroll">
+					<apex:pageBlockTable value="{!assignmentWrapperList}" var="assignWrapper" id="assignmentList">
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">
+								<input type="checkbox" onclick="selectAllResourceRequests(this, 'matchingResourceRequestRowSelector')" checked="true" />
+							</apex:facet>
+							<apex:inputcheckbox value="{!assignWrapper.isSelected}" id="matchingResourceRequestRowSelector" rendered="{!Not(assignWrapper.isGrandTotalRow)}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$ObjectType.pse__Assignment__c.Fields.Name.Label}</apex:facet>
+							<apex:outputField value="{!assignWrapper.assign.Name}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_resource_column}</apex:facet>
+							<apex:outputField value="{!assignWrapper.assign.pse__Resource__c}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_resource_role_column}</apex:facet>
+							<apex:inputField value="{!assignWrapper.assign.pse__Role__c}" rendered="{!Not(assignWrapper.isGrandTotalRow)}" />
+							<apex:outputText rendered="{!AND(assignWrapper.isGrandTotalRow,NOT(assignWrapper.isOriginalTotalRow))}" value="{!$Label.pse__common_label_grand_total}"></apex:outputText>
+							<apex:outputText rendered="{!AND(assignWrapper.isGrandTotalRow, assignWrapper.isOriginalTotalRow)}" value="{!$Label.pse__grand_total_original}"></apex:outputText>
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_scheduled_hours_column}</apex:facet>
+							<apex:inputField value="{!assignWrapper.schedule.pse__Scheduled_Hours__c}" rendered="{!Not(Or(assignWrapper.isGrandTotalRow,useLumpyScheduling))}"
+							 style="width: 90px;" />
+							<apex:outputText value="{!assignWrapper.scheduledHours}" rendered="{!Or(assignWrapper.isGrandTotalRow,useLumpyScheduling)}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}" rendered="{!NOT(hideCostRateColumn)}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_cost_rate_column}</apex:facet>
+							<apex:outputText value="{!assignWrapper.costRate}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}" rendered="{!NOT(hideBillRateColumn)}">
+							<apex:facet name="header">{!$Label.pse__rr_summary_assign_bill_rate_column}</apex:facet>
+							<apex:inputText value="{!assignWrapper.assign.pse__Bill_Rate__c}" rendered="{!Not(assignWrapper.isGrandTotalRow)}" style="width: 90px;" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_start_date}</apex:facet>
+							<apex:inputField value="{!assignWrapper.schedule.pse__Start_Date__c}" rendered="{!Not(Or(assignWrapper.isGrandTotalRow,useLumpyScheduling))}" />
+							<apex:outputField value="{!assignWrapper.schedule.pse__Start_Date__c}" rendered="{!Or(assignWrapper.isGrandTotalRow,useLumpyScheduling)}" />
+						</apex:column>
+						<apex:column styleClass="{!assignWrapper.rowStyle}">
+							<apex:facet name="header">{!$Label.pse__rr_end_date}</apex:facet>
+							<apex:outputField value="{!assignWrapper.schedule.pse__End_Date__c}" />
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+
+		</apex:pageBlock>
+	</apex:form>
+
+	<apex:outputPanel id="scriptBlock" layout="block">
+		<script>
+			prepareHeader();
+			function prepareHeader() {
+				var config;
+
+				config = {
+					objectName: '{!JSENCODE(project.name)}',
+					recordName: '{!JSENCODE($Label.ASN_from_PTA_Page_Title_Label)}',
+					helpUrl: '{!$Page.CreateResourceRequestForPTAHelp}',
+					documentIcon: {
+						name: 'psa_resourcerequests',
+						namespace: $FFOUTAPP.getNamespace()
+					},
+					recordId: '{!project.Id}',
+					objectApiName: '{!$ObjectType["Proj__c"].name}',
+					fields: [{
+						id: 'Name',
+						field: '{!$ObjectType["Proj__c"].Fields["Name"].name}'
+					},{
+						id: 'endDate',
+						field: '{!$ObjectType["Proj__c"].Fields["Account__c"].name}'
+					},{
+						id: 'billable',
+						field: '{!$ObjectType["Proj__c"].Fields["Project_Manager__c"].name}'
+					},{
+						id: 'status',
+						field: '{!$ObjectType["Proj__c"].Fields["Bookings__c"].name}'
+					}],
+					onRender: 'onHeaderLoadCallback'
+				};
+
+				if ('{!displayContent}' === 'true') {
+					var buttons= [{
+							id: 'cancel',
+							label: '{!JSENCODE($Label.RR_From_PTA_Cancel_Button_Label)}',
+							actionFn: 'onCancelClick'
+						}, {
+							id: 'preview',
+							label: '{!JSENCODE($Label.ASN_From_PTA_Generate_Button_Label)}',
+							actionFn: 'onPreviewClick',
+							disabled: {!(wrapperList!=null)}
+						}, {
+							id: 'updatePreview',
+							label: '{!JSENCODE($Label.RR_Update_Preview)}',
+							actionFn: 'onUpdatePreviewClick',
+							disabled: {!(wrapperList==null)}
+						}, {
+							id: 'save',
+							label: '{!JSENCODE($Label.RR_From_PTA_Save_Button_Label)}',
+							actionFn: 'onSaveClick',
+							disabled: {!(wrapperList==null)}
+						}];
+
+					if ('{!mode}' !== 'RR') {
+						buttons.push({
+							id: 'generateRR',
+							label: '{!JSENCODE($Label.rr_from_pta_goes_to_generate_resource_requests_ui_button)}',
+							actionFn: 'onGenerateResourceRequest'
+						});
+					}
+
+					if ('{!mode}' !== 'HldRR') {
+						buttons.push({
+							id: 'generateHldRR',
+							label: '{!JSENCODE($Label.rr_from_pta_goes_to_generate_held_resource_requests_ui_button)}',
+							actionFn: 'onGenerateHeldResourceRequest'
+						});
+					}
+
+					if ('{!mode}' !== 'ASN') {
+						buttons.push({
+							id: 'generateASN',
+							label: '{!JSENCODE($Label.rr_from_pta_goes_to_generate_assignments_ui_button)}',
+							actionFn: 'onGenerateASN'
+						});
+					}
+
+					buttons.push({
+						id: 'resetPreview',
+						label: '{!JSENCODE($Label.RR_Reset_Preview)}',
+						actionFn: 'onResetPreview',
+						disabled: {!(wrapperList==null)}
+					}, {
+						id: 'reset',
+						label: '{!JSENCODE($Label.RR_From_PTA_Reset_Button_Label)}',
+						actionFn: 'onReset'
+					});
+
+					config.buttons = buttons;
+				}
+
+				if ('{!mode}' === 'HldRR') {
+					config.recordName = '{!JSENCODE($Label.HeldRR_from_PTA_Page_Title_Label)}';
+					if (Array.isArray(config.buttons)) {
+						config.buttons[1].label = '{!JSENCODE($Label.HeldRR_From_PTA_Generate_Button_Label)}';
+					}
+				}
+
+				if ('{!mode}' === 'RR') {
+					config.recordName = '{!JSENCODE($Label.RR_from_PTA_Page_Title_Label)}';
+					if (Array.isArray(config.buttons)) {
+						config.buttons[1].label = '{!JSENCODE($Label.RR_From_PTA_Generate_Button_Label)}';
+					}
+				}
+
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onSaveClick() {
+				if (checkSave('matchingResourceRequestRowSelector') !== false) {
+					onSave();
+				}
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+		</script>
+	</apex:outputPanel>
+</apex:page>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Template_Proj_RR_Fieldset__c</fullName>
+    <defaultValue>&apos;CreateProjectFromTemplateRRColumns&apos;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>The API name of a field set used by the Resource Request object. Fields in this set define the columns in the Resource Request Mappings from Template on the Create Project from Template page. The default value is CreateProjectFromTempRRColumns.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>API name of a field set used by the Resource Request object. Fields in this set define the columns in the Resource Request Mappings from Template on the Create Project from Template page.</inlineHelpText>
+    <label>Template Proj RR Fieldset</label>
+    <length>100</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

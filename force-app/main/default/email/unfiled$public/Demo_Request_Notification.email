@@ -1,0 +1,6 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; bEditID:r3st1; color:#000000; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[<div><font face="arial">A new demo request has been created.&nbsp; See information below:&nbsp;</font></div><div><font face="arial"><b><br></b></font></div><div><font face="arial"><b>Requested By:</b> {!Pursuit_Lead_Request__c.CreatedBy}</font></div><div><font face="arial"><b>Demo Type:</b> {!Pursuit_Lead_Request__c.Demo_Type__c}</font></div><div><font face="arial"><b>Demo Scenario:</b> {!Pursuit_Lead_Request__c.Primary_Demo_Scenario__c}</font></div><div><font face="arial"><b>Demo Due Date:</b> {!Pursuit_Lead_Request__c.Demo_Due_Date__c}</font></div><div><font face="arial"><b>Demo Description:</b></font></div><div><font face="arial">{!Pursuit_Lead_Request__c.Demo_Description__c}</font></div><div><font face="arial"><br></font></div><div><font face="arial"><b>Link:</b> {!Pursuit_Lead_Request__c.Link}</font></div><div><font face="arial"><br></font></div><div><font face="arial">Happy Demoing!&nbsp;</font></div>]]></td>
+</tr>
+</table>

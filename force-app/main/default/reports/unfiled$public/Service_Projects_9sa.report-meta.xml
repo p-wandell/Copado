@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_34966624</developerName>
+        <masterLabel>Project Size ($)</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>pse__Proj__c.SOW_Budget__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>100,000</to>
+            </sourceValues>
+            <value>&lt; 100,000</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>100,000</from>
+                <to>250,000</to>
+            </sourceValues>
+            <value>100,000 to 250,000</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>250,000</from>
+                <to>500,000</to>
+            </sourceValues>
+            <value>250,000 to 500,000</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>500,000</from>
+                <to>750,000</to>
+            </sourceValues>
+            <value>500,000 to 750,000</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>750,000</from>
+                <to>1,000,000</to>
+            </sourceValues>
+            <value>750,000 to 1,000,000</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>1,000,000</from>
+            </sourceValues>
+            <value>&gt; 1,000,000</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.Salesforce_Products__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__End_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.Go_Live_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Project_Manager__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.Principal_Consultant__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.SOW_Budget__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.Opp_Project_Type__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Proj__c.Salesforce_Products__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>includes</operator>
+            <value>Service Cloud</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Proj__c.pse__Project_Type__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Customer Project</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Proj__c.Opportunity_Stage__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>8 Closed Won</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Year</dateGranularity>
+        <field>pse__Proj__c.pse__Start_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_34966624</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Service Projects</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$pse__Proj__c@pse__Proj__c.pse__Account__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Proj__c.pse__Start_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

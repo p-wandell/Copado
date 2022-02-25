@@ -1,0 +1,30 @@
+<!--
+  ~ Copyright (c) 2020.  7Summits Inc. All rights reserved.
+  -->
+
+<!-- 7S Object Banner -->
+<template>
+  <div class={wrapperClass}>
+    <div class="object-banner object-banner_primary">
+      <div class="slds-grid slds-wrap slds-grid_vertical-align-center slds-wrap slds-p-horizontal--small slds-p-vertical--x-small">
+        <div if:false={hideIcon} class="slds-p-right--x-small slds-order--1 slds-large-order--1">
+          <lightning-icon icon-name={iconName} size="medium">
+            </lightning-icon>
+        </div>
+        <h2 if:false={hideTitle} class="object-banner__title slds-p-horizontal--xx-small slds-order--2 slds-large-order--2">{title}</h2>
+        <div if:false={hideSearch} class="object-banner__search-wrapper slds-size_12-of-12 slds-large-size_5-of-12 slds-p-horizontal--medium slds-order--4 slds-large-order--3">
+          <lightning-input type="search" name="search" onchange={handleKeyChange} value={searchString}
+                           placeholder={searchPlaceHolder} variant="label-hidden">
+          </lightning-input>
+        </div>
+        <div class="object-banner__action-slot slds-col_bump-left slds-p-left--x-small slds-order--3 slds-large-order--4">
+          <slot name="action"></slot>
+        </div>
+      </div>
+    </div>
+    <div class="object-banner__filter-slot slds-p-horizontal--small slds-p-vertical--small">
+      <slot name="filters" onslotchange={handleSlotChange}></slot>
+      <!-- TODO: Add expand / collapse functionality -->
+    </div>
+  </div>
+</template>

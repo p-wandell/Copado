@@ -1,0 +1,25 @@
+<apex:page controller="ffr.ReportingGeneratorController" tabStyle="ReportingGenerator__tab" lightningStylesheets="true">
+    <style type="text/css">.ffdcTable thead tr{font-size:1em;}.hiddensubmit{display:none}</style>
+    <!-- Header --> 
+    <apex:sectionHeader title="{!$Label.ffr__reportinglistviewwizardpagesubtitle}" subtitle="{!$Label.ffr__reportinglistviewpagehome}" help="{!helpLink}"/>
+    <apex:form id="theForm">
+        <apex:pageBlock >
+	        <apex:pageBlockTable value="{!ReportingGeneratorViews}" var="template" styleClass="ffdcTable">
+	        	<apex:column style="width:150px">
+	           		<apex:facet name="header">{!$Label.ffr__reportinglistviewpageaction}</apex:facet>
+	           		<apex:outputPanel >
+	           			<apex:commandLink value="{!$Label.ffr__reportinglistviewpagegenerationdefinition}" action="{!template.getGenerateDefinition}"/>  
+	               	</apex:outputPanel>
+	           	</apex:column>
+	           	<apex:column >
+	           		<apex:facet name="header">{!$Label.ffr__reportinglistviewpagereportdefinitionname}</apex:facet>
+	           		{!template.TemplateName}
+	           	</apex:column>
+	           	<apex:column >
+	           		<apex:facet name="header">{!$Label.ffr__reportinglistviewpagereportdefinitiondescription}</apex:facet>
+	           		{!template.TemplateDescription} 
+	    		</apex:column>
+	    	</apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

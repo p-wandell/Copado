@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>My_Resource_Requests</fullName>
+    <columns>NAME</columns>
+    <columns>pse__Notes__c</columns>
+    <columns>pse__Resource_Role__c</columns>
+    <columns>Hours_Per_Week__c</columns>
+    <columns>pse__Status__c</columns>
+    <filterScope>Mine</filterScope>
+    <label>My Resource Requests</label>
+</ListView>

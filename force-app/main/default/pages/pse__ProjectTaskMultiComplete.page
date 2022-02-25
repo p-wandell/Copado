@@ -1,0 +1,33 @@
+<apex:page standardController="pse__Project_Task__c" extensions="pse.ProjectTaskController" recordSetVar="recs"
+  showHeader="{!hasError}" standardStylesheets="true" sidebar="false" lightningStylesheets="true">
+<html>
+<title>{!$Label.pse__project_task_project_task_complete_title}</title>
+<body>
+<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+<apex:pageMessages />
+
+<apex:form >
+<apex:outputPanel rendered="{!hasError}">
+<div align="center"><apex:commandButton action="{!cancel}" value="{!$Label.pse__project_task_label_back}"/></div>
+</apex:outputPanel>
+    <apex:actionFunction action="{!completeMultiAction}" name="jsFormAction"/>
+</apex:form>
+
+<apex:outputText rendered="{!NOT(hasError)}">
+<script type="text/javascript">
+    var confirmAction = function (){
+        var userRes =  confirm("{!JSINHTMLENCODE($Label.pse__project_task_complete_confirmation_message)}");
+        if (userRes == true){
+            jsFormAction();
+        }else {
+            /*Send back*/
+            window.history.back();
+        }
+    }
+
+    setTimeout('confirmAction()',500);
+</script>
+</apex:outputText>
+</body>
+</html>
+</apex:page>

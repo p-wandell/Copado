@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Remote_or_In_Office__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>Do you work remote, or in the office?</inlineHelpText>
+    <label>Remote or In Office?</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Remote</fullName>
+                <default>false</default>
+                <label>Remote</label>
+            </value>
+            <value>
+                <fullName>In Milwaukee Office</fullName>
+                <default>false</default>
+                <label>In Milwaukee Office</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

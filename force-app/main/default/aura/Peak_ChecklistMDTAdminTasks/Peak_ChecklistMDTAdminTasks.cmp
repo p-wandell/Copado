@@ -1,0 +1,43 @@
+<!--
+ - Created by shashi arrabeli on 4/12/18.
+ -->
+
+    <aura:component description="Peak_ChecklistMDTAdminTasks" implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                    controller="Peak_ChecklistMDTController" extends="c:Peak_ChecklistBase">
+        <aura:handler name="init" value="{!this}" action="{!c.doChecklistAdminTasksInit}"/>
+        <aura:attribute name="listOfTasks" type="Peak_CommunityTaskMDTWrapper[]"/>
+        <aura:attribute name="newTaskName" type="string"/>
+
+        <aura:registerEvent name="refreshEvent" type="c:Peak_CheckListRefreshEvent" />
+
+        <aura:if isTrue="{!v.isLoading}">
+            <c:Peak_LoadingGif />
+        </aura:if>
+
+        <div>
+            <form><H1 class="slds-m-bottom_large">Tasks</H1>
+
+                <ui:inputText aura:id="Checklist"
+                              class="slds-m-bottom_large"
+                              labelClass="slds-form-element__label"
+                              value="{!v.newTaskName}"
+                              required="true"/>
+
+                <ui:button label="Add Task"
+                           class="slds-button slds-button_neutral slds-m-bottom_large"
+                           labelClass="label"
+                           press="{!c.createTaskMDT}"/>
+
+            </form>
+
+        </div>
+
+        <aura:iteration items="{!v.listOfTasks}" var="tsk">
+            <div>
+
+				<a data-name="{!tsk.name}" data-label="{!tsk.label}" onclick="{!c.deleteSelectedTask}" title="Delete">Del</a>
+                &nbsp;{!tsk.label}
+            </div>
+        </aura:iteration>
+
+    </aura:component>

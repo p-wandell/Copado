@@ -1,0 +1,90 @@
+<apex:page controller="pse.TimeVarianceController" tabStyle="pse__Time_Variance_Detail__c" lightningStyleSheets="true">
+    <apex:stylesheet value="{!URLFOR($Resource.pse__fflib_baf, '/stylesheets/progress-bar.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+    <style>
+		.infoIcon { 
+		    vertical-align: middle;
+		    margin: 10px !important; 
+	    }
+	    .info-block {    
+	    	border: 1px solid;
+	   		border-color: #dddbda;
+	   		border-radius: .25rem; 
+   		 }
+		.info-margin-display {
+			display: inline-block; 
+		 }
+		 .slds-checkbox {
+			margin: 2px 0px 0px !important;
+		 }
+	</style>
+	<apex:variable var="isLightningView" value="{!$User.UIThemeDisplayed=='Theme4d'}" />
+	<apex:outputPanel rendered="{!isLightningView}" layout="none">
+		<style>
+			.infoIcon {
+				width: 23px !important;
+			    color: #706e6b;
+			    height: 23px !important;
+			}
+			.info-block {    
+		    	background-color: #f4f6f9;
+    			padding: 0.75rem 1rem;
+			    border: none;
+	   		}
+		</style>
+	</apex:outputPanel>
+    <apex:insert name="sectionHeader" />
+    <apex:sectionHeader title="{!$Label.pse__timevariance_title_generate_time_variance_report}" help="{!$Page.pse__TimeVarianceHelp}" />
+    <apex:outputPanel layout="block" styleClass="info-block" rendered="{!showEntryMode}">
+		<apex:image value="/s.gif" styleClass="infoIcon"/>
+		<apex:outputPanel layout="block" styleClass="info-margin-display">
+			{!$Label.pse__timevariance_message_instructions}
+		</apex:outputPanel>
+	</apex:outputPanel>
+	<br/><br/>
+    <c:WaitComponent />
+    <apex:pageMessages id="messages" />
+    <apex:form >
+        <apex:pageBlock title="{!$Label.pse__timevariance_label_generate}" mode="edit" rendered="{!showEntryMode}">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="{!$Label.pse__timevariance_label_generate}" action="{!generate}" />
+                <apex:commandButton value="{!$Label.pse__timevariance_schedule}" action="{!doSchedule}" />
+                <apex:commandButton value="{!$Label.pse__common_label_cancel}" immediate="true" action="{!cancel}" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.pse__common_label_information}" columns="2">
+                <apex:inputField value="{!criteria.Name}" required="true" />
+                <apex:inputField value="{!criteria.pse__Region__c}" rendered="{!enableRegionEntry}" />
+                <apex:inputText value="{!criteria.pse__Region__c}" disabled="true" rendered="{!!enableRegionEntry}" />
+                <apex:inputField value="{!criteria.pse__Practice__c}" rendered="{!enablePracticeEntry}" />
+                <apex:inputText value="{!criteria.pse__Practice__c}" disabled="true" rendered="{!!enablePracticeEntry}" />
+                <apex:inputField value="{!criteria.pse__Group__c}" rendered="{!enableGroupEntry}" />
+                <apex:inputText value="{!criteria.pse__Group__c}" disabled="true" rendered="{!!enableGroupEntry}" />
+                <apex:inputField value="{!criteria.pse__Week_End_Date__c}" />
+                <apex:inputField value="{!criteria.pse__Include_Sublevels__c}" styleClass="slds-checkbox"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.pse__timevariance_schedule}" columns="2">
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__common_label_type}" for="optionId" />
+                    <apex:selectList value="{!criteria.pse__Date_Type__c}" multiselect="false" size="1" id="optionId">
+                        <apex:selectOptions value="{!dateOption}" />
+                    </apex:selectList>
+                </apex:pageblockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <apex:pageblockSectionItem >
+                    <c:ApexSchedule schedPattern="{!schedulePattern}" />
+                </apex:pageblockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:outputPanel rendered="{!NOT(showEntryMode)}" id="progressPanel">
+		    <div class="ffdc-apexlib-progress ffdc-apexlib-progress-default" style="width: 20%; margin-left: 40%;">
+		        <div class="ffdc-apexlib-progress-inner">
+		            <div class="ffdc-apexlib-progress-strip"></div>
+		            <div class="ffdc-apexlib-progress-bar" style="width:{!percentComplete}%;"></div>
+		        </div>
+		        <div class="ffdc-apexlib-progress-message">{!statusString}</div>
+		    </div>
+		</apex:outputPanel>
+        <apex:actionPoller action="{!checkProgress}" id="poller" interval="5" rerender="progressPanel,messages,poller" rendered="{!AND(NOT(showEntryMode),NOT(isComplete))}" />
+    </apex:form>
+</apex:page>

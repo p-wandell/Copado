@@ -1,0 +1,46 @@
+<!--
+ - Created by brianpoulsen on 11/8/17.
+ -->
+
+<aura:component description="Peak_Accordion"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+                access="global">
+    <aura:attribute name="class" type="String" />
+    <aura:attribute name="title" type="String" default="Title" />
+    <aura:attribute name="titleTag" type="String" default="h2" />
+    <aura:attribute name="description" type="String" default="" />
+    <aura:attribute name="transitionDuration" type="Integer" default="300" />
+
+    <aura:attribute name="isOpen" type="Boolean" default="false" />
+    <aura:attribute name="isOpenState" type="Boolean" default="false" access="private" />
+
+    <aura:handler name="render" value="{!this}" action="{!c.handleRender}" />
+
+    <div class="slds-accordion__list-item peak-accordion__list-item">
+        <section class="{!'slds-accordion__section peak-accordion__section ' + if(v.isOpen, 'peak-accordion_open', '')}">
+            <div class="slds-accordion__summary peak-accordion__summary">
+                <aura:html tag="{!v.titleTag}" class="slds-accordion__summary-heading peak-accordion__summary-heading slds-text-heading_small">
+                    <button onclick="{!c.handleClick}"
+                            class="slds-button_reset peak-accordion__summary-action"
+                    >
+                        <lightning:icon size="xx-small"
+                                        iconName="utility:chevronright"
+                                        class="slds-button__icon peak-accordion__summary-action-icon"
+                        />
+                        {!v.title}
+                    </button>
+                </aura:html>
+            </div>
+            <div class="slds-accordion__content peak-accordion__content"
+                 aria-hidden="{!!v.isOpen}"
+                 aura:id="accordionBody"
+            >
+                <aura:if isTrue="{!v.description}">
+                    <p>{!v.description}</p>
+                </aura:if>
+                {!v.body}
+            </div>
+        </section>
+    </div>
+
+</aura:component>

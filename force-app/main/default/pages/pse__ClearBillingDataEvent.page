@@ -1,0 +1,25 @@
+<apex:page standardController="pse__Billing_Event__c" extensions="pse.ClearBillingDataController"
+  showHeader="false" standardStylesheets="false" sidebar="false">
+<html>
+<title>{!$Label.pse__common_title_clear_billing_data}</title>
+<body>
+<apex:form >
+<apex:actionFunction action="{!clearBillingDataEvent}" name="jsClearBillingData"/>
+</apex:form> 
+<script type="text/javascript">
+
+    var confirmAction = function (){
+        var userRes = confirm("{!JSINHTMLENCODE($Label.pse__common_message_clear_billing_data_confirm)}");
+        if (userRes == true){
+            jsClearBillingData();        
+        }else {
+            /*Send back*/
+            window.history.back();                
+        }
+    }
+    
+    setTimeout('confirmAction()',2000);
+</script>
+</body>
+</html>
+</apex:page>

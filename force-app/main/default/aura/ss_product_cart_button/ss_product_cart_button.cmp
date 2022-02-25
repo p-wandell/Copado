@@ -1,0 +1,69 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 8/3/17.
+ -->
+
+<aura:component description="ss_product_cart_button"
+                extends="c:ss_product_base"
+                access="global">
+
+	<aura:attribute name="iconName"         type="String"/>
+	<aura:attribute name="productId"        type="String"  access="public"/>
+	<aura:attribute name="productName"      type="String"  access="public"/>
+	<aura:attribute name="unitPrice"        type="Decimal" access="public"/>
+	<aura:attribute name="showQuantity"     type="Boolean" access="public"/>
+	<aura:attribute name="quantity"         type="Integer" access="public" default="1"/>
+	<aura:attribute name="optionsQuantity"  type="String[]" />
+
+	<aura:attribute name="buttonVariant"    type="String" default="brand"/>
+	<aura:attribute name="buttonAdd"        type="String" default="{!$Label.c.ss_pc_button_addToCart}"/>
+	<aura:attribute name="buttonLabelAdd"   type="String" default="{!$Label.c.ss_pc_button_addToCart}"/>
+	<aura:attribute name="buttonLabelAdded" type="String" default="{!$Label.c.ss_pc_button_addedToCart}"/>
+
+	<aura:registerEvent name="addItemToCart" type="c:ss_cart_event"/>
+
+	<lightning:layout multipleRows="false"
+	                  horizontalAlign="spread"
+	                  verticalAlign="end">
+
+		<aura:if isTrue="{!v.showQuantity}">
+			<lightning:layoutItem>
+				<lightning:select aura:id="itemQuantity"
+				                  name="itemQuantity"
+				                  label="{!$Label.c.ss_pc_label_itemQuantity}"
+				                  value="{!v.quantity}"
+				                  onchange="{!c.onQuantityChanged}"
+				                  variant="label-hidden">
+					<aura:iteration items="{!v.optionsQuantity}" var="option">
+						<option value="{!option}"
+						        text="{!option}"
+						        selected="{!!v.quantity == option}">
+						</option>
+					</aura:iteration>
+				</lightning:select>
+
+				<!--<lightning:input type="number"-->
+				                 <!--min="1"-->
+				                 <!--max="1000"-->
+				                 <!--step="1"-->
+				                 <!--label="{!$Label.c.ss_pc_label_itemQuantity}"-->
+				                 <!--value="{!v.quantity}"-->
+				                 <!--onchange="{!c.onQuantityChanged}"-->
+				                 <!--name="itemQuantity"/>-->
+			</lightning:layoutItem>
+		</aura:if>
+
+		<lightning:layoutItem class="slds-p-horizontal--x-small">
+			<lightning:button onclick="{!c.addToCart}"
+			                  class="slds-truncate"
+			                  label="{!v.buttonAdd}"
+			                  title="{!$Label.c.ss_pc_tooltip_addToCart}"
+			                  iconName="{!v.iconName}"
+			                  variant="{!v.buttonVariant}"/>
+		</lightning:layoutItem>
+	</lightning:layout>
+
+</aura:component>

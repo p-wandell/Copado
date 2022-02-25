@@ -1,0 +1,32 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- X 7 S Feed Item Blog -->
+<template>
+    <lightning-layout vertical-align="center">
+        <lightning-layout-item class="feed-item blog">
+            <h5 class="h5 feed-item-title">
+                <a href={href} target="_blank">
+                    <lightning-formatted-rich-text value={title}></lightning-formatted-rich-text>
+                </a>
+            </h5>
+            <p data-pubdate={publishDate}>
+                {authorName}
+                <template if:true={publishTimestamp}>
+                    &nbsp;&bull;&nbsp;
+                    <lightning-formatted-date-time
+                            value={publishTimestamp}
+                            year="numeric"
+                            month="short"
+                            day="numeric"
+                            hour="numeric"
+                            minute="2-digit"
+                            time-zone-name="short"
+                    >
+                    </lightning-formatted-date-time>
+                </template>
+            </p>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

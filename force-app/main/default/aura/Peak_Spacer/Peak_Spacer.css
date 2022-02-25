@@ -1,0 +1,55 @@
+/**
+ * Hive_Lightning - Generates the assets used for 7S Hive Migration Lightning
+ * @version 1.0.0
+ * @author 7Summits
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+/*
+ * Copyright (c) 2019. 7Summits Inc.
+ * Created by 7Summits - Joe Callin on 2019-05-30.
+*/
+/*******************/
+/* Common CSS here */
+/*******************/
+@keyframes fadeIn {
+  0% {
+    z-index: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 0;
+  }
+  100% {
+    z-index: 1;
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    z-index: 1;
+    opacity: 1;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    z-index: -1;
+    opacity: 0;
+  }
+}
+.THIS.slds-m-around--x-small {
+  margin: -1rem 0;
+}
+.THIS.slds-m-around--small {
+  margin: -0.5rem 0;
+}
+.THIS.slds-m-around--medium {
+  margin: 0rem 0;
+}
+.THIS.slds-m-around--large {
+  margin: 0.5rem 0;
+}
+.THIS.slds-m-around--x-large {
+  margin: 1rem 0;
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Banner</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Banner</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property type="String" name="headline" label="1 - Headline" description="A big heading to show on top"/>
+            <property type="String" name="subHeadline" label="1 - Sub Headline" description="A smaller heading beneath"/>
+            <property type="String" name="paragraph" label="1 - Paragraph Text" description="Paragraph text to use for messaging."/>
+            <property type="String" name="buttonText" label="1 - Button 1 Text" description="The label on the CTA button"/>
+            <property type="String" name="buttonUrl" label="1 - Button 1 URL" description="The URL for the CTA button"/>
+            <property type="String" name="button2Text" label="1 - Button 2 Text" description="The label on the 2nd CTA button"/>
+            <property type="String" name="button2Url" label="1 - Button 2 URL" description="The URL for the 2nd CTA button"/>
+
+            <property name="columns" label="# of Columns" type="String" datasource="1,2,3" description="Two columns will appear in a 2:1 ratio"/>
+
+            <property type="String" name="headline2" label="2 - Headline" description="A big heading to show on top"/>
+            <property type="String" name="subHeadline2" label="2 - Sub Headline" description="A smaller heading beneath"/>
+            <property type="String" name="paragraph2" label="2 - Paragraph Text" description="Paragraph text to use for messaging."/>
+            <property type="String" name="buttonText2" label="2 - Button 1 Text" description="The label on the CTA button"/>
+            <property type="String" name="buttonUrl2" label="2 - Button 1 URL" description="The URL for the CTA button"/>
+            <property type="String" name="button2Text2" label="2 - Button 2 Text" description="The label on the 2nd CTA button"/>
+            <property type="String" name="button2Url2" label="2 - Button 2 URL" description="The URL for the 2nd CTA button"/>
+
+            <property type="String" name="headline3" label="3 - Headline" description="A big heading to show on top"/>
+            <property type="String" name="subHeadline3" label="3 - Sub Headline" description="A smaller heading beneath"/>
+            <property type="String" name="paragraph3" label="3 - Paragraph Text" description="Paragraph text to use for messaging."/>
+            <property type="String" name="buttonText3" label="3 - Button 1 Text" description="The label on the CTA button"/>
+            <property type="String" name="buttonUrl3" label="3 - Button 1 URL" description="The URL for the CTA button"/>
+            <property type="String" name="button2Text3" label="3 - Button 2 Text" description="The label on the 2nd CTA button"/>
+            <property type="String" name="button2Url3" label="3 - Button 2 URL" description="The URL for the 2nd CTA button"/>
+
+            <property name="headlineTag" type="String" label="Headline Tag" datasource="h1, h2, h3, h4, h5, h6, p" description="HTML tag used to render the headlines. Any page should only have 1 h1 tag." />
+            <property name="headlineSize" type="String" label="Headline Size" datasource="large, medium, small" description="Visual size of the headline using the SLDS heading sizes." />
+            <property name="subHeadlineTag" type="String" label="Sub-Headline Tag" datasource="h1, h2, h3, h4, h5, h6, p" description="HTML tag used to render the sub-headlines. Any page should only have 1 h1 tag." />
+            <property name="subHeadlineSize" type="String" label="Sub-Headline Size" datasource="large, medium, small" description="Visual size of the sub-headline using the SLDS heading sizes." />
+
+            <property name="backgroundColor" type="String" label="Background Color" description="Enter a hex code"/>
+            <property name="backgroundImage" type="String" label="Background Image" description="Enter a full image path for a background image. (Optional)"/>
+            <property name="fixed" type="Boolean" label="Fixed Background?" description="Fix the background image to the background for a scrolling effect"/>
+            <property name="darkText" type="Boolean" label="Dark Text (if using a light BG)"/>
+
+            <property name="overlayColor" type="String" label="Overlay Color" description="Enter a color in any valid CSS value (HEX, RGBA, RGB, named colors)"/>
+            <property name="overlayOpacity" type="String" label="Overlay Opacity" description="0 for transparent, .9 is almost opaque." datasource="0,.1,.2,.3,.4,.5,.6,.7,.8,.9"/>
+
+            <property name="align" type="String" label="Alignment for the items" datasource="left,right,center"/>
+            <property name="verticalAlignment" type="String" label="Vertical Alignment" datasource="Top,Middle,Bottom" description="Vertical alignment of a multi-column arrangement"/>
+
+            <property name="container" label="Container Width" type="String" datasource="none,x-large,large,medium,small" description="Set the max-width of the centered content container"/>
+            <property name="horizontalPadding" type="String" label="Horizontal Padding" datasource="none,xx-large,x-large,large,medium,small,x-small,xx-small"/>
+            <property name="verticalPadding" type="String" label="Vertical Padding" datasource="none,xx-large,x-large,large,medium,small,x-small,xx-small"/>
+
+            <property name="customClassName" type="String" label="Custom Class Name" description="Custom CSS class name. Usually remains blank."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

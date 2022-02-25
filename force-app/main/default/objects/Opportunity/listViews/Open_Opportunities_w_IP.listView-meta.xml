@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Open_Opportunities_w_IP</fullName>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>OPPORTUNITY.CLOSE_DATE</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>Product_Only_Sub_Total__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Product_Only_Sub_Total__c</field>
+        <operation>greaterThan</operation>
+        <value>USD 0</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.STAGE_NAME</field>
+        <operation>equals</operation>
+        <value>5 Agreements Delivered,6 Negotiating,7 Verbal Agreement</value>
+    </filters>
+    <label>Open Opportunities w/ IP (Stage 5+)</label>
+    <sharedTo>
+        <group>Product</group>
+    </sharedTo>
+</ListView>

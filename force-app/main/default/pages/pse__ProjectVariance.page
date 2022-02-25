@@ -1,0 +1,38 @@
+<apex:page standardController="pse__Proj__c" showHeader="false" sidebar="false" extensions="pse.ProjectVarianceController" readonly="true" lightningStylesheets="true">
+	<style>
+    	.nowrap {white-space: nowrap;}
+    </style>
+	<apex:pageBlock >
+		<apex:pageMessages />
+		<apex:pageBlockSection columns="2" >
+			<apex:pageBlockSectionItem helpText="{!$Label.pse__tooltip_for_total_approved_and_submitted_hours}" labelStyleClass="nowrap">
+					<apex:outputLabel id="approvedHoursId" value="{!$Label.pse__project_variance_total_approved_submitted_hours}"/>
+					<apex:outputText id="approvedHoursValueId" value="{!approvedHours}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem helpText="{!$Label.pse__tooltip_for_scheduled_hours_forward}" labelStyleClass="nowrap">
+					<apex:outputLabel id="scheduledHoursId" value="{!$Label.pse__project_variance_scheduled_hours_forward}"/>
+					<apex:outputText id="scheduledHoursValueId" value="{!remainingHours}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem helpText="{!$Label.pse__tooltip_for_variance_at_completion}" labelStyleClass="nowrap">
+					<apex:outputLabel id="VACId" value="{!$Label.pse__project_variance_variance_at_completion}"/>
+					<apex:outputText id="VACValueId" value="{!variationHours}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem helpText="{!$Label.pse__tooltip_for_estimated_hours_at_completion}" labelStyleClass="nowrap">
+					<apex:outputLabel id="EACId" value="{!$Label.pse__project_variance_estimated_hours_at_completion}"/>
+					<apex:outputText id="EACValueId" value="{!EstimateAtCompHours}" />
+			</apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem helpText="{!$Label.pse__tooltip_for_percentage_hours_complete}" labelStyleClass="nowrap">
+					<apex:outputLabel id="completeId" value="{!$Label.pse__project_variance_hours_complete}"/>
+					<apex:outputText id="completeValueId" value="{!percentageComplete + '%'}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem helpText="{!$Label.pse__tooltip_for_variance_from_planned}" labelStyleClass="nowrap">
+					<apex:outputLabel id="varianceFromPlannedId" value="{!$Label.pse__project_variance_variance_from_planned}"/>
+					<apex:outputText id="varianceFromPlannedValueId" value="{!varianceFromPlannedHours}" />
+			</apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem helpText="{!$Label.pse__tooltip_for_cut_off_date}" labelStyleClass="nowrap">
+					<apex:outputLabel id="cutOffId" value="{!$Label.pse__project_variance_cut_off_date}"/>
+					<apex:outputText id="varianceFromPlannedValueId" value="{!formatedCutOffDate}" />
+			</apex:pageBlockSectionItem>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:page>

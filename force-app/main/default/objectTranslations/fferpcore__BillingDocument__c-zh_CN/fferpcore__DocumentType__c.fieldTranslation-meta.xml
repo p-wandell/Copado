@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>指示凭证是销售发票还是销售贷项凭证。</help>
+    <label><!-- Document Type --></label>
+    <name>fferpcore__DocumentType__c</name>
+    <picklistValues>
+        <masterLabel>Credit Note</masterLabel>
+        <translation>信用票据</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Invoice</masterLabel>
+        <translation>发票</translation>
+    </picklistValues>
+</CustomFieldTranslation>

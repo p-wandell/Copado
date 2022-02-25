@@ -1,0 +1,143 @@
+<apex:page standardController="pse__Project_Task__c" extensions="pse.AddTaskFromProjTemplateController" id="page" action="{!init}"
+ recordSetVar="projectTasks" lightningStylesheets="true">
+	<style>
+		.detailList .data2Col {
+			width: 82% !important;
+		}
+
+		/*This is fix for slds alignment issue in pageBlockSection with 1 column layout*/
+		.detailList th.headerRow+th.headerRow {
+			border-left: 1px solid #dedede;
+		}
+
+		.pageBlockTableScroll {
+			display: block;
+			overflow-x: auto;
+			width: {!IF($User.UIThemeDisplayed=='Theme4d', '93vw', '76vw')};
+			margin-bottom: 5px;
+		}
+	</style>
+
+	<c:WaitComponent />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<apex:outputPanel id="scriptBlock" layout="block">
+		<script>
+			prepareVFConfig();
+			function prepareVFConfig() {
+				var config;
+
+				if ({!NOT(isProjectTemplateSelected) && isEverythingOk}) {
+
+					config = {
+						objectName: '{!JSENCODE($Label.Project_Picker_Label_Select_Project_Template)}',
+						helpUrl: '{!$Page.projectHelp}',
+						onRender: 'onHeaderLoadCallback',
+						buttons: [{
+							id: 'cancelButton',
+							label: '{!JSENCODE($Label.common_label_cancel)}',
+							actionFn: 'cancelClick'
+						}, {
+							id: 'nextButton',
+							label: '{!JSENCODE($Label.common_label_select)}',
+							actionFn: 'onSelectProjectAction'
+						}]
+					};
+				}
+				if ({!isProjectTemplateSelected}) {
+
+					config = {
+						objectName: '{!JSENCODE($Label.Add_Project_Task_Page_Title)}',
+						icon: 'standard:task',
+						helpUrl: '{!$Page.AddTaskFromProjectTemplateHelp}',
+						onRender: 'onHeaderLoadCallback',
+						buttons: []
+					};
+
+					if ({!isEverythingOk}) {
+
+						config.buttons = [{
+							id: 'onCancel',
+							label: '{!JSENCODE($Label.common_label_cancel)}',
+							actionFn: 'onCancel'
+						}, {
+							id: 'selectDifferentTemplate',
+							label: '{!JSENCODE($Label.Select_Different_Template)}',
+							actionFn: 'selectDifferentTemplate',
+						}, {
+							id: 'addTask',
+							label: '{!JSENCODE($Label.add_task)}',
+							actionFn: 'addTask'
+						}];
+					}
+				}
+				// define icon
+				config['objectApiName'] = '{!$ObjectType["Project_Task__c"].name}';
+
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				var startDateFldId = '{!$Component.pageForm.pageBlock.projectsTasksFromTemplateProject.pageBlockSectionItem.startDateFld}',
+					startDateElement = document.getElementById(startDateFldId);
+
+				wait(false);
+
+				if (startDateElement) {
+					startDateElement.focus();
+				}
+			}
+
+			function setFocus() { }
+
+		</script>
+	</apex:outputPanel>
+
+	<c:projectPicker modelAttribute="{!projectPickerModel}" rendered="{!NOT(isProjectTemplateSelected) && isEverythingOk}" />
+
+	<apex:outputPanel rendered="{!isProjectTemplateSelected}">
+		<apex:pageMessages id="pageMessages" />
+		<apex:form id="pageForm">
+				<apex:actionStatus onstart="wait(true);" onstop="wait(false);" id="counterStatus"/>
+
+				<apex:actionFunction name="applyOffsetProjectTask" action="{!applyTopLevelDateOffset}"
+					rerender="pageMessages, taskTable" status="counterStatus">
+				</apex:actionFunction>
+			<apex:pageBlock title="{!$Label.pse__create_project_task_details}" id="pageBlock" rendered="{!isEverythingOk}">
+				<apex:actionFunction name="onCancel" action="{!onCancelClick}" immediate="true" />
+				<apex:actionFunction name="selectDifferentTemplate" action="{!onNextClick}" immediate="true" />
+				<apex:actionFunction name="addTask" action="{!onAddTaskClick}" />
+
+				<apex:outputPanel layout="block" styleClass="slds-p-bottom_small">
+					{!$Label.pse__create_project_task_from_template_message}
+				</apex:outputPanel>
+
+				<apex:pageBlockSection columns="1" rendered="{!hasProjectTasks}" id="projectsTasksFromTemplateProject">
+					<apex:facet name="header">
+						<apex:outputText value="{!$Label.pse__create_project_task_details}" />
+					</apex:facet>
+
+					<apex:pageBlockSectionItem id="pageBlockSectionItem">
+						<apex:outputText value="{!$Label.pse__top_level_task_start_date}" />
+						<apex:inputField id="startDateFld" value="{!formBean.mockProjForStartDate.pse__Start_Date__c}" onchange="applyOffsetProjectTask()" />
+					</apex:pageBlockSectionItem>
+
+					<apex:outputPanel styleClass="pageBlockTableScroll">
+						<apex:pageBlockTable value="{!projectTasks}" var="taskKey" id="taskTable">
+							<apex:repeat value="{!TemplateProjTaskColumn}" var="fName">
+								<apex:column headerValue="{!fName.Label}">
+									<apex:outputField value="{!templateProjectTaskMap[taskKey][fName.fieldPath]}" />
+								</apex:column>
+							</apex:repeat>
+						</apex:pageBlockTable>
+    				</apex:outputPanel>
+
+					<apex:outputPanel rendered="{!hasProjectTasks}">
+       					<c:Paginator paginatorAttribute="{!projectTaskPagenator}" pageRerenderAttribute="projectsTasksFromTemplateProject"/>
+ 					</apex:outputPanel>
+    			</apex:pageBlockSection>
+           	</apex:pageBlock>
+		</apex:form>
+	</apex:outputPanel>
+</apex:page>

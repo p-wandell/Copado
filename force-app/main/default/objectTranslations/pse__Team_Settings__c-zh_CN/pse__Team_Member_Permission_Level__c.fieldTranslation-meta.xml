@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>为访问“管理团队”和“团队日程管理”页面的角色定义默认的团队成员权限级别。有效值为整数，其中0表示无（无访问权限），1表示读取，2表示编辑。如果未定义，则默认值为1（读取）。</help>
+    <label><!-- Team Member Permission Level --></label>
+    <name>pse__Team_Member_Permission_Level__c</name>
+</CustomFieldTranslation>

@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.x7s-call-to-action__layout {
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+c-x7s-shr-icon-card {
+  --x7s-iconCard__defaultBg: var(--lwc-colorBrand);
+}
+.slds-size_auto-of-12 {
+  width: auto;
+  flex: 1 1 0;
+}
+@media (min-width: 30em) and (max-width: 48em) {
+  .slds-small-size_auto-of-12 {
+    width: auto;
+    flex: 1 1 0;
+  }
+}
+@media (min-width: 48em) and (max-width: 64.0625em) {
+  .slds-medium-size_auto-of-12 {
+    width: auto;
+    flex: 1 1 0;
+  }
+}
+@media (min-width: 64.0625em) {
+  .slds-large-size_auto-of-12 {
+    width: auto;
+    flex: 1 1 0;
+  }
+}

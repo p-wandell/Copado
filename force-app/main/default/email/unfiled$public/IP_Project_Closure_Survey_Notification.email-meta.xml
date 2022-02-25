@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Survey notification to be sent out before IP project closure</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>IP Project Closure Survey Notification</name>
+    <style>none</style>
+    <subject>Product/IP feedback requested for {!pse__Proj__c.Name}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

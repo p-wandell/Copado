@@ -1,0 +1,23 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+  -->
+<template>
+    <c-x7s-shr-object-banner title={eventTitle}
+                                 icon-name="standard:event"
+                                 hide-search={hideSearch}
+                                 hide-title={hideTitle}
+                                 search-place-holder={searchPlaceHolder}
+                                 list-id={listId}>
+        <template if:true={showButton}>
+            <div slot="action">
+                <lightning-button name="button"
+                                    title={createButtonText}
+                                    onclick={navigateToPage}
+                                    value={createButtonText}
+                                    label={createButtonText}
+                                    variant="brand">
+                </lightning-button>
+            </div>
+        </template>
+    </c-x7s-shr-object-banner>
+</template>

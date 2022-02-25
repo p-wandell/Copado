@@ -1,0 +1,109 @@
+<apex:page sidebar="true" standardStylesheets="true" controller="ffct.PreUpgradeCheckerController"  action="{!isToolMustBeActivated}">
+    <style type="text/css">
+        .pbBottomButtons{
+              margin-top: -5px !important;
+        }
+    </style>
+    <apex:form id="form">
+        <apex:actionStatus id="eventStatus"  >
+            <apex:facet name="start">
+                <apex:outputPanel >
+                   <div style="width:100%;height:100%;position:absolute;top:0;left:0;">
+                      <div style="position:absolute;top:50%;left:50%">
+                        <apex:image value="/img/loading32.gif"></apex:image>
+                      </div>
+                  </div>
+                </apex:outputPanel>
+            </apex:facet>   
+        </apex:actionStatus>
+        <apex:sectionHeader title="{!$Label.ffct__preupgradechecker}" help="helploader?topicid=1024"/>
+        <apex:pagemessages id="pgMsg" escape="false"/>
+        <apex:outputPanel >
+        	<c:connectedappbuilder connectedAppConfiguration="{!AppConfiguration}" componentId="pgMsg" rendered="{!!IsAuthSettingConfigured}"/>
+        </apex:outputPanel>
+         <apex:outputPanel layout="block" rendered="{!CheckStatus}">
+                <img src="{!URLFOR($Resource.progressGIF)}" />
+            </apex:outputPanel>
+        <apex:pageBlock id="preupgradePgBlck" tabStyle="ReleasePackage__c" rendered="{!IsAuthSettingConfigured && (!CheckStatus || ProcessCompleted)}">
+        
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="{!$Label.ffct__submit}" action="{!populateFeatureCount}" rendered="{!!CheckStatus && !ProcessCompleted}" rerender="form" status="eventStatus"/>
+                <apex:commandbutton value="{!$Label.ffct__cancel}" action="{!cancel}" immediate="true" rendered="{!!CheckStatus && !ProcessCompleted}" status="eventStatus"/>
+                <apex:commandButton Value="{!$Label.ffct__editlimits}" action="{!editExtendedLimits}" rendered="{!ProcessCompleted && !EditLimits}" />
+                <apex:commandButton Value="{!$Label.ffct__save}" action="{!saveAndRerunWithExtendedLimits}" rendered="{!ProcessCompleted && EditLimits}"/>
+                <apex:commandbutton value="{!$Label.ffct__cancel}" action="{!cancelEdit}" immediate="true" rendered="{!ProcessCompleted && EditLimits}" status="eventStatus"/>
+            </apex:pageBlockButtons>
+            
+           
+                <apex:pageBlockSection columns="2" rendered="{!!CheckStatus && !ProcessCompleted}">
+                    <apex:pageBlockSection columns="1">
+                        <apex:pageBlockSectionItem >
+	        				<apex:outputLabel value="{!$Label.ffct__selectconnection}" />
+                         <apex:actionRegion >
+                            <apex:selectList value="{!PreUpgradeCheckerInfo.TargetOrgConnection.Id}" label="{!$Label.ffct__targetorganizationconnection}" multiselect="false" size="1" required="true" style="max-width:212px;">
+                                <apex:selectOptions value="{!allConnections}"></apex:selectOptions>
+                                <apex:actionSupport event="onchange" action="{!retrieveAndUpdateNewAccessTokenForOrg}" status="eventStatus" rerender="pgMsg" />
+                            </apex:selectList>
+                        </apex:actionRegion>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSection >
+                        	<apex:inputField label="{!$Label.ffct__currentreleasepackage}" value="{!PreUpgradeCheckerInfo.NewReleasePackage.ffct__ReleasePackage__c}" required="true" />
+                        </apex:pageBlockSection> 
+                    </apex:pageBlockSection> 
+                      <apex:outputPanel >
+                        <div style="border-left: 1px solid #8e9dbe;width: 5px;float: left;min-height: 75px;margin-top: -5px;"><div style="background: white;margin-left: -10px;margin-top: 5px;">OR</div></div>
+                        <apex:outputLabel style="margin-left: 40px;float: left;margin-right: 20px;color: #4a4a56;font-size: 91%;font-weight: bold;">{!$Label.ffct__setupnewconnection}</apex:outputLabel>
+                        <apex:outputLink value="/apex/setupconnection" styleClass="btn" style="text-decoration: none;color: #333;">
+                        	{!$Label.ffct__create} 
+                        	<apex:param name="returningFeature" value="{!PageUrl}" /> 
+                        </apex:outputLink>
+                    </apex:outputPanel> 
+                </apex:pageBlockSection>
+           
+            
+            <apex:pageBlockSection id="resultSection" columns="1" title="{!$Label.ffct__preupgradecheckerresults}" collapsible="false" rendered="{!ProcessCompleted}">
+                <apex:outputText label="{!$Label.ffct__canupgradepackage}" value="{!PreUpgradeCheckerInfo.IsUpgradable}" />
+                <apex:outputText label="{!$Label.ffct__targetorganizationedition}" value="{!PreUpgradeCheckerInfo.OrganizationType}"/>
+                <apex:outputField label="{!$Label.ffct__currentreleasepackage}" value="{!PreUpgradeCheckerInfo.NewReleasePackage.ffct__ReleasePackage__c}" />
+                <apex:outputText label="{!$Label.ffct__targetorganizationconnection}" value="{!PreUpgradeCheckerInfo.TargetOrgConnection.Name}" />
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="{!$Label.ffct__detaildescriptionofobjects}"  columns="1" rendered="{!ProcessCompleted}">
+                <apex:pageBlockTable value="{!FeatureDetailCountMap['CustomObject']}" var="objList">
+            
+                    <apex:column headerValue="{!$Label.ffct__objectapiname}" value="{!objList.ParentName}" />
+                    <apex:column headerValue="{!$Label.ffct__limit}" >
+                        <apex:outputLabel value="{!objList.FeatureDetailName}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.ffct__defaultsalesforcelimits}" >
+                        <apex:outputLabel value="{!objList.SalesforceLimit}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.ffct__extendlimitsto}" width="5%">
+                        <apex:outputLabel value="{!if(objList.FeatureLimitObj.Limit__c!=null, FLOOR(objList.FeatureLimitObj.Limit__c), 0)}" rendered="{!!EditLimits}"/>
+                        <apex:inputField value="{!objList.FeatureLimitObj.Limit__c}" style="width: 30%;"  rendered="{!EditLimits}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.ffct__salesforcelimit}" >
+                        <apex:outputLabel value="{!FLOOR(objList.FeatureLimit)}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.ffct__existingproductcount}" >
+                        <apex:outputLabel value="{!objList.OldCount}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.ffct__newpackagecount}" >
+                        <apex:outputLabel value="{!objList.NewCount}"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.ffct__targetorganizationcount}">
+                        <apex:outputLabel value="{!objList.CustomerOrgCount}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.ffct__totalcount}">
+                        <apex:outputLabel value="{!objList.CountOnUpgrade}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$Label.ffct__results}" >
+                        <apex:image URL="{!if(objList.IsSuccess,"/img/permissions_confirm16.gif","/img/msg_icons/error16.png")}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:actionPoller action="{!evaluateResults}" reRender="form" interval="5" rendered="{!CheckStatus}"/>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>true</sorted>
+    <standardValue>
+        <fullName>Channel Inbound</fullName>
+        <default>false</default>
+        <label>Channel Inbound</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Channel Outbound</fullName>
+        <default>false</default>
+        <label>Channel Outbound</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Client Referral</fullName>
+        <default>false</default>
+        <label>Client Referral</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Employee Referral</fullName>
+        <default>false</default>
+        <label>Employee Referral</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Marketing</fullName>
+        <default>false</default>
+        <label>Marketing</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Sales Team Sourced</fullName>
+        <default>false</default>
+        <label>Sales Team Sourced</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Zoominfo</fullName>
+        <default>false</default>
+        <label>Zoominfo</label>
+    </standardValue>
+</StandardValueSet>

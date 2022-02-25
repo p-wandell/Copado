@@ -1,0 +1,46 @@
+<apex:page controller="ffct.MergeProfileController" action="{!listProfiles}">
+  <apex:form id="form" >      
+        <apex:sectionHeader title="Merge Profiles" help="helploader?topicid=1041"/>
+        <apex:pageMessages escape="false" id="messageDiv"/>
+        
+        <apex:outputPanel id="progressDiv" layout="block" >
+            <apex:outputPanel layout="block" rendered="{!IsMergeInProcess}">
+                <img src="{!URLFOR($Resource.progressGIF)}" />
+            </apex:outputPanel>
+        </apex:outputPanel>
+         
+        <apex:outputPanel id="mergePanel" rendered="{!!IsMergeInProcess}">
+        	<!--  IF THERE IS NO MERGE PROCESS RUNNIN -->        	
+        	 <apex:pageBlock title="Profile" >
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton value="Merge" action="{!beginMerge}" rerender="form"  onclick="this.className='btnDisabled'" />
+                </apex:pageBlockButtons>
+        	    
+        	    <apex:pageBlockSection columns="1">
+        	    	<apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Source Profile" />
+                            <apex:selectList size="1" value="{!MergeProfileReq.SourceProfileId}" >
+                                <apex:selectOptions value="{!Profiles}"/> 
+                            </apex:selectList>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Target Profile" />
+                            <apex:selectList size="5" value="{!MergeProfileReq.TargetProfileIds}" multiselect="true" >
+                                <apex:selectOptions value="{!Profiles}"/>
+                            </apex:selectList>
+                        </apex:pageBlockSectionItem>        	    
+        	    </apex:pageBlockSection>     
+        	    
+        	    </apex:pageBlock>   	    
+        </apex:outputPanel> 
+        
+        <apex:outputPanel id="mergeProcessStatus" rendered="{!IsMergeInProcess}" >
+        	<apex:actionPoller action="{!isMergeProcessCompleted}" interval="5" rerender="form"/>                         
+        </apex:outputPanel>
+          <apex:outputPanel id="mergeCompletionStatus" rendered="{!IsPermissionsInserted}">
+            <apex:actionPoller action="{!displayMergeStatus}" interval="5" rerender="form"/>              
+        </apex:outputPanel>
+        
+        
+  </apex:form>
+</apex:page>

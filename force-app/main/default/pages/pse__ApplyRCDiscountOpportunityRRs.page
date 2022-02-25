@@ -1,0 +1,22 @@
+<apex:page standardController="Opportunity" extensions="pse.ApplyRCDiscountFromOppController" tabStyle="pse__Rate_Card__c" action="{!init}" lightningStyleSheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<apex:sectionHeader title="{!$Label.pse__common_label_opportunity}" subtitle="{!Opportunity.Name}"/>
+	<apex:form >
+		<apex:pageMessages />
+		<apex:pageBlock >
+			<apex:pageBlockSection collapsible="false" columns="1"
+				title="{!$Label.pse__rate_card_discount_ui_label_apply_rc_discount}" id="messageSection">
+				<apex:outputText value="{!$Label.pse__rate_card_discount_ui_confirm_apply}" rendered="{!NOT(isResponseMsg)}"/>
+			</apex:pageBlockSection>
+			<apex:pageBlockButtons location="bottom">
+                <apex:outputPanel rendered="{!NOT(isResponseMsg)}">
+                    <apex:commandButton value="{!$Label.pse__common_label_ok}" action="{!applyRCDiscount}" styleClass="btn"  />
+                    <apex:commandButton value="{!$Label.pse__common_label_cancel}" action="{!cancel}" styleClass="btn" />
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isResponseMsg}">
+                	<apex:commandButton value="{!$Label.pse__rate_card_discount_ui_label_back_to_opportunity}" action="{!backToOpportunity}" styleClass="btn" />
+				</apex:outputPanel>
+            </apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

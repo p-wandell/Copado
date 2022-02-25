@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>pse__Parent_Summary__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>A lookup to the forecast summary for the parent region, practice or group in the hierarchy for this forecast summary.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>A lookup to the forecast summary for the parent region, practice or group in the hierarchy for this forecast summary.</inlineHelpText>
+    <label>Parent Forecast Summary</label>
+    <referenceTo>pse__Forecast_Enhanced_Summary__c</referenceTo>
+    <relationshipLabel>Child Forecast Summaries</relationshipLabel>
+    <relationshipName>Child_Forecast_Summaries</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

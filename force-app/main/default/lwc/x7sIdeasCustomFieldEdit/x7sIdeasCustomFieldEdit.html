@@ -1,0 +1,208 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- X7S Ideas Custom Field Edit -->
+<template>
+	<lightning-layout multiple-rows="false"
+	                  class="slds-p-top--medium">
+
+		<!-- LABEL -->
+		<template if:true={Richtext}>
+			<lightning-layout-item size="12"
+			                       class="slds-form-element__label">
+				<template if:true={customField.required}>
+					<lightning-formatted-text value="* "
+					                          class="slds-text-color--error">
+					</lightning-formatted-text>
+				</template>
+				<lightning-formatted-text data-name="reqRichText"
+				                          value={customField.fieldLabel}
+				                          data-apiname={customField.apiName}
+				                          onchange={handleChange}>
+				</lightning-formatted-text>
+			</lightning-layout-item>
+		</template>
+
+		<!-- FIELD -->
+		<lightning-layout-item size="12">
+			<template if:true={Text}>
+				<lightning-input data-name="text"
+				                 type="text"
+				                 data-id="ideaCustomInput"
+				                 label={customField.fieldLabel}
+				                 value={customField.value}
+				                 required={customField.required}
+				                 placeholder={customField.info}
+				                 class={customField.alignClass}
+				                 data-apiname={customField.apiName}
+				                 onblur={handleChange}>
+				</lightning-input>
+			</template>
+
+			<template if:true={Textarea}>
+				<lightning-textarea label={customField.fieldLabel}
+				                    data-id="ideaCustomInput"
+				                    data-name="textArea"
+				                    value={customField.value}
+				                    placeholder={customField.info}
+				                    required={customField.required}
+				                    data-apiname={customField.apiName}
+				                    onblur={handleChange}>
+				</lightning-textarea>
+			</template>
+
+			<template if:true={RichText}>
+				<lightning-input-rich-text label={customField.fieldLabel}
+				                           data-name="richText"
+				                           value={customField.value}
+				                           data-id="ideaCustomRichText"
+				                           placeholder={customField.info}
+				                           class={customField.alignClass}
+				                           data-apiname={customField.apiName}
+				                           onblur={handleChange}
+				>
+				</lightning-input-rich-text>
+			</template>
+
+			<template if:true={Date}>
+				<lightning-input type="date"
+				                 data-name="date"
+				                 data-id="ideaCustomInput"
+				                 label={customField.fieldLabel}
+				                 value={customField.value}
+				                 placeholder={customField.info}
+				                 required={customField.required}
+				                 class={customField.alignClass}
+				                 data-apiname={customField.apiName}
+				                 onchange={handleChange}
+				>
+				</lightning-input>
+			</template>
+			<template if:true={DateTime}>
+				<lightning-input type="datetime-local"
+				                 data-name="dateTime"
+				                 data-id="ideaCustomInput"
+				                 label={customField.fieldLabel}
+				                 value={customField.value}
+				                 placeholder={customField.info}
+				                 required={customField.required}
+				                 class={customField.alignClass}
+				                 data-apiname={customField.apiName}
+				                 onchange={handleChange}>
+				</lightning-input>
+			</template>
+
+			<template if:true={Currency}>
+				<lightning-input type="number"
+				                 data-name="currency"
+				                 data-id="ideaCustomInput"
+				                 label={customField.fieldLabel}
+				                 title={customField.fieldLabel}
+				                 value={customField.value}
+				                 placeholder={customField.info}
+				                 required={customField.required}
+				                 class={customField.alignClass}
+				                 formatter="currency"
+				                 step="0.01"
+				                 data-apiname={customField.apiName}
+				                 onchange={handleChange}>
+				</lightning-input>
+			</template>
+
+			<template if:true={Number}>
+				<lightning-input type="number"
+				                 data-id="ideaCustomInput"
+				                 data-name="number"
+				                 label={customField.fieldLabel}
+				                 title={customField.fieldLabel}
+				                 value={customField.value}
+				                 placeholder={customField.info}
+				                 required={customField.required}
+				                 class={customField.alignClass}
+				                 data-apiname={customField.apiName}
+				                 onchange={handleChange}>
+				</lightning-input>
+
+			</template>
+
+			<template if:true={Percent}>
+				<lightning-input type="number"
+				                 data-name="percent"
+				                 data-id="ideaCustomInput"
+				                 label={customField.fieldLabel}
+				                 title={customField.fieldLabel}
+				                 value={customField.value}
+				                 placeholder={customField.info}
+				                 required={customField.required}
+				                 class={customField.alignClass}
+				                 formatter="percent"
+				                 step="0.01"
+				                 data-apiname={customField.apiName}
+				                 onchange={handleChange}>
+				</lightning-input>
+			</template>
+
+			<template if:true={Email}>
+				<lightning-input type="email"
+				                 data-name="email"
+				                 data-id="ideaCustomInput"
+				                 label={customField.fieldLabel}
+				                 title={customField.fieldLabel}
+				                 value={customField.value}
+				                 placeholder={customField.info}
+				                 required={customField.required}
+				                 class={customField.alignClass}
+				                 data-apiname={customField.apiName}
+				                 onchange={handleChange}>
+				</lightning-input>
+			</template>
+
+			<template if:true={Phone}>
+				<lightning-input type="tel"
+				                 data-name="phone"
+				                 data-id="ideaCustomInput"
+				                 label={customField.fieldLabel}
+				                 title={customField.fieldLabel}
+				                 value={customField.value}
+				                 placeholder={customField.info}
+				                 required={customField.required}
+				                 class={customField.alignClass}
+				                 pattern={customField.dataValue}
+				                 data-apiname={customField.apiName}
+				                 onchange={handleChange}>
+				</lightning-input>
+			</template>
+
+			<template if:true={Checkbox}>
+				<lightning-input
+						label={customField.fieldLabel}
+						data-name="checkbox"
+						data-id="ideaCustomInput"
+						data-apiname={customField.apiName}
+						type="checkbox"
+						title={customField.fieldLabel}
+						checked={customField.value}
+						placeholder={customField.info}
+						class={customField.alignClass}
+						onchange={handleChange}
+				>
+				</lightning-input>
+			</template>
+
+			<template if:true={Picklist}>
+				<lightning-combobox
+						data-apiname={customField.apiName}
+						data-name="picklist"
+						data-id="ideaCustomInput"
+						label={customField.fieldLabel}
+						value={customField.value}
+						required={customField.required}
+						options={dataValues}
+						onchange={handleChange}>
+				</lightning-combobox>
+			</template>
+
+		</lightning-layout-item>
+	</lightning-layout>
+</template>

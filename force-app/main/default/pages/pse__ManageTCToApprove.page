@@ -1,0 +1,1256 @@
+<apex:page id="tcMassApprovalPage" title="{!$Label.pse__manage_timecards_to_approve}" tabStyle="pse__Timecard_Header__c" controller="pse.ManageTCToApproveController" action="{!init}" sidebar="false" lightningStylesheets="true">
+	<apex:includeScript value="{!$Resource.pse__tcmassapprovaljs}" />
+
+	<style type="text/css">
+		.hourTooltipImage {
+			width: 27px;
+			opacity: 0;
+			position: absolute;
+		}
+		.sortingClass {
+			width: 21px;
+			height: 14px;
+			vertical-align: sub;
+		}
+		.ascImage {
+			background: url("{!URLFOR($Resource.pse__timecard2, 'arrowup.png')}");
+			background-size: 12px;
+			background-repeat: no-repeat;
+		}
+		.descImage {
+			background: url("{!URLFOR($Resource.pse__timecard2, 'arrowdown.png')}");
+			background-size: 12px;
+			background-repeat: no-repeat;
+		}
+		.labelCustomStyle {
+			font-size: 91%;
+			font-weight: bold;
+		}
+		.headerRowStyle {
+			background-color: #dedede;
+		}
+		.classShow {
+			display: block;
+		}
+		.classHide {
+			display: none;
+		}
+		.collapseImage {
+			background: url("{!URLFOR($Resource.pse__timecard2, 'chevronright_60.png')}");
+			background-size: 12px;
+			background-repeat: no-repeat;
+			background-position-y: center;
+			cursor: pointer;
+		}
+		.expandImage {
+			background: url("{!URLFOR($Resource.pse__timecard2, 'chevrondown_60.png')}");
+			background-size: 12px;
+			background-repeat: no-repeat;
+			background-position-y: center;
+			cursor: pointer;
+		}
+		.classShow TD {
+			border: medium none !important;
+		}
+		.rowSummaryStyle {
+			font-weight: bold;
+		}
+		.hrInputTextTH {
+			width: 30px;
+			text-align: center;
+			white-space: nowrap !important;
+		}
+		.notesInputTextTH {
+			width: 100px;
+			white-space: normal !important;
+		}
+		.tableWidth {
+			width: {!IF($User.UIThemeDisplayed=='Theme4d', 'auto', '100%')};
+		}
+		.buttonsSpacing {
+			margin-top: {!IF($User.UIThemeDisplayed=='Theme4d', '15px', '0px')};
+		}
+		.pageBlockTableScroll {
+			display: block;
+			overflow-x: auto;
+			width: 93vw;
+		}
+		.pageBlockTableScroll table tr.headerRow th+th {
+			border-left: 1px solid #dedede;
+		}
+	</style>
+
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" id="vfHeader" />
+
+	<c:WaitComponent />
+
+	<apex:pageBlock id="tcDetailPB" rendered="{!NOT(isEverythingOk)}">
+		<apex:pageMessages />
+	</apex:pageBlock>
+
+	<apex:form id="tcMassAppForm" rendered="{!isEverythingOk}">
+		<apex:pageMessages id="error" />
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+		<!-- Action Function section -->
+		<apex:actionRegion >
+			<apex:actionFunction name="jsOnProjectChange" action="{!onProjectChange}" rerender="milestoneListOP,phaseListOP,phaseListInput" oncomplete="onProjectChangeDone();">
+				<apex:param name="selectedProjFilter" assignTo="{!selectedProjFilter}" value="" />
+			</apex:actionFunction>
+		</apex:actionRegion>
+		<apex:actionRegion >
+			<apex:actionFunction name="jsPrimaryGroupingChange" action="{!refreshSecondaryGroupingCategoryOptions}" rerender="secondaryGrpSection,grpByButtonSection,error" oncomplete="onPrimaryGrpChangeDone();">
+				<apex:param name="selectedPrimaryGrp" assignTo="{!primarySelectedGrouping}" value="" />
+			</apex:actionFunction>
+		</apex:actionRegion>
+		<apex:actionFunction name="sortData" action="{!Sort}" rerender="tcResultPB,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();">
+			<apex:param name="sortField" assignTo="{!sortField}" value="" />
+		</apex:actionFunction>
+		<apex:actionFunction name="jsSelectAllRecords" action="{!selectAllRecords}" rerender="tcResultPB,tcApproveRejectPBS,selectDeselectAllCheckboxOP,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();">
+			<apex:param name="selectAllRecords" assignTo="{!selectedAllTCRecords}" value="" />
+		</apex:actionFunction>
+
+		<apex:actionFunction name="doApprove" action="{!approveRecords}" status="ajaxStatus" rerender="tcResultPB,error,tcApproveRejectPBS,tcGroupingPBS,quickTooltipPanel, headerScriptBlock, vfHeader"
+		 oncomplete="onApproveRecordsDone();updateAnchorTargetAttribute();" rendered="{!foundItemsToApprove}" />
+		<apex:actionFunction name="doReject" action="{!rejectRecords}" status="ajaxStatus" rerender="tcResultPB,error,tcApproveRejectPBS,tcGroupingPBS,quickTooltipPanel, headerScriptBlock, vfHeader"
+		 oncomplete="onRejectRecordsDone();updateAnchorTargetAttribute();" rendered="{!foundItemsToApprove}" />
+
+		<!-- Filter Section -->
+		<apex:pageBlock id="tcDetailPB">
+			<apex:pageBlockSection columns="1" id="tcFilterByTableSec">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__common_label_filter}" />
+				</apex:facet>
+				<apex:outputPanel >
+					<table cellspacing="10" class="tableWidth">
+						<tr>
+							<th class="labelCol">
+								<apex:outputLabel for="projectLst" value="{!$Label.pse__timecard_entry_label_proj_assign}" />
+							</th>
+							<td class="dataCol">
+								<apex:actionRegion >
+									<apex:selectList id="projectLst" value="{!selectedProjFilter}" size="1" onchange="onAssignmentChange(this.value)" style="width:74%;">
+										<apex:selectOptions value="{!filterByProjORAssigOptions}" />
+									</apex:selectList>
+								</apex:actionRegion>
+							</td>
+							<!-- Empty th and td tag to remove extra space in table which is created due to colspan property of td-->
+							<th class="labelCol">
+							</th>
+							<td class="dataCol">
+							</td>
+						</tr>
+						<tr>
+							<th class="labelCol">
+								<apex:outputLabel for="milestoneList" value="{!$Label.pse__common_label_milestone}" />
+							</th>
+							<td class="dataCol milestoneColumn">
+								<apex:outputPanel id="milestoneListOP">
+									<select id="milestoneList" value="{!selectedMilestoneFilter}" onchange="document.getElementById('{!$Component.milestoneListHidden}').value = this.value;"
+									 style="width:60%;">
+										<option value="none">{!$Label.Mass_Approval_Empty_Select_List_Label_None}</option>
+										<apex:repeat value="{!filterByMilestoneOptions}" var="msOptionList">
+											<apex:repeat value="{!msOptionList}" var="msOption">
+												<option value="{!msOption.value}">
+													<apex:outputText value="{!msOption.label}" />
+												</option>
+											</apex:repeat>
+										</apex:repeat>
+									</select>
+									<apex:inputHidden value="{!selectedmilestoneFilter}" id="milestoneListHidden" />
+								</apex:outputPanel>
+							</td>
+							<th class="labelCol">
+								<apex:outputLabel for="phaseList" value="{!$Label.pse__common_label_phase}" />
+							</th>
+							<td class="dataCol">
+								<apex:outputPanel id="phaseListOP" rendered="{!useProjectPhaseRecord}">
+									<select id="phaseList" value="{!selectedPhaseFilter}" onchange="document.getElementById('{!$Component.phaseListHidden}').value = this.value;">
+										<option value="none">{!$Label.Mass_Approval_Empty_Select_List_Label_None}</option>
+										<apex:repeat value="{!filterByPhaseOptions}" var="phaseOptionList">
+											<apex:repeat value="{!phaseOptionList}" var="phaseOption">
+												<option value="{!phaseOption.value}">
+													<apex:outputText value="{!phaseOption.label}" />
+												</option>
+											</apex:repeat>
+										</apex:repeat>
+									</select>
+									<apex:inputHidden value="{!selectedPhaseFilter}" id="phaseListHidden" />
+								</apex:outputPanel>
+								<apex:inputField value="{!inputFieldHelper.pse__Project_Phase__c}" id="phaseListInput" rendered="{!NOT(useProjectPhaseRecord)}"/>
+							</td>
+						</tr>
+						<tr>
+							<th class="labelCol">
+								<apex:outputLabel for="weekendingField" value="{!$Label.pse__common_label_timecard_week_ending_date}" />
+							</th>
+							<td class="dataCol" style="white-space:nowrap;">
+								<apex:inputField value="{!inputFieldHelper.pse__End_Date__c}" id="weekendingField" required="false" />
+								<br/>
+								<apex:outputPanel >
+									<apex:inputCheckbox value="{!weekEndingIncludeOverlapsFilter}" id="weekendingFieldIncludeOverlap" />
+									<apex:outputLabel for="weekendingFieldIncludeOverlap" value="{!$Label.pse__timecard_approval_ui_label_include_overlaps}" />
+								</apex:outputPanel>
+							</td>
+
+							<th class="labelCol">
+								<apex:outputLabel for="resourceLst" value="{!$Label.pse__common_label_resource}" />
+							</th>
+							<td class="dataCol">
+								<apex:actionRegion >
+									<apex:selectList id="resourceLst" value="{!selectedResourceFilter}" size="1">
+										<apex:selectOptions value="{!filterByResourceOptions}" />
+									</apex:selectList>
+								</apex:actionRegion>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"></td>
+							<th class="labelCol">
+								<apex:outputLabel for="billableList" value="{!$Label.pse__common_label_billable}" />
+							</th>
+							<td class="dataCol">
+								<apex:selectList id="billableList" value="{!selectedBillableFilter}" size="1">
+									<apex:selectOptions value="{!filterByBillableOptions}" />
+								</apex:selectList>
+							</td>
+						</tr>
+						<apex:variable value="{!1}" var="counter" />
+						<tr>
+							<apex:repeat value="{!filterSectionFieldSetFields}" var="rec">
+								<th class="labelCol">
+									<apex:outputLabel value="{!rec.Label}" />
+								</th>
+								<td class="dataCol">
+									<apex:inputField value="{!inputFieldHelper[rec.FieldPath]}" required="false" /> </td>
+								<apex:outputText rendered="{!AND((MOD(counter, 2) == 0), (counter < filterSectionFieldSetFields.size))}" value="</tr><tr>"
+								 escape="false" />
+								<apex:variable var="counter" value="{!counter + 1}" />
+							</apex:repeat>
+						</tr>
+						<tr></tr>
+						<tr>
+							<td colspan="4">
+								<center>
+									<div class="buttonsSpacing">
+										<apex:commandButton styleClass="slds-m-right_xx-small" value="{!$Label.pse__common_label_filter}" action="{!filterRecords}" status="ajaxStatus" reRender="tcResultPB,tcApproveRejectPBS,error,selectDeselectLink,quickTooltipPanel"
+										 oncomplete="updateAnchorTargetAttribute();" />
+										<apex:commandButton styleClass="slds-m-right_xx-small" value="{!$Label.pse__timecard_approval_ui_label_clear_all_filter}" action="{!listall}" status="ajaxStatus"
+										 reRender="tcResultPB,tcApproveRejectPBS,tcFilterByTableSec,error,selectDeselectLink,quickTooltipPanel" oncomplete="onListAllDone();updateAnchorTargetAttribute();"/>
+										<apex:commandButton value="{!$Label.pse__timecard_approval_ui_label_for_save_filter_button}" action="{!saveFilter}" status="ajaxStatus"
+										 reRender="tcResultPB,tcApproveRejectPBS,error,selectDeselectLink" />
+									</div>
+								</center>
+							</td>
+						</tr>
+					</table>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+
+			<!-- Grouping Section -->
+			<apex:pageBlockSection columns="1" id="tcGroupingPBS">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__common_label_group}" />
+				</apex:facet>
+				<apex:outputPanel >
+					<apex:actionRegion >
+						<table cellspacing="10" class="tableWidth">
+							<tr>
+								<th class="labelCol" style="padding-left:75px; white-space:nowrap;">
+									<apex:outputLabel for="primaryGrpList" value="{!$Label.pse__timecard_approval_ui_label_primary_group}" />
+								</th>
+								<td class="dataCol" width="25%">
+									<apex:actionRegion >
+										<apex:selectList id="primaryGrp" value="{!primarySelectedGrouping}" onchange="onPrimaryGroupChange(this)" multiselect="false"
+										 size="1">
+											<apex:selectOptions value="{!timecardPrimaryGroupingCategoryOptions}" />
+										</apex:selectList>
+									</apex:actionRegion>
+								</td>
+								<th class="labelCol" style="white-space:nowrap;">
+									<apex:outputLabel for="secondaryGrpList" value="{!$Label.pse__timecard_approval_ui_label_secondary_group}" />
+								</th>
+								<td class="dataCol" width="25%">
+									<apex:outputPanel id="secondaryGrpSection">
+										<select id="secondaryGrpList" value="{!secondarySelectedGrouping}" onchange="document.getElementById('{!$Component.secondaryGrpListHidden}').value = this.value;">
+											<option value="none">{!$Label.Mass_Approval_Empty_Select_List_Label_None}</option>
+											<apex:repeat value="{!timecardSecondaryGroupingCategoryOptions}" var="tcSecGrpOption">
+												<option value="{!tcSecGrpOption.value}">
+													<apex:outputText value="{!tcSecGrpOption.label}" />
+												</option>
+											</apex:repeat>
+										</select>
+										<apex:inputHidden value="{!secondarySelectedGrouping}" id="secondaryGrpListHidden" />
+									</apex:outputPanel>
+								</td>
+							</tr>
+							<tr>
+								<th></th>
+								<td style="white-space:nowrap;" class="dataCol">
+									<apex:outputPanel >
+										<apex:inputCheckbox value="{!groupTimecardBySetting}" id="groupTimecardBySetting" />
+										<apex:outputLabel for="weekendingFieldIncludeOverlap" value="{!$Label.pse__timecard_approval_ui_label_always_group_timecard_by_these_settings}"/>
+									</apex:outputPanel>
+								</td>
+							</tr>
+							<tr></tr>
+							<tr>
+								<td colspan="6">
+									<apex:outputPanel id="grpByButtonSection">
+										<center>
+											<div class="buttonsSpacing">
+												<apex:commandButton styleClass="slds-m-right_xx-small btn" value="{!$Label.pse__common_label_group}" action="{!loadGroupingData}" status="ajaxStatus" reRender="tcResultPB,tcApproveRejectPBS,error,quickTooltipPanel"
+												 disabled="{!(primarySelectedGrouping == 'none')}" oncomplete="updateAnchorTargetAttribute();"/>
+												<apex:commandButton styleClass="btn" value="{!$Label.pse__timecard_approval_ui_label_clear_all_groups}" action="{!clearAllGroups}"
+												 status="ajaxStatus" reRender="tcGroupingPBS,tcResultPB,tcApproveRejectPBS,error,quickTooltipPanel" disabled="{!(primarySelectedGrouping == 'none')}"
+												 oncomplete="updateAnchorTargetAttribute();onPrimaryGrpChangeDone();"/>
+											</div>
+										</center>
+									</apex:outputPanel>
+								</td>
+							</tr>
+						</table>
+					</apex:actionRegion>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+
+			<!-- Approve/Reject Section -->
+			<apex:pageBlockSection columns="1" id="tcApproveRejectPBS">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__timecard_approval_ui_label_approve_reject_timecards}" />
+				</apex:facet>
+				<apex:outputPanel >
+					<table cellspacing="10" class="tableWidth">
+						<tr class="dataRow">
+							<th class="labelCol" style="white-space:nowrap;">
+								<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_selected_records}" />
+							</th>
+							<td class="dataCol">
+								<div>
+									<span class="selectedTCRecordCount">
+										{!IF(showGroupedBySection, tcApproverByGroupPaginator.allSelectedRecordCount, paginator.allSelectedRecordCount)}
+									</span>
+									<apex:outputText value=" {!$Label.pse__common_label_of} {!IF(showGroupedBySection, tcApproverByGroupPaginator.totalRecordCount, paginator.totalRecordCount)}"/>&nbsp;&nbsp;|&nbsp;&nbsp;
+									<span id="outputLinkSpan">
+										<apex:outputLink value="javascript:void(0);" onclick="jsSelectAllRecords('{!NOT(selectedAllTCRecords)}');">
+											<apex:outputText value="{!$Label.pse__timecard_approval_ui_label_select_all_records}" rendered="{!NOT(selectedAllTCRecords)}">
+												<apex:param value="{!recordCount}" />
+											</apex:outputText>
+											<apex:outputText value="{!$Label.pse__timecard_approval_ui_label_deselect_all_records}" rendered="{!selectedAllTCRecords}">
+												<apex:param value="{!recordCount}" />
+											</apex:outputText>
+										</apex:outputLink>
+									</span>
+								</div>
+							</td>
+							<th class="labelCol" style="white-space:nowrap;">
+								<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_billable_hours_selected}" />
+							</th>
+							<td class="dataCol">
+								<div>
+									<span class="selectedTCBillableHours">
+										{!IF(showGroupedBySection, tcApproverByGroupPaginator.allSelectedTCRecordSummary.totalBillableHoursString, paginator.allSelectedTCRecordSummary.totalBillableHoursString)}
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr class="dataRow">
+							<th class="labelCol" style="white-space:nowrap;">
+								<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_hours_selected}" />
+							</th>
+							<td class="dataCol">
+								<div>
+									<span class="selectedTCTotalHours">
+										{!IF(showGroupedBySection, tcApproverByGroupPaginator.allSelectedTCRecordSummary.totalBillableAndNonBillableHoursString,
+										paginator.allSelectedTCRecordSummary.totalBillableAndNonBillableHoursString)}
+									</span>
+								</div>
+							</td>
+							<th class="labelCol" style="white-space:nowrap;">
+								<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_non_billable_hours_selected}" />
+							</th>
+							<td class="dataCol">
+								<div>
+									<span class="selectedTCNonBillableHours">
+										{!IF(showGroupedBySection, tcApproverByGroupPaginator.allSelectedTCRecordSummary.totalNonBillableHoursString, paginator.allSelectedTCRecordSummary.totalNonBillableHoursString)}
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr class="dataRow">
+							<th class="labelCol">
+								<apex:outputLabel value="{!$Label.pse__common_label_comments}" />
+							</th>
+							<td class="dataCol">
+								<apex:inputTextarea cols="40" rows="4" value="{!approverComment}" />
+							</td>
+						</tr>
+					</table>
+					<center>
+						<div class="buttonsSpacing">
+							<apex:commandButton styleClass="btn" onclick="doReject(); return false;" value="{!$Label.pse__common_label_reject}" rendered="{!foundItemsToApprove}" />
+							<apex:commandButton styleClass="slds-m-left_xx-small btn" onclick="doApprove(); return false;" value="{!$Label.pse__common_label_approve}" rendered="{!foundItemsToApprove}" />
+						</div>
+					</center>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+
+		<!-- Display Result -->
+		<apex:pageBlock id="tcResultPB" title="{!$Label.pse__timecard_approval_ui_label_timecards}">
+			<apex:pageBlockSection columns="1" id="tcToApproveResultsPBS" rendered="{!NOT(showGroupedBySection)}">
+				<apex:outputPanel id="timecards">
+					<apex:outputPanel styleClass="pageBlockTableScroll">
+						<table class="list" cellspacing="0" cellpadding="0" border="0">
+							<tr class="headerRow">
+								<th width="20px">
+									<input type="checkbox" onclick="selectAll(this, 'tcCheckbox', '_row', null, null);" id="tcSelectAllCheckbox" />
+								</th>
+								<th width="165px">
+									<apex:outputLink value="javascript:void(0);" styleClass="sort" onclick="sortData('Name');">
+										<apex:outputText value="{!$Label.pse__common_label_timecard}" />
+										<img src="/s.gif" class="sortingClass {!IF(paginator.dataSource.sortField = 'Name',IF(paginator.dataSource.isAscending , 'ascImage','descImage'),'')}"/>
+									</apex:outputLink>
+								</th>
+								<th></th>
+								<!-- info icon header -->
+								<apex:repeat value="{!hourFieldNames}" var="fName">
+									<th class="hrInputTextTH">
+										<apex:outputText value="{!hourFieldLabels[fName]}" rendered="{!NOT(showDatesAsColumnHeader)}" />
+										<apex:outputText value="{!dayWrapperMap[fName].displayDayColumnHeader}" rendered="{!showDatesAsColumnHeader}" />
+									</th>
+									<th style="{!IF(NOT(dayWrapperMap[fName].showNotesWithDate), 'display:none;','')}">
+										<apex:outputLink value="javascript:void(0);" styleClass="sort" onclick="sortData('{!dayWrapperMap[fName].fieldMember.fieldPath}');">
+											<apex:outputText value="{!dayWrapperMap[fName].fieldMember.Label}" />
+											<img src="/s.gif" class="sortingClass {!IF(sortField = dayWrapperMap[fName].fieldMember.fieldPath,IF(paginator.dataSource.isAscending , 'ascImage','descImage'),'')}"/>
+										</apex:outputLink>
+									</th>
+								</apex:repeat>
+								<apex:repeat value="{!filteredTCColumns}" var="f">
+									<th>
+										<apex:outputLink value="javascript:void(0);" styleClass="sort" onclick="sortData('{!f.fieldPath}');">
+											<apex:outputText value="{!f.Label}" />
+											<img src="/s.gif" class="sortingClass {!IF(sortField = f.fieldPath,IF(paginator.dataSource.isAscending , 'ascImage','descImage'),'')}"/>
+										</apex:outputLink>
+									</th>
+								</apex:repeat>
+								<th></th>
+								<!-- error header -->
+							</tr>
+							<apex:repeat value="{!paginator.currentItems}" var="itemToApproveWrapper" rendered="{!foundItemsToApprove}">
+								<tr class="dataRow">
+									<td class="dataCell" nowrap="true">
+										<apex:inputCheckbox value="{!itemToApproveWrapper.isSelected}" id="tcCheckbox_row" onclick="selectTimecard(this, '{!itemToApproveWrapper.timeCard.id}');"
+										 styleClass="unGroupCompInfo_{!itemToApproveWrapper.timeCard.id}" />
+									</td>
+									<td class="dataCell" style="white-space:nowrap;">
+										<a href="/{!itemToApproveWrapper.timeCard.id}" target="_blank">
+											<apex:outputfield value="{!itemToApproveWrapper.timeCard.Name}" />
+										</a>
+									</td>
+									<td class="dataCell" nowrap="true">
+										<div style="white-space:nowrap;" align="center">
+											<apex:outputPanel rendered="{!renderTooltip}" layout="none">
+												<img src="/s.gif" class="infoIcon" data-tooltip="{!itemToApproveWrapper.tooltip}"/>
+											</apex:outputPanel>
+										</div>
+									</td>
+									<apex:repeat value="{!hourFieldNames}" var="fName">
+										<td class="dataCell" nowrap="true" width="30px" style="{!IF(itemToApproveWrapper.dayHourTooltipMap[fName]!='null', 'color: #0C69F3;font-weight:bold;', '')};">
+											<apex:outputPanel rendered="{!itemToApproveWrapper.dayHourTooltipMap[fName]!='null'}" layout="none">
+												<img src="/s.gif" class="hourTooltipImage" data-tooltip="{!itemToApproveWrapper.dayHourTooltipMap[fName]}"/>
+											</apex:outputPanel>
+											<apex:outputfield value="{!itemToApproveWrapper.timeCard[fName]}" id="hour" />
+										</td>
+										<td class="notesInputTextTH" style="{!IF(NOT(dayWrapperMap[fName].showNotesWithDate), 'display:none;','')}">
+											<apex:outputtext value="{!itemToApproveWrapper.timeCard[dayWrapperMap[fName].fieldMember.fieldPath]}" />
+										</td>
+									</apex:repeat>
+									<apex:repeat value="{!filteredTCColumns}" var="f">
+										<td class="dataCell" style="white-space:nowrap;">
+											<apex:outputfield value="{!itemToApproveWrapper.timeCard[f.fieldPath]}" />
+										</td>
+									</apex:repeat>
+									<td class="dataCell" nowrap="true">
+										<apex:outputPanel rendered="{!itemToApproveWrapper.isError}">
+											<img height="14px" style="padding-left: 2px;padding-right: 5px;" src="/img/msg_icons/error24.png" title="{!itemToApproveWrapper.errorMessage}"/>
+										</apex:outputPanel>
+										<input type="hidden" class="unGroupHoursTotalInfo_{!itemToApproveWrapper.timeCard.id}" value="{!itemToApproveWrapper.timeCard.Total_Hours__c}"/>
+										<input type="hidden" class="unGroupTotalBillingAmtInfo_{!itemToApproveWrapper.timeCard.id}" value="{!itemToApproveWrapper.timeCard.Total_Billable_Amount__c}"/>
+										<input type="hidden" class="unGroupBillableInfo_{!itemToApproveWrapper.timeCard.id}" value="{!itemToApproveWrapper.timeCard.Billable__c}"/>
+									</td>
+								</tr>
+							</apex:repeat>
+						</table>
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!foundItemsToApprove}">
+						<table class="list">
+							<tfoot>
+								<tr class="totalRow">
+									<td>
+										<span style="float:left;">
+											<apex:outputText value="{!paginator.recordCountMessage}" />
+										</span>
+										<apex:outputPanel style="vertical-align:middle;"  styleClass="slds-align_absolute-center">
+											<apex:commandButton styleClass="btn slds-m-right_xx-small" action="{!paginator.first}" value="{!$Label.pse__common_label_first}" disabled="{!NOT(paginator.hasFirst)}"
+											 rerender="tcResultPB,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();"/>
+											<apex:commandButton styleClass="btn" action="{!paginator.previous}" value="{!$Label.pse__common_label_previous}" disabled="{!NOT(paginator.hasPrevious)}"
+											 rerender="tcResultPB,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();"/>
+											<span> &nbsp;&nbsp; <apex:outputText value="{!paginator.statusMessage}" /> &nbsp;&nbsp; </span>
+											<apex:commandButton styleClass="btn slds-m-right_xx-small" action="{!paginator.next}" value="{!$Label.pse__common_label_next}" disabled="{!NOT(paginator.hasNext)}"
+											 rerender="tcResultPB,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();"/>
+											<apex:commandButton styleClass="btn" action="{!paginator.last}" value="{!$Label.pse__common_label_last}" disabled="{!NOT(paginator.hasLast)}"
+											 rerender="tcResultPB,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();"/>
+										</apex:outputPanel>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</apex:outputPanel>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection columns="1" id="tcToApproveResultsPBS2" rendered="{!showGroupedBySection}">
+				<apex:outputPanel id="timecards">
+					<apex:variable var="hourFieldNamesIndex" value="{!0}" />
+					<apex:variable var="tcColumnIndex" value="{!0}" />
+					<apex:outputPanel styleClass="pageBlockTableScroll">
+						<table class="list" cellspacing="0" cellpadding="0" border="0">
+							<tr class="headerRow">
+								<th width="20px">
+									<input type="checkbox" onclick="selectAll(this, 'tcCheckboxGrp', '_row', 'primaryCompInfo', 'secondaryCompInfo')"
+									 id="tcSelectAllCheckbox" class="headerCheckbox" />
+								</th>
+								<th width="165px">
+									<apex:outputLink value="javascript:void(0);" styleClass="sort" onclick="sortData('Name');">
+										<apex:outputText value="{!$Label.pse__common_label_timecard}" />
+										<img src="/s.gif" class="sortingClass {!IF(sortField = 'Name',IF(isAscending , 'ascImage','descImage'),'')}" />
+									</apex:outputLink>
+								</th>
+								<th></th>
+								<!-- info icon header -->
+								<apex:repeat value="{!hourFieldNames}" var="fName">
+									<th class="hrInputTextTH">
+										<apex:outputText value="{!hourFieldLabels[fName]}" rendered="{!NOT(showDatesAsColumnHeader)}" />
+										<apex:outputText value="{!dayWrapperMap[fName].displayDayColumnHeader}" rendered="{!showDatesAsColumnHeader}" />
+									</th>
+									<apex:variable var="hourFieldNamesIndex" value="{!hourFieldNamesIndex+1}" />
+									<apex:variable var="hourFieldNamesIndex" value="{!hourFieldNamesIndex+1}" rendered="{!dayWrapperMap[fName].showNotesWithDate}"/>
+									<th style="{!IF(NOT(dayWrapperMap[fName].showNotesWithDate), 'display:none;','')}">
+										<apex:outputLink value="javascript:void(0);" styleClass="sort" onclick="sortData('{!dayWrapperMap[fName].fieldMember.fieldPath}');">
+											<apex:outputText value="{!dayWrapperMap[fName].fieldMember.Label}" />
+											<img src="/s.gif" class="sortingClass {!IF(sortField = dayWrapperMap[fName].fieldMember.fieldPath,IF(paginator.dataSource.isAscending , 'ascImage','descImage'),'')}"/>
+										</apex:outputLink>
+									</th>
+								</apex:repeat>
+								<apex:repeat value="{!filteredTCColumns}" var="f">
+									<th>
+										<apex:outputLink value="javascript:void(0);" styleClass="sort" onclick="sortData('{!f.fieldPath}');">
+											<apex:outputText value="{!f.Label}" />
+											<img src="/s.gif" class="sortingClass {!IF(sortField = f.fieldPath,IF(isAscending , 'ascImage','descImage'),'')}" />
+										</apex:outputLink>
+									</th>
+									<apex:variable var="tcColumnIndex" value="{!tcColumnIndex+1}" />
+								</apex:repeat>
+								<th></th>
+								<!-- error header -->
+							</tr>
+							<apex:variable var="totalTcColumnIndex" value="{!hourFieldNamesIndex + tcColumnIndex + 4}" />
+							<apex:repeat value="{!tcApproverByGroupPaginator.currentItems}" var="gw">
+								<tr class="dataRow headerRowStyle">
+									<td class="dataCell" nowrap="true">
+										<apex:inputCheckbox value="{!gw.isSelected}" onclick="selectAllGroup(this, 'tcCheckbox{!gw.groupRecordId}', '_row', 'primaryGrp', 'headerCheckbox', 'primaryCompInfo_{!gw.groupRecordId}', 'secondaryCompInfo_{!gw.groupRecordId}')"
+										 id="tcCheckboxGrp" styleClass="primaryGrp primaryGrp{!gw.groupRecordId}" />
+									</td>
+									<td colspan="{!hourFieldNamesIndex  + 2}">
+										<div style="float:left;">
+											<span onclick="toggleClass(this, 'primary_{!gw.groupRecordId}')" class="collapseImage">
+												&nbsp;&nbsp;&nbsp;&nbsp;
+											</span>
+											<apex:outputLabel value="{!gw.groupRecordName}" />
+										</div>
+									</td>
+									<apex:repeat value="{!filteredTCColumns}" var="f">
+										<td>
+											<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Total_Hours__c.Label}">
+												<apex:outputText value="{!gw.groupSummary.totalBillableAndNonBillableHoursString}" styleClass="rowSummaryStyle" />
+											</apex:outputPanel>
+											<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Total_Billable_Amount__c.Label}">
+												<apex:outputText value="{!gw.groupSummary.totalBillableAmountString}" styleClass="rowSummaryStyle" />
+											</apex:outputPanel>
+										</td>
+									</apex:repeat>
+									<td></td>
+								</tr>
+								<tr class="dataRow">
+									<td></td>
+									<td colspan="{!totalTcColumnIndex - 1}">
+										<table id="primary_{!gw.groupRecordId}" class="classHide">
+											<tr class="dataRow">
+												<td class="labelCustomStyle">
+													<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_grouping_summary_section_left_header}" />
+												</td>
+												<td></td>
+												<td width="50px"></td>
+												<td class="labelCustomStyle">
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputLabel value="{!gw.groupingLabel}" />
+													</span>
+												</td>
+												<td></td>
+											</tr>
+											<tr class="dataRow">
+												<td style="float:right;">
+													<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_selected_timecards}" />
+												</td>
+												<td>
+													<span class="primaryGrpCount{!gw.groupRecordId}">
+														<apex:outputText value="{!gw.selectedApprovalRecordCountString}" />
+													</span>
+													<apex:outputText value=" {!$Label.pse__common_label_of} {!gw.approvalWrapperRecordCountString}" />
+												</td>
+												<td></td>
+												<td style="float:right;">
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputLabel value="{!$Label.pse__common_label_planned_hours}:" />
+													</span>
+												</td>
+												<td>
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputField value="{!gw.projectMilestoneSummary.plannedHours.pse__Planned_Hours__c}" />
+													</span>
+												</td>
+											</tr>
+											<tr class="dataRow">
+												<td style="float:right;">
+													<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_billable_hours}" />
+												</td>
+												<td>
+													<span class="primaryBillableHrs{!gw.groupRecordId}">
+														<apex:outputText value="{!gw.selectedRecordGrpSummary.totalBillableHoursString}" />
+													</span>
+												</td>
+												<td></td>
+												<td style="float:right;">
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_approved_hours}:" />
+													</span>
+												</td>
+												<td>
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputField value="{!gw.projectMilestoneSummary.approvedHours.pse__Non_Billable_Internal_Hours__c}" />
+													</span>
+												</td>
+											</tr>
+											<tr class="dataRow">
+												<td style="float:right;">
+													<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_non_billable_hours}" />
+												</td>
+												<td>
+													<span class="primaryNonBillableHrs{!gw.groupRecordId}">
+														<apex:outputText value="{!gw.selectedRecordGrpSummary.totalNonBillableHoursString}" />
+													</span>
+												</td>
+												<td></td>
+												<td style="float:right;">
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_remaining_hours}" />
+													</span>
+												</td>
+												<td>
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputText value="{!(gw.projectMilestoneSummary.plannedHours.pse__Planned_Hours__c) - (gw.projectMilestoneSummary.approvedHours.pse__Non_Billable_Internal_Hours__c)}"/>
+													</span>
+												</td>
+											</tr>
+											<tr class="dataRow">
+												<td style="float:right;">
+													<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_hours}" />
+												</td>
+												<td>
+													<span class="primaryTotalHrs{!gw.groupRecordId}">
+														<apex:outputText value="{!gw.selectedRecordGrpSummary.totalHoursString}" />
+													</span>
+												</td>
+												<td></td>
+												<td style="float:right;">
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<span style="{!IF(gw.isGroupedByProject, 'display:none', '')}">
+															<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_approved_milestone_amount}:" />
+														</span>
+														<span style="{!IF(NOT(gw.isGroupedByProject), 'display:none', '')}">
+															<apex:outputLabel value="{!$Label.pse__common_label_budget}:" />
+														</span>
+													</span>
+												</td>
+												<td>
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputField value="{!gw.projectMilestoneSummary.budgetAmount.pse__Bookings__c}" />
+													</span>
+												</td>
+											</tr>
+											<tr class="dataRow">
+												<td style="float:right;">
+													<span style="{!IF(NOT(gw.showTotalBillableAmount), 'display:none', '')}">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_billable_amount}" />
+													</span>
+												</td>
+												<td>
+													<span style="{!IF(NOT(gw.showTotalBillableAmount), 'display:none', '')}">
+														<span>
+															<apex:outputText value="{!gw.groupCurrencyIsoCode}"></apex:outputText>
+														</span>
+														<span class="primaryBillableAmt{!gw.groupRecordId}">
+															<apex:outputText value="{!gw.selectedRecordGrpSummary.totalBillableAmountString}" />
+														</span>
+													</span>
+												</td>
+												<td></td>
+												<td style="float:right;">
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_approved_billings_amount}:" />
+													</span>
+												</td>
+												<td>
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputField value="{!gw.projectMilestoneSummary.approvedBillingAmount.pse__Billings__c}" />
+													</span>
+												</td>
+											</tr>
+											<tr class="dataRow">
+												<td></td>
+												<td></td>
+												<td></td>
+												<td style="float:right;">
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_remaining_budget}" />
+													</span>
+												</td>
+												<td>
+													<span style="{!IF(NOT(gw.showProjectMilestoneSummary), 'display:none', '')}">
+														<apex:outputText value="{!gw.groupCurrencyIsoCode} " />
+														<apex:outputText value="{!gw.projectMilestoneSummary.totalRemainingAmtString}" />
+													</span>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+
+								<!--  Primary Group data display -->
+								<apex:repeat value="{!gw.approvalWrapperList}" var="itemToApproveWrapper">
+									<tr class="dataRow">
+										<td class="dataCell" nowrap="true" style="padding-left: 20px;">
+											<apex:inputCheckbox value="{!itemToApproveWrapper.isSelected}" id="tcCheckboxGrp_row" onclick="selectPrimaryGrpByTimecard(this, '{!gw.groupRecordId}', '{!itemToApproveWrapper.timeCard.id}');"
+											 styleClass="tcCheckbox{!gw.groupRecordId} primaryCompInfo_{!gw.groupRecordId}-{!itemToApproveWrapper.timeCard.id}"/>
+										</td>
+										<td class="dataCell" style="white-space:nowrap;">
+											<a href="/{!itemToApproveWrapper.timeCard.id}" target="_blank">
+												<apex:outputfield value="{!itemToApproveWrapper.timeCard.Name}" />
+											</a>
+										</td>
+										<td class="dataCell" nowrap="true">
+											<div style="white-space:nowrap;" align="center">
+												<img src="/s.gif" class="infoIcon" data-tooltip="{!itemToApproveWrapper.tooltip}"/>
+											</div>
+										</td>
+										<apex:repeat value="{!hourFieldNames}" var="fName">
+											<td class="dataCell" nowrap="true" width="30px" style="{!IF(itemToApproveWrapper.dayHourTooltipMap[fName]!='null', 'color: #0C69F3;font-weight:bold;', '')};">
+												<apex:outputPanel rendered="{!itemToApproveWrapper.dayHourTooltipMap[fName]!='null'}" layout="none">
+												 	<img src="/s.gif" class="hourTooltipImage" data-tooltip="{!itemToApproveWrapper.dayHourTooltipMap[fName]}"/>
+												</apex:outputPanel>
+												<apex:outputfield value="{!itemToApproveWrapper.timeCard[fName]}" id="hour" />
+											</td>
+											<td class="notesInputTextTH" style="{!IF(NOT(dayWrapperMap[fName].showNotesWithDate), 'display:none;','')}">
+												<apex:outputtext value="{!itemToApproveWrapper.timeCard[dayWrapperMap[fName].fieldMember.fieldPath]}" />
+											</td>
+										</apex:repeat>
+										<apex:repeat value="{!filteredTCColumns}" var="f">
+											<td class="dataCell" style="white-space:nowrap;">
+												<apex:outputfield value="{!itemToApproveWrapper.timeCard[f.fieldPath]}" />
+											</td>
+										</apex:repeat>
+										<td class="dataCell" nowrap="true">
+											<apex:outputPanel rendered="{!itemToApproveWrapper.isError}">
+												<img height="14px" style="padding-left: 2px;padding-right: 5px;" src="/img/msg_icons/error24.png" title="{!itemToApproveWrapper.errorMessage}"/>
+											</apex:outputPanel>
+											<input type="hidden" class="primaryHoursTotalInfo_{!gw.groupRecordId}_{!itemToApproveWrapper.timeCard.id}" value="{!itemToApproveWrapper.timeCard.Total_Hours__c}"/>
+											<input type="hidden" class="primaryTotalBillingAmtInfo_{!gw.groupRecordId}_{!itemToApproveWrapper.timeCard.id}" value="{!itemToApproveWrapper.timeCard.Total_Billable_Amount__c}"/>
+											<input type="hidden" class="primaryBillableInfo_{!gw.groupRecordId}_{!itemToApproveWrapper.timeCard.id}" value="{!itemToApproveWrapper.timeCard.Billable__c}"/>
+										</td>
+									</tr>
+								</apex:repeat>
+								<!-- Primary group TC row repeat ends -->
+
+								<apex:repeat value="{!gw.secondaryGrpWrapperList}" var="secgw" rendered="{!NOT(ISNULL(gw.secondaryGrpWrapperList))}">
+									<tr class="dataRow headerRowStyle">
+										<td class="dataCell" nowrap="true">
+										</td>
+										<td colspan="{!hourFieldNamesIndex + 2}">
+											<div style="float:left;">
+												<apex:inputCheckbox value="{!secgw.isSelected}" onclick="selectAllGroup(this, 'tcCheckbox{!secgw.groupRecordId}', '_row', 'secondaryGrp{!gw.groupRecordId}', 'primaryGrp{!gw.groupRecordId}', 'primaryCompInfo_{!gw.groupRecordId}', 'secondaryCompInfo_{!gw.groupRecordId}-{!secgw.groupRecordId}' )"
+												 id="tcCheckboxGrp" styleClass="tcCheckbox{!gw.groupRecordId} secondaryGrp{!gw.groupRecordId} secondaryGrp{!secgw.groupRecordId}"
+												 style="vertical-align:middle;" />
+												<span onclick="toggleClass(this, 'sec_{!gw.groupRecordId}_{!secgw.groupRecordId}')" class="collapseImage">
+													&nbsp;&nbsp;&nbsp;&nbsp;
+												</span>
+												<apex:outputLabel value="{!secgw.groupRecordName}" />
+											</div>
+										</td>
+										<apex:repeat value="{!filteredTCColumns}" var="f">
+											<td>
+												<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Total_Hours__c.Label}">
+													<apex:outputText value="{!secgw.groupSummary.totalBillableAndNonBillableHoursString}" styleClass="rowSummaryStyle" />
+												</apex:outputPanel>
+												<apex:outputPanel rendered="{!f.Label == $ObjectType.pse__Timecard_Header__c.Fields.pse__Total_Billable_Amount__c.Label}">
+													<apex:outputText value="{!secgw.groupSummary.totalBillableAmountString}" styleClass="rowSummaryStyle" />
+												</apex:outputPanel>
+											</td>
+										</apex:repeat>
+										<td></td>
+									</tr>
+									<tr class="dataRow">
+										<td class="dataCell" nowrap="true"></td>
+										<td colspan="{!totalTcColumnIndex - 1}" style="padding-left: 24px;">
+											<table id="sec_{!gw.groupRecordId}_{!secgw.groupRecordId}" class="classHide">
+												<tr>
+													<td class="labelCustomStyle">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_grouping_summary_section_left_header}" />
+													</td>
+													<td></td>
+													<td width="50px"></td>
+													<td class="labelCustomStyle">
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputLabel value="{!secgw.groupingLabel}" />
+														</span>
+													</td>
+													<td></td>
+												</tr>
+												<tr>
+													<td style="float:right;">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_selected_timecards}" />
+													</td>
+													<td>
+														<span class="secGrpCount{!gw.groupRecordId}_{!secgw.groupRecordId}">
+															<apex:outputText value="{!secgw.selectedApprovalRecordCountString}" />
+														</span>
+														<apex:outputLabel value=" {!$Label.pse__common_label_of} {!secgw.approvalWrapperRecordCountString}" />
+													</td>
+													<td></td>
+													<td style="float:right;">
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputLabel value="{!$Label.pse__common_label_planned_hours}:" />
+														</span>
+													</td>
+													<td>
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputField value="{!secgw.projectMilestoneSummary.plannedHours.pse__Planned_Hours__c}" />
+														</span>
+													</td>
+												</tr>
+												<tr>
+													<td style="float:right;">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_billable_hours}" />
+													</td>
+													<td>
+														<span class="secBillableHrs{!gw.groupRecordId}_{!secgw.groupRecordId}">
+															<apex:outputText value="{!secgw.selectedRecordGrpSummary.totalBillableHoursString}" />
+														</span>
+													</td>
+													<td></td>
+													<td style="float:right;">
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_approved_hours}:" />
+														</span>
+													</td>
+													<td>
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputField value="{!secgw.projectMilestoneSummary.approvedHours.pse__Non_Billable_Internal_Hours__c}" />
+														</span>
+													</td>
+												</tr>
+												<tr>
+													<td style="float:right;">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_non_billable_hours}" />
+													</td>
+													<td>
+														<span class="secNonBillableHrs{!gw.groupRecordId}_{!secgw.groupRecordId}">
+															<apex:outputText value="{!secgw.selectedRecordGrpSummary.totalNonBillableHoursString}" />
+														</span>
+													</td>
+													<td></td>
+													<td style="float:right;">
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_remaining_hours}" />
+														</span>
+													</td>
+													<td>
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputText value="{!(secgw.projectMilestoneSummary.plannedHours.pse__Planned_Hours__c) - (secgw.projectMilestoneSummary.approvedHours.pse__Non_Billable_Internal_Hours__c)}"/>
+														</span>
+													</td>
+												</tr>
+												<tr class="dataRow">
+													<td style="float:right;">
+														<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_hours}" />
+													</td>
+													<td>
+														<span class="primaryTotalHrs{!secgw.groupRecordId}">
+															<apex:outputText value="{!secgw.selectedRecordGrpSummary.totalHoursString}" />
+														</span>
+													</td>
+													<td></td>
+													<td style="float:right;">
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<span style="{!IF(secgw.isGroupedByProject, 'display:none', '')}">
+																<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_approved_milestone_amount}:" />
+															</span>
+															<span style="{!IF(NOT(secgw.isGroupedByProject), 'display:none', '')}">
+																<apex:outputLabel value="{!$Label.pse__common_label_budget}:" />
+															</span>
+														</span>
+													</td>
+													<td>
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputField value="{!secgw.projectMilestoneSummary.budgetAmount.pse__Bookings__c}" />
+														</span>
+													</td>
+												</tr>
+												<tr>
+													<td style="float:right;">
+														<span style="{!IF(NOT(secgw.showTotalBillableAmount), 'display:none', '')}">
+															<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_total_billable_amount}" />
+														</span>
+													</td>
+													<td>
+														<span style="{!IF(NOT(secgw.showTotalBillableAmount), 'display:none', '')}">
+															<span>
+																<apex:outputText value="{!secgw.groupCurrencyIsoCode}"></apex:outputText>
+															</span>
+															<span class="secBillableAmt{!gw.groupRecordId}_{!secgw.groupRecordId}">
+																<apex:outputText value="{!secgw.selectedRecordGrpSummary.totalBillableAmountString}" />
+															</span>
+														</span>
+													</td>
+													<td></td>
+													<td style="float:right;">
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_approved_billings_amount}:" />
+														</span>
+													</td>
+													<td>
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputField value="{!secgw.projectMilestoneSummary.approvedBillingAmount.pse__Billings__c}" />
+														</span>
+													</td>
+												</tr>
+												<tr class="dataRow">
+													<td></td>
+													<td></td>
+													<td></td>
+													<td style="float:right;">
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<apex:outputLabel value="{!$Label.pse__timecard_approval_ui_label_remaining_budget}" />
+														</span>
+													</td>
+													<td>
+														<span style="{!IF(NOT(secgw.showProjectMilestoneSummary), 'display:none', '')}">
+															<span style="{!IF(contains(secgw.groupRecordName, $Label.pse__manage_ungrouped_time_cards_for_approval ), 'display:none', '')}">
+																<apex:outputText value="{!secgw.groupCurrencyIsoCode} " />
+																<apex:outputText value="{!secgw.projectMilestoneSummary.totalRemainingAmtString}" />
+															</span>
+														</span>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<apex:repeat value="{!secgw.approvalWrapperList}" var="itemToApproveWrapper" rendered="{!foundItemsToApprove}">
+										<tr class="dataRow">
+											<td class="dataCell" nowrap="true">
+											</td>
+											<td class="dataCell" style="padding-left: 26px; white-space: nowrap;">
+												<apex:inputCheckbox value="{!itemToApproveWrapper.isSelected}" id="tcCheckboxGrp_row" onclick="selectSecondaryGrpByTimecard(this, '{!gw.groupRecordId}', '{!secgw.groupRecordId}', '{!itemToApproveWrapper.timeCard.id}');"
+												 styleClass="tcCheckbox{!gw.groupRecordId} tcCheckbox{!secgw.groupRecordId} secondaryCompInfo_{!gw.groupRecordId}-{!secgw.groupRecordId}-tc{!itemToApproveWrapper.timeCard.id}"/>
+												<a href="/{!itemToApproveWrapper.timeCard.id}" target="_blank">
+													<apex:outputfield value="{!itemToApproveWrapper.timeCard.Name}" />
+												</a>
+											</td>
+											<td class="dataCell" nowrap="true">
+												<div style="white-space:nowrap;" align="center">
+													<img src="/s.gif" class="infoIcon" data-tooltip="{!itemToApproveWrapper.tooltip}"/>
+												</div>
+											</td>
+											<apex:repeat value="{!hourFieldNames}" var="fName">
+												<td class="dataCell" nowrap="true" width="30px" style="{!IF(itemToApproveWrapper.dayHourTooltipMap[fName]!='null', 'color: #0C69F3;font-weight:bold;', '')};">
+														<apex:outputPanel rendered="{!itemToApproveWrapper.dayHourTooltipMap[fName]!='null'}" layout="none">
+															<img src="/s.gif" class="hourTooltipImage" data-tooltip="{!itemToApproveWrapper.dayHourTooltipMap[fName]}"/>
+														</apex:outputPanel>
+													<apex:outputfield value="{!itemToApproveWrapper.timeCard[fName]}" id="hour" />
+												</td>
+												<td class="notesInputTextTH" style="{!IF(NOT(dayWrapperMap[fName].showNotesWithDate), 'display:none;','')}">
+													<apex:outputtext value="{!itemToApproveWrapper.timeCard[dayWrapperMap[fName].fieldMember.fieldPath]}" />
+												</td>
+											</apex:repeat>
+											<apex:repeat value="{!filteredTCColumns}" var="f">
+												<td class="dataCell" style="white-space: nowrap;">
+													<apex:outputfield value="{!itemToApproveWrapper.timeCard[f.fieldPath]}" />
+												</td>
+											</apex:repeat>
+											<td class="dataCell" nowrap="true">
+												<apex:outputPanel rendered="{!itemToApproveWrapper.isError}">
+													<img height="14px" style="padding-left: 2px;padding-right: 5px;" src="/img/msg_icons/error24.png" title="{!itemToApproveWrapper.errorMessage}"/>
+												</apex:outputPanel>
+												<input type="hidden" class="secondaryHoursTotalInfo_{!gw.groupRecordId}_{!secgw.groupRecordId}_{!itemToApproveWrapper.timeCard.id}"
+												 value="{!itemToApproveWrapper.timeCard.Total_Hours__c}" />
+												<input type="hidden" class="secondaryTotalBillingAmtInfo_{!gw.groupRecordId}_{!secgw.groupRecordId}_{!itemToApproveWrapper.timeCard.id}"
+												 value="{!itemToApproveWrapper.timeCard.Total_Billable_Amount__c}" />
+												<input type="hidden" class="secondaryBillableInfo_{!gw.groupRecordId}_{!secgw.groupRecordId}_{!itemToApproveWrapper.timeCard.id}"
+												 value="{!itemToApproveWrapper.timeCard.Billable__c}" />
+											</td>
+										</tr>
+									</apex:repeat>
+									<!-- secondary group TC row repeat ends -->
+								</apex:repeat>
+								<!-- secondary group repeat ends -->
+							</apex:repeat>
+							<!-- Primary group repeat ends -->
+						</table>
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!tcApproverByGroupPaginator.foundItemsToApprove}">
+						<table class="list">
+							<tfoot>
+								<tr class="totalRow">
+									<td>
+										<span style="float:left;">
+											<apex:outputText value="{!tcApproverByGroupPaginator.recordCountMessage}" />
+										</span>
+										<apex:outputPanel style="vertical-align:middle;" styleClass="slds-align_absolute-center">
+											<apex:commandButton styleClass="btn slds-m-right_xx-small" action="{!tcApproverByGroupPaginator.first}" value="{!$Label.pse__common_label_first}" disabled="{!NOT(tcApproverByGroupPaginator.hasFirst)}"
+											 rerender="tcToApproveResultsPBS2,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();"/>
+											<apex:commandButton styleClass="btn" action="{!tcApproverByGroupPaginator.previous}" value="{!$Label.pse__common_label_previous}"
+											 disabled="{!NOT(tcApproverByGroupPaginator.hasPrevious)}" rerender="tcToApproveResultsPBS2,error,quickTooltipPanel" status="ajaxStatus"
+											 oncomplete="updateAnchorTargetAttribute();" />
+											<span> &nbsp;&nbsp; <apex:outputText value="{!tcApproverByGroupPaginator.statusMessage}"/> &nbsp;&nbsp; </span>
+											<apex:commandButton styleClass="btn slds-m-right_xx-small" action="{!tcApproverByGroupPaginator.next}" value="{!$Label.pse__common_label_next}" disabled="{!NOT(tcApproverByGroupPaginator.hasNext)}"
+											 rerender="tcToApproveResultsPBS2,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();" />
+											<apex:commandButton styleClass="btn" action="{!tcApproverByGroupPaginator.last}" value="{!$Label.pse__common_label_last}" disabled="{!NOT(tcApproverByGroupPaginator.hasLast)}"
+											 rerender="tcToApproveResultsPBS2,error,quickTooltipPanel" status="ajaxStatus" oncomplete="updateAnchorTargetAttribute();"/>
+										</apex:outputPanel>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</apex:outputPanel>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		<apex:outputPanel id="selectDeselectAllCheckboxOP">
+			<script>
+				var isChecked = '{!selectedAllTCRecords}';
+				if (isChecked == 'false') {
+					document.getElementById('tcSelectAllCheckbox').checked = false;
+				} else {
+					document.getElementById('tcSelectAllCheckbox').checked = true;
+				}
+			</script>
+		</apex:outputPanel>
+		<apex:outputPanel id="selectDeselectLink">
+			<script>
+				var selectAllRecordsLinkLabel = '{!JSINHTMLENCODE($Label.timecard_approval_UI_label_select_all_records)}'.replace('{0}', '{!recordCount}');
+				var deselectAllRecordsLinkLabel = '{!JSINHTMLENCODE($Label.timecard_approval_UI_label_deselect_all_records)}'.replace('{0}', '{!recordCount}');
+				var totalRecordCount = '{!IF(showGroupedBySection, tcApproverByGroupPaginator.totalRecordCount, paginator.totalRecordCount)}';
+			</script>
+		</apex:outputPanel>
+		<script>
+			var useProjectPhaseRecord = '{!useProjectPhaseRecord}';
+			var filterByProjectParam = '{!filterByProjectParameter}';
+			var _DEC_SEP = '{!JSENCODE(GBL_DEC_SEP)}';
+			var _THO_SEP = '{!JSENCODE(GBL_THO_SEP)}';
+
+			function onAssignmentChange(projDOM) {
+				// setting title of select list
+				if (projDOM != 'none') {
+					var projectListDOM = document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.projectLst}');
+					projectListDOM.title = projectListDOM.options[projectListDOM.selectedIndex].text;
+				}
+
+				var milestoneListDOM = document.getElementById('milestoneList');
+				milestoneListDOM.disabled = (projDOM == 'none');
+
+				if (milestoneListDOM.options) milestoneListDOM.options.length = 0;
+				if (!milestoneListDOM.disabled) {
+					milestoneListDOM.options[0] = new Option('{!JSINHTMLENCODE($Label.common_loading_label)}', 'none');
+				} else {
+					milestoneListDOM.options[0] = new Option('{!JSINHTMLENCODE($Label.Mass_Approval_Empty_Select_List_Label_None)}', 'none');
+				}
+
+				var phaseListDOM;
+				if (useProjectPhaseRecord === 'true') {
+					phaseListDOM = document.getElementById('phaseList');
+				} else {
+					phaseListDOM = document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.phaseListInput}');
+				}
+				phaseListDOM.disabled = (projDOM == 'none');
+
+				if (phaseListDOM.options) phaseListDOM.options.length = 0;
+				if (!phaseListDOM.disabled) {
+					phaseListDOM.options[0] = new Option('{!JSINHTMLENCODE($Label.common_loading_label)}', 'none');
+				} else {
+					phaseListDOM.options[0] = new Option('{!JSINHTMLENCODE($Label.Mass_Approval_Empty_Select_List_Label_None)}', 'none');
+				}
+				jsOnProjectChange(projDOM);
+			}
+
+			function onPrimaryGroupChange(priGrpDOM) {
+				var secGrpListDOM = document.getElementById('secondaryGrpList');
+				secGrpListDOM.disabled = (priGrpDOM.value == 'none');
+
+				if (secGrpListDOM.options) secGrpListDOM.options.length = 0;
+				if (!secGrpListDOM.disabled) {
+					secGrpListDOM.options[0] = new Option('{!JSINHTMLENCODE($Label.common_loading_label)}', 'none');
+				} else {
+					secGrpListDOM.options[0] = new Option('{!JSINHTMLENCODE($Label.Mass_Approval_Empty_Select_List_Label_None)}', 'none');
+				}
+				jsPrimaryGroupingChange(priGrpDOM.value);
+			}
+
+			function onListAllDone() {
+				document.getElementById('milestoneList').disabled = true;
+				if (useProjectPhaseRecord === 'true') {
+					document.getElementById('phaseList').disabled = true;
+				} else {
+					document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.phaseListInput}').disabled = true;
+				}
+			}
+
+			function onApproveRecordsDone() {
+				document.getElementById('milestoneList').disabled = true;
+				if (useProjectPhaseRecord === 'true') {
+					document.getElementById('phaseList').disabled = true;
+				} else {
+					document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.phaseListInput}').disabled = true;
+				}
+				var projectListDOM = document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcGroupingPBS.primaryGrp}');
+				document.getElementById('secondaryGrpList').disabled = (projectListDOM.value == 'none');
+				if (projectListDOM.value != 'none') document.getElementById('secondaryGrpList').value = '{!JSENCODE(secondarySelectedGrouping)}';
+			}
+			function onRejectRecordsDone() {
+				document.getElementById('milestoneList').disabled = true;
+				if (useProjectPhaseRecord === 'true') {
+					document.getElementById('phaseList').disabled = true;
+				} else {
+					document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.phaseListInput}').disabled = true;
+				}
+				var projectListDOM = document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcGroupingPBS.primaryGrp}');
+				document.getElementById('secondaryGrpList').disabled = (projectListDOM.value == 'none');
+				if (projectListDOM.value != 'none') document.getElementById('secondaryGrpList').value = '{!JSENCODE(secondarySelectedGrouping)}';
+			}
+
+			function setFocusOnLoad() { }
+			if (filterByProjectParam != 'true') {
+				document.getElementById('milestoneList').disabled = true;
+				if (useProjectPhaseRecord === 'true') {
+					document.getElementById('phaseList').disabled = true;
+				} else {
+					document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.phaseListInput}').disabled = true;
+				}
+			}
+			var projectListDOM = document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcGroupingPBS.primaryGrp}');
+			document.getElementById('secondaryGrpList').disabled = (projectListDOM.value == 'none');
+			document.getElementById('secondaryGrpList').value = '{!JSENCODE(secondarySelectedGrouping)}';
+
+			function onProjectChangeDone() {
+				var milestoneListDOM = document.getElementById('milestoneList');
+				var projectListDOM = document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.projectLst}');
+
+				if (projectListDOM.value == 'none') {
+					milestoneListDOM.disabled = true;
+
+					if (useProjectPhaseRecord === 'true') {
+						document.getElementById('phaseList').disabled = true;
+					} else {
+						document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.phaseListInput}').disabled = true;
+					}
+				} else {
+					document.getElementById('milestoneList').value = '{!JSENCODE(selectedMilestoneFilter)}';
+					if (document.getElementById('milestoneList').value === '') document.getElementById('milestoneList').value = 'none'
+					if (useProjectPhaseRecord === 'true') {
+						document.getElementById('phaseList').value = '{!JSENCODE(selectedPhaseFilter)}';
+						if (document.getElementById('phaseList').value === '') document.getElementById('phaseList').value = 'none'
+					} else {
+						document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcFilterByTableSec.phaseListInput}').value = '{!JSENCODE(inputFieldHelper.Project_Phase__c)}';
+					}
+				}
+			}
+
+			function onPrimaryGrpChangeDone() {
+				var secGrpListDOM = document.getElementById('secondaryGrpList');
+				var projectListDOM = document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcDetailPB.tcGroupingPBS.primaryGrp}');
+
+				secGrpListDOM.disabled = (projectListDOM.value == 'none');
+			}
+
+			function updateAnchorTargetAttribute() {
+				// This is to set the anchor tag target as _blank to open in new tab.
+
+				var parentDiv = document.getElementById('{!$Component.tcMassApprovalPage.tcMassAppForm.tcResultPB}');
+				if (parentDiv != null) {
+					var inputElem = parentDiv.getElementsByTagName("a");
+					for (var i = 0; i < inputElem.length; i++) {
+						if (inputElem[i].className.indexOf('sort') == -1) {
+							var hrefValue = decodeURIComponent(inputElem[i].href);
+							// removing isdtp parameter if present in url which is responsible for classic view of lookup fields
+							inputElem[i].href = hrefValue.replace('?isdtp=p1', '');
+							inputElem[i].target = '_blank';
+							inputElem[i].onmouseover = '';
+						}
+					}
+				}
+			}
+			document.addEventListener('DOMContentLoaded', function () {
+				updateAnchorTargetAttribute();
+				var proj = '{!JSENCODE(selectedProjFilter)}';
+				onAssignmentChange(proj);
+			});
+		</script>
+		<!-- Added this components to include jquery library and required script for tooltip -->
+		<c:fflib_thirdparty jQuery="true" jQueryUI="true"/>
+		<apex:outputPanel id="quickTooltipPanel">
+			<c:QuickTooltip tooltipTextAttrName="data-tooltip"/>
+		</apex:outputPanel>
+	</apex:form>
+
+	<apex:outputPanel id="headerScriptBlock" layout="block">
+		<script>
+			prepareHeader();
+			function prepareHeader() {
+				var config = {
+					objectName: '{!JSENCODE($Label.manage_timecards_to_approve)}',
+					helpUrl: '{!$Page.ManageTCToApproveHelp}',
+					objectApiName: '{!$ObjectType["Timecard_Header__c"].name}',
+					onRender: 'onHeaderLoadCallback'
+				};
+
+				if ('{!foundItemsToApprove}' === 'true') {
+					config.buttons = [{
+						id: 'reject',
+						label: '{!JSENCODE($Label.common_label_reject)}',
+						actionFn: 'doReject'
+					}, {
+						id: 'approve',
+						label: '{!JSENCODE($Label.common_label_approve)}',
+						actionFn: 'doApprove'
+					}];
+				}
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+		</script>
+	</apex:outputPanel>
+
+</apex:page>

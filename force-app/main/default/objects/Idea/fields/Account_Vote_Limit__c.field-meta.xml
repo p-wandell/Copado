@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Vote_Limit__c</fullName>
+    <description>7S Ideas Account voting limit</description>
+    <externalId>false</externalId>
+    <inlineHelpText>A value of 0 (zero) means that there is no limit on Account votes for this Ideas. A blank value means that there is no Idea-specific limit on account votes, but that a limit may still apply (it may be account-specific or across all accounts).</inlineHelpText>
+    <label>Account Vote Limit</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

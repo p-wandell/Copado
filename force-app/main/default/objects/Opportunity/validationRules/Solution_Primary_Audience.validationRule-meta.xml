@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Solution_Primary_Audience</fullName>
+    <active>true</active>
+    <description>This field is required when an Opportunity is closed won</description>
+    <errorConditionFormula>AND
+(
+AccountId&lt;&gt;&quot;0018000000wPCYE&quot;,
+IsWon = True,
+ISBLANK(TEXT(Solution_Primary_Audience__c)),
+CloseDate&gt;=DATE(2019,01,01) 
+)</errorConditionFormula>
+    <errorDisplayField>Solution_Primary_Audience__c</errorDisplayField>
+    <errorMessage>Solution Primary Audience is required</errorMessage>
+</ValidationRule>

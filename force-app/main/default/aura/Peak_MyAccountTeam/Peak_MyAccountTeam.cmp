@@ -1,0 +1,38 @@
+<aura:component description="Peak_MyAccountTeam"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+                controller="Peak_MyAccountTeamController"
+                access="global"
+                extends="c:Peak_Base">
+
+    <aura:attribute name="heading" type="String" default="My Account Team" />
+    <aura:attribute name="introText" type="String" default="" />
+    <aura:attribute name="teamList" type="List" default="" />
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <section>
+        <aura:if isTrue="{!v.heading}">
+            <h2 class="slds-truncate slds-p-bottom_x-small">{!v.heading}</h2>
+        </aura:if>
+        <aura:if isTrue="{!v.introText}">
+            <p class="slds-p-bottom_large">{!v.introText}</p>
+        </aura:if>
+
+        <aura:iteration items="{!v.peakResponse.messages}" var="message">
+            {!message}
+        </aura:iteration>
+
+        <aura:iteration items="{!v.peakResponse.results}" var="item">
+            <div class="slds-media slds-p-bottom_x-large">
+                <div class="slds-media__body">
+                    <h4><lightning:button variant="base" value="{!item.User.Id}" label="{!item.User.FirstName + ' ' + item.User.LastName}" onclick="{!c.gotoProfile}" /></h4>
+                    <div class="slds-text-color_weak">{!item.TeamMemberRole}</div>
+                    <div><lightning:formattedPhone value="{!item.User.Phone}" /></div>
+                    <div><lightning:formattedEmail value="{!item.User.Email}" /></div>
+                </div>
+            </div>
+        </aura:iteration>
+
+    </section>
+
+</aura:component>

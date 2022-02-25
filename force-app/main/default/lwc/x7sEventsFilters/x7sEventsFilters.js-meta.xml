@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0
+</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Events Filters</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+		<target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default, lightning__RecordPage">
+            <property name="showDateFilter"
+                            label="Show Date Filter"
+                            type="Boolean"
+                            description="Check to enable the date filter"/>
+            <property name="showTopicFilter"
+                            label="Show Topic Filter"
+                            type="Boolean"
+                            description="Check to enable the topic filter"/>
+            <property name="showTypeFilter"
+                            label="Show Event Type Filter"
+                            type="Boolean"
+                            description="Check to enable the event type filter"/>
+            <property name="showLocationFilter"
+                            label="Show Location Name Filter"
+                            type="Boolean"
+                            description="Check to enable the event location name filter"/>
+        
+            <property name="searchThreshold"
+                            label="Search Threshold"
+                            type="Integer"
+                            description="Number of characters needed to initiate the search"/>
+            <property name="showPickLists"
+                            label="Show Pick Lists for All Filters"
+                            type="Boolean"
+                            description="Enable pick lists for filter - this may impact performance and will not work for large communities"/>
+        
+            <!-- CUSTOM FILTERS -->
+        
+            <!-- Custom Field1-->
+            <property name="customField1"
+                            label="Custom Field 1 API Name"
+                            type="String"
+                            description="Enter the exact API name for the custom field1 related to the Event__c sObject."/>
+            <property name="labelCustomField1"
+                            label="Field 1 Label"
+                            type="String"
+                            description="Enter a label for custom field 1"/>
+            <property name="placeHolderCustomField1"
+                            label="Field 1 Placeholder"
+                            type="String"
+                            description="Enter a placeholder for custom field 1"/>
+            <property name="pickListLabelField1"
+                            label="Field 1 Pick List Label"
+                            type="String"
+                            description="Enter a label for the custom field 1 pick list"/>
+            
+            <!-- Custom Field2-->
+            <property name="customField2"
+                            label="Custom Field 2 API Name"
+                            type="String"
+                            description="Enter the exact API name for the custom field2 related to the Event__c sObject."/>
+            <property name="labelCustomField2"
+                            label="Field 2 Label"
+                            type="String"
+                            description="Enter a label for custom field 2"/>
+            <property name="placeHolderCustomField2"
+                            label="Field 2 Placeholder"
+                            type="String"
+                            description="Enter a placeholder for custom field 2"/>
+            <property name="pickListLabelField2"
+                            label="Field 2 Pick List Label"
+                            type="String"
+                            description="Enter a label for the custom field 2 pick list"/>
+        
+            <!-- Custom Field3-->
+            <property name="customField3"
+                            label="Custom Field 3 API Name"
+                            type="String"
+                            description="Enter the exact API Name for the custom field3 related to the Event__c sObject."/>
+            <property name="labelCustomField3"
+                            label="Field 3 Label"
+                            type="String"
+                            description="Enter a label for custom field 3"/>
+            <property name="placeHolderCustomField3"
+                            label="Field 3 Placeholder"
+                            type="String"
+                            description="Enter a placeholder for custom field 3"/>
+            <property name="pickListLabelField3"
+                            label="Field 3 Pick List Label"
+                            type="String"
+                            description="Enter a label for the custom field 3 pick list"/>
+            <property name="listId"
+                            label="Component Group"
+                            type="String"
+                            description="Unique ID to link complimentary components together to share data."/>
+	    </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

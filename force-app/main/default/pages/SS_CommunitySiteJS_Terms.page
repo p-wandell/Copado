@@ -1,0 +1,14 @@
+<apex:page controller="SS_CommunitySiteTermsController" contentType="text/javascript">
+    function loadCSS(path) {
+        var stylesheet = document.createElement('link');
+        stylesheet.href = path;
+        stylesheet.rel = 'stylesheet';
+        stylesheet.type = 'text/css';
+        document.getElementsByTagName('head')[0].appendChild(stylesheet);
+    }
+
+    jQuery(document).ready(function($j) {
+        loadCSS('{!URLFOR($Resource.SSCommunity, "7S_SFDC_Community/css/ss-bootstrap.css")}');
+        loadCSS('{!URLFOR($Resource.SSCommunity, "7S_SFDC_Community/css/ss-main.css")}');
+    });
+</apex:page>

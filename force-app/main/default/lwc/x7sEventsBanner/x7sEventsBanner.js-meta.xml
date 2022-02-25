@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Events Banner</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default, lightning__RecordPage">
+            <property name="showTitle" label="Show Title" type="Boolean" 
+                      description="Show/Hide Event Title"/>
+            <property name="titleText" label="Title Text Singular" type="String"
+                      description="Title Text Single will display when there is only 1 event record"/>
+            <property name="pluralTitle" label="Title Text Plural" type="String" 
+                      description="Title Text Plural will display when there are 0 or more than 1 event records"/>
+            <property name="createButtonURL" label="Create New Event Page API Name" type="String" required="true"
+                      description="Enter the API Name for the Create Event page.  If empty, the button will not display."/>
+            <property name="createButtonText" label="Create New Event Button Text" type="String"/>
+            <property name="showCountBeforeTitle" label="Show Count Before Title"
+                      type="Boolean"/>
+            <property name="displaySearch" label="Show Search" type="Boolean"
+                      description="Show Search in header"/>
+            <property name="searchPlaceHolder" label="Place Holder Text" type="String"
+                      description="Shows Place holder text"/>
+            <property name="listId" label="Component Group" type="String"
+                      description="Unique ID to link complimentary components together to share data."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

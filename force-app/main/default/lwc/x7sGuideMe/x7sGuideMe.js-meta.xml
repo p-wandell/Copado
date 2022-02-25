@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="guideMe">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Guide Me</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage, lightning__AppPage, lightning__RecordPage, lightningCommunity__Default">
+            <property name="modalButtonPosition" type="String" default="Center" label="Button Position" datasource="None,Left,Right,Center" description="Horizontal alignment for the button the user clicks on to initiate the application. Options:  Left, Center, Right."/>
+            <property name="buttonText" type="String" default="Guide Me" label="Button Text" description="Text that appears on the button."/>
+            <property name="numberOfPages" type="String" default="1" label="Number of steps" datasource="1,2,3,4,5,6" description="Indicate the number of steps that should be included in the guided flow."/>
+            <property name="layout" type="String" default="1 - Image / Step / Desc" label="Layout" datasource="1 - Image / Step / Desc,2 - Step / Desc / Image,3 - Step / Image / Desc" description="Select from 3 available layouts:
+            Application Title, Image, Step Title, Description
+            Application Title, Step Title, Description, Image
+            Application Title, Step Title, Image, Description"/>
+            <property name="modalSize" type="String" default="Large - 600px" label="Application Height" datasource="Large - 600px,Small - 390px" description="Maximum height of the application window. Small is optimal for mobile."/>
+            <property name="topTitle" type="String" default="Guide Me" label="Application Title" description="Title that displays at the top of the application. If defined, this title will appear on each Step step.  If empty, no application title will be displayed."/>
+            <property name="borderOn" type="Boolean" default="true" label="Image Border" description="Select to display a border around the image and corners will be rounded."/>
+            <property name="leftAlign" type="Boolean" default="false" label="Left Align Step Text" description="Select to left align the step text.  The default alignment is center."/>
+            <property name="autoDisplay" type="boolean" default="false" label="Display Automatically" description="When selected, the guide will automatically display when a user accesses the page."/>
+            <property name="fieldApiName" type="String" default="" label="User Preference API Name" description="API Name for the field on the user record.  If checked, the Guide Me application will not automatically display for a user."/>
+            <property name="showAgainMessage" type="String" default="Do not auto-display this guide again." label="User Preference Label" description="Message/label to display next to the “Do Not Display” checkbox on the final step.  When selected, the guide will no longer automatically display for the user.  If no message is specified, the checkbox will not show."/>
+            <property name="title" type="String" default="" label="Step 1 Title" description="Title for this Step.  If blank, no title will display."/>
+            <property name="imageSrc" type="String" default="" label="Step 1 Image URL" description="Link for the image that will be displayed as part of this Step."/>
+            <property name="description" type="String" default="Description" label="Step 1 Text" description="Detailed text istruction for the user. Rich text.   If blank, no text will display."/>
+            <property name="titleTwo" type="String" default="" label="Step 2 Title" description="Title for this Step.  If blank, no title will display."/>
+            <property name="imageSrcTwo" type="String" default="" label="Step 2 Image URL" description="Link for the image that will be displayed as part of this Step."/>
+            <property name="descriptionTwo" type="String" default="Description" label="Step 2 Text" description="Detailed text istruction for the user. Rich text.   If blank, no text will display."/>
+            <property name="titleThree" type="String" default="" label="Step 3 Title" description="Title for this Step.  If blank, no title will display."/>
+            <property name="imageSrcThree" type="String" default="" label="Step 3 Image URL" description="Link for the image that will be displayed as part of this Step."/>
+            <property name="descriptionThree" type="String" default="Description" label="Step 3 Text" description="Detailed text istruction for the user. Rich text.   If blank, no text will display."/>
+            <property name="titleFour" type="String" default="" label="Step 4 Title" description="Title for this Step.  If blank, no title will display."/>
+            <property name="imageSrcFour" type="String" default="" label="Step 4 Image URL" description="Link for the image that will be displayed as part of this Step."/>
+            <property name="descriptionFour" type="String" default="Description" label="Step 4 Text" description="Detailed text istruction for the user. Rich text.   If blank, no text will display."/>
+            <property name="titleFive" type="String" default="" label="Step 5 Title" description="Title for this Step.  If blank, no title will display."/>
+            <property name="imageSrcFive" type="String" default="" label="Step 5 Image URL" description="Link for the image that will be displayed as part of this Step."/>
+            <property name="descriptionFive" type="String" default="Description" label="Step 5 Text" description="Detailed text istruction for the user. Rich text.   If blank, no text will display."/>
+            <property name="titleSix" type="String" default="" label="Step 6 Title" description="Title for this Step.  If blank, no title will display."/>
+            <property name="imageSrcSix" type="String" default="" label="Step 6 Image URL" description="Link for the image that will be displayed as part of this Step."/>
+            <property name="descriptionSix" type="String" default="Description" label="Step 6 Text" description="Detailed text istruction for the user. Rich text.   If blank, no text will display."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

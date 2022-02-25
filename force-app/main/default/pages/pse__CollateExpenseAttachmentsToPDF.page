@@ -1,0 +1,60 @@
+<apex:page controller="pse.CollateExpenseAttachmentsToPDFController" renderAs="pdf">
+
+<head>
+<style  type="text/css">
+	@page {
+		size: landscape;
+		@PageBreak { page-break-inside:avoid; }
+		@top-left { 
+			content: "Page " counter(page) " of " counter(pages);
+		}
+	}
+
+	.document-page-break-avoid {
+		page-break-inside : avoid;
+	}
+
+	.document-page-break-always {
+		page-break-inside : always;
+	}
+</style>
+</head>
+<body>
+	<center> <h1 style="color: blue;">{!$Label.expense_attachments_label_collated_pdf_from_expenses_info}</h1> </center>
+	<br/><br/> 
+	<apex:outputPanel rendered="{!isValid}">
+	<apex:variable var="expSize" value="{!1}"/>
+    <apex:repeat value="{!selectedExpensesWithAttachments}" var="expW">
+    	<apex:outputPanel rendered="{!$ObjectType.pse__Expense__c.FieldSets.pse__ExpenseColumnsForCombineAttachmentPDF.size > 0}">
+			<table cellspacing="0" border="0.5" width="100%">
+				<tr width="100%">
+					<apex:repeat value="{!$ObjectType.pse__Expense__c.FieldSets.pse__ExpenseColumnsForCombineAttachmentPDF}" var="f">
+			    		<td width="{!colSize}%"> <B> 
+				    		<apex:outputText value="{!f.Label}: "/></B><apex:outputText value="{!expW.expense[f.fieldPath]}" rendered="{!f.type != 'reference'}"/>
+				    		<apex:outputLink value="{! '/' + expW.expense[f.fieldPath]}" rendered="{!f.type == 'reference' && expW.expense[f.fieldPath]!=null}">{!expW.expense[SUBSTITUTE(f.fieldPath,'__c','__r.Name')]}</apex:outputLink>
+		    		 	</td>
+		    		</apex:repeat>
+		    	</tr>
+	    	</table>
+    	</apex:outputPanel>
+    	<br/>
+    	<apex:repeat value="{!expW.attachmentList}" var="attW">
+			<div class="document-page-break-avoid">
+				<apex:outputText value="{!attW.attachment.Name}"/>
+		        <apex:image url="{!URLFOR($Action.Attachment.Download, attW.attachment.Id)}" width="100%" height="100%"/>
+		      	<br/>
+	      	</div>
+    	</apex:repeat>
+		<apex:repeat value="{!expW.fileList}" var="f">
+			<div class="document-page-break-avoid">
+				<apex:outputText value="{!f.file.Title}"/>
+				<apex:image url="{!salesforceDownloadUrl + f.file.Id}" width="100%" height="100%"/>
+				<br/>
+			</div>
+		</apex:repeat>
+    	<div class="{!IF(expSize == selectedExpensesWithAttachments.size, 'document-page-break-avoid', 'document-page-break-always')}"></div> 
+    <apex:variable var="expSize" value="{!expSize + 1}"/>
+    </apex:repeat>
+    </apex:outputPanel>
+</body>
+</apex:page>

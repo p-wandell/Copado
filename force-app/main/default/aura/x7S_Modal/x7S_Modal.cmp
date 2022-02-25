@@ -1,0 +1,49 @@
+<!--
+ - Copyright (c) 2019. 7Summits Inc.
+ - Created by 7Summits - Joe Callin on 2019-05-15.
+-->
+<aura:component description="x7S_Modal"
+                access="global" extends="c:Peak_Base">
+
+    <aura:attribute name="isInit" type="Boolean" default="false"/>
+    <aura:attribute name="hideClose" type="Boolean" default="false"/>
+    <aura:attribute name="header" type="Aura.Component[]"/>
+    <aura:attribute name="footer" type="Aura.Component[]"/>
+    <aura:attribute name="showHeader" type="Boolean" default="true"/>
+    <aura:attribute name="showFooter" type="Boolean" default="true"/>
+
+    <aura:attribute name="customClass" type="String" default=""/>
+    <aura:attribute name="customId" type="String" default=""/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:registerEvent name="closeModal" type="c:x7S_ModalEvent"/>
+
+    <section class="{!'peak-component slds-is-relative ' + v.customClass + if(!v.isInit, ' loading', '')}"
+             id="{!v.customId}" aura:id="{!v.customId}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- modal header start -->
+                <header class="{!'slds-modal__header' + if(!v.showHeader, ' slds-modal__header_empty', '')}">
+                    <aura:if isTrue="{!!v.hideClose}">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick="{!c.handleClose}">
+                            <lightning:icon src="" iconName="utility:close" size="small" alternativeText="Close Modal"/>
+                        </button>
+                    </aura:if>
+                    {!v.header}
+                </header>
+                <!-- modal body start -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    {!v.body}
+                </div>
+                <!-- modal footer start-->
+                <aura:if isTrue="{!v.showFooter}">
+                    <footer class="slds-modal__footer">
+                        {!v.footer}
+                    </footer>
+                </aura:if>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </section>
+</aura:component>

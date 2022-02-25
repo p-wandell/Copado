@@ -1,0 +1,71 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<div if:true={isIdeaId} aria-label={labels.labelAria}>
+		<c-x7s-shr-component-wrapper
+				custom-class={customClass}
+				variant={displayVariant}
+				auto-slds-card={autoSlds}>
+			<slot>
+				<lightning-tabset active-tab-value={selectedTab} variant="scoped">
+
+					<!-- COMMENTS -->
+					<div if:true={showComments}>
+						<lightning-tab value="comments"
+						               onactive={handleActive}
+						               label={labels.labelTabComments}>
+							<div>
+								<c-x7s-ideas-comments
+										record-id={recordId}
+										zone-name={zoneName}
+										num-comments={numComments}
+										show-pagination={showPagination}
+										show-sort={showSort}
+										sort-order={sortOrder}
+										allow-comment={showComments}
+										allow-html={allowHtml}
+										enable-can-comment={enableCanComment}
+										list-id={listId}>
+								</c-x7s-ideas-comments>
+							</div>
+						</lightning-tab>
+					</div>
+
+					<!-- FEED -->
+					<!-- <div if:true={showFeedTab}>
+						<lightning-tab 	value="discussion" 
+										onactive={handleActive}
+										label={labels.labelTabFeed}>
+							<div>
+								<c-x7s-ideas-feeds record-id ={recordId}
+										idea={idea}
+										title={feedTitle}
+										show-feed={showFeed}
+										show-publisher={showPublisher}>
+								</c-x7s-ideas-feeds>
+							</div>
+						</lightning-tab>
+					</div> -->
+
+					<!-- FILES  -->
+					<div if:true={showFiles}>
+						<lightning-tab value="files"
+						               onactive={handleActive}
+						               label={labels.labelTabFiles}>
+							<div>
+								<c-x7s-ideas-files record-id={recordId}
+								                   idea={idea}
+								                   title={filesTitle}
+								                   accept={filesAccept}
+								                   show-file-uploader={showFileUploader}
+								                   show-file-viewer={showFileViewer}>
+								</c-x7s-ideas-files>
+							</div>
+						</lightning-tab>
+					</div>
+				</lightning-tabset>
+			</slot>
+		</c-x7s-shr-component-wrapper>
+	</div>
+</template>

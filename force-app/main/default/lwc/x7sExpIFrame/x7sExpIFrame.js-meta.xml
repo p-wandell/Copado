@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S iFrame with loading spinner</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S iFrame</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title"
+                      type="String"
+                      label="Title"
+            />
+            <property name="titleAlign"
+                      type="String"
+                      label="Title Alignment"
+                      datasource="left,center,right"
+            />
+            <property name="contentAlign"
+                      type="String"
+                      label="Content Alignment"
+                      datasource="left,center,right"
+            />
+            <property name="url"
+                      type="String"
+                      label="Web Address (https)"
+            />
+            <property name="height"
+                      type="String"
+                      label="Height (px/%)"
+            />
+            <property name="width"
+                      type="String"
+                      label="Width (px/%)"
+                      description="Leave blank for 100% (responsive) iframe"
+            />
+            <property name="showLoadingSpinner"
+                      type="Boolean"
+                      label="Show loading spinner"
+                      description="Show spinner while iframe content is loading"
+            />
+            <property name="customClass"
+                      type="String"
+                      label="CSS Class"
+                      description="Apply additional SLDS or custom CSS class"
+            />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

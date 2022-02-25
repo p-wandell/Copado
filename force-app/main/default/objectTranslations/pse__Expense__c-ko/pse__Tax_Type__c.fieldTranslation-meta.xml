@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>경비에 포함 된 선택 세금 유형</help>
+    <label><!-- Tax Type --></label>
+    <name>pse__Tax_Type__c</name>
+    <picklistValues>
+        <masterLabel>GST</masterLabel>
+        <translation>GST</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>VAT 1</masterLabel>
+        <translation>부가가치세 1</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>VAT 2</masterLabel>
+        <translation>부가가치세 2</translation>
+    </picklistValues>
+</CustomFieldTranslation>

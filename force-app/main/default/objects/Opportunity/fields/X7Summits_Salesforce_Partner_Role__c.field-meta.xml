@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X7Summits_Salesforce_Partner_Role__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>Implementation Partner = 7Summits will be/is contracted to do the implementation work
+Joint Sale = 7Summits helped Salesforce close this business. Without 7Summits as the partner, it would not have closed 
+Both = 7Summits should receive credit for both</inlineHelpText>
+    <label>7Summits Salesforce Partner Role</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <controllingField>LeadSource</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Implementation Partner</fullName>
+                <default>false</default>
+                <label>Implementation Partner</label>
+            </value>
+            <value>
+                <fullName>Joint Sales</fullName>
+                <default>false</default>
+                <label>Joint Sales</label>
+            </value>
+            <value>
+                <fullName>Both</fullName>
+                <default>false</default>
+                <label>Both</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

@@ -1,0 +1,29 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 7/20/17.
+ -->
+
+<design:component label="7S Product Filter">
+	<design:attribute name="title"
+	                  label="Filter Header"
+	                  description="This is the header displayed above the filter controls"/>
+	<design:attribute name="showHeader"
+	                  label="Show header"
+	                  description="Show the filter header"/>
+	<design:attribute name="showSearch"
+	                  label="Show product code search"/>
+	<design:attribute name="searchThreshold"
+	                  label="Search threshold"
+	                  description="Number of characters needed to initiate the search"/>
+	<design:attribute name="showFilter"
+	                  label="Show product family filter"/>
+	<design:attribute name="showSort"
+	                  label="Show product sort order"/>
+	<design:attribute name="sortOrder"
+	                  label="Select sort order"
+	                  description="Set initial sort order"
+	                  dataSource="Product Name, Product Family,Product Code, Unit Price"/>
+</design:component>

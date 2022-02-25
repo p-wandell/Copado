@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>Present content from a remote JSON source.</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S JSON Feed</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" label="Title" type="String"/>
+            <property name="titleAlign" label="Title Align" type="String" datasource="left,center,right"/>
+            <property name="variant" label="Variant" type="String" datasource="default,slds-card,featured"/>
+            <property name="description" label="Description" type="String"/>
+            <property name="iconName" label="Icon Name" type="String"/>
+            <property name="feedUrlEndpoint" label="JSON Feed Url" type="String" description="Ensure a remote site setting record exists for the URL in Salesforce."/>
+            <property name="feedRecordsToShow" label="Number of records to show" type="String" default="10" description="Leave black to present all."/>
+            <property name="feedType" label="Feed Type" type="String" default="Test" datasource="Blog,Events,Test" description="This controls how the results are displayed. The 'Test' value can be used to see a layout when there is not JSON feed connected."/>
+            <property name="listEmptyText" label="'List is empty' text" type="String" default="No JSON feed items found"/>
+            <property name="listErrorText" label="'List has error' text" type="String" default="Failed to return any items. Ensure a remote site setting record is created for the URL you're using."/>
+            <property name="customClass" label="Custom class name" type="String" description="Custom CSS class name. Usually remains blank."/>
+            <property name="debug" label="Debug?" type="Boolean" description="Triggers console.logs if debugger is enabled" default="false"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

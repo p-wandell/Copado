@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Time_Movement</fullName>
+    <active>true</active>
+    <description>Requests to edit time logged - billable status, milestone, assignment, project, etc.</description>
+    <label>Time Movement</label>
+    <picklistValues>
+        <picklist>Finance_Approval__c</picklist>
+        <values>
+            <fullName>Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rejected</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Resource_Type__c</picklist>
+        <values>
+            <fullName>External</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Generic</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Internal</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Role__c</picklist>
+        <values>
+            <fullName>AE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>BA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Biz Arch</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Business Analyst %28MTX%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>CP</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Consultant</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Content Marketer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Customer Success</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>DA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Design Engineer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Dir of HR %26 Recruiting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Exec</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FED</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FED %28MTX%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Front Desk Receptionist</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>IT</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Operations</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Platform Dev</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Product</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>QA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>QA %28MTX%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>QA %28Offshore%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Recruiter</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SDR</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SFDC Dev</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SFDC Dev %28MTX%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SFDC Dev %28Offshore%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Strat</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>TA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>TA %28MTX%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>TL</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Tech Lead %28MTX%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Tech Lead %28Offshore%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UI Designer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UX Designer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>VP Business Development</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>VP Channel Business Dev</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>VP of Alliances</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Status__c</picklist>
+        <values>
+            <fullName>Assigned</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Completed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Submitted</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

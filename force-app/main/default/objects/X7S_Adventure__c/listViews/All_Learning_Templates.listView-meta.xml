@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Learning_Templates</fullName>
+    <columns>NAME</columns>
+    <columns>Allow_Cloning__c</columns>
+    <columns>Adventure_Clone_Settings__c</columns>
+    <columns>OWNER.FIRST_NAME</columns>
+    <columns>OWNER.LAST_NAME</columns>
+    <columns>Show_Checkboxes__c</columns>
+    <columns>Template__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Template__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Title__c</field>
+        <operation>notContain</operation>
+        <value>Musher</value>
+    </filters>
+    <label>All Adventure Templates</label>
+</ListView>

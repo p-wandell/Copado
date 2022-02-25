@@ -1,0 +1,214 @@
+<apex:page controller="pse.ForecastSetupController" tabStyle="Forecast_Setup__tab" lightningStylesheets="true">
+	<style>
+		.apexp table.list tr.tableHeader th.tableHeader {
+			text-align:center;
+			white-space:normal;
+		}
+		input.inputField {
+			width:80px;
+			text-align:right;
+		}
+		tr.dataRow td.centredColumn {
+			text-align:center;
+			width:11.5%;
+		}
+		tr.dataRow td.firstColumn {
+			width:8%;
+		}
+		.data2Col {
+			width:82% !important;
+		}
+	</style>
+
+	<apex:outputPanel rendered="{!$User.UIThemeDisplayed!='Theme3'}" layout="none">
+		<style>
+			th.tableHeader div {
+				display:  inline-block
+			}
+
+			.slds-scope .helpButton, .slds-scope .helpButtonOn {
+				display: inline-block;
+			}
+
+			.slds-scope .helpButton label, .slds-scope .helpButtonOn label {
+				display: unset;
+			}
+
+			img.helpOrb {
+				-webkit-mask-repeat: no-repeat;
+				-webkit-mask-size: contain;
+			}
+
+			span.helpButton {
+				align-items: center;
+			}
+		</style>
+	</apex:outputPanel>
+
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<c:WaitComponent />
+
+	<script type="text/javascript" >
+		function defaultFieldToZero(context) {
+			if (!context.value.trim()) {
+				context.value = 0;
+			}
+		}
+
+		function confirmSave() {
+			if (confirm('{!JSINHTMLENCODE($Label.forecasting_setup_save_prompt)}')) {
+				doSave();
+			}
+		}
+	</script>
+	<apex:form >
+		<apex:pageMessages />
+		<apex:actionFunction name="doSave" action="{!save}"/>
+		<apex:actionFunction name="doCancel" action="{!cancel}" immediate="true"/>
+		<apex:actionFunction name="doSchedule" action="{!schedule}" immediate="true"/>
+		<apex:pageBlock mode="detail">
+			<apex:pageBlockSection id="Categories" title="{!$Label.pse__forecasting_setup_categories}" columns="1" collapsible="false">
+				<!--
+					Hidden button included to give a primary action for use when the enter key is pressed.
+					If not included the left most button will be the primary action.
+				-->
+				<apex:commandButton onclick="return confirm('{!JSINHTMLENCODE($Label.pse__forecasting_setup_save_prompt)}');" action="{!save}" style="display: none;"/>
+
+				<apex:outputPanel layout="block">
+					<apex:outputLabel value="{!$Label.pse__forecasting_select_setup_categories}" styleClass="slds-p-bottom_x-small"/>
+					<apex:pageBlockTable value="{!Categories}" var="category" align="center" headerClass="tableHeader">
+						<apex:column styleClass="firstColumn">
+							<apex:outputField value="{!category.pse__Label__c}"/>
+						</apex:column>
+						<apex:column styleClass="centredColumn">
+							<apex:facet name="header">
+								<c:helpLabel labelText="{!$ObjectType.pse__Forecast_Setup_Category__c.fields.pse__Billings_Actuals__c.label}" spanId="billingActualsHelp" helpText="{!$Label.pse__forecasting_setup_billings_actuals_help}"/>
+							</apex:facet>
+							<apex:inputField value="{!category.pse__Billings_Actuals__c}" styleClass="inputField" onChange="defaultFieldToZero(this)" required="false"/>
+						</apex:column>
+						<apex:column styleClass="centredColumn">
+							<apex:facet name="header">
+								<c:helpLabel labelText="{!$ObjectType.pse__Forecast_Setup_Category__c.fields.pse__Expense_Actuals__c.label}" spanId="expenseActualsHelp" helpText="{!$Label.pse__forecasting_setup_expense_actuals_help}"/>
+							</apex:facet>
+							<apex:inputField value="{!category.pse__Expense_Actuals__c}" styleClass="inputField" onChange="defaultFieldToZero(this)" required="false"/>
+						</apex:column>
+						<apex:column styleClass="centredColumn">
+							<apex:facet name="header">
+								<c:helpLabel labelText="{!$ObjectType.pse__Forecast_Setup_Category__c.fields.pse__Scheduled_Assignments__c.label}" spanId="scheduledAssignmentsHelp" helpText="{!$Label.pse__forecasting_setup_scheduled_assignments_help}"/>
+							</apex:facet>
+							<apex:inputField value="{!category.pse__Scheduled_Assignments__c}" styleClass="inputField" onChange="defaultFieldToZero(this)" required="false"/>
+						</apex:column>
+						<apex:column styleClass="centredColumn">
+							<apex:facet name="header">
+								<c:helpLabel labelText="{!$ObjectType.pse__Forecast_Setup_Category__c.fields.pse__Scheduled_Held_Resource_Requests__c.label}" spanId="scheduledHeldRRHelp" helpText="{!$Label.pse__forecasting_setup_scheduled_held_resource_requests_help}"/>
+							</apex:facet>
+							<apex:inputField value="{!category.pse__Scheduled_Held_Resource_Requests__c}" styleClass="inputField" onChange="defaultFieldToZero(this)" required="false"/>
+						</apex:column>
+						<apex:column styleClass="centredColumn">
+							<apex:facet name="header">
+								<c:helpLabel labelText="{!$ObjectType.pse__Forecast_Setup_Category__c.fields.pse__Scheduled_Unheld_Resource_Requests__c.label}" spanId="scheduledUnheldRRHelp" helpText="{!$Label.pse__forecasting_setup_scheduled_unheld_resource_requests_help}"/>
+							</apex:facet>
+							<apex:inputField value="{!category.pse__Scheduled_Unheld_Resource_Requests__c}" styleClass="inputField" onChange="defaultFieldToZero(this)" required="false"/>
+						</apex:column>
+						<apex:column styleClass="centredColumn">
+							<apex:facet name="header">
+								<c:helpLabel labelText="{!$ObjectType.pse__Forecast_Setup_Category__c.fields.pse__Scheduled_Milestones__c.label}" spanId="scheduledMilestonessHelp" helpText="{!$Label.pse__forecasting_setup_scheduled_milestones_help}"/>
+							</apex:facet>
+							<apex:inputField value="{!category.pse__Scheduled_Milestones__c}" styleClass="inputField" onChange="defaultFieldToZero(this)" required="false"/>
+						</apex:column>
+						<apex:column styleClass="centredColumn">
+							<apex:facet name="header">
+								<c:helpLabel labelText="{!$ObjectType.pse__Forecast_Setup_Category__c.fields.pse__Unscheduled_Backlog__c.label}" spanId="unscheduledBacklogsHelp" helpText="{!$Label.pse__forecasting_setup_unscheduled_backlog_help}"/>
+							</apex:facet>
+							<apex:inputField value="{!category.pse__Unscheduled_Backlog__c}" styleClass="inputField" onChange="defaultFieldToZero(this)" required="false"/>
+						</apex:column>
+						<apex:column styleClass="centredColumn">
+							<apex:facet name="header">
+								<c:helpLabel labelText="{!$ObjectType.pse__Forecast_Setup_Category__c.fields.pse__Opportunities__c.label}" spanId="opportunitiesHelp" helpText="{!$Label.pse__forecasting_setup_opportunities_help}" />
+							</apex:facet>
+							<apex:inputField value="{!category.pse__Opportunities__c}" styleClass="inputField" onChange="defaultFieldToZero(this)" required="false"/>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection id="Curves" title="{!$Label.pse__forecasting_setup_default_curves}" collapsible="false" columns="1">
+				<apex:outputLabel >
+					<c:helpLabel labelText="{!$Label.pse__forecasting_setup_select_default_curves}" spanId="defaultCurves" helpText="{!$Label.pse__forecasting_setup_default_curves_help}"/>
+				</apex:outputLabel>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection columns="1">
+				<apex:pageBlockSectionItem id="oppCurve">
+					<apex:outputLabel value="{!$ObjectType.pse__Forecast_Setup__c.fields.pse__Default_Opportunity_Curve__c.label}"/>
+					<apex:inputField value="{!Setup.pse__Default_Opportunity_Curve__c}"/>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem id="projectCurve">
+					<apex:outputLabel value="{!$ObjectType.pse__Forecast_Setup__c.fields.pse__Default_Project_Curve__c.label}"/>
+					<apex:inputField value="{!Setup.pse__Default_Project_Curve__c}"/>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection columns="1">
+				<apex:outputPanel layout="block">
+					<apex:outputLabel value="{!$Label.pse__forecasting_setup_create_curve_text}"/> &nbsp;
+					<a target="_blank" href="{!CurveCreatePage}">{!JSINHTMLENCODE($Label.forecasting_setup_create_curve_link_label)}</a>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection id="AlwaysUseOpportunityCurve" title="{!$Label.pse__forecasting_setup_opportunity_curves}" collapsible="false" columns="1">
+				<apex:outputPanel >
+					<apex:outputLabel >
+						<c:helpLabel labelText="{!$Label.pse__forecasting_setup_opportunity_curves_description}" spanId="opportunityCurvesOption" helpText="{!$Label.pse__forecasting_setup_opportunity_curves_help}"/></apex:outputLabel>
+					<apex:selectRadio label="" layout="pageDirection" value="{!UseOpportunityCurveForProducts}" legendText="{!$Label.pse__forecasting_setup_opportunity_curves_description}" legendInvisible="true" >
+						<apex:selectOptions value="{!UseOpportunityCurveForProductsSelectOptions}"/>
+					</apex:selectRadio>
+				</apex:outputPanel>
+            </apex:pageBlockSection>
+
+			<apex:pageBlockSection id="Opportunities" title="{!$Label.pse__forecasting_setup_opportunities}" collapsible="false" columns="1">
+				<apex:outputPanel >
+					<apex:outputLabel ><c:helpLabel labelText="{!$Label.pse__forecasting_setup_opportunity_services_products_option}" spanId="productsOption" helpText="{!$ObjectType.pse__Forecast_Setup__c.fields.pse__Use_Is_Services_Product_On_Opp_Product__c.inlineHelpText}"/></apex:outputLabel>
+					<apex:selectRadio label="" layout="pageDirection" value="{!UseIsServicesProductOnOpportunityProduct}" legendText="{!$Label.pse__forecasting_setup_opportunity_services_products_option}" legendInvisible="true">
+						<apex:selectOptions value="{!OpportunityServicesProductSelectOptions}"/>
+					</apex:selectRadio>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+
+	<script>
+		prepareHeader();
+		function prepareHeader() {
+			var config = {
+				objectName: '{!JSENCODE($Label.forecasting_setup_title)}',
+				helpUrl: '{!$Page.ForecastSetupHelp}',
+				onRender: 'onHeaderLoadCallback',
+				documentIcon: {
+					name: 'psa_forecasting',
+					namespace: $FFOUTAPP.getNamespace()
+				},
+				buttons: [{
+					id: 'cancel',
+					label: '{!JSENCODE($Label.common_label_cancel)}',
+					actionFn: 'doCancel'
+				}, {
+					id: 'schedule',
+					label: '{!JSENCODE($Label.forecasting_setup_schedule)}',
+					actionFn: 'doSchedule'
+				}, {
+					id: 'save',
+					label: '{!JSENCODE($Label.common_label_save)}',
+					actionFn: 'confirmSave'
+				}]
+			}
+
+			wait(true);
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+	</script>
+
+</apex:page>

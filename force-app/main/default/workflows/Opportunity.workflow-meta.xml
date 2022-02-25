@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Email_Marketing_When_Opp_is_Won</fullName>
+        <description>Email Marketing When Opp is Won</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>kristen.andersen@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>michael.mccormick@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>sean.blashe@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Opportunity/Marketing_Won_Opps</template>
+    </alerts>
+    <alerts>
+        <fullName>IP_Installation_URL_Populated</fullName>
+        <description>IP Installation URL Populated</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Product</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/IP_Installation_URL_Populated</template>
+    </alerts>
+    <alerts>
+        <fullName>IP_Opportunity_Closure_Details</fullName>
+        <description>IP Opportunity Closure Details</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Product</recipient>
+            <type>group</type>
+        </recipients>
+        <recipients>
+            <recipient>john.price@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/IP_Opportunity_Closure</template>
+    </alerts>
+    <alerts>
+        <fullName>IP_Opportunity_Closure_Email_Recipient_Request</fullName>
+        <ccEmails>sandi.wozniak@7summitsinc.com,phil.weinmeister@7summitsinc.com</ccEmails>
+        <description>IP Opportunity Closure Email Recipient Request</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Request_for_IP_Notification_Recipient</template>
+    </alerts>
+    <alerts>
+        <fullName>Opp_Won_with_IP</fullName>
+        <description>Opp Won with IP</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <recipients>
+            <recipient>francois.korb@7summitsagency.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>john.price@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>phil.weinmeister@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>sandi.wozniak@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Opp_Won_with_IP</template>
+    </alerts>
+    <alerts>
+        <fullName>Opportunity_Won_Lost_No_Opportunity</fullName>
+        <description>Opportunity Won, Lost, No Opportunity</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>andre.joly@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>ben.kerford@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>jacob.lappa@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>joe.fortino@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>kerri.mclaughlin@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>michael.mccormick@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>mort.sayyed@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>nick.ulfers@7summits.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Opportunity/Won_Stage_Link</template>
+    </alerts>
+    <alerts>
+        <fullName>Project_Opp_Amount_Stage_Change</fullName>
+        <description>Project Opp Amount/Stage Change</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>daniel.mosbarger@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>jeff.murnan@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>kerri.mclaughlin@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>PSA_Email_Templates/PSA_Project_Opp_Stage_Change</template>
+    </alerts>
+    <alerts>
+        <fullName>Won_Opp_Alliances_Notification</fullName>
+        <description>Won Opp Alliances Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>bethany.perkins@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>kristen.andersen@7summitsinc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Opportunity/Won_Stage_Link</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Account_Record_Type_Vintage_Salesforce</fullName>
+        <description>Updates the Account Record Type to &quot;Vintage - Salesforce&quot;</description>
+        <field>Record_Type__c</field>
+        <literalValue>Vintage - Salesforce</literalValue>
+        <name>Acct Record Type - Vintage Salesforce</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Acct_Record_Type_Prospect_Jive</fullName>
+        <description>Updates the Account Record Type to &quot;Prospect - Jive&quot;</description>
+        <field>Record_Type__c</field>
+        <literalValue>Prospect - Jive</literalValue>
+        <name>Acct Record Type - Prospect Jive</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Acct_Record_Type_Prospect_Other</fullName>
+        <description>Updates the Account Record Type to &quot;Prospect - Other&quot;</description>
+        <field>Record_Type__c</field>
+        <literalValue>Prospect - Other</literalValue>
+        <name>Acct Record Type - Prospect Other</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Acct_Record_Type_Prospect_Salesforce</fullName>
+        <description>Updates the Account Record Type to &quot;Prospect - Salesforce&quot;</description>
+        <field>Record_Type__c</field>
+        <literalValue>Prospect - Salesforce</literalValue>
+        <name>Acct Record Type - Prospect Salesforce</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Acct_Record_Type_Vintage_Jive</fullName>
+        <description>Updates the Account Record Type to &quot;Vintage - Jive&quot;</description>
+        <field>Record_Type__c</field>
+        <literalValue>Vintage - Jive</literalValue>
+        <name>Acct Record Type - Vintage Jive</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Acct_Record_Type_Vintage_Other</fullName>
+        <description>Updates the Account Record Type to &quot;Vintage - Other&quot;</description>
+        <field>Record_Type__c</field>
+        <literalValue>Vintage - Other</literalValue>
+        <name>Acct Record Type - Vintage Other</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Apply_Accelerator</fullName>
+        <field>Apply_Accelerator__c</field>
+        <literalValue>1</literalValue>
+        <name>Apply Accelerator</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Close_Date</fullName>
+        <field>CloseDate</field>
+        <formula>TODAY()</formula>
+        <name>Close Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Increment_Push_Counter_Field</fullName>
+        <description>Increment the Push Counter by 1</description>
+        <field>Push_Counter__c</field>
+        <formula>IF( 
+ISNULL( Push_Counter__c ), 
+1, 
+Push_Counter__c + 1 
+)</formula>
+        <name>Increment Push Counter Field</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Last_Stage_Change_Date_Field</fullName>
+        <description>Update the opportunity field Last Stage Change Date each time the stage changes</description>
+        <field>Last_Stage_Change_Date__c</field>
+        <formula>Today()</formula>
+        <name>Last Stage Change Date Field</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Opp_Amount_Change</fullName>
+        <description>The Prior Amount Value field is auto updated when the amount of the opportunity changes.</description>
+        <field>Prior_Amount_Value__c</field>
+        <formula>PRIORVALUE (Amount)</formula>
+        <name>Opp Amount Change</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Opportunity_Closer</fullName>
+        <field>Opportunity_Closer__c</field>
+        <formula>Owner.FirstName + &quot; &quot; + Owner.LastName</formula>
+        <name>Opportunity Closer</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Ops_Override</fullName>
+        <description>If the Opportunity is a Chang Order, the field Ops Override is checked</description>
+        <field>Ops_Override__c</field>
+        <literalValue>1</literalValue>
+        <name>Ops Override</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Qualifies_for_Commission</fullName>
+        <field>Qualifies_for_Commission_Payment__c</field>
+        <literalValue>1</literalValue>
+        <name>Qualifies for Commission</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Type_to_Blank</fullName>
+        <description>Type = Blank if all opportunities Closed/Lost</description>
+        <field>Type</field>
+        <name>Update Type to Blank</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>WAR_unchecking</fullName>
+        <field>WAR__c</field>
+        <literalValue>0</literalValue>
+        <name>WAR unchecking</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>X1st_Created_Opp_Lead_Source</fullName>
+        <description>Populates with the Lead Source from the 1st created opportunity.</description>
+        <field>x1st_Created_Opp_Lead_Source__c</field>
+        <formula>TEXT(Lead_Source__c)</formula>
+        <name>1st Created Opp Lead Source</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>X1st_Won_Opp_Lead_Source</fullName>
+        <field>X1st_Won_Opp_Lead_Source__c</field>
+        <formula>TEXT(Lead_Source__c)</formula>
+        <name>1st Won Opp Lead Source</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+        <targetObject>AccountId</targetObject>
+    </fieldUpdates>
+    <rules>
+        <fullName>Account 1st Created Opp</fullName>
+        <actions>
+            <name>X1st_Created_Opp_Lead_Source</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.X1st_Created_Opp_del__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <description>The Lead Source of the first created opportunity is mapped to the Account record.</description>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Account 1st Won Opportunity</fullName>
+        <actions>
+            <name>X1st_Won_Opp_Lead_Source</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.X1st_Won_Opp__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <description>The Lead Source of the first won opportunity is mapped to the Account record.</description>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Account Prospect Jive</fullName>
+        <actions>
+            <name>Acct_Record_Type_Prospect_Jive</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Updates the Account Record Type to &quot;Prospect - Jive&quot; when the Opportunity Business Segment is &quot;Jive&quot; AND the Account has at no won opportunity.</description>
+        <formula>AND(
+ISPICKVAL(Business_Segment__c, &quot;Jive&quot;),
+Account.Won_Opps_Count__c = 0)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Account Prospect Other</fullName>
+        <actions>
+            <name>Acct_Record_Type_Prospect_Other</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Updates the Account Record Type to &quot;Prospect - Other&quot; when the Opportunity Business Segment is &quot;Other&quot; AND the Account has at no won opportunity.</description>
+        <formula>AND(
+ISPICKVAL(Business_Segment__c, &quot;Other&quot;),
+Account.Won_Opps_Count__c = 0)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Account Prospect Salesforce</fullName>
+        <actions>
+            <name>Acct_Record_Type_Prospect_Salesforce</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Updates the Account Record Type to &quot;Prospect - Salesforce&quot; when the Opportunity Business Segment is &quot;Salesforce&quot; AND the Account has at no won opportunity.</description>
+        <formula>AND(
+ISPICKVAL(Business_Segment__c, &quot;Salesforce&quot;),
+Account.Won_Opps_Count__c = 0)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Account Vintage Jive</fullName>
+        <actions>
+            <name>Acct_Record_Type_Vintage_Jive</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Updates the Account Record Type to &quot;Vintage - Jive&quot; when the Opportunity Business Segment is &quot;Jive&quot; AND the Account has at least 1 won opportunity.</description>
+        <formula>AND(
+ISPICKVAL(Business_Segment__c, &quot;Jive&quot;),
+Account.Won_Opps_Count__c &gt;= 1)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Account Vintage Other</fullName>
+        <actions>
+            <name>Acct_Record_Type_Vintage_Other</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Updates the Account Record Type to &quot;Vintage - Other&quot; when the Opportunity Business Segment is &quot;Other&quot; AND the Account has at least 1 won opportunity.</description>
+        <formula>AND(
+ISPICKVAL(Business_Segment__c, &quot;Other&quot;),
+Account.Won_Opps_Count__c &gt;= 1)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Account Vintage Salesforce</fullName>
+        <actions>
+            <name>Account_Record_Type_Vintage_Salesforce</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Updates the Account Record Type to &quot;Vintage - Salesforce&quot; when the Opportunity Business Segment is &quot;Salesforce&quot; AND the Account has at least 1 won opportunity.</description>
+        <formula>AND(
+ISPICKVAL(Business_Segment__c, &quot;Salesforce&quot;),
+Account.Won_Opps_Count__c &gt;= 1)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Apply Accelerator</fullName>
+        <actions>
+            <name>Apply_Accelerator</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>false</active>
+        <description>Checks the Apply Accelerator box if appropriate</description>
+        <formula>OR(
+AND(Owner.LastName=&quot;Walsh&quot;,IsWon=TRUE,CloseDate&gt;Date(2019, 07, 30)),
+AND(Owner.LastName=&quot;Hogervorst&quot;,IsWon=TRUE,CloseDate&gt;Date(2019, 09, 10)),
+AND(Owner.LastName=&quot;Masonius&quot;,IsWon=TRUE,CloseDate&gt;Date(2019, 09, 11)),
+AND(Owner.LastName=&quot;Fortino&quot;,IsWon=TRUE,CloseDate&gt;Date(2019, 08, 28))
+)</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Celigo Push Account to NetSuite Customer</fullName>
+        <active>false</active>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>5 Agreements Delivered,6 Negotiating,7 Verbal Agreement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Force_to_NetSuite__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Close Date Auto Update%3A Closed Lost or No Opportunity</fullName>
+        <actions>
+            <name>Close_Date</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>When an opportunity is changed to Closed Lost or No Opportunity, the Close Date is auto updated to today&apos;s date.</description>
+        <formula>OR(
+AND(ISPICKVAL(StageName, &quot;9 Closed Lost&quot;),
+CloseDate&gt;TODAY()),
+AND(ISPICKVAL(StageName, &quot;10 No Opportunity&quot;),
+CloseDate&gt;TODAY())
+)</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>IP Installation URL Populated</fullName>
+        <actions>
+            <name>IP_Installation_URL_Populated</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <description>Email to be sent when the field IP Installation URL is populated.</description>
+        <formula>NOT(ISBLANK(IP_Installation_URL__c))</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Last Stage Change Date</fullName>
+        <actions>
+            <name>Last_Stage_Change_Date_Field</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Insert the date of the last stage change on the opportunity</description>
+        <formula>OR (ISCHANGED(StageName),ISNEW())</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Marketing%3A Opportunity Won</fullName>
+        <actions>
+            <name>Email_Marketing_When_Opp_is_Won</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.IsWon</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Project_Type__c</field>
+            <operation>equals</operation>
+            <value>New Project,IP Only,Customer Success</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 100,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.CloseDate</field>
+            <operation>greaterThan</operation>
+            <value>9/1/2019</value>
+        </criteriaItems>
+        <description>When an opportunity is closed won an email is sent to contact7s@7summitsinc.com.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Opp Amount Change</fullName>
+        <actions>
+            <name>Opp_Amount_Change</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Updates field Prior Amount Value each time the Amount is changed</description>
+        <formula>ISCHANGED (Amount)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Ops Override</fullName>
+        <actions>
+            <name>Ops_Override</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.Project_Type__c</field>
+            <operation>equals</operation>
+            <value>Change Order</value>
+        </criteriaItems>
+        <description>If the Opportunity is a New Project, Managed Services, or IP Only, this field is unchecked. If the Opportunity is a Change Order, this field is checked.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Project Opp Amount%2FStage Change</fullName>
+        <actions>
+            <name>Project_Opp_Amount_Stage_Change</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <description>If the amount or stage changes on the opportunity associated with a project, an email alert is sent to the operations manager.</description>
+        <formula>AND( 
+NOT(ISBLANK(pse__Primary_Project__c)), 
+OR( 
+ISCHANGED(Amount), 
+ISCHANGED(StageName)) 
+)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Push Counter</fullName>
+        <actions>
+            <name>Increment_Push_Counter_Field</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Increment the Push Counter field by 1</description>
+        <formula>IF(  CloseDate &gt; PRIORVALUE( CloseDate ),  IF (MONTH(CloseDate) &lt;&gt; MONTH(PRIORVALUE( CloseDate )) ,  TRUE,  FALSE),  FALSE)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Sales %26 Ops%3A Opportunity Won%2C Lost%2C No Opportunity</fullName>
+        <actions>
+            <name>Opportunity_Won_Lost_No_Opportunity</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>(1 OR 2 OR 3) AND 4</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>8 Closed Won</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>9 Closed Lost</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>10 No Opportunity</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.CloseDate</field>
+            <operation>greaterThan</operation>
+            <value>9/1/2019</value>
+        </criteriaItems>
+        <description>Opportunity stage changes to closed/won, closed/lost, no opportunity.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Won Opps</fullName>
+        <actions>
+            <name>Won_Opp_Alliances_Notification</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Opportunity_Closer</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Qualifies_for_Commission</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.IsWon</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.CloseDate</field>
+            <operation>greaterThan</operation>
+            <value>9/1/2019</value>
+        </criteriaItems>
+        <description>Emails and field updates that occur when an opportunity is closed won</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Won Opps with IP</fullName>
+        <actions>
+            <name>Opp_Won_with_IP</name>
+            <type>Alert</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Opportunity.IsWon</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.IP_Included__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.CloseDate</field>
+            <operation>greaterThan</operation>
+            <value>9/1/2019</value>
+        </criteriaItems>
+        <description>Email sent to Opp owner upon the closure (status set to “Closed/Won”) of an opportunity containing IP</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Won Opps with IP %28with Products%29</fullName>
+        <actions>
+            <name>IP_Opportunity_Closure_Details</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>IP_Opportunity_Closure_Email_Recipient_Request</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.IsWon</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.IP_Included__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.CloseDate</field>
+            <operation>greaterThan</operation>
+            <value>1/1/2021</value>
+        </criteriaItems>
+        <description>Email sent to Opp owner upon the closure (status set to “Closed/Won”) of an opportunity containing IP</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+</Workflow>

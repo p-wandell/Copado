@@ -1,0 +1,259 @@
+<apex:page controller="pse.SelfAssignmentController" tabStyle="pse__Assignment__c" lightningStylesheets="true">
+	<style>
+		.descriptionText-Encrypted {
+			color: red;
+			font-size: small;
+		}
+		.detailList .data2Col {
+			width:82% !important;
+		}
+		/*This is fix for slds alignment issue in pageBlockSection with 1 column layout*/
+		#selfAssignmentLookupResultPanel .pbBody {
+			overflow: inherit;
+		}
+		#projectLoadWaitImageID img {
+			background-size: 30px;
+			background-repeat: no-repeat;
+			vertical-align: middle;
+			background-position: center 7px;
+			margin-bottom: 0;
+		}
+		.bDescription {
+			padding-left: 0 !important;
+		}
+		.scrollable-Encrypted {
+			max-height: {!IF($User.UIThemeDisplayed == 'Theme4d', '296px !important', '342px !important')};
+			width: {!IF($User.UIThemeDisplayed == 'Theme4d', '614px !important', '624px !important')};
+		}
+		.scrollable {
+			max-height: {!IF($User.UIThemeDisplayed == 'Theme4d', '330px !important', '388px !important')};
+			width: {!IF($User.UIThemeDisplayed == 'Theme4d', '614px !important', '624px !important')};
+		}
+		input.inputField{
+			width:90%;
+		}
+	</style>
+
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+
+	<apex:pageMessages id="messages"/>
+	<apex:form id="mainForm">
+		<apex:pageBlock title="{!$Label.pse__assignment_label_assignment_info}" mode="edit" id="mainPB">
+			<apex:actionFunction name="onCancelClicked" action="{!cancelAction}" immediate="true"/>
+			<apex:actionFunction name="saveAssignmentAction" action="{!saveAssignment}" rendered="{!displayContent}"/>
+			<apex:pageBlockSection title="{!$Label.pse__common_label_assignment}" columns="2" rendered="{!displayContent}" id="mainPBS">
+				<apex:inputField id="startDateFld" value="{!assignmentSchedule.pse__Start_Date__c}" required="true"/>
+				<apex:inputField value="{!assignmentSchedule.pse__End_Date__c}" required="true"/>
+				<apex:pageBlockSectionItem id="pbsi1">
+					<apex:outputLabel for="projSelect" value="{!$Label.pse__common_label_project}"/>
+					<apex:outputPanel layout="block" style="white-space:nowrap;text-align:left;cursor:pointer;">
+						<div class="requiredInput">
+							<div class="requiredBlock"></div>
+							<div class="lookupInput" style="margin-left: 0px;">
+							<select id="projSelect" size="1" onchange="onProjectSelected(this.value)">
+							<apex:repeat value="{!projectOptions}" var="projectOptionList">
+								<option value=""></option>
+								<apex:repeat value="{!projectOptionList}" var="projectOption">
+									<option value="{!projectOption.value}">{!projectOption.label}</option>
+								</apex:repeat>
+							</apex:repeat>
+						</select>
+						<apex:actionRegion >
+							<apex:inputHidden value="{!selectedProject}" id="selectedProjectIDHidden"/>
+							<apex:actionFunction name="jsOnProjectSelect" reRender="hiddenSelectedProj" action="{!onProjectSelect}"  />
+						</apex:actionRegion>
+						<apex:image title="{!$Label.pse__common_label_project}" id="projectLookup"
+							onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+							onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';"
+							style="margin-right:8px;"
+							styleClass="lookupIcon" alt="{!$Label.pse__common_label_project}" value="/s.gif" onclick="showProjectLookupDialog();">
+						</apex:image>
+						</div>
+						</div>
+						<apex:outputPanel id="hiddenSelectedProj" >
+							<div style="display:none;" ><apex:inputField value="{!assignment.pse__Project__c}" /> </div>
+						</apex:outputPanel>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:outputText label="{!$Label.pse__common_label_resource}" value="{!resourceName}"/>
+				<apex:repeat value="{!filterOutAssignmentFields}" var="f" >
+					<apex:inputField value="{!assignment[f.fieldPath]}" required="{!f.required || f.DBRequired}" rendered="{! IF(f.Label != $ObjectType.Assignment__c.Fields.Cost_Rate_Amount__c.Label,true,IF(copyDefaultCostRateToSelfAssignment,false,true))}"/>
+					<apex:outputText label="{!f.Label}" value="{!resourceDefaultCostRateString}" rendered="{! IF(f.Label ==$ObjectType.Assignment__c.Fields.Cost_Rate_Amount__c.Label && copyDefaultCostRateToSelfAssignment,true,false)}"/>
+				</apex:repeat>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="{!$Label.pse__assignment_label_schedule_pattern}"/>
+			<table class="detailList" cellspacing="0" cellpadding="0" border="0">
+				<tbody><tr><td class="labelCol first last">{!$Label.assignment_label_pattern}</td>
+				<td class="data2Col first last">
+				{!$Label.assignment_label_schedule_pattern_info}
+				<table border="0" cellpadding="0" cellspacing="2" style="min-width: auto;">
+					<thead>
+						<tr>
+						<apex:repeat value="{!weekdays}" var="wd">
+							<th align="left">{!wd.label}</th>
+						</apex:repeat>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+						<apex:repeat value="{!weekdays}" var="wd">
+							<td><apex:inputField value="{!assignmentSchedule[wd.hoursField]}" styleClass="inputField" onChange="defaultFieldToZero(this)"/></td>
+						</apex:repeat>
+						</tr>
+					</tbody>
+				</table>
+				</td></tr></tbody>
+			</table>
+		</apex:pageBlock>
+		<c:WaitComponent />
+	</apex:form>
+	<apex:outputPanel id="OutDialogContainer" layout="block" />
+	<c:lightningLookup exportObjectName="$FFDC" outContainerId="{!$Component.OutDialogContainer}" />
+	<apex:outputPanel id="dataView">
+		<script>
+			prepareVFHeader();
+
+			function prepareVFHeader() {
+				var config = {
+					objectName: '{!JSENCODE($Label.assignment_label_self_assignment)}',
+					objectApiName: '{!$ObjectType["Assignment__c"].Name}',
+					helpUrl: '{!$Page.SelfAssignmentHelp}',
+					onRender: 'onHeaderLoadCallback',
+					buttons: [{
+						id: 'cancel',
+						label:'{!JSENCODE($Label.common_label_cancel)}',
+						actionFn: 'onCancelClicked'
+					}]
+				},
+				startDateFldId = '{!$Component.mainForm.mainPB.mainPBS.startDateFld}';
+
+				if ({!displayContent}) {
+					config.buttons.push({
+						id: 'save',
+						label: '{!JSENCODE($Label.common_label_save)}',
+						actionFn: 'onSaveClicked'
+					});
+
+					config.fields = [{
+						id: 'resource',
+						label: '{!JSENCODE($Label.common_label_resource)}',
+						value: '{!JSENCODE(resourceName)}'
+					},{
+						id: 'costRate',
+						label: '{!JSENCODE($Label.assign_resource_resource_list_table_cost_rate_header_column)}',
+						value: '{!JSENCODE(costRate)}'
+					}];
+				}
+
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				var startDateFldId = '{!$Component.mainForm.mainPB.mainPBS.startDateFld}',
+					startDateElement = document.getElementById(startDateFldId);
+
+				wait(false);
+
+				if (startDateElement) {
+					startDateElement.focus();
+				}
+			}
+
+			function setFocus() { }
+
+			function showProjectLookupDialog() {
+				wait(true);
+				var vfConfig = JSON.parse('{!JSENCODE(config)}'),
+					config = {
+						lookupType: vfConfig.lookupType,
+						lookupFields: vfConfig.lookupFields,
+						lookupTitle: vfConfig.lookupTitle,
+						searchMessage: vfConfig.searchMessage
+					};
+
+				$FFDC.showLookup(config, function (selectedRecord) {
+					if(selectedRecord) {
+						doSelectProject(selectedRecord.id, selectedRecord.name);
+					}
+					return true;
+				}, function () {
+					wait(false);
+				});
+			}
+
+			function onSaveClicked () {
+				saveAssignmentAction();
+
+				//stop someone from hammering the save button and creating multiple assignments
+				disableButtons();
+
+				//return false so we don't fire the action on the save button, we'll use the saveAssignmentAction component instead
+				return false;
+			}
+
+			function disableButtons () {
+				$FFHEADER.disableButton('cancel');
+				$FFHEADER.disableButton('save');
+			}
+
+			function doSelectProject(pid,pname){
+				onProjectSelected(pid);
+				var projectSelectList = document.getElementById('projSelect');
+
+				if(projectSelectList.options == null){
+					projectSelectList.options = new Array();
+					projectSelectList.options[0] = new Option('', '');
+					projectSelectList.options[1] = new Option(pname, pid);
+				}else{
+					var isAlreadyInList = false;
+					var projectOptions = new Array();
+					for(var i=0; i < projectSelectList.options.length; i++){
+						if(projectSelectList.options[i].value == pid){
+							projectSelectList.options[i].selected = true;
+							isAlreadyInList = true;
+						}
+						projectOptions[i+1] = (projectSelectList.options[i]);
+					}
+					if(!isAlreadyInList){
+						var elOptNew = document.createElement('option');
+						elOptNew.text = unescape(pname);
+						elOptNew.value = pid;
+						var elOptOld = projectSelectList.options[1];
+						try {
+						projectSelectList.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
+						}
+						catch(ex) {
+						projectSelectList.add(elOptNew, 1); // IE only
+						}
+						projectSelectList.options[1].selected = true;
+					}
+				}
+			}
+
+			function onProjectSelected(pid){
+				document.getElementById('{!$Component.mainForm.mainPB.mainPBS.pbsi1.selectedProjectIDHidden}').value = pid;
+				jsOnProjectSelect();
+			}
+
+			String.prototype.capitalize = function() {
+				if(this.indexOf('pse__') != -1){
+					//return this.charAt(5).toUpperCase() + this.slice(1);
+					return this.slice(0,5) + this.charAt(5).toUpperCase() + this.slice(6)
+				}else{
+					return this.charAt(0).toUpperCase() + this.slice(1);
+				}
+			}
+
+			function defaultFieldToZero(context)
+			{
+				if (!context.value.trim())
+				{
+					context.value = 0;
+				}
+			}
+
+		</script>
+	</apex:outputPanel>
+</apex:page>

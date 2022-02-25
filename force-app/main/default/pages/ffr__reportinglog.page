@@ -1,0 +1,14 @@
+<apex:page standardController="ffr__ReportingLog__c" extensions="ffr.ReportingLogController" action="{!redirect}" lightningStylesheets="true">
+	<apex:outputText value="{!ffr__ReportingLog__c.ffr__ReportingDefinition__c}" rendered="false"/>
+	<apex:outputText value="{!ffr__ReportingLog__c.ffr__URL__c}" rendered="false"/>
+	<apex:form >
+  		<apex:pageBlock mode="detail">
+   			<apex:pageMessages />
+            <apex:pageBlockButtons location="bottom">
+                <apex:outputpanel id="buttonPanel">
+                    <apex:commandButton id="back" value="{!$Label.ffr__reportinglogpageback}" action="{!cancel}"/>
+                </apex:outputpanel>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+ 	</apex:form>
+</apex:page>

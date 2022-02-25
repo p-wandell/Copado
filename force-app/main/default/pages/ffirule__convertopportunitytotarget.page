@@ -1,0 +1,13 @@
+<apex:page standardController="Opportunity" extensions="ffirule.IntegrationRuleEngine" action="{!validate}" lightningStylesheets="true">
+	<apex:form >
+		<apex:sectionHeader title="{!$Label.ffirule__convertopportunityheadertitle}"/>
+        <apex:pageBlock rendered="{!showConfirmation}">
+        	<apex:pageMessage summary="{!$Label.ffirule__convertopportunityconfirmation}" severity="Info"/>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!convert}" value="{!$Label.ffirule__continue}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.ffirule__cancel}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+	<c:IntegrationRule engine="{!engine}" rendered="{!!showConfirmation}"/>
+</apex:page>

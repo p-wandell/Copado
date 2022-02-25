@@ -1,0 +1,37 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventListController"
+                extends="c:SVNSUMMITS_Events_Base"
+                access="global" >
+
+	<!-- Base model -->
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.doInit}"/>
+
+    <aura:attribute name="debugMode" type="Boolean" default="false" access="global"/>
+    <aura:attribute name="displayMode" type="String" default="Full" required="true" access="global"/>
+    <aura:attribute name="wrappedEvents" type="SVNSUMMITS_EventListWrapper" access="global"/>
+    <aura:attribute name="searchstr" type="String" access="global"/>
+    <aura:attribute name="titletext" type="String" description="Event Title Text" access="global"/>
+    <aura:attribute name="numberofresults" type="Integer" description="Number of attendees for the event" />
+    <aura:attribute name="listSize" type="Integer" default="50" access="global"/>
+    <aura:attribute name="sortBy" default="Upcoming" type="String" access="global"/>
+    <aura:attribute name="filterOn" default="None" type="String" access="global"/>
+    <aura:attribute name="eventDetailURL" type="String" default="/event/" access="global"/>
+    <aura:attribute name="sitePath" type="String" access="global"/>
+    <aura:attribute name="sitePrefix" type="String" access="global"/>
+    <aura:attribute name="currentURL" type="String" access="global"/>
+    <aura:attribute name="viewMoreLabel" type="String" default="All Events" access="global"/>
+    <aura:attribute name="fromDate" type="String" access="global"/>
+    <aura:attribute name="toDate" type="String" access="global"/>
+    <aura:attribute name="filterByTopic" type="String" access="global"/>
+    <aura:attribute name="topicValue" type="String" access="global"/>
+
+    <c:SVNSUMMITS_Events_List displayMode="{!v.displayMode}"
+                              titletext="{!v.titletext}"
+                              numberofresults="{!v.numberofresults}"
+                              wrappedEvents="{!v.wrappedEvents}"
+                              filterOn="{!v.filterOn}"
+                              eventDetailURL="{!v.eventDetailURL}"
+                              viewMoreLabel="{!v.viewMoreLabel}" />
+
+</aura:component>

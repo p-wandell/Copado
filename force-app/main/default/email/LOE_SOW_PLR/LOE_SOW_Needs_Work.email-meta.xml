@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>When the status is changed to &quot;Needs Major Work&quot; or &quot;Needs Minor Work&quot; an email is sent to the owner of the request record.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>LOE/SOW Needs Work</name>
+    <style>none</style>
+    <subject>{!LOE_SOW_Review__c.00N80000005uHYi} Revisions Needed</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

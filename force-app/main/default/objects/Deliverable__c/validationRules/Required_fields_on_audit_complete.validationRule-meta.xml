@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Required_fields_on_audit_complete</fullName>
+    <active>true</active>
+    <description>Requires audit reviewer and audit date to be populated if audit status is marked as completed</description>
+    <errorConditionFormula>AND(
+ISPICKVAL(Audit_Status__c , &quot;Completed&quot;), 
+
+OR(
+ISBLANK(Audit_Date__c),ISBLANK(Audit_Reviewer__c))
+)</errorConditionFormula>
+    <errorMessage>To mark an Audit Status of Completed, you must populate Audit Reviewer and Audit Date</errorMessage>
+</ValidationRule>

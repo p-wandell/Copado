@@ -1,0 +1,11 @@
+<!--
+ - Created by brianpoulsen on 11/8/17.
+ -->
+
+<design:component label="7S Accordion">
+    <design:attribute name="title" label="Title" />
+    <design:attribute name="titleTag" label="HTML Tag for Title" dataSource="h1,h2,h3,h4,h5,h6" />
+    <design:attribute name="description" label="Description" description="The accordion description. If used in another custom component, you may also use the body of the accordion as well." />
+    <design:attribute name="isOpen" label="Open Accordion by Default" description="Check to open the accordion by default" />
+    <design:attribute name="transitionDuration" label="Transition Duration" description="Time in milliseconds that the opening/closing animation should last for." />
+</design:component>

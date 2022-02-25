@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__Accounting_Time</fullName>
+    <columns>NAME</columns>
+    <columns>ffr__UniqueName__c</columns>
+    <columns>ffr__ReportingObject__c</columns>
+    <columns>ffr__Description__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ffr__UniqueName__c</field>
+        <operation>startsWith</operation>
+        <value>TA</value>
+    </filters>
+    <label>Accounting - Time</label>
+    <language>en_US</language>
+</ListView>

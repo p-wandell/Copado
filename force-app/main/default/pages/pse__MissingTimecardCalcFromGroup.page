@@ -1,0 +1,3 @@
+<apex:page standardController="pse__Grp__c" action="{!URLFOR($Page.MissingTimecard, null, [groupId=$CurrentPage.parameters.id])}">
+
+</apex:page>

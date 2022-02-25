@@ -1,0 +1,123 @@
+<!--
+  ~ Copyright (c) 2021. 7Summits, an IBM Company. All rights reserved.
+  -->
+<template>
+<div if:false={disableView}>
+	<c-x7s-shr-component-wrapper 
+	                             variant={tileVariantStyle}
+								 custom-class={componentClass} 
+	                             remove-body-padding
+	                             auto-slds-card
+								 aria-label={labels.listAriaLabel}
+	>
+		<lightning-layout class="files__layout" vertical-align="stretch">
+			<lightning-layout-item class={sidebarClass} flexibility="no-shrink" if:true={showSidebar}>
+				<!-- Sidebar toggle -->
+				<button
+					class="files__filters-toggle"
+					aria-controls="split-view-id"
+					aria-expanded="false"
+					title={labels.labelTreeViewClose}
+					onclick={toggleSplitView}
+				>
+					<lightning-icon
+						icon-name={splitViewButtonIcon}
+						alternative-text={labels.labelTreeViewClose}
+						size="xx-small"
+						title={labels.labelTreeViewClose}
+					></lightning-icon>
+				</button>
+
+				<!-- Folder Tree -->
+				<div
+					aria-hidden="true"
+					id="split-view-id"
+					class="files__filters"
+				>
+					<article class="files__filter">
+						<c-x7s-files-tree-view
+						    record-id={recordId}
+							items={result}
+							header={labels.labelTreeViewHeader}
+							list-id={listId}
+						></c-x7s-files-tree-view>
+					</article>
+				</div>
+			</lightning-layout-item>
+			<lightning-layout-item
+				class={mainClass}
+				flexibility="auto"
+			>
+
+				<!-- List View -->
+				<template if:true={showBreadcrumbs}>
+					<div class='files-breadcrumbs'>
+						<c-x7s-files-breadcrumbs
+							folders={breadcrumbs}
+							workspace={workspace}
+							parent-id={currentFolderId}
+							list-id={listId}
+						></c-x7s-files-breadcrumbs>
+					</div>
+				</template>
+				<template if:false={isTableView}>
+					<template if:true={showResults}>
+						<c-x7s-shr-list card-width={cardWidth} card-gap={cardGap} layout={listVariant}>
+							<template for:each={filesList} for:item="item">
+								<c-x7s-files-list-item
+								    record-id={recordId}
+									item={item}
+									key={item.Id}
+									icon-list={iconList}
+									layout={layout}
+									show-view-details-action={showPreviewAction}
+								    show-download-action={showDownloadAction}
+									show-file-type={showFileType}
+									show-file-size={showFileSize}
+									show-created-date={showCreatedDate}
+									show-title={showTitle}
+									show-description={showDescription}
+									description-lines={descriptionLineCount}
+									list-id={listId}
+								></c-x7s-files-list-item>
+							</template>
+						</c-x7s-shr-list>
+					</template>
+				</template>
+
+				<!-- Table View -->
+				<div if:true={result}>
+					<template if:true={isTableView}>
+						<template if:true={showResults}>
+							
+							<c-x7s-files-table
+							    record-id={recordId}
+								list-id={listId}
+								result={result}
+								show-title={showTitle}
+								show-description={showDescription}
+								variant={tileVariant}
+								custom-class={componentClass}
+								show-file-type={showFileType}
+								show-file-size={showFileSize}
+								show-created-date={showCreatedDate}
+								show-view-details-action={showPreviewAction}
+								show-download-action={showDownloadAction}
+							></c-x7s-files-table>
+						</template>
+					</template>
+				</div>
+
+				<div if:false={showResults} class="slds-text-align_center">
+					{labels.noResultLabel}
+				</div>
+
+				<template if:true={isLoading}>
+					<lightning-spinner alternative-text="Loading"></lightning-spinner>
+				</template>
+			</lightning-layout-item>
+
+		</lightning-layout>
+	</c-x7s-shr-component-wrapper>
+</div>
+</template>

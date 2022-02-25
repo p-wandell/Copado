@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Skill_Cert_Rating_Record_Type_Match</fullName>
+    <active>false</active>
+    <description>End users will only have access to create a Rating record for a Skill, but Certifications will still appear in the Skill / Certification Name picklist</description>
+    <errorConditionFormula>OR(
+AND(RecordType.Name = &quot;Skill&quot;,pse__Skill_Certification__r.RecordType.Name=&quot;Certification&quot;),
+AND(RecordType.Name = &quot;Certification&quot;,pse__Skill_Certification__r.RecordType.Name=&quot;Skill&quot;))</errorConditionFormula>
+    <errorDisplayField>pse__Skill_Certification__c</errorDisplayField>
+    <errorMessage>The Skill / Certification value does not match the record type. If you are creating a Skill record, please choose a Skill value. If you are creating a Certification record, please choose a Certification value.</errorMessage>
+</ValidationRule>

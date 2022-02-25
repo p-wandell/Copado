@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2020. 7summits Inc. All rights reserved.
+ */
+ .selections{
+    padding:3px;
+}
+
+.options{
+    position: absolute;
+    z-index:100;
+    background: #FFF;
+    box-shadow: 0 0 10px #DDD;
+    border-radius:2px;
+}
+
+.options li{
+    padding: 0 5px;
+}
+.options li:hover{
+    background: #F1F1F1;
+}
+
+.overlay{
+    position: fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:90;
+}

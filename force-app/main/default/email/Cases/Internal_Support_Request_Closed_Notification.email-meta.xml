@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Case closed email notification to the case contact.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Internal Support Request Closed Notification</name>
+    <style>none</style>
+    <subject>Your Support Request {!Case.CaseNumber} has been Resolved</subject>
+    <textOnly>The following support request has been resolved, please use Chatter from the case record if you have any further questions.
+
+Case Reason:  {!Case.Reason}
+Case Subject:  {!Case.Subject}
+Case Description:  {!Case.Description}
+Case Resolution:  {!Case.Resolution__c}
+Case Link:  {!Case.Link}
+
+
+IT Support</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

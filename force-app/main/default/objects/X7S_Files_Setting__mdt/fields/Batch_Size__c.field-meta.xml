@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Batch_Size__c</fullName>
+    <defaultValue>20</defaultValue>
+    <description>Share process batch size (1 - 200)</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Batch size for the scheduled share process.
+In order to meet the SF SOQL Limit, apply the following to determine the optimal batch size.
+ * Find the criteria set with the most criteria assignments and use the count., add 1 for process overhead. Divide 200 by this number and subtract 1 for startup.
+ * Set the Batch Size to (200 / (max_criteria + 1)) - 1
+ex: Max criteria = 5.
+ * Use (200 / 6) -1 (rounded down to the nearest Integer)
+ * set Batch Size = 32</inlineHelpText>
+    <label>Batch Size</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,204 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global"
+                controller="SVNSUMMITS_EventListController"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="baseModel" type="String" access="global"/>
+
+	<aura:registerEvent name="filterEvent" type="c:SVNSUMMITS_Events_Filter_Event"/>
+
+	<aura:attribute name="showDateFilter"     type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showTopicFilter"    type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="showLocationFilter" type="Boolean" default="true"  access="global"/>
+	<aura:attribute name="searchThreshold"    type="Integer" default="2"     access="global"/>
+	<aura:attribute name="showTypeFilter"     type="Boolean" default="false" access="global"/>
+	<aura:attribute name="showPickLists"      type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="searchString"       type="String" default="" access="public"/>
+	<aura:attribute name="selectAll"          type="String" default="{!$Label.c.ss_evt_text_selectAll}" access="public"/>
+
+	<!-- Custom Field1 -->
+	<aura:attribute name="customField1"             type="String" default="" access="global"/>
+	<aura:attribute name="pickListLabelField1"      type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField1"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField1"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField1"       type="String" default="" access="public"/>
+	<aura:attribute name="customValuesField1"       type="List"   access="public"/>
+	<aura:attribute name="typeAheadField1"          type="String" default="" access="public"/>
+	
+	<!-- Custom Field2 -->
+	<aura:attribute name="customField2"             type="String" default="" access="global"/>
+	<aura:attribute name="pickListLabelField2"      type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField2"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField2"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField2"       type="String" default="" access="public"/>
+	<aura:attribute name="customValuesField2"       type="List"   access="public"/>
+	<aura:attribute name="typeAheadField2"          type="String" default="" access="public"/>
+	
+	<!-- Custom Field3 -->
+	<aura:attribute name="customField3"             type="String" default="" access="global"/>
+	<aura:attribute name="pickListLabelField3"      type="String" default="" access="global"/>
+	<aura:attribute name="labelCustomField3"        type="String" default="" access="global"/>
+	<aura:attribute name="placeHolderCustomField3"  type="String" default="" access="global"/>
+	<aura:attribute name="searchCustomField3"       type="String" default="" access="public"/>
+	<aura:attribute name="customValuesField3"       type="List"   access="public"/>
+	<aura:attribute name="typeAheadField3"          type="String" default="" access="public"/>
+
+	<lightning:layout multipleRows="true"
+	                  class="slds-card">
+
+		<aura:if isTrue="{!v.showTopicFilter}">
+			<lightning:layoutItem size="12">
+				<c:SVNSUMMITS_Events_Topic_Filter/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<aura:if isTrue="{!v.showDateFilter}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="4"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12"
+			                      class="slds-p-bottom--x-small">
+				<c:SVNSUMMITS_Events_Date_Filter/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<aura:if isTrue="{!v.showLocationFilter}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="4"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12"
+			                      class="slds-p-bottom--x-small">
+				<c:SVNSUMMITS_Events_Location_Filter showPickLists="{!v.showPickLists}"
+				                                     searchThreshold="{!v.searchThreshold}"/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<aura:if isTrue="{!v.showTypeFilter}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="4"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12"
+			                      class="slds-p-bottom--x-small">
+				<c:SVNSUMMITS_Events_Type_Filter/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Custom Field1 -->
+		<aura:if isTrue="{! notequals(v.customField1, '')}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="4"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12"
+			                      class="slds-p-bottom--x-small">
+				<aura:if isTrue="{!v.showPickLists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 value="{!v.typeAheadField1}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField1"
+					                 name="typeAheadCustomField1"
+					                 placeholder="{!v.placeHolderCustomField1}"
+					                 label="{!v.labelCustomField1}"/>
+					<lightning:select name="customField1Filter"
+					                  onchange="{!c.onFilterEvents}"
+					                  label="{!v.pickListLabelField1}"
+					                  value="{!v.searchCustomField1}">
+						<aura:iteration items="{!v.customValuesField1}" var="field1">
+							<option value="{!field1}">{!field1}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 class="slds-p-bottom--x-small"
+						                 value="{!v.searchCustomField1}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField1"
+						                 placeholder="{!v.placeHolderCustomField1}"
+						                 label="{!v.labelCustomField1}"/>
+					</aura:set>
+				</aura:if>
+
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Custom Field2 -->
+		<aura:if isTrue="{! notequals(v.customField2, '')}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="4"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPickLists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 value="{!v.typeAheadField2}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField2"
+					                 name="typeAheadCustomField2"
+					                 placeholder="{!v.placeHolderCustomField2}"
+					                 label="{!v.labelCustomField2}"/>
+					<lightning:select name="customField2Filter"
+					                  onchange="{!c.onFilterEvents}"
+					                  label="{!v.pickListLabelField2}"
+					                  value="{!v.searchCustomField2}">
+						<aura:iteration items="{!v.customValuesField2}" var="field2">
+							<option value="{!field2}">{!field2}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 value="{!v.searchCustomField2}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField2"
+						                 placeholder="{!v.placeHolderCustomField2}"
+						                 label="{!v.labelCustomField2}"/>
+					</aura:set>
+				</aura:if>
+
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Custom Field3 -->
+		<aura:if isTrue="{! notequals(v.customField3, '')}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="4"
+			                      mediumDeviceSize="6"
+			                      smallDeviceSize="12">
+				<aura:if isTrue="{!v.showPickLists}">
+					<!-- type ahead with dropdown -->
+					<lightning:input type="search"
+					                 value="{!v.typeAheadField3}"
+					                 onchange="{!c.onCustomTypeAhead}"
+					                 aura:id="typeAheadCustomField3"
+					                 name="typeAheadCustomField3"
+					                 placeholder="{!v.placeHolderCustomField3}"
+					                 label="{!v.labelCustomField3}"/>
+					<lightning:select name="customField3Filter"
+					                  onchange="{!c.onFilterEvents}"
+					                  label="{!v.pickListLabelField3}"
+					                  value="{!v.searchCustomField3}">
+						<aura:iteration items="{!v.customValuesField3}" var="field3">
+							<option value="{!field3}">{!field3}</option>
+						</aura:iteration>
+					</lightning:select>
+					<aura:set attribute="else">
+						<!-- no dropdown - just search -->
+						<lightning:input type="search"
+						                 value="{!v.searchCustomField3}"
+						                 onchange="{!c.onSearchCustomField}"
+						                 name="customField3"
+						                 placeholder="{!v.placeHolderCustomField3}"
+						                 label="{!v.labelCustomField3}"/>
+					</aura:set>
+				</aura:if>
+
+			</lightning:layoutItem>
+		</aura:if>
+
+	</lightning:layout>
+
+</aura:component>

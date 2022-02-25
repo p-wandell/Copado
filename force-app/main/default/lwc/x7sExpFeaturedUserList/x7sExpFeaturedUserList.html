@@ -1,0 +1,40 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Featured User List -->
+<template>
+
+    <section class={customClass}>
+
+        <!-- component heading -->
+        <c-x7s-exp-html-headings text={title} align={titleAlignment} tag="h4" role="banner"></c-x7s-exp-html-headings>
+
+        <!-- List -->
+        <template if:true={isList} for:each={users} for:item="item">
+            <c-x7s-exp-featured-user-tile key={item.Id}
+                                      record-id={item.Id}
+                                      name={item.Name}
+                                      title={item.Title}
+                                      medium-photo-url={item.MediumPhotoUrl}
+                                      view-profile-label={viewProfileLabel}></c-x7s-exp-featured-user-tile>
+        </template>
+
+        <lightning-layout if:true={isCards} multiple-rows="true" pull-to-boundary="small">
+            <template for:each={users} for:item="item">
+                <lightning-layout-item key={item.Id} size="6" medium-device-size={mediumDeviceSize} large-device-size={largeDeviceSize} padding="around-small">
+                    <c-x7s-exp-featured-user-card record-id={item.Id}
+                                              name={item.Name}
+                                              user-title={item.Title}
+                                              medium-photo-url={item.MediumPhotoUrl}
+                                              view-profile-label={viewProfileLabel}></c-x7s-exp-featured-user-card>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+
+        <!-- carousel -->
+        <div if:true={isCarousel} class="carousel" lwc:dom="manual" aria-label={label.labelAriaWrapper} role="main"></div>
+
+    </section>
+
+</template>

@@ -1,0 +1,34 @@
+<apex:page controller="fferpcore.RunSequencingController" tabStyle="RunSequencing__tab" lightningStylesheets="true">
+	<apex:stylesheet value="{!URLFOR($Resource.fferpcore__CustomLexStyles, 'stylesheets/customLexStyles.css')}"/>
+	<style>
+		.slds-vf-scope .bPageBlock .detailList .dataCol input[type="radio"]:first-child {
+			margin-top:0px;
+		}
+	</style>
+	<apex:sectionHeader title="{!$Label.fferpcore__erprunsequencingpagetitle}" subtitle="{!$Label.fferpcore__erprunsequencingpagesubtitle}" help="{!helpUrl}"/>
+	<apex:pageMessages />
+	<apex:pageMessage rendered="{!NOT(hasEnabledSequenceFields)}" summary="{!$Label.fferpcore__erprunsequencingnosequences}" severity="error" strength="1"/>
+	<apex:form >
+		<apex:pageBlock title="{!$Label.fferpcore__erprunsequencingpagesubtitle}" rendered="{!hasEnabledSequenceFields}">
+			<apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!run}" value="{!$Label.fferpcore__erprunsequencingrunbutton}"/>
+            </apex:pageBlockButtons>
+			<apex:pageBlockSection columns="2">
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel for="SequenceJobs" value="{!$Label.fferpcore__erprunsequencingobjecttypesfield}"></apex:outputLabel>
+					<apex:outputPanel >
+						<div class = "requiredInput">
+							<div class = "requiredBlock"></div>
+							<apex:selectList id="SequenceJobs" value="{!selectedObjectTypes}" required="true" multiselect="true" size="5" label="{!$Label.fferpcore__erprunsequencingobjecttypesfield}">
+								<apex:selectOptions value="{!objectTypes}"/>
+							</apex:selectList>
+						</div>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:selectRadio value="{!selectedRecordOption}" layout="pageDirection" label="{!$Label.fferpcore__erprunsequencingrecordoptionfield}">
+					<apex:selectOptions value="{!recordOptions}"/>
+				</apex:selectRadio>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

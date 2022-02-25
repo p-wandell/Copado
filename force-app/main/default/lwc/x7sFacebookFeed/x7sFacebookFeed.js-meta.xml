@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Facebook Page Feed</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Facebook Feed</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage, lightning__RecordPage, lightningCommunity__Default">
+            <property name="title" type="String" label="Title" />
+            <property name="subTitle" type="String" label="Subtitle" />
+            <property name="align" type="String" label="Title Alignment" datasource="left,center,right" />
+            <property name="facebookUrl" type="String" label="Facebook Page URL" default="https://www.facebook.com/7SummitsInc/" required="true" />
+            <property name="width" type="Integer" label="Width" description="The pixel width of the embed (Min. 180 to Max. 500)" min="180" max="500" />
+            <property name="height" type="Integer" label="Height" description="The pixel height of the embed (Min. 70)" min="70" />
+            <property name="timelineTab" type="Boolean" label="Show Timeline" default="true" />
+            <property name="eventsTab" type="Boolean" label="Show Events" />
+            <property name="messagesTab" type="Boolean" label="Show Messages" />
+            <property name="hideCover" type="Boolean" label="Hide cover photo?" />
+            <property name="showFacePile" type="Boolean" label="Show people who like this page?" />
+            <property name="hideCTA" type="Boolean" label="Hide the custom call to action button?" />
+            <property name="smallHeader" type="Boolean" label="Use small header?" />
+            <property name="variant" type="String" label="Container Variant" datasource="default, slds-card, featured" description="Change component container style." />
+            <property name="appId" type="String" label="Facebook AppId (optional)" required="false" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,41 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                controller="SVNSUMMITS_EventListController">
+
+	<!-- Base model -->
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler   name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.setParameters}"/>
+
+	<aura:handler event="c:SVNSUMMITS_Events_DisplayMode_Event" action="{!c.setDisplayMode}"/>
+	<aura:registerEvent name="displayEvent" type="c:SVNSUMMITS_Events_DisplayMode_Event"/>
+
+	<aura:attribute name="listViewMode" type="String" default="List" access="global"/>
+
+	<div class="slds-button-group" role="group">
+		<a href=""
+		   class="slds-button slds-button--neutral slds-text-heading--label slds-p-top--x-small slds-p-bottom--x-small customBtn btnActive"
+		   label="{!$Label.c.ss_evt_label_List}" onclick="{!c.setListView}" aura:id="listBTN">
+			<img class="displyIconImage slds-icon closeIcn grayFill"
+			     src="{!$Resource.SVNSUMMITS_Event_Resource+'/EventsResource/SLDS00122/assets/icons/utility/list_60.png'}"/>
+			<!-- <ui:outputText value="List" aura:Id="List"/> -->
+		</a>
+
+		<a href=""
+		   class="slds-button slds-button--neutral slds-text-heading--label slds-p-top--x-small slds-p-bottom--x-small customBtn"
+		   label="Tile" onclick="{!c.setTileView}" aura:id="tileBTN">
+			<img class="displyIconImage slds-icon closeIcn grayFill"
+			     src="{!$Resource.SVNSUMMITS_Event_Resource +'/EventsResource/SLDS00122/assets/icons/utility/apps_60.png'}"/>
+			<!-- <ui:outputText value="Tile" aura:Id="Tile"/> -->
+		</a>
+
+		<a href=""
+		   class="slds-button slds-button--neutral slds-text-heading--label slds-p-top--x-small slds-p-bottom--x-small customBtn"
+		   label="{!$Label.c.ss_evt_label_Calendar}" onclick="{!c.setCalendarView}" aura:id="calendarBTN">
+			<img class="displyIconImage slds-icon closeIcn grayFill"
+			     src="{!$Resource.SVNSUMMITS_Event_Resource+'/EventsResource/SLDS00122/assets/icons/utility/event_60.png'}"/>
+			<!-- <ui:outputText value="Calendar" aura:Id="Calendar"/> -->
+		</a>
+	</div>
+
+</aura:component>

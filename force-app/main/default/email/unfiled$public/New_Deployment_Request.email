@@ -1,0 +1,18 @@
+The amazing Solution Engineering organization at 7Summits is trying to sell IP once again. Here's what they need to make that happen:
+
+Summary: {!Product_Request__c.Request_Summary__c}
+Link: {!Product_Request__c.Link}
+
+Created by: {!Product_Request__c.CreatedBy}
+Created Date: {!Product_Request__c.CreatedDate}
+
+Type: {!Product_Request__c.Request_Type__c}
+Deploy by Date: {!Product_Request__c.Requested_Deployment_Date__c}
+IP Included: {!Product_Request__c.Products_IP_Included__c}
+
+Org Credentials: {!Product_Request__c.Org_Credentials__c}
+Org ID or username: {!Product_Request__c.Destination_Org_Id__c}
+
+Account: {!Product_Request__c.Account__c}
+Opportunity: {!Product_Request__c.Opportunity__c}
+Notes: {!Product_Request__c.Request_Notes__c}

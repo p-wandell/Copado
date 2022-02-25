@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>if(pse__Project_Task__c.pse__Estimated_Hours__c:SUM=0,0,pse__Project_Task__c.pse__Actual_Hours__c:SUM/pse__Project_Task__c.pse__Estimated_Hours__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Project Hours Complete %</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Project Hours Complete %</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>if(pse__Project_Task__c.pse__Points__c:SUM=0,0,pse__Project_Task__c.pse__Points_Complete__c:SUM/pse__Project_Task__c.pse__Points__c:SUM)</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Project Points Complete %</description>
+        <developerName>FORMULA2</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Project Points Complete %</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>(if(pse__Project_Task__c.pse__Points__c:SUM=0,0,pse__Project_Task__c.pse__Points_Complete__c:SUM/pse__Project_Task__c.pse__Points__c:SUM))-(if(pse__Project_Task__c.pse__Estimated_Hours__c:SUM=0,0,pse__Project_Task__c.pse__Actual_Hours__c:SUM/pse__Project_Task__c.pse__Estimated_Hours__c:SUM))</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Completion Variance [points % - hours %]</description>
+        <developerName>FORMULA3</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Completion Variance</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <colorRanges>
+        <columnName>FORMULA3</columnName>
+        <highBreakpoint>20.0</highBreakpoint>
+        <highColor>#54C254</highColor>
+        <lowBreakpoint>-20.0</lowBreakpoint>
+        <lowColor>#C25454</lowColor>
+        <midColor>#FFFFFF</midColor>
+    </colorRanges>
+    <columns>
+        <field>pse__Proj__c.pse__Project_Tasks__r$Name</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Start_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Actual_Start_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__End_Date__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Actual_End_Date__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Estimated_Hours__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Actual_Hours__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Hours_Remaining__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Percent_Complete_Hours__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Points__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Points_Complete__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Points_Remaining__c</field>
+    </columns>
+    <columns>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Percent_Complete_Points__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Project Completion by Task and Milestone</description>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Proj__c$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>pse__Proj__c.pse__Project_Tasks__r$pse__Milestone__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Project Completion by Task&amp;Milestone v1</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>psa_report__Projects_with_Tasks_and_Task_Time__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>false</showGrandTotal>
+    <showSubTotals>false</showSubTotals>
+    <sortColumn>pse__Proj__c.pse__Project_Tasks__r$Name</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>pse__Proj__c$pse__Actuals_Last_Update_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

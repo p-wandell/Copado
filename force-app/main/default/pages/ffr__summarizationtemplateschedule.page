@@ -1,0 +1,40 @@
+<apex:page standardController="ffr__SummarizationTemplate__c" extensions="ffr.SummarizationTemplateScheduleController" recordSetVar="templates" lightningStylesheets="true" docType="html-5.0">
+	<style>
+		.goBreadcrumb{
+			font-family:'Verdana','Geneva',sans-serif;
+			font-size:91.3%;
+			height:15px;
+			margin-top:-15px;
+			vertical-align:middle;
+		}
+		.goBreadcrumb a{
+			padding-left:4px;
+		}
+	</style>
+
+	<apex:form id="scheduleform">
+		<apex:sectionHeader title="{!$Label.ffr__summarizationtemplatescheduletitle}" help="{!helpLink}"/>
+
+		<DIV class="goBreadcrumb">
+		&nbsp;&#171;<a href="{!URLFOR($Action.SummarizationTemplate__c.Tab,$ObjectType.SummarizationTemplate__c)}">{!$Label.SummarizationTemplatesBackToList}</a>
+		</DIV>
+
+		<apex:pageBlock >
+			<apex:pageMessages />
+			<c:fflib_SchedulerConfiguration schedulerConfiguration="{!pageSchedulerConfig}" rendered="{!CanShowButton}"/>
+
+			<br/>
+
+			<apex:pageBlockTable value="{!templates}" var="template" rendered="{!CanShowButton}">
+				<apex:column value="{!template.name}"/>
+			</apex:pageBlockTable>
+
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.ffr__summarizationtemplateschedulebutton}" action="{!schedule}" id="schedule_h" reRender=""/>
+				<apex:commandButton value="{!$Label.ffr__cancel}" action="{!cancel}" id="cancel_h" immediate="true" reRender=""/>
+				<apex:commandButton value="{!$Label.ffr__nativeuibuttongoback}" action="{!cancel}" id="goBack_h" immediate="true" reRender=""/>
+			</apex:pageBlockButtons>
+
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

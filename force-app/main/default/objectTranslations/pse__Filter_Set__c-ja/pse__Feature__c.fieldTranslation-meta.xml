@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>このフィルタセットがオプションとして表示される場所を制限します。現在「Resource Planner」と「Project Planner」のみがサポートされています。</help>
+    <label><!-- Available In --></label>
+    <name>pse__Feature__c</name>
+    <picklistValues>
+        <masterLabel>Project Planner</masterLabel>
+        <translation>プロジェクトプランナー</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Resource Planner</masterLabel>
+        <translation>リソースプランナー</translation>
+    </picklistValues>
+</CustomFieldTranslation>

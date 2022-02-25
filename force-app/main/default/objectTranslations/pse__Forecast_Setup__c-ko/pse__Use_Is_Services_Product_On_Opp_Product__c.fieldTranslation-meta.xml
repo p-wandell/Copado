@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>기회 제품을 선택하면 IsServicesProductLine이 선택된 기회 제품 만 포함됩니다. 제품을 선택하면 IsServicesProduct가 제품 자체에서 확인 된 기회 제품 만 포함됩니다.</help>
+    <label><!-- Use Is Services Product On Opp Product --></label>
+    <name>pse__Use_Is_Services_Product_On_Opp_Product__c</name>
+    <picklistValues>
+        <masterLabel>Opportunity Product</masterLabel>
+        <translation>기회 제품</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Product</masterLabel>
+        <translation>생성물</translation>
+    </picklistValues>
+</CustomFieldTranslation>

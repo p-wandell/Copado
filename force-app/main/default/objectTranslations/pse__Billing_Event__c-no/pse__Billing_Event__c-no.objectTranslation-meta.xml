@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Billing Event</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Faktureringshendelser</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Navn</nameFieldLabel>
+    <sharingReasons>
+        <label><!-- PSE Member Share --></label>
+        <name>pse__PSE_Member_Share</name>
+    </sharingReasons>
+    <sharingReasons>
+        <label><!-- PSE PM Share --></label>
+        <name>pse__PSE_PM_Share</name>
+    </sharingReasons>
+    <validationRules>
+        <errorMessage><!-- Invoice Number or Date is not allowed on record unless it is invoiced --></errorMessage>
+        <name>pse__Invoiced</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- ClearBillingData --></label>
+        <name>pse__ClearBillingData</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Clear_Billing_Data --></label>
+        <name>pse__Clear_Billing_Data</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_Billing_Document --></label>
+        <name>pse__Create_Billing_Document</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_Billing_Documents --></label>
+        <name>pse__Create_Billing_Documents</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Invoice --></label>
+        <name>pse__Invoice</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Invoice_Detail --></label>
+        <name>pse__Invoice_Detail</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Recalc --></label>
+        <name>pse__Recalc</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Recalc_Detail --></label>
+        <name>pse__Recalc_Detail</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Release --></label>
+        <name>pse__Release</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Release_Detail --></label>
+        <name>pse__Release_Detail</name>
+    </webLinks>
+</CustomObjectTranslation>

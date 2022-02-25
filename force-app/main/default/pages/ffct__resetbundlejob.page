@@ -1,0 +1,11 @@
+<apex:page standardController="ffct__BundleJob__c" extensions="ffct.BundleJobControllerExtension" action="{!resetBundleJob}">
+    <apex:form id="form" >
+        <apex:sectionHeader title="Reset Bundle Job"/>
+        <apex:pageMessages escape="false" id="messageDiv"/>
+        <apex:outputPanel id="progressDiv" layout="block" >
+            <apex:outputLink style="padding-top:50px;padding-left:50px;color: #015BA7;" value="{!URLFOR($Action.ffct__BundleJob__c.View,ffct__BundleJob__c.Id)}">
+                 {!$Label.ffct__gotobundlejob}
+            </apex:outputLink>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<template>
+	<div class="slds-box slds-box_xx-small">
+		<!--Metric Title-->
+		<template if:true={title}>
+			<lightning-layout class="slds-truncate">
+				<lightning-layout-item flexibility="auto" padding="around-small"
+				                       class="slds-p-top_small slds-p-horizontal_small">
+					<c-x7s-shr-component-wrapper title={title}
+					                             title-align={titleAlignment}>
+					</c-x7s-shr-component-wrapper>
+				</lightning-layout-item>
+			</lightning-layout>
+		</template>
+		<!-- Metric Body-->
+		<lightning-layout>
+			<lightning-layout-item flexibility="auto" padding="around-small" class="slds-truncate">
+				<div class="page-section page-main ">
+					<div class="slds-text-heading_large slds-text-align_left" data-id="metId">
+						<template if:true={isValueTypeCurrOrPer}>
+							<lightning-formatted-number value={metricValue}
+							                            format-style={metricValueType}
+							                            class={fontbold}>
+							</lightning-formatted-number>
+						</template>
+						<template if:false={isValueTypeCurrOrPer}>
+							<p>{metricValue}</p>
+						</template>
+					</div>
+					<p>
+						<lightning-formatted-text value={metricLabel}></lightning-formatted-text>
+					</p>
+				</div>
+			</lightning-layout-item>
+			<lightning-layout-item padding="around-small" alignment-bump="left" class="slds-align_absolute-left">
+				<lightning-icon icon-name={iconName} title={iconHoverText} size="medium"
+				                style={styleIcon}></lightning-icon>
+			</lightning-layout-item>
+		</lightning-layout>
+		<!--Metric Footer-->
+		<template if:true={showButton}>
+			<lightning-layout class="metric-card__footer">
+				<lightning-layout-item padding="horizontal-small">
+					<ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links">
+						<template if:true={showLeftButton}>
+							<li class="slds-item">
+								<lightning-button label={labelForLeftButton} value={urlForLeftButton}
+								                  onclick={navigateToWebPage} variant="base ">
+								</lightning-button>
+							</li>
+						</template>
+						<template if:true={showRightButton}>
+							<li class="slds-item">
+								<lightning-button label={labelForRightButton} value={urlForRightButton}
+								                  onclick={navigateToWebPage} variant="base ">
+								</lightning-button>
+							</li>
+						</template>
+					</ul>
+				</lightning-layout-item>
+			</lightning-layout>
+		</template>
+	</div>
+</template>

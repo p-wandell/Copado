@@ -1,0 +1,18 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 8/9/17.
+ -->
+
+<aura:event description="ss_cart_event"
+            type="APPLICATION">
+
+	<!-- Action: add, update, delete, clear (all), display (update the button values only) -->
+	<aura:attribute name="action"    type="String" />
+	<aura:attribute name="itemId"    type="String" />
+	<aura:attribute name="name"      type="String" />
+	<aura:attribute name="unitPrice" type="Decimal"/>
+	<aura:attribute name="quantity"  type="Integer"/>
+</aura:event>

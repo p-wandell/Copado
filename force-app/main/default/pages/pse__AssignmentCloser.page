@@ -1,0 +1,80 @@
+<apex:page standardController="pse__Assignment__c" recordSetVar="assignRecs" title="{!$Label.pse__assignment_label_close_assignment}"
+ extensions="pse.AssignmentCloserController" lightningStylesheets="true">
+
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" />
+	<c:WaitComponent />
+
+	<apex:form id="form">
+
+		<apex:pageBlock id="infoBlock">
+			<apex:pageMessages id="messages" />
+			<apex:actionFunction id="doCancel" name="doCancel" action="{!cancel}" immediate="true" />
+			<apex:actionFunction id="doSave" name="doSave" action="{!doSave}" />
+
+			<apex:pageBlockSection id="infoSection" title="{!$Label.pse__common_label_information}" columns="2" collapsible="false" rendered="{!displayContent}">
+				<apex:inputField value="{!templateAssignment.pse__Status__c}" />
+				<apex:inputField id="endDateFld" value="{!templateSchedule.pse__End_Date__c}" />
+				<apex:inputField value="{!templateAssignment.pse__Closed_for_Time_Entry__c}" />
+				<apex:inputField value="{!templateAssignment.pse__Closed_for_Expense_Entry__c}" />
+				<apex:pageBlockSectionItem >
+					<apex:outputText value="" />{!$Label.pse__assignment_message_closed_note}</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+
+		</apex:pageBlock>
+
+		<apex:pageBlock tabStyle="Assignment__c" title="{!$Label.pse__assignment_label_assignments_to_close}" rendered="{!displayContent}">
+			<apex:pageBlockTable value="{!selectedAssignments}" var="ar">
+				<apex:column value="{!ar.Name}" />
+				<apex:column value="{!ar.pse__Status__c}" />
+				<apex:column value="{!ar.Schedule__r.pse__End_Date__c}" />
+				<apex:column value="{!ar.pse__Closed_for_Time_Entry__c}" />
+				<apex:column value="{!ar.pse__Closed_for_Expense_Entry__c}" />
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+
+	</apex:form>
+	<script>
+		prepareVFConfig();
+		function prepareVFConfig() {
+			var config = {
+				objectName: '{!JSENCODE($Label.assignment_label_close_assignment)}',
+				helpUrl: '{!$Page.ClosingAssignmentsHelp}',
+				objectApiName: '{!$ObjectType["Assignment__c"].name}',
+				onRender: onHeaderLoadCallback,
+				buttons: [{
+					id: 'cancel',
+					label: '{!JSENCODE($Label.common_label_cancel)}',
+					actionFn: 'doCancel'
+				}]
+			},
+				endDateFldId = '{!$Component.form.infoBlock.infoSection.endDateFld}';
+
+			if ('{!displayContent}' === 'true') {
+				config.buttons.push({
+					id: 'save',
+					label: '{!JSENCODE($Label.common_label_save)}',
+					actionFn: 'doSave'
+				});
+			}
+
+			wait(true);
+
+			if (document.getElementById(endDateFldId)) {
+				document.getElementById(endDateFldId).blur();
+			}
+			$FFHEADER.renderHeader(config);
+		}
+
+		function onHeaderLoadCallback() {
+			var endDateFldId = '{!$Component.form.infoBlock.infoSection.endDateFld}';
+			wait(false);
+			if (document.getElementById(endDateFldId)) {
+				document.getElementById(endDateFldId).focus();
+			}
+		}
+
+		function setFocus() { }
+
+	</script>
+</apex:page>

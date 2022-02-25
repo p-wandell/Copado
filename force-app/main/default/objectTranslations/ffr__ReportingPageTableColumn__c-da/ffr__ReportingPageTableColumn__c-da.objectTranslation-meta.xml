@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Rapporterende sidetabelkolonne</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Rapportering af sidetabelkolonner</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+    </caseValues>
+    <gender>Feminine</gender>
+    <nameFieldLabel>Rapportering af sideoversigt Kolonne nav</nameFieldLabel>
+    <recordTypes>
+        <description><!-- Use this record type to add a column calculation to your reporting table. --></description>
+        <label><!-- Column Calculation --></label>
+        <name>ffr__ColumnCalculation</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add a group column to your reporting table. --></description>
+        <label><!-- Group --></label>
+        <name>ffr__Group</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Use this record type to add a value column to your reporting table. --></description>
+        <label><!-- Value --></label>
+        <name>ffr__Value</name>
+    </recordTypes>
+</CustomObjectTranslation>

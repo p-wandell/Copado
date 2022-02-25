@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__TotalNumberOfRecordMigrations__c</fullName>
+    <deprecated>false</deprecated>
+    <description>It will show the total count of Record Migrations in Migration Set</description>
+    <externalId>false</externalId>
+    <label>Total number of records</label>
+    <summaryForeignKey>ffct__RecordMigration__c.ffct__MigrationSet__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

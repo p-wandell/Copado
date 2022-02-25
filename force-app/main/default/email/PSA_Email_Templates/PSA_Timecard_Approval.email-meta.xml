@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>PSA Timecard Approval</name>
+    <style>none</style>
+    <subject>Timecard Awaiting Your Approval - {!pse__Timecard_Header__c.pse__Project__c} Week Ending: {!pse__Timecard_Header__c.pse__End_Date__c}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -1,0 +1,482 @@
+<!--
+  ~ Copyright (c) 2020. 7summits Inc. All rights reserved.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper 
+		custom-class={componentClass}
+		variant={variant}
+		title={headerText}
+		title-align={headerAlignment}>
+
+		<!--Events Form Section Start-->
+		<div class="slds-text-align_left slds-grid slds-wrap slds-grid--pull-padded">
+		
+			<!--Spinner-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-is-relative">
+					<template if:true={loading}>
+						<lightning-spinner alternative-text="Loading"
+								size="medium"
+								variant="brand">
+						</lightning-spinner>
+					</template>
+				</div>
+			</div>
+
+			<!--Events title Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-form-element__control inputDiv">
+					<lightning-input data-id="eventName"
+								value={eventName}
+								onchange={validateEventName}
+								name={labels.labelEventsTitle}
+								label={labels.labelEventsTitle}
+								placeholder={labels.labelEnterDescriptiveEventTitle}
+								required
+								class="validatInput">
+					</lightning-input>
+				</div>
+			</div>
+
+			<!--  Language Selection  -->
+			<template if:true={isUserLangEnabled}>
+				<div class="slds-col--padded slds-size--1-of-1">
+					<div class="slds-form-element__control inputDiv">
+						<lightning-combobox label={labelLanguage}
+									name="eventsLanguage"
+									class="slds-form-element__control remove-margin"
+									options={languageValues}
+									value={eventsLanguage}
+									data-id="eventsLanguage"
+									required>
+						</lightning-combobox>
+					</div>
+				</div>
+			</template>
+
+			<!-- Audience Targeting -->
+			<template if:true={audienceEnabled}>
+				<div class="slds-col--padded slds-size--1-of-1">
+					<template if:true={audienceShowCombo}>
+						<div class="slds-form-element__control inputDiv">
+							<lightning-combobox label={audienceLabel}
+												placeholder={audiencePlaceHolder}
+												class="slds-form-element__control remove-margin"
+												name="newsAudience"
+												options={audienceList}
+												value={audienceSelected}
+												onchange={handleAudienceChange}>
+							</lightning-combobox>
+						</div>
+					</template>
+
+					<template if:true={audienceShowDelete}>
+						<div class="slds-text-body_small slds-text-color_weak">
+							{labels.labelAudience}
+						</div>
+						<div class="slds-form-element__control">
+							<lightning-button label={audienceName}
+											icon-name="utility:delete"
+											icon-position="right"
+											variant="base"
+											title={labels.labelEventsCreateTooltipDelAud}
+											onclick={deleteAudience}>
+							</lightning-button>
+						</div>
+					</template>
+
+					<template if:true={audienceNoAccess}>
+						<div class="slds-text-body_small slds-text-color_weak">
+							{labels.labelAudience}
+						</div>
+
+						<div class="slds-text-body_small slds-text-color_weak slds-p-bottom_large">
+							{labels.labelEventsCreateAudienceNoAccess}
+						</div>
+					</template>
+				</div>
+			</template>
+
+			<!--Events date and time Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+					<span class="requiredField">*</span>{labels.labelEventsDatesAndLocation}
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<div class="descriptiveText">{labels.labelEnterEventsDatesAndLocation}</div>
+					<lightning-input type="checkbox"
+					                 label={labels.labelAllDayEvent}
+					                 name="alldayCheckBox"
+					                 data-id="allDayEvent"
+					                 checked={eventAllDay}
+									 onchange={handleAllday}>
+					</lightning-input>
+
+					<div class="slds-grid slds-wrap slds-grid--pull-padded " data-id="datesDiv">
+						<div class="slds-col--padded slds-form-element slds-size--1-of-2 slds-x-small-size--1-of-1 slds-small-size--1-of-1 slds-medium-size--3-of-6 slds-large-size--6-of-12 dtInput bgColorForInputs modalWidth"
+						     id="stDate">
+							<template if:false={disableDateTime}>
+								<lightning-input data-id="eventStartDateTime"
+								                 type="datetime-local"
+								                 name={labels.labelStartDate}
+								                 class="form-control validatInput"
+								                 label={labels.labelStartDate}
+								                 onchange={validateStartDateTime}
+								                 timezone={userTimeZone}
+												 value={eventStartTime}
+												 required>
+								</lightning-input>
+							</template>
+							<template if:true={disableDateTime}>
+								<lightning-input data-id="eventStartDate"
+												type="date"
+												name={labels.labelStartDate}
+												class="form-control validatInput"
+												label={labels.labelStartDate}
+												onchange={validateStartDate}
+												timezone={userTimeZone}
+												value={allDayEventStartDate}
+												required>
+								</lightning-input>
+							</template>
+						</div>
+						<div class="slds-col--padded slds-form-element slds-size--1-of-2 slds-x-small-size--1-of-1 slds-small-size--1-of-1 slds-medium-size--3-of-6 slds-large-size--6-of-12  dtInput bgColorForInputs modalWidth"
+						     id="endDt">
+							<template if:false={disableDateTime}>
+								<lightning-input data-id="eventEndDateTime"
+								                 type="datetime-local"
+								                 name={labels.labelEndDate}
+								                 class="form-control validatInput"
+								                 label={labels.labelEndDate}
+								                 onchange={validateEndDateTime}
+								                 timezone={userTimeZone}
+												 value={eventEndTime}
+												 required>
+								</lightning-input>
+							</template>
+
+							<template if:true={disableDateTime}>
+								<lightning-input data-id="eventEndDate"
+												type="date"
+												name={labels.labelEndDate}
+												class="form-control validatInput"
+												label={labels.labelEndDate}
+												onchange={validateEndDate}
+												timezone={userTimeZone}
+												value={allDayEventEndDate}
+												required>
+								</lightning-input>
+							</template>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--Location And Venue Information Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1 bgColorForInputs slds-m-bottom--medium">
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<lightning-input data-id="eventLocationName"
+									label={labels.labelEventLocationName}
+									name="alldayCheckBox"
+									value={eventLocationName}
+									onchange={validateLocationName}
+									class="validatInput"
+									required>
+					</lightning-input>
+				</div>
+
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<lightning-input data-id="eventAddress"
+					                 label={labels.labelAddress}
+					                 name={labels.labelAddress}
+									 value={eventLocationAddress}
+									 onchange={validateAddress}
+									 class="validatInput">
+					</lightning-input>
+				</div>
+
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<lightning-input data-id="eventLocationURL"
+					                 label={labels.labelLocationURL}
+					                 name={labels.labelLocationURL}
+									 value={eventLocationURl}
+									 onchange={validateLocationURL}
+									 placeholder={labels.labelLocationUrlDescription}
+									 class="validatInput">
+					</lightning-input>
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<lightning-textarea data-id="eventVenueInfo"
+					                    class="slds-input"
+					                    label={labels.labelVenueInformation}
+										value={eventVenueInfo}
+										onblur={handleVenueChange}>
+					</lightning-textarea>
+				</div>
+			</div>
+
+			<!--Rich Text Area Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-m-bottom--small">
+					<span class="requiredField">*</span>{labels.labelEventDescription}
+				</div>
+				<div class="slds-form-element__control inputDiv modalInputBSpacing">
+					<div class="descriptiveText">{labels.labelEventDescDescription}</div>
+					<lightning-input-rich-text data-id="eventDetail"
+					                         placeholder={labels.labelEnterEventDetails}
+					                         value={eventDetails}
+					                         valid={validDetails}
+					                         message-when-bad-input={errorDetails}
+					                         onblur={handleEventDetail}>
+					</lightning-input-rich-text>
+				</div>
+			</div>
+
+			<!-- Event Type -->
+			<template if:true={showEventType}>
+				<div class="slds-col--padded slds-size--1-of-1 slds-m-bottom_x-large">
+					<lightning-combobox label={labels.labelEventType}
+								name="selectType"
+								data-id="event-type-input"
+								value={eventType} 
+								options={eventTypeValues}
+								onchange={handleEventType}
+								class="validatInput">
+					</lightning-combobox>
+				</div>
+			</template>
+
+			<!--Attachment Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-form-element__control inputDiv">
+					<lightning-combobox label={labels.labelFeaturedImageType}
+								name="imageType"
+								data-id="imageType"
+								value={selectedImageType} 
+								options={imageTypes}
+								onchange={handleImageTypeChange}
+								class="marginLess inputDiv">
+					</lightning-combobox>
+					<div if:false={showAttachment}>
+						<template if:false={hideImageRef}>
+							<lightning-input
+										label={labels.labelFeaturedImageReference}
+										type="text"
+										placeholder={labels.labelPlaceholderImageReference}
+										data-id="imageReference"
+										onchange={handleImageReference}
+										value={imageReference}
+										field-level-help={labels.toolTipImageReference}>
+							</lightning-input>
+							<div if:true={invalidImage} class="slds-has-error">
+								<p class="slds-form-element__help">
+									{labels.valMsgInvalidImageRef}
+								</p>
+							</div>
+						</template>
+					</div>
+					<div if:true={showAttachment}>
+						<div class="slds-m-bottom_small slds-text-color_weak">
+							{labels.labelUploadImgDesc}
+						</div>
+						<lightning-input data-id="image"
+											name="UploadPhoto"
+											type="file"
+											label={labels.labelUploadFeaturedPhoto}
+											accept={attachmentAccept}
+											class="slds-input attachEdit validatInput"
+											placeholder={labels.labelUploadImgDesc}
+											onchange={notifyFileSelected}>
+						</lightning-input>
+						<div if:true={isRelatedFile} class='slds-m-top_x-small'>
+							<label data-id="fileLabel" class="attachmentLabel">{fileName}</label>
+							<template if:true={showRelatedFileList}>
+								<lightning-combobox label={labels.labelRelatedFileList}
+									name="file"
+									data-id="file"
+									value={selectedFile} 
+									options={relatedFileList}
+									onchange={handleFileSelection}
+									class="marginLess inputDiv slds-m-top_x-small">
+								</lightning-combobox>
+							</template>
+						</div>
+						<div if:false={isRelatedFile} class='slds-m-top_x-small'>
+							<label id="fileLabel">{attachmentName}</label>
+						</div>
+					</div>
+					<div if:true={showPreview} class="imageWrapper">
+						<div class="slds-file slds-file_card inputDiv slds-m-top--small">
+						 <figure>
+						   <a href="javascript:void(0);">
+							 <img src={previewURL} alt="Featured Image" onerror={handleImageError} class='previewImage'/>
+						   </a>
+						 </figure>
+					   </div>
+				   </div>
+				</div>
+			</div>
+
+			<!--Topics Section Start-->
+			<div if:false={hideTopicSelection} class="slds-col--padded slds-size--1-of-1 slds-m-bottom_medium inputDiv">
+				<div class="slds-form-element__label">
+					<template if:true={useTopics}>
+						<span class="requiredField">*</span>
+					</template>
+					{labels.labelSelectTopics}
+				</div>
+				<template if:true={topicValues.length}>
+					<c-x7s-events-multi-select items={topicValues}                                         
+								selected-item-ids={selectedTopicIds}
+								onitemchangeevent={handleTopicChangeEvent}
+								label-name={labels.labelTopicAddNew}
+								class="marginLess">
+					</c-x7s-events-multi-select>
+				</template>
+				<template if:true={topicError}>
+					<div class="slds-has-error">
+					  <p class="slds-form-element__help">
+						{topicError}
+					  </p>
+					</div>
+				  </template>
+			</div>
+
+			<!--  Limit to Specific Groups  -->
+			<template if:true={limitToSpecificGroups}>
+				<div class="slds-col--padded slds-size--1-of-1 slds-m-top--medium ">
+					<div class="slds-text-heading--small slds-m-bottom--small">
+						{labels.labelLimitToSpecificGroups}
+					</div>
+					<div class="slds-form-element__control inputDiv">
+						<lightning-combobox label={labels.labelLimitToSpecificGroupsTxt}
+								name="select1"
+								data-id="filterByGroup"
+								value={eventGroupId} 
+								options={groupValues}
+								onchange={handleEventGroupChange}
+								class="validatInput"
+								required={requireGroups}>
+						</lightning-combobox>
+					</div>
+				</div>
+			</template>
+
+			<!--Custom Fields-->
+			<template if:true={customField1HasVal}>
+				<div class="slds-size--1-of-1 slds-m-bottom_medium">
+					<lightning-input type="text"
+									class="slds-p-around--small"
+									label={customLabel1}
+									name="customInput1"
+									value={customValue1}
+									onchange={handleCustomField1Change}>
+					</lightning-input>
+				</div>
+			</template>
+			<template if:true={customField2HasVal}>
+				<div class="slds-size--1-of-1 slds-m-bottom_medium">
+					<lightning-input type="text"
+									class="slds-p-around--small"
+									label={customLabel2}
+									name="customInput2"
+									value={customValue2}
+									onchange={handleCustomField2Change}>
+					</lightning-input>
+				</div>
+			</template>
+			<template if:true={customField3HasVal}>
+				<div class="slds-size--1-of-1 slds-m-bottom_medium">
+					<lightning-input type="text"
+									class="slds-p-around--small"
+									label={customLabel3}
+									name="customInput3"
+									value={customValue3}
+									onchange={handleCustomField3Change}>
+					</lightning-input>
+				</div>
+			</template>
+
+			<!--Enabling RSVP Section Start-->
+			<div class="slds-col--padded slds-size--1-of-1">
+				<div class="slds-text-heading--small slds-p-top_small slds-m-bottom--small">
+					{labels.labelEventParticiOpt}
+				</div>
+
+				<div id="eventThresholdCountBlock">
+					<lightning-input type="checkbox"
+					                 checked={eventEnableRSVP}
+					                 data-id="enableRSVP"
+									 label={labels.labelAddAbilityToRSVP}
+									 onchange={handleEnableRSVP}
+									 class="slds-m-bottom--small">
+					</lightning-input>
+					<template if:true={eventEnableRSVP}>
+						<lightning-layout-item size="6">
+							<lightning-input label={labels.labelShowRSVPCounter}
+							                 type="number"
+							                 min="0"
+							                 max="1000"
+							                 maxlength="4"
+							                 data-id="eventThresholdCount"
+											 value={eventRSVPThreshold}
+											 class="slds-m-bottom--small validatInput"
+											 onchange={validateRSVPCount}>
+							</lightning-input>
+						</lightning-layout-item>
+					</template>
+				</div>
+
+				<!-- PRICING -->
+				<div data-id="eventTicketPriceBlock">
+					<lightning-input type="checkbox"
+					                 checked={eventEnablePricing}
+									 label={labels.labelAddEventPricing}
+									 onchange={handleEnablePricing}
+									 class="slds-m-bottom--small">
+					</lightning-input>
+					<template if:true={eventEnablePricing}>
+						<lightning-layout-item size="6">
+							<lightning-input label={labels.labelTicketPrice}
+											 value={eventTicketPrice}
+											 class="slds-m-bottom--small"
+											 onchange={handleTicketPrice}>
+							</lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							<lightning-input label={labels.labelExternalEventPaymentURL}
+							                 value={eventPaymentURL}
+											 data-id="eventExternalPaymentURL"
+											 class="slds-m-bottom--small validatInput"
+											 onchange={validatePaymentURL}>
+							</lightning-input>
+						</lightning-layout-item>
+					</template>
+				</div>
+			</div>
+
+			<!--Button Section-->
+			<div>
+			<div class="slds-size--1-of-1 slds-p-horizontal--medium slds-p-vertical--large">
+				<lightning-button label={labels.labelSaveButton}
+				                  onclick={submitEvent}
+				                  disabled={isdisableButton}
+								  variant="brand"
+								  class="slds-m-right--small">
+				</lightning-button>
+
+				<lightning-button label={labels.labelCancelButton}
+				                  onclick={handleCancelButton}
+								  variant="neutral">
+				</lightning-button>
+			</div>
+			<template if:true={strError}>
+				<div class="slds-text-color_destructive">
+					{strError}
+				</div>
+			  </template>
+			</div>
+		</div>
+		<!--Events Form Section End-->
+	</c-x7s-shr-component-wrapper>
+</template>

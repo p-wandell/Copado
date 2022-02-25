@@ -1,0 +1,17 @@
+<!--
+  Copyright (c) 2020.  7Summits Inc. All rights reserved.
+-->
+
+<!-- 7S Icon Label -->
+<template>
+  <lightning-layout class={layoutClasses}>
+    <lightning-layout-item class={iconClasses}>
+      <lightning-icon icon-name={iconName} size={iconSize} src={iconSrc}></lightning-icon>
+    </lightning-layout-item>
+    <lightning-layout-item>
+      <slot>
+        <!--pass content here-->
+      </slot>
+    </lightning-layout-item>
+  </lightning-layout>
+</template>

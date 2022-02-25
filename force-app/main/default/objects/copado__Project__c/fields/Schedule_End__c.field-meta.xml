@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Schedule_End__c</fullName>
+    <defaultValue>&apos;17&apos;</defaultValue>
+    <description>Hour of the day that the scheduled job ends</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Hour of the day that the scheduled job ends</inlineHelpText>
+    <label>Schedule End</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Schedule_Hours</valueSetName>
+    </valueSet>
+</CustomField>

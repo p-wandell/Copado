@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Assets_with_Projects</fullName>
+    <columns>Category__c</columns>
+    <columns>NAME</columns>
+    <columns>Project__c</columns>
+    <columns>Asset_Owner__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Project__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>Assets with Projects</label>
+    <language>en_US</language>
+</ListView>

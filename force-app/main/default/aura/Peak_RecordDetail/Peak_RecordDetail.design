@@ -1,0 +1,43 @@
+<!--
+ - Created by kentheberling on 8/23/18.
+ -->
+
+<design:component label="Peak Record Detail">
+    <design:attribute label="Object Type" name="objectType" />
+
+    <design:attribute label="Section Title" name="sectionTitle" />
+    <design:attribute label="Fields String" name="fieldsString" />
+
+    <design:attribute label="2 - Section Title" name="sectionTitle2" />
+    <design:attribute label="2 - Fields String" name="fieldsString2" />
+
+    <design:attribute label="3 - Section Title" name="sectionTitle3" />
+    <design:attribute label="3 - Fields String" name="fieldsString3" />
+
+    <design:attribute label="4 - Section Title" name="sectionTitle4" />
+    <design:attribute label="4 - Fields String" name="fieldsString4" />
+
+    <design:attribute label="5 - Section Title" name="sectionTitle5" />
+    <design:attribute label="5 - Fields String" name="fieldsString5" />
+
+    <design:attribute label="Show Labels?" name="showLabels"/>
+    <design:attribute label="Show Empty Fields?" name="showEmptyFields"/>
+
+    <design:attribute label="Section Padding" name="sectionPadding"  dataSource="x-small,small,medium,large,x-large" />
+    <design:attribute label="Small Columns" name="smallColumns" dataSource="1,2,3,4,6,12"/>
+    <design:attribute label="Medium Columns" name="mediumColumns" dataSource="1,2,3,4,6,12"/>
+    <design:attribute label="Large Columns" name="largeColumns" dataSource="1,2,3,4,6,12"/>
+
+    <design:attribute label="Horizontal Align" name="horizontalAlign" dataSource="start,end,spread,center,space"/>
+    <design:attribute label="Vertical Align" name="verticalAlign" dataSource="start,end,center,stretch"/>
+
+    <design:attribute label="Item Padding" name="itemPadding" dataSource="horizontal-small,horizontal-medium,horizontal-large,around-small,around-medium,around-large" />
+    <design:attribute label="Pull to Boundary" name="pullToBoundary" dataSource="small,medium,large"/>
+    <design:attribute label="Individual Item Classname" name="itemClass"/>
+
+    <design:attribute label="Record Id" name="recordId" default="{!recordId}"/>
+
+
+    <design:attribute name="CustomClassName" label="Custom Class Name" description="Custom CSS class name. Usually remains blank." />
+    <design:attribute name="CustomIdName" label="Custom ID Name" description="Custom, distinct CSS ID name. Usually remains blank." />
+</design:component>

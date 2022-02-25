@@ -1,0 +1,75 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>    
+    
+    <lightning-layout vertical-align="center" class="task-wrapper slds-p-vertical_x-small">
+
+      <lightning-layout-item class="slds-p-top_xx-small slds-p-bottom_xx-small slds-text-align_left" padding="" size="1">
+        <template if:true={taskCheckboxSetup}>
+          <div>
+            <!--<lightning-input  type="checkbox-button"  name={adventureTask.Id} checked={adventureTask.Completed__c} onchange={isTaskCompleted} disabled={checkboxStatus}></lightning-input>-->
+            <label class={labelCss}>
+              <input type="checkbox" class="slds-assistive-text" id={adventureTask.Id} name={adventureTask.Id} checked={adventureTask.Completed__c} onchange={isTaskCompleted} disabled={checkboxStatus}></input>
+              <span class={spanCss}>
+                <template if:true={flaged}>
+                  <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                </template>
+                <template if:false={flaged}>
+                  <lightning-icon icon-name="utility:account" size="x-small"></lightning-icon>
+                </template>
+              </span>
+            </label>
+
+
+          </div>
+        </template>
+      </lightning-layout-item>
+        
+        <lightning-layout-item padding="" class="iconCircle slds-text-align_right" size="2" >
+           
+            <template if:true={isAttachment}>
+                <a onclick={openSingleFile} data-id={attachmentId} >
+                  <span class={iconWrapperClass}>
+                   <lightning-icon icon-name={adventureTask.Icon_Name__c} size={modIconSize} class="slds-align_absolute-center task-icon"></lightning-icon>
+                  </span>
+                </a>
+              </span>
+            </template>
+
+            <template if:false={isAttachment}>
+                <a onclick={linkClick} data-href={adventureTask.Content_URL__c}>
+                  <span class={iconWrapperClass}>
+                    <lightning-icon icon-name={adventureTask.Icon_Name__c} size={modIconSize} class="slds-align_absolute-center task-icon"></lightning-icon>
+                  </span>
+                </a>
+            </template>
+        </lightning-layout-item>
+       
+        <lightning-layout-item class="slds-p-left_x-small slds-p-right_x-small slds-p-top_none slds-p-bottom_none" padding="" size="9" >
+            <div class="slds-text-align_left">
+				<template if:true={isAttachment}>
+					<a onclick={openSingleFile} data-id={attachmentId}>
+						{adventureTask.Title__c}
+					</a>
+				</template>
+
+				<template if:false={isAttachment}>
+					<template if:true={showTitleAsLink}>
+						<a onclick={linkClick} data-href={adventureTask.Content_URL__c}>
+							{adventureTask.Title__c}
+						</a>
+					</template>
+					<template if:false={showTitleAsLink}>
+						{adventureTask.Title__c}
+					</template>
+				</template>
+            </div>
+        </lightning-layout-item>
+
+      <!--Task Checkbox button  -->
+
+
+    </lightning-layout>
+    
+</template>

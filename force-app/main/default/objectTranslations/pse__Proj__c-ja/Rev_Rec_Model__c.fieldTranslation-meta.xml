@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Represents rev rec model used by finance to recognize deliverables for project --></help>
+    <label><!-- Rev Rec Model --></label>
+    <name>Rev_Rec_Model__c</name>
+    <picklistValues>
+        <masterLabel>Fixed Price (Fixed Deliverable)</masterLabel>
+        <translation><!-- Fixed Price (Fixed Deliverable) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fixed Price (Percent Complete Effort)</masterLabel>
+        <translation><!-- Fixed Price (Percent Complete Effort) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Time and Material</masterLabel>
+        <translation><!-- Time and Material --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

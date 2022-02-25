@@ -1,0 +1,21 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+
+<!-- 7S Featured User Tile -->
+<template>
+    <article key={recordId} class="slds-tile slds-media slds-m-bottom_large">
+        <div class="slds-media__figure">
+            <span class="slds-avatar slds-avatar_circle slds-avatar_medium">
+                <img alt={name} src={mediumPhotoUrl} title={name} />
+            </span>
+        </div>
+        <div class="slds-media__body">
+            <h5 class="slds-tile__title slds-truncate" title={name} if:true={name}>{name}</h5>
+            <div class="slds-tile__detail">
+                <div if:true={title}>{title}</div>
+                <p if:true={viewProfileLabel}><a href="javascript:void(0);" data-id={recordId} onclick={handleProfileClick}>{viewProfileLabel}</a></p>
+            </div>
+        </div>
+    </article>
+</template>

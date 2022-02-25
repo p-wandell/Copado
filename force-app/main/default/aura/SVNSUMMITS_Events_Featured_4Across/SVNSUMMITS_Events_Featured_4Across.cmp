@@ -1,0 +1,107 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventListController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="lightning:availableForFlowScreens,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+	<!-- Base model -->
+	<aura:attribute name="baseModel" type="String" access="global"/>
+	<aura:handler   name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.getFeaturedFourEvents}"/>
+	<aura:attribute name="debugMode" type="Boolean" default="false" access="global"/>
+
+	<aura:attribute name="sitePrefix"   type="String" access="global"/>
+
+	<aura:attribute name="recordId1" type="String" access="global"/>
+	<aura:attribute name="recordId2" type="String" access="global"/>
+	<aura:attribute name="recordId3" type="String" access="global"/>
+
+	<aura:attribute name="allEventsUrl"   type="String" default="/event-list-view-page/" access="global"/>
+	<aura:attribute name="addNewEventUrl" type="String" default="/create-event/" access="global"/>
+
+	<aura:attribute name="isObjectCreatable" type="Boolean" access="public"/>
+	<aura:attribute name="wrappedEventsObj"  type="SVNSUMMITS_EventListWrapper" access="global"/>
+
+	<aura:attribute name="addEventButtonText" type="String" access="global" default="{!$Label.c.ss_evt_label_AddNewEvent}"/>
+	<aura:attribute name="allEventsButtonText" type="String" access="global" default="{!$Label.c.ss_evt_label_AllEvents}"/>
+
+	<aura:attribute name="headerText" type="String" access="global" default="{!$Label.c.ss_evt_label_FeaturedEvents}"/>
+	<aura:attribute name="headerSize" type="String" access="global" default="large"/>
+	<aura:attribute name="headerAlignment" type="String" access="global" default="center"/>
+	<aura:attribute name="showButtonsInHeader" type="Boolean" access="global" default="false"/>
+
+	<!-- Group related -->
+	<aura:attribute name="limitToSpecificGroups" type="Boolean" default="false" access="global"/>
+
+	<lightning:layout multipleRows="true"
+	                  horizontalAlign="center">
+		<aura:if isTrue="{!v.wrappedEventsObj.objEventList.length > 0}">
+			<lightning:layoutItem size="12"
+			                      class="slds-p-bottom--small">
+				<lightning:layout multipleRows="false"
+				                  verticalAlign="start"
+				                  >
+
+					<lightning:layoutItem size="4">
+						<aura:if isTrue="{!v.headerAlignment == 'left'}">
+							<div class="{!'slds-align--absolute-left slds-text-heading--' + v.headerSize}">
+								{!v.headerText}
+							</div>
+						</aura:if>
+					</lightning:layoutItem>
+					<lightning:layoutItem size="4">
+						<aura:if isTrue="{!v.headerAlignment == 'center'}">
+							<div class="{!'slds-align--absolute-center slds-text-heading--' + v.headerSize}">
+								{!v.headerText}
+							</div>
+						</aura:if>
+					</lightning:layoutItem>
+
+					<aura:if isTrue="{!v.showButtonsInHeader}">
+						<lightning:layoutItem size="4">
+							<aura:if isTrue="{!v.allEventsButtonText}">
+								<lightning:buttonGroup class="slds-float--right">
+									<lightning:button label="{!v.allEventsButtonText}"
+									                  onclick="{!c.gotoAllEvents}"
+									                  variant="neutral"/>
+									<aura:if isTrue="{!v.isObjectCreatable}">
+										<lightning:button label="{!v.addEventButtonText}"
+										                  onclick="{!c.gotoAddEvent}"
+										                  variant="brand"/>
+									</aura:if>
+								</lightning:buttonGroup>
+							</aura:if>
+						</lightning:layoutItem>
+					</aura:if>
+
+				</lightning:layout>
+			</lightning:layoutItem>
+
+			<lightning:layoutItem size="12">
+				<c:SVNSUMMITS_Events_Tile displayMode="3-Col"
+				                          debugMode="true"
+				                          sitePrefix="{!v.sitePrefix}"
+				                          wrappedEventsObj="{!v.wrappedEventsObj}"
+				                          totalEvents="{!v.wrappedEventsObj.objEventList.length}"
+				                          isFeatured="true"
+				                          limitToSpecificGroups="{!v.limitToSpecificGroups}"/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<aura:if isTrue="{! not(v.showButtonsInHeader)}">
+			<lightning:layoutItem size="12"
+			                      class="slds-align--absolute-center">
+				<aura:if isTrue="{!v.allEventsButtonText}">
+					<lightning:button label="{!v.allEventsButtonText}"
+					                  onclick="{!c.gotoAllEvents}"
+					                  variant="neutral"/>
+				</aura:if>
+				<aura:if isTrue="{!v.isObjectCreatable}">
+					<lightning:button label="{!v.addEventButtonText}"
+					                  onclick="{!c.gotoAddEvent}"
+					                  variant="brand"/>
+				</aura:if>
+			</lightning:layoutItem>
+		</aura:if>
+
+	</lightning:layout>
+</aura:component>

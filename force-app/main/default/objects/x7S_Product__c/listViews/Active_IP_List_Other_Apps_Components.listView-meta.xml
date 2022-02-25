@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_IP_List_Other_Apps_Components</fullName>
+    <columns>NAME</columns>
+    <columns>Price__c</columns>
+    <columns>LEX_Formula__c</columns>
+    <columns>Launch_Formula__c</columns>
+    <columns>Slides_Formula__c</columns>
+    <columns>Guide_Formula__c</columns>
+    <columns>Video_Formula__c</columns>
+    <columns>AppX_Formula__c</columns>
+    <columns>Battle_Card_Formula__c</columns>
+    <columns>Bitbucket_Formula__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Active__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Launch_Date__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <filters>
+        <field>Product_Code__c</field>
+        <operation>startsWith</operation>
+        <value>Cmp-</value>
+    </filters>
+    <label>Active IP List: Other Apps &amp; Components</label>
+</ListView>

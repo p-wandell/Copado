@@ -1,0 +1,34 @@
+/*
+ *   Copyright (c) 2020. 7Summits Inc.
+ */
+
+
+:host {
+    display: block;
+    border-radius: token(borderRadiusMedium);
+    background: #f9f9f9;
+    color: var(--lwc-colorTextBrand);
+    text-align: left;
+    padding: 1rem;
+    height: 100%;
+    line-height: 1.1;
+    transition: .2s all linear;
+}
+
+a:hover,
+a:focus {
+    background: #E4E5E6;
+    text-decoration: none;
+}
+
+.onboarding-card__label {
+    display: block;
+    font-size: 1rem;
+}
+
+.onboarding-card__description {
+    margin-top: .125rem;
+    font-size: .875rem;
+    display: block;
+    color: var(--lwc-colorTextWeak);
+}

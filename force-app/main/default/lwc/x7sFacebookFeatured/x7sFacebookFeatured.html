@@ -1,0 +1,55 @@
+<!--
+ - Copyright (c) 2020.  7Summits Inc. All rights reserved.
+ -->
+
+<!-- 7S Facebook Featured -->
+<template>
+    <c-x7s-shr-component-wrapper
+            class="x7s-video-gallery-plus"
+            description={subTitle}
+            title={title}
+            title-align={align}
+            variant={variant}>
+
+        <lightning-spinner if:true={loading} alternative-text="Loading"></lightning-spinner>
+
+        <lightning-layout horizontal-align="center" multiple-rows="true">
+            <lightning-layout-item if:true={post1href} flexibility="grow" padding="around-small" class="slds-text-align_center">
+                <iframe
+                        src={facebookPost1Href}
+                        height={post1height}
+                        scrolling="yes"
+                        frameborder="0"
+                        allowtransparency="true"
+                        allow="encrypted-media"
+                        title="Post1"></iframe>
+            </lightning-layout-item>
+
+            <lightning-layout-item if:true={post2href} flexibility="grow" padding="around-small" class="slds-text-align_center">
+                <iframe
+                        src={facebookPost2Href}
+                        height={post2height}
+                        scrolling="yes"
+                        frameborder="0"
+                        allowtransparency="true"
+                        allow="encrypted-media"
+                        title="Post2"></iframe>
+            </lightning-layout-item>
+
+            <lightning-layout-item if:true={post3href} flexibility="grow" padding="around-small" class="slds-text-align_center">
+                <iframe
+                        src={facebookPost3Href}
+                        height={post3height}
+                        scrolling="yes"
+                        frameborder="0"
+                        allowtransparency="true"
+                        allow="encrypted-media"
+                        title="Post3"></iframe>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <div if:true={showMoreLink} slot="footer">
+            <a class="slds-button slds-button_brand" href={moreLink} target="_blank" aria-label="Footer link" >{moreText}</a>
+        </div>
+    </c-x7s-shr-component-wrapper>
+</template>

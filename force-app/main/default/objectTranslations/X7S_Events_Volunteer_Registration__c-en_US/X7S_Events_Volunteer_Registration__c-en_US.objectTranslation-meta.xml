@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>7S Events Volunteer Registration</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>7S Events Volunteer Registrations</value>
+    </caseValues>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- There are already enough volunteers for this task! --></errorMessage>
+        <name>Reached_Capacity</name>
+    </validationRules>
+</CustomObjectTranslation>

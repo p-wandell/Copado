@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rev_Rec_Model__c</fullName>
+    <description>Represents rev rec model used by finance to recognize deliverables for project</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Represents rev rec model used by finance to recognize deliverables for project</inlineHelpText>
+    <label>Rev Rec Model</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Time and Material</fullName>
+                <default>false</default>
+                <label>Time and Material</label>
+            </value>
+            <value>
+                <fullName>Fixed Price (Fixed Deliverable)</fullName>
+                <default>false</default>
+                <label>Fixed Price (Fixed Deliverable)</label>
+            </value>
+            <value>
+                <fullName>Fixed Price (Percent Complete Effort)</fullName>
+                <default>false</default>
+                <label>Fixed Price (Percent Complete Effort)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

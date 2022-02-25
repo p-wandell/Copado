@@ -1,0 +1,175 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 9/29/17.
+ -->
+
+<aura:component description="ss_cart_tile"
+                extends="c:ss_product_base"
+                access="global">
+
+	<aura:attribute name="usePoints"        type="Boolean"  access="public"/>
+	<aura:attribute name="cartItem"         type="Map"      access="public"/>
+	<aura:attribute name="optionsQuantity"  type="String[]" access="public"/>
+
+	<aura:attribute name="showImage"        type="Boolean" default="true" access="public"/>
+	<aura:attribute name="showFamily"       type="Boolean" default="true" access="public"/>
+	<aura:attribute name="showCode"         type="Boolean" default="true" access="public"/>
+	<aura:attribute name="showPrice"        type="Boolean" default="true" access="public"/>
+	<aura:attribute name="showQuantity"     type="Boolean" default="true" access="public"/>
+
+	<aura:attribute name="entryClass"       type="String"  default="slds-text-title"/>
+	<aura:attribute name="numberClass"      type="String"  default="slds-p-left--small"/>
+	<aura:attribute name="flexValue"        type="String"  default="no-grow"/>
+
+	<aura:registerEvent name="updateCart" type="c:ss_cart_event"/>
+
+	<lightning:layout multipleRows="true"
+	                  verticalAlign="center"
+	                  horizontalAlign="spread"
+	                  class="slds-border--bottom">
+
+		<!-- Image -->
+		<aura:if isTrue="{!v.showImage}">
+			<lightning:layoutItem size="1"
+			                      largeDeviceSize="1"
+			                      mediumDeviceSize="2"
+			                      smallDeviceSize="1"
+			                      class="slds-p-top--small slds-p-bottom--small mobileImage"
+			                      flexibility="{!v.flexValue}">
+				<img src="{! v.cartItem.externalUrl ? v.cartItem.externalUrl : v.cartItem.imageUrl}"
+				     alt="{!v.cartItem.name}"
+				     class="productImage slds-align--absolute-center "/>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Details -->
+		<lightning:layoutItem size="12"
+		                      largeDeviceSize="6"
+		                      mediumDeviceSize="6"
+		                      smallDeviceSize="12"
+		                      flexibility="{!flexValue}">
+
+			<lightning:layout multipleRows="true">
+
+				<!-- Name -->
+				<lightning:layoutItem size="12"
+				                      class="slds-truncate">
+					<a href="javascript:void(0)"
+					   onclick="{!c.gotoProduct}">
+							{!v.cartItem.name}
+					</a>
+				</lightning:layoutItem>
+
+				<!-- Product family -->
+				<aura:if isTrue="{!v.showFamily}">
+					<lightning:layoutItem size="12"
+					                      class="{!v.entryClass}">
+							{!v.cartItem.family}
+					</lightning:layoutItem>
+				</aura:if>
+
+			</lightning:layout>
+		</lightning:layoutItem>
+
+		<!-- Product code  -->
+		<aura:if isTrue="{!v.showCode}">
+			<lightning:layoutItem size="12"
+			                      largeDeviceSize="1"
+			                      mediumDeviceSize="2"
+			                      smallDeviceSize="12"
+			                      class="slds-text-title"
+			                      flexibility="{!flexValue}">
+					{!v.cartItem.productCode}
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Unit price -->
+		<aura:if isTrue="{!v.showPrice}">
+			<lightning:layoutItem size="3"
+			                      largeDeviceSize="1"
+			                      mediumDeviceSize="2"
+			                      smallDeviceSize="3"
+			                      flexibility="{!flexValue}">
+				<lightning:layout horizontalAlign="end">
+					<lightning:layoutItem >
+						<aura:if isTrue="{!v.usePoints}">
+							{!v.cartItem.unitPrice}
+							<aura:set attribute="else">
+								<lightning:formattedNumber value="{!v.cartItem.unitPrice}"
+								                           style="currency"/>
+							</aura:set>
+						</aura:if>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Quantity -->
+		<aura:if isTrue="{!v.showQuantity}">
+			<lightning:layoutItem size="3"
+			                      largeDeviceSize="1"
+			                      mediumDeviceSize="2"
+			                      smallDeviceSize="3"
+			                      class="{!v.numberClass}"
+			                      flexibility="{!flexValue}">
+				<lightning:layout horizontalAlign="end">
+					<lightning:layoutItem>
+						<lightning:select aura:id="itemQuantity"
+						                  name="itemQuantity"
+						                  label="{!$Label.c.ss_pc_label_itemQuantity}"
+						                  value="{!v.cartItem.quantity}"
+						                  onchange="{!c.onQuantityChanged}"
+						                  variant="label-hidden"
+						                  class="slds-align--absolute-center">
+							<aura:iteration items="{!v.optionsQuantity}" var="option">
+								<option value="{!option}"
+								        text="{!option}"
+										selected="{!v.cartItem.quantity == option}">
+								</option>
+							</aura:iteration>
+						</lightning:select>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Unit total -->
+		<aura:if isTrue="{! and(v.showQuantity, v.showPrice)}">
+			<lightning:layoutItem size="4"
+			                      largeDeviceSize="1"
+			                      mediumDeviceSize="2"
+			                      smallDeviceSize="4"
+			                      class="{!v.numberClass}"
+			                      flexibility="{!flexValue}">
+				<lightning:layout horizontalAlign="end">
+					<lightning:layoutItem >
+						<aura:if isTrue="{!v.usePoints}">
+							{!v.cartItem.unitTotal}
+							<aura:set attribute="else">
+								<lightning:formattedNumber value="{!v.cartItem.unitTotal}"
+								                           style="currency"/>
+							</aura:set>
+						</aura:if>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</lightning:layoutItem>
+		</aura:if>
+
+		<!-- Remove form cart  -->
+		<lightning:layoutItem size="1"
+		                      largeDeviceSize="1"
+		                      mediumDeviceSize="2"
+		                      smallDeviceSize="1"
+		                      class="slds-p-top--small slds-p-bottom--small slds-align_absolute-center"
+		                      flexibility="{!flexValue}">
+			<lightning:buttonIcon iconName="utility:close"
+			                      alternativeText="delete item"
+			                      onclick="{!c.onRemoveItem}"
+			                      title="{!$Label.c.ss_pc_cart_tooltip_remove}"/>
+		</lightning:layoutItem>
+
+	</lightning:layout>
+</aura:component>

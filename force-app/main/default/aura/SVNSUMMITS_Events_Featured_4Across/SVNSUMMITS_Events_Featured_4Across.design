@@ -1,0 +1,47 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<design:component label="7S Events Featured">
+	<design:attribute name="debugMode"
+	                  label="Debug Mode"
+	                  description="Enabling debug mode will write messages to the browser console for debugging errors"/>
+
+	<design:attribute name="headerText"
+	                  label="Heading Title"
+	                  description="Header Text"/>
+	<design:attribute name="headerSize"
+	                  label="Heading Size"
+	                  description="Header Size"
+	                  datasource="large,medium,small"/>
+	<design:attribute name="headerAlignment"
+	                  label="Heading Alignment"
+	                  description="Header Alignment"
+	                  datasource="left,center"/>
+
+	<design:attribute name="showButtonsInHeader"
+	                  label="Show Buttons in Header?"
+	                  description="Enable buttons in the header verses the footer."/>
+
+	<design:attribute name="recordId1"
+	                  label="RecordId 1"
+	                  description="RecordId for record 1"/>
+	<design:attribute name="recordId2"
+	                  label="RecordId 2"
+	                  description="RecordId for record 2"/>
+	<design:attribute name="recordId3"
+	                  label="RecordId 3"
+	                  description="RecordId for record 3"/>
+	<design:attribute name="allEventsButtonText"
+	                  label="All Events Button text"
+	                  description="" required="true"/>
+	<design:attribute name="addEventButtonText"
+	                  label="Add New Button text"
+	                  description="" required="true"/>
+	<design:attribute name="allEventsUrl"
+	                  label="All Events button Url"
+	                  description="Url to redirect "/>
+	<design:attribute name="addNewEventUrl"
+	                  label="Add new event button url"
+	                  description="Add new event button url"/>
+	<design:attribute name="limitToSpecificGroups"
+	                  label="Enable Limit to Specific Groups?"
+	                  description="Check to limit to specified groups only"/>
+</design:component>

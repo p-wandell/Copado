@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>Muestra Completado si se han devuelto todos los datos de la tarjeta de tiempo solicitados. De lo contrario, muestra Pendiente.</help>
+    <label><!-- Status --></label>
+    <name>pse__Status__c</name>
+    <picklistValues>
+        <masterLabel>Complete</masterLabel>
+        <translation>Completar</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending</masterLabel>
+        <translation>Pendiente</translation>
+    </picklistValues>
+</CustomFieldTranslation>

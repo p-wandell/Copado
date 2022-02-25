@@ -1,0 +1,88 @@
+<apex:page id="communitiesSelfRegPage" showHeader="false" sidebar="false" controller="SS_CommunitySiteSelfRegController" title="{!$Label.site.user_registration}">
+    <style>
+        label {
+            color: #7C7878 !important;
+        }
+        .row * {
+            box-sizing: border-box !important;
+        }
+    </style>
+    <apex:composition template="{!$Site.Template}">
+        <title>{!$Label.site.user_registration}</title>
+        <apex:define name="body"> 
+            <script src="{!URLFOR($Resource.SSCommunity, '7S_SFDC_Community/script/validator.min.js')}"></script>
+
+            <div id="content">
+                <div class="page-header"><h2>{!$Label.site.register}</h2></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h5>{!$Label.registerFor7summitsCommunity}</h5>
+                            </div>
+                            <div class="panel-body">
+                                <apex:form id="theForm" forceSSL="true" html-data-toggle="validator">
+                                    <apex:outputPanel layout="block" styleClass="alert alert-danger" rendered="{!showAlert && !success}">
+                                        <apex:outputText value="{!pageMessage}"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="block" styleClass="alert alert-success" rendered="{!showAlert && success}">
+                                        <apex:outputText value="{!pageMessage}"/>
+                                    </apex:outputPanel>
+                                    <div class="form-group">
+                                        <label for="firstName">{!$ObjectType.User.fields.FirstName.label}</label>
+                                         <apex:inputText html-placeholder="{!$ObjectType.User.fields.FirstName.label}" styleClass="form-control" id="firstName" value="{!firstName}"/>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName">{!$ObjectType.User.fields.LastName.label}</label>
+                                         <apex:inputText html-placeholder="{!$ObjectType.User.fields.LastName.label}" styleClass="form-control" id="lastName" value="{!lastName}"/>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="username">{!$Label.site.username}</label>
+                                        <apex:inputText required="true" html-placeholder="{!$Label.site.username}" styleClass="form-control" id="username" value="{!username}"/>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">{!$Label.site.email}</label>
+                                         <apex:inputText html-placeholder="{!$Label.site.email}" styleClass="form-control" id="email" value="{!email}"/>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">{!$Label.site.password}</label>
+                                         <apex:inputSecret html-placeholder="{!$Label.site.password}" styleClass="form-control" id="password" value="{!password}"/>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmPassword">{!$Label.site.confirm_password}</label>
+                                         <apex:inputSecret html-placeholder="{!$Label.site.confirm_password}" styleClass="form-control" id="confirmPassword" value="{!confirmPassword}" html-data-match="input[id$='password']" html-data-match-error="{!$Label.passwordsDoNotMatch}"/>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <!-- Used to prevent spam as an alternative to reCaptcha -->
+                                    <div style="display:none; visibility:hidden;">
+                                        <apex:inputText value="{!spam}"/>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <apex:commandButton id="submit" value="{!$Label.site.register}" action="{!registerUser}"/>
+                                            <a href="/Login?startURL=%2F">{!$Label.site.login}</a>
+                                    </div>
+                                </apex:form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <c:SS_CommunitySiteLoginProviders />
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                jQuery(document).ready(function() {
+                    // These are tweaks for the validator to set attributes that the Visualforce tags won't let us overwrite
+                    jQuery("input[id$='submit']").attr("disabled", true);
+                    jQuery("input[id$='firstName'], input[id$='lastName'], input[id$='username'], input[id$='email']").attr("required", true);
+                    jQuery("input[id$='email']").attr("type", "email");  
+                });
+            </script>
+        </apex:define>
+    </apex:composition>
+</apex:page>

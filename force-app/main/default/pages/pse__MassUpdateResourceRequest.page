@@ -1,0 +1,345 @@
+<apex:page title="{!$Label.pse__mass_update_rr_ui_mass_update_resource_requests_label}" standardController="pse__Resource_Request__c"
+ extensions="pse.MassUpdateResourceRequestController" tabStyle="Search_Resources__tab" recordSetVar="resourceReqs" sidebar="false"
+ lightningStylesheets="true">
+
+	<style>
+		.noWrap {
+			white-space: nowrap;
+			width: auto;
+		}
+
+		.pageBlockTableScroll {
+			display: block;
+			overflow-x: auto;
+			width: 93vw;
+		}
+
+		.pageBlockTableScroll table th.headerRow+th.headerRow {
+			border-left: 1px solid #dedede;
+		}
+
+		.requestedHourInput {
+			width: {!IF($User.UIThemeDisplayed=='Theme4d', '130px', '100px')};
+		}
+
+		div.errorMsg {
+			display: block !important;
+		}
+
+	</style>
+	<c:selectAllCheckboxes functionName="selectAllResources" />
+	<c:WaitComponent />
+	<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<apex:outputPanel id="headerSectionFFUI" layout="block">
+		<c:ffui_header instanceName="$FFHEADER" />
+	</apex:outputPanel>
+	<apex:form id="massUpdateRRForm">
+		<apex:actionFunction name="updateResourceRequestList" reRender="quickUpdateSkillTable, lookupMsgSection" action="{!updateRRSkill}"
+		 status="ajaxStatus" oncomplete="updateSkillAndCertification('{!isQuickUpdate}','{!currentRR}','{!JSINHTMLENCODE(currentSkillDescription)}','{!isSkillUpdate}');">
+			<apex:param name="skillWrapperList" assignTo="{!skillWrapperList}" value="" />
+			<apex:param name="deleteRRSkill" assignTo="{!deleteRRSkill}" value="" />
+		</apex:actionFunction>
+		<apex:outputPanel id="massUpdRRResultPanel" rendered="{!isResultPage}">
+			<apex:pageBlock id="rrUpdResultPB">
+				<apex:actionFunction name="addResourceRequest" status="ajaxStatus" action="{!addResourceRequests}" rendered="{!requestWrapperMap!=null && requestWrappers.size == 0}"
+				/>
+				<apex:actionFunction name="backToMassUpdate" action="{!backToMassUpdateRR}" rendered="{!isRsponseSuccess}" />
+				<apex:actionFunction name="backToParent" action="{!backToParent}" immediate="true" />
+				<apex:pageMessages id="resultMessageSection" />
+				<apex:pageBlockSection columns="1" title="{!$Label.pse__mass_update_rr_ui_resource_request_details_label}" rendered="{!isRsponseSuccess && requestWrappers.size>0}"
+				 collapsible="false">
+					<apex:pageBlockTable value="{!requestWrappers}" var="rrId">
+						<apex:column value="{!requestWrapperMap[rrId].resourceRequest.Name}" style="{!IF(requestWrapperMap[rrId].isError,'color:red;','')}"
+						/>
+						<apex:column value="{!requestWrapperMap[rrId].resourceRequest.Resource_Request_Name__c}" style="{!IF(requestWrapperMap[rrId].isError,'color:red;','')}"
+						/>
+						<apex:column value="{!requestWrapperMap[rrId].resourceRequest.Resource_Role__c}" style="{!IF(requestWrapperMap[rrId].isError,'color:red;','')}"
+						/>
+						<apex:column value="{!requestWrapperMap[rrId].resourceRequest.SOW_Hours__c}" style="{!IF(requestWrapperMap[rrId].isError,'color:red;','')}"
+						/>
+						<apex:column value="{!requestWrapperMap[rrId].resourceRequest.Start_Date__c}" style="{!IF(requestWrapperMap[rrId].isError,'color:red;','')}"
+						/>
+						<apex:column value="{!requestWrapperMap[rrId].resourceRequest.End_Date__c}" style="{!IF(requestWrapperMap[rrId].isError,'color:red;','')}"
+						/>
+						<apex:column value="{!requestWrapperMap[rrId].resourceRequest.Status__c}" style="{!IF(requestWrapperMap[rrId].isError,'color:red;','')}"
+						/>
+						<apex:column headerValue="{!$Label.pse__create_res_req_label_skils_certs}">
+							<apex:outputText value="{!requestWrapperMap[rrId].skillsDescription}" style="{!IF(requestWrapperMap[rrId].isError,'color:red;','')}"
+							/>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+		</apex:outputPanel>
+		<apex:outputPanel id="massUpdRRPanel" rendered="{!NOT(isResultPage)}">
+			<apex:actionFunction name="backToParent" action="{!backToParent}" immediate="true" />
+			<apex:actionFunction id="updateResourceRequestsBtn" name="updateRR" action="{!massUpdateRR}" rerender="massUpdateRRForm,headerPanel,scriptHeader,headerSectionFFUI"
+			 status="ajaxStatus" />
+			<apex:actionFunction name="deleteRR" action="{!deleteResourceRequests}" reRender="massUpdateRRForm,scriptHeader,headerSectionFFUI"
+			 status="ajaxStatus" />
+			<apex:actionFunction name="addRR" action="{!addResourceRequests}" reRender="messageSection,rrList" status="ajaxStatus" />
+			<apex:pageBlock id="quickUpdRRPB">
+
+				<apex:pageMessages id="messageSection" />
+				<apex:actionRegion rendered="{!requestWrappers.size>0}">
+					<apex:pageBlockSection title="{!$Label.pse__mass_update_rr_ui_quick_update_resource_request_label}" id="resourceSelectorPBS" columns="1"
+					 collapsible="false">
+						<apex:pageBlockSectionItem >
+							{!$Label.pse__mass_update_rr_ui_quick_update_section_message}
+						</apex:pageBlockSectionItem>
+						<apex:outputPanel styleClass="pageBlockTableScroll">
+							<apex:pageBlockTable value="{!quickRRWrapper}" var="wrapper" id="quickUpdateTable">
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__Resource_Request_Name__c.label}">
+									<apex:inputField value="{!wrapper.resourceRequest.pse__Resource_Request_Name__c}" required="false" />
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__Resource_Role__c.label}">
+									<apex:inputField value="{!wrapper.resourceRequest.pse__Resource_Role__c}" required="false" />
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__SOW_Hours__c.label}">
+									<apex:inputField value="{!wrapper.resourceRequest.pse__SOW_Hours__c}" required="false" styleClass="requestedHourInput" />
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__Start_Date__c.label}">
+									<apex:inputField value="{!wrapper.resourceRequest.pse__Start_Date__c}" required="false" />
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__End_Date__c.label}">
+									<apex:inputField value="{!wrapper.resourceRequest.pse__End_Date__c}" required="false" />
+								</apex:column>
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__Status__c.label}">
+									<apex:inputField value="{!wrapper.resourceRequest.pse__Status__c}" required="false" />
+								</apex:column>
+
+								<apex:repeat value="{!resourceRequestColumnsAfterFiltering}" var="f">
+									<apex:column headerValue="{!f.label}">
+										<apex:inputField value="{!wrapper.resourceRequest[f]}" required="false" />
+									</apex:column>
+								</apex:repeat>
+
+								<apex:column headerValue="{!$Label.pse__mass_update_rr_ui_assign_skills_or_certi_link}">
+									<apex:commandLink value="{!$Label.pse__mass_update_rr_ui_assign_skills_or_certi_link}" action="{!loadQuickSkillAndCertificates}"
+									 reRender="skillDialogBlock" status="ajaxStatus" immediate="true" oncomplete="showSkillAndCertificationDialog()">
+										<apex:image id="addIcon" value="{!URLFOR($Resource.pse__appirioCommon, '/new.svg')}" width="15" height="15" style="vertical-align:middle; margin-left: 5px;"
+										/>
+									</apex:commandLink>
+								</apex:column>
+
+							</apex:pageBlockTable>
+						</apex:outputPanel>
+						<apex:outputPanel id="quickUpdateSkillTable">
+							<apex:pageBlockSection title="{!$Label.pse__create_res_req_label_requested_skills}" rendered="{!quickRRWrapper.skills.size>0}"
+							 collapsible="false">
+								<apex:pageBlockTable value="{!quickRRWrapper.skills}" var="reqSkill">
+									<apex:column value="{!reqSkill.pse__Is_Primary__c}" />
+									<apex:column value="{!reqSkill.pse__Skill_Certification__c}" />
+									<apex:column value="{!reqSkill.pse__Minimum_Rating__c}" />
+								</apex:pageBlockTable>
+							</apex:pageBlockSection>
+						</apex:outputPanel>
+						<apex:commandButton value="{!$Label.pse__mass_update_rr_ui_quick_update_selected_button}" status="ajaxStatus" reRender="rrList, resourceSelectorPBS, messageSection, skillDialogBlock"
+						 action="{!quickUpdate}" id="quickUpdateButton" />
+
+					</apex:pageBlockSection>
+
+					<apex:pageBlockSection title="{!$Label.pse__mass_update_rr_ui_resource_request_details_label}" id="rrList" columns="1" collapsible="false">
+						<apex:outputPanel styleClass="pageBlockTableScroll">
+							<apex:pageBlockTable value="{!requestWrappers}" var="rrId">
+								<apex:column >
+									<apex:facet name="header">
+										<input type="checkbox" id="rrSelectorChkAllBox" onclick="selectAllResources(this, 'rrSelectorChkBox')" />
+									</apex:facet>
+									<apex:inputCheckbox value="{!requestWrapperMap[rrId].isSelected}" id="rrSelectorChkBox" />
+								</apex:column>
+								<apex:column value="{!requestWrapperMap[rrId].resourceRequest.Name}" />
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__Resource_Request_Name__c.label}">
+									<apex:inputField value="{!requestWrapperMap[rrId].resourceRequest.Resource_Request_Name__c}" />
+								</apex:column>
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__Resource_Role__c.label}" styleclass="noWrap">
+									<div class="requiredInput">
+										<div id="requiredBlockDiv" class="requiredBlock"></div>
+										<apex:inputField value="{!requestWrapperMap[rrId].resourceRequest.Resource_Role__c}" />
+									</div>
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__SOW_Hours__c.label}" styleclass="noWrap">
+									<div class="requiredInput">
+										<div id="requiredBlockDiv" class="requiredBlock"></div>
+										<apex:inputField value="{!requestWrapperMap[rrId].resourceRequest.SOW_Hours__c}" styleClass="requestedHourInput" />
+									</div>
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__Start_Date__c.label}" styleclass="noWrap">
+									<div class="requiredInput">
+										<div id="requiredBlockDiv" class="requiredBlock"></div>
+										<apex:inputField value="{!requestWrapperMap[rrId].resourceRequest.Start_Date__c}" required="false" />
+									</div>
+								</apex:column>
+
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__End_Date__c.label}" styleclass="noWrap">
+									<div class="requiredInput">
+										<div id="requiredBlockDiv" class="requiredBlock"></div>
+										<apex:inputField value="{!requestWrapperMap[rrId].resourceRequest.End_Date__c}" />
+									</div>
+								</apex:column>
+								<apex:column headerValue="{!$ObjectType.pse__Resource_Request__c.fields.pse__Status__c.label}">
+									<apex:inputField value="{!requestWrapperMap[rrId].resourceRequest.Status__c}" />
+								</apex:column>
+								<apex:repeat value="{!resourceRequestColumnsAfterFiltering}" var="f">
+									<apex:column headerValue="{!f.label}" styleclass="noWrap">
+										<div class="{!IF(OR(f.required,f.DBRequired), 'requiredInput','')}">
+											<div id="requiredBlockDiv" class="{!IF(OR(f.required,f.DBRequired), 'requiredBlock' , '')}"></div>
+											<apex:inputField value="{!requestWrapperMap[rrId].resourceRequest[f]}" />
+										</div>
+									</apex:column>
+								</apex:repeat>
+								<apex:column headerValue="{!$Label.pse__create_res_req_label_skils_certs}">
+									<span id="SkillRequest{!rrId}">
+										<apex:outputText value="{!requestWrapperMap[rrId].skillsDescription}" />
+									</span>
+									<apex:commandLink action="{!loadSkillAndCertificates}" reRender="skillDialogBlock" immediate="true" status="ajaxStatus" oncomplete="showSkillAndCertificationDialog()">
+										<apex:image id="addIcon" value="{!URLFOR($Resource.pse__appirioCommon, '/edit.svg')}" width="15" height="15" style="vertical-align:middle;float:right"
+										/>
+										<apex:param name="currentRR" value="{!rrId}" assignTo="{!currentRR}" />
+									</apex:commandLink>
+								</apex:column>
+							</apex:pageBlockTable>
+						</apex:outputPanel>
+					</apex:pageBlockSection>
+				</apex:actionRegion>
+			</apex:pageBlock>
+		</apex:outputPanel>
+
+		<apex:outputPanel id="skillDialogBlock">
+			<script>
+				function showSkillAndCertificationDialog() {
+					wait(true);
+					var config = {
+						skillWrapperList: JSON.parse('{!JSENCODE(skillWrapperList)}'),
+						lookupType: 'SkillAndCertificationDialog'
+					};
+
+					$FFDC.showLookup(config, function (callbackParam) {
+						if (callbackParam !== undefined) {
+							updateResourceRequestList(JSON.stringify(callbackParam.skillWrapperList), JSON.stringify(callbackParam.delSkillWrapperList));
+						}
+						return true;
+					}, function () {
+						wait(false);
+					});
+				}
+			</script>
+		</apex:outputPanel>
+
+	</apex:form>
+
+	<c:lightningLookup exportObjectName="$FFDC" outContainerId="{!$Component.DialogContainer}" />
+	<apex:outputPanel id="DialogContainer" layout="block" />
+	<apex:outputPanel id="scriptHeader" layout="block">
+		<script>
+			prepareVFHeader();
+
+			function preapareVFConfig() {
+				var config = {
+					objectName: "{!JSENCODE(subTitle)}",
+					helpUrl: "{!$Page.MassUpdateResourceRequestHelp}",
+					documentIcon: {
+						name: 'psa_staffing',
+						namespace: $FFOUTAPP.getNamespace()
+					},
+					onRender: 'onHeaderLoadCallback'
+				};
+
+				if ('{!isRsponseSuccess}' === 'true') {
+					config.objectName = "{!JSENCODE($Label.mass_update_rr_ui_updated_resource_requests_label)}";
+				} else {
+					config.objectName = "{!JSENCODE($Label.mass_update_rr_ui_mass_update_resource_requests_label)}";
+				}
+
+				if ('{!isResultPage}' === 'true') {
+
+					var buttons = [],
+						backToParentLbl;
+
+					if ('{!isRsponseSuccess}' === 'true') {
+						buttons.push({
+							id: "backToMass",
+							label: "{!JSENCODE($Label.mass_update_rr_ui_back_to_mass_update_resource_request_button)}",
+							actionFn: "backToMassUpdate"
+						});
+					}
+
+					if ('{!isParentProject}' === 'true') {
+						backToParentLbl = '{!JSENCODE($Label.mass_update_rr_ui_back_to_project_button)}';
+					} else {
+						backToParentLbl = '{!JSENCODE($Label.mass_update_rr_ui_back_to_opportunity_button)}';
+					}
+
+					buttons.push({
+						id: "backToParent",
+						label: backToParentLbl,
+						actionFn: "backToParent"
+					});
+
+					if ('{!requestWrapperMap!=null && requestWrappers.size == 0}' === 'true') {
+						buttons.push({
+							id: "createRR",
+							label: "{!JSENCODE($Label.mass_update_rr_ui_create_new_resource_requests_button)}",
+							actionFn: "addResourceRequest"
+						});
+					}
+
+					config.buttons = buttons;
+				} else {
+					buttons = [{
+						id: "back",
+						actionFn: "backToParent"
+					}, {
+						id: "deleteRR",
+						label: "{!JSENCODE($Label.mass_update_rr_ui_delete_resource_requests_button)}",
+						actionFn: "deleteRR"
+					}, {
+						id: "updateRR",
+						label: "{!JSENCODE($Label.mass_update_rr_ui_update_resource_requests_button)}",
+						actionFn: "updateRR"
+					}, {
+						id: "createRR",
+						label: "{!JSENCODE($Label.mass_update_rr_ui_create_new_resource_requests_button)}",
+						actionFn: "addRR"
+					}];
+
+					if ('{!isParentProject}' === 'true') {
+						buttons[0].label = "{!JSENCODE($Label.mass_update_rr_ui_back_to_project_button)}";
+					} else {
+						buttons[0].label = "{!JSENCODE($Label.mass_update_rr_ui_back_to_opportunity_button)}";
+					}
+					config.buttons = buttons;
+				}
+
+				return config;
+			}
+
+			function prepareVFHeader() {
+				wait(true);
+				$FFHEADER.renderHeader(preapareVFConfig());
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+		</script>
+	</apex:outputPanel>
+	<script type="text/javascript">
+		function updateSkillAndCertification(isQuickUpd, currentRR, currentSkillDescription, isSkillUpdate) {
+			if (isSkillUpdate != 'false') {
+				if (isQuickUpd != 'true') {
+					document.getElementById("SkillRequest" + currentRR).innerHTML = currentSkillDescription;
+				}
+			}
+		}
+	</script>
+</apex:page>

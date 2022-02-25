@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Status --></label>
+    <name>fferpcore__Status__c</name>
+    <picklistValues>
+        <masterLabel>Aborted</masterLabel>
+        <translation>Abortito</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Completed</masterLabel>
+        <translation>Completato</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed</masterLabel>
+        <translation>Mancato</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Holding</masterLabel>
+        <translation>Tenere</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Preparing</masterLabel>
+        <translation>Preparazione</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Processing</masterLabel>
+        <translation>In lavorazione</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Queued</masterLabel>
+        <translation>In coda</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldSets>
+        <label><!-- Copado License Manager --></label>
+        <name>copado__License_Manager</name>
+    </fieldSets>
+    <validationRules>
+        <errorMessage><!-- This field is controlled by the contact record. Please update this field on the contact record. --></errorMessage>
+        <name>Email_Update_Validation</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- This field is controlled by the contact record. Please update this field on the contact record. --></errorMessage>
+        <name>First_Name_Update_Validation</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- This field is controlled by the contact record. Please update this field on the contact record. --></errorMessage>
+        <name>Last_Name_Update_Validation</name>
+    </validationRules>
+</CustomObjectTranslation>

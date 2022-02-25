@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S News List</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightningCommunity__Default,lightning__HomePage">
+            <property name="tileVariant" label="Display Options" type="String" description="Select the tile layout display option." datasource="default,featured"/>
+            <property name="layout" type="String" label="Default Layout" description="Select the default list layout" datasource="vertical,horizontal"/>
+            <property name="numberOfNewsPerPage" label="Number of News Per Page" description="Specify the number of News to display in the list." type="Integer" required="true" default="12"/>
+            <property name="showAvatar" label="Show Avatar?" type="Boolean"/>
+            <property name="showImages" label="Show Images?" type="Boolean"/>
+            <property name="showTopic" label="Show Topics?" type="Boolean"/>
+            <property name="filterOn" label="Filter On" type="String" description="Select a filter for the list" datasource="None,Search Term,Topic Value,Group,Author"/>
+            <property name="filterId" label="Id to Filter By" type="String"/>
+            <property name="profileURL" label="User Profile URL" type="String" description="Enter the page name for User Detail page"/>
+            <property name="newsURL" label="News Detail URL" type="String" description="Enter the page name for News Detail page"/>
+            <property name="newsListURL" label="News List URL" type="String" description="Enter the page name for News list view page"/>
+            <property name="filterNewsListByTopic" label="Filter News List By Topic" type="String" description="Filter the News List by topic by entering the exact topic name (or comma separated list of names) you want to filter by"/>
+            <property name="newsListIds" label="Featured News List" type="String" description="Comma-separated list of Record IDs"/>
+            <property name="showLikes" label="Show Likes?" type="Boolean" description="Check to display likes and allow liking news"/>
+            <property name="showComments" label="Show Comments?" type="Boolean"/>
+            <property name="limitToSpecificGroups" label="Enable Limit to Specific Groups?" description="Check to limit to specified groups only" type="Boolean"/>
+            <property name="networkIds" type="String" label="LEX Network IDs" description="Enter a CSV list of network IDs that can be accessed in LEX mode."/>
+            <property name="customClass" label="Custom Class" type="String" description="Used for custom styling."/>
+            <property name="listId" label="List Id" type="String" description="Id of specific List"/>
+            <property name="ariaLandmarkRoleForComponent" label="ACCESSIBILITY: ARIA landmark role for component" type="String" description="HTML role of the outer div of the component." datasource="main,region,complementary,navigation" default="region"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

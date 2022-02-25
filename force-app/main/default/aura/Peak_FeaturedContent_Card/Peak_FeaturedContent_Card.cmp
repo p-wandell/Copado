@@ -1,0 +1,182 @@
+<!--
+ - Created by brianpoulsen on 7/20/18.
+ -->
+
+<aura:component extends="c:Peak_Base"
+                description="Peak_FeaturedContent_Card">
+
+    <aura:attribute name="layoutType" type="String" default="" />
+    <aura:attribute name="color" type="String" default="" />
+    <aura:attribute name="topic" type="String" default="" />
+    <aura:attribute name="topicLabel" type="String" default="" />
+    <aura:attribute name="image" type="String" default="" />
+    <aura:attribute name="title" type="String" default="" />
+    <aura:attribute name="description" type="String" default="" />
+    <aura:attribute name="icon" type="String" default="" />
+    <aura:attribute name="link" type="String" default="" />
+    <aura:attribute name="externalLink" type="Boolean" default="false" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <!--HORIZONTAL LAYOUT-->
+    <aura:if isTrue="{!v.layoutType == 'Horizontal'}">
+        <article class="{!'slds-card slds-is-relative ' + v.color + ' slds-border_top'}" style="{!v.image ? 'background-image:url(' + v.image + ');' : 'background-image: none;'}">
+
+            <!--TOPIC-->
+            <aura:if isTrue="{!v.topic}">
+                <span class="slds-text-title_caps slds-is-absolute slds-p-top_x-small slds-p-horizontal_medium">
+                    <a href="javascript:void(0);" onclick="{!c.gotoTopic}" title="{!v.topicLabel}" data-id="{!v.topic}" class="{!v.image ? ' slds-text-color_inverse' : ''}">{!v.topicLabel}</a>
+                </span>
+            </aura:if>
+
+            <div class="{!'slds-p-horizontal_medium slds-p-bottom_small slds-p-top_xx-large slds-grid ' + (v.image ? 'card-gradient' : '')}">
+
+                <!--CARD BODY-->
+                <div class="{!(v.image ? 'slds-text-color_inverse ' : '') + 'slds-card__body slds-p-top_large'}">
+                    <h2 class="{!'slds-card__header-title slds-m-bottom_small' + (v.image ? ' slds-text-color_inverse' : '') }">
+                        <span class="slds-text-heading_small">
+                            <a href="{!v.link}" onclick="{!c.gotoUrl}">
+                                <c:Peak_Base labelText="{!v.title}"/>
+                            </a>
+                                <aura:if isTrue="{!v.externalLink}">
+                                    <lightning:icon iconName="utility:share" title="Open in new window" alternativeText="Open in new window" size="x-small" variant="bare" />
+                                </aura:if>
+                        </span>
+                    </h2>
+                    <p class="{!v.image ? 'slds-text-color_inverse ' : ''}"><c:Peak_Base labelText="{!v.description}"/></p>
+                </div>
+
+            </div>
+        </article>
+    </aura:if>
+
+    <!--CALL TO ACTION LAYOUT-->
+    <aura:if isTrue="{!v.layoutType == 'Calls to Action'}">
+        <a href="{!v.link}" onclick="{!c.gotoUrl}">
+            <article class="{!'slds-card ' + v.color + ' slds-border_top slds-p-horizontal_medium slds-p-vertical_small'}">
+
+                <!--CARD HEADER-->
+                <div class="slds-card__header">
+                    <header class="slds-media_center">
+
+                        <!--ICON-->
+                        <span class="slds-icon_container">
+                            <aura:if isTrue="{!v.icon}">
+                                <aura:if isTrue="{!v.link}">
+                                    <a href="{!v.link}" onclick="{!c.gotoUrl}">
+                                        <!--<lightning:icon src="{!v.icon}" size="large" />-->
+                                        <!--<span class="slds-assistive-text"><c:Peak_Base labelText="{!v.title}"/></span>-->
+
+                                        <!--Use Peak_SVG custom component + svg4everybodyMod.js to render SVGs for IE11 support-->
+                                        <!--https://archive-2_1_4.lightningdesignsystem.com/resources/lightning-svg-icon-component-helper-->
+                                        <c:Peak_SVG svgPath="{!v.icon}" category="custom" size="large" assistiveText="{!v.title}" />
+                                    </a>
+                                    <aura:set attribute="else">
+                                        <!--<lightning:icon src="{!v.icon}" size="large" />-->
+                                        <!--<span class="slds-assistive-text"><c:Peak_Base labelText="{!v.title}"/></span>-->
+
+                                        <!--Use Peak_SVG custom component + svg4everybodyMod.js to render SVGs for IE11 support-->
+                                        <!--https://archive-2_1_4.lightningdesignsystem.com/resources/lightning-svg-icon-component-helper-->
+                                        <c:Peak_SVG svgPath="{!v.icon}" category="custom" size="large" assistiveText="{!v.title}" />
+                                    </aura:set>
+                                </aura:if>
+                            </aura:if>
+                        </span>
+
+                        <!--TITLE-->
+                        <div class="slds-media__body slds-text-align_center">
+                            <h2 class="slds-card__header-title">
+                                <span class="slds-text-heading_small">
+                                    <c:Peak_Base labelText="{!v.title}"/>
+                                    <aura:if isTrue="{!v.externalLink}">
+                                        <lightning:icon iconName="utility:share" title="Open in new window" alternativeText="Open in new window" size="x-small" variant="bare" />
+                                    </aura:if>
+                                </span>
+                            </h2>
+                        </div>
+                    </header>
+
+                </div>
+
+                <!--CARD BODY-->
+                <div class="slds-card__body slds-show_medium slds-text-align_center">
+                    <aura:if isTrue="{!v.description}">
+                        <p><c:Peak_Base labelText="{!v.description}"/> »</p>
+                    </aura:if>
+                </div>
+
+            </article>
+        </a>
+    </aura:if>
+
+    <!--VERTICAL LAYOUT-->
+    <aura:if isTrue="{!v.layoutType == 'Vertical'}">
+        <lightning:layout multipleRows="true" class="{!v.color + ' slds-m-bottom_medium slds-border_left'}">
+            <aura:if isTrue="{!v.image}">
+                <lightning:layoutItem size="12" mediumDeviceSize="4" flexibility="shrink" class="slds-show_medium">
+                    <a href="{!v.link}" onclick="{!c.gotoUrl}">
+                        <img src="{!v.image}" alt="{!v.topicLabel}" />
+                        <!--<aura:set attribute="else">-->
+                        <!--<lightning:icon size="large" iconName="utility:image" class="slds-align_absolute-center" variant="inverse" />-->
+                        <!--</aura:set>-->
+                    </a>
+                </lightning:layoutItem>
+            </aura:if>
+
+            <lightning:layoutItem size="12" mediumDeviceSize="8" flexibility="grow" padding="horizontal-medium">
+                <aura:if isTrue="{!v.topic}">
+                    <div class="slds-text-title_caps slds-m-bottom_small">
+                        <a href="javascript:void(0);" onclick="{!c.gotoTopic}" title="{!v.topicLabel}" data-id="{!v.topic}">{!v.topicLabel}</a>
+                    </div>
+                </aura:if>
+                <h2 class="slds-m-bottom_small">
+                    <a href="{!v.link}" onclick="{!c.gotoUrl}">
+                        <c:Peak_Base labelText="{!v.title}"/>
+                    </a>
+                </h2>
+                <p><c:Peak_Base labelText="{!v.description}"/></p>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </aura:if>
+
+    <!--TOPICS LAYOUT-->
+    <aura:if isTrue="{!and(v.layoutType == 'topics', v.topicLabel)}">
+        <a href="{!v.link}" onclick="{!c.gotoUrl}">
+            <article class="{!'slds-card ' + v.color + ' slds-border_top slds-p-horizontal_medium slds-p-vertical_small'}">
+
+                <!--CARD HEADER-->
+                <div class="slds-card__header">
+                    <header class="slds-media_center">
+
+                        <!--ICON-->
+                        <aura:if isTrue="{!v.icon}">
+                            <span class="slds-icon_container">
+                                <!--<lightning:icon src="{!v.icon}" size="large" />-->
+                                <!--<span class="slds-assistive-text">{!v.title}</span>-->
+
+                                <!--Use custom component + svg4everybodyMod.js to render SVGs for IE11 support-->
+                                <!--https://archive-2_1_4.lightningdesignsystem.com/resources/lightning-svg-icon-component-helper-->
+                                <c:Peak_SVG svgPath="{!v.icon}" category="custom" size="large" assistiveText="{!v.title}" />
+                            </span>
+                        </aura:if>
+
+                        <!--TITLE-->
+                        <div class="slds-media__body slds-text-align_center">
+                            <h2 class="slds-card__header-title">
+                                <span class="slds-text-heading_small">
+                                    {!v.topicLabel}
+                                </span>
+                            </h2>
+                        </div>
+                    </header>
+
+                </div>
+
+                <!--CARD BODY-->
+                <div class="slds-card__body"></div>
+
+            </article>
+        </a>
+    </aura:if>
+
+</aura:component>

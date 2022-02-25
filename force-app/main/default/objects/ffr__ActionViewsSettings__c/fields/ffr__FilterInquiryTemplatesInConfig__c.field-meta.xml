@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__FilterInquiryTemplatesInConfig__c</fullName>
+    <defaultValue>true</defaultValue>
+    <deprecated>false</deprecated>
+    <description>When you configure an action views component in the related content pane editor, the list of action view templates only shows valid action view templates. Disable this setting to show all action view templates on your org. Your action views component&apos;s configuration is now quicker to load, but also includes action view templates that you cannot use.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If performance is slow when you configure an action views component in the related content pane editor, then disable this custom setting. The action view template picklist will now show all action view templates on your org.</inlineHelpText>
+    <label>Filter Action View Templates in Config</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

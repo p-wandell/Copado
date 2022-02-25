@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bookings_Projection_2_Months_Out__c</fullName>
+    <externalId>false</externalId>
+    <formula>Bookings_Projection_2M_Out1__c+Bookings_Projection_2M_Out2__c+Bookings_Projection_2M_Out3__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Bookings Projection - 2 Months Out</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

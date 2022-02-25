@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EnsureCustomIconName</fullName>
+    <active>true</active>
+    <description>Ensure that if Resource Type Custom is selected, then the Custom Icon Name must be a populated and that it contains a &apos;:&apos; character.</description>
+    <errorConditionFormula>OR (AND(ISPICKVAL(Resource_Type__c, &apos;Custom&apos;),
+	       LEN(TRIM(Custom_Icon_Name__c)) = 0),
+			 NOT(CONTAINS(Custom_Icon_Name__c, &apos;:&apos;)))</errorConditionFormula>
+    <errorDisplayField>Custom_Icon_Name__c</errorDisplayField>
+    <errorMessage>Please specify a SLDS icon name when a Resource Type of &quot;Custom&quot; is selected.  (Example: utility:info_alt)</errorMessage>
+</ValidationRule>

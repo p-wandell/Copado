@@ -1,0 +1,74 @@
+<apex:page title="{!$Label.pse__mass_assign_proj_resources_label_title}"
+ standardController="pse__Assignment__c" recordsetvar="assignments"
+ extensions="pse.AssignResourcesToProjectController" sidebar="false" lightningStylesheets="true">
+
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" id="vfHeader" />
+
+	<c:massCreateAssignments seedAttribute="{!bean.seedData}" headerIdAttribute="vfHeader" headerScriptAttribute="vfHeaderScript"/>
+
+	<apex:outputPanel id="vfHeaderScript" layout="block">
+		<script>
+			prepareVFConfig();
+			function prepareVFConfig() {
+				var buttons = [],
+					config = {
+						objectName: '{!JSENCODE($Label.mass_assign_proj_resources_label_title)}',
+						recordName: '{!JSENCODE(bean.project.Name)}',
+						helpUrl: '{!$Page.AssignResourcesToProjectHelp}',
+						objectApiName: '{!$ObjectType["Assignment__c"].name}',
+						onRender: onHeaderLoadCallback
+					};
+
+				if(showLinkCmp() ==='false') {
+					if(isAllAssignmentsCreated() === 'true') {
+						var cancelLabel = '{!JSENCODE(IF(bean.seedData.isModeMassAssignProjectsToResource == true, $Label.mass_create_assignment_label_back_to_resource, $Label.mass_assign_proj_resources_label_back_to_project))}';
+						buttons.push({
+							id: 'massCreateAssignment',
+							label: cancelLabel,
+							actionFn: 'doCancel'
+						},
+						{
+							id: 'linkToMilestone',
+							label: '{!JSENCODE($Label.multi_assign_resource_to_milestones)}',
+							actionFn: 'doLinkToMilestone'
+						});
+					} else {
+						buttons.push({
+							id: 'cancelButton',
+							label: '{!JSENCODE($Label.common_label_cancel)}',
+							actionFn: 'doCancel'
+						},
+						{
+							id: 'createFinalizedAssignments',
+							label: '{!JSENCODE($Label.mass_assign_proj_resources_label_create_assignments)}',
+							actionFn: 'doCreateAssignment'
+						});
+					}
+				} else {
+					if (renderSaveButton()) {
+						buttons.push({
+							id: 'saveButton',
+							label: '{!JSENCODE($Label.common_label_save)}',
+							actionFn: 'doSave'
+						});
+					}
+
+					buttons.push({
+						id: 'doneButton',
+						label: '{!JSENCODE($Label.common_label_done)}',
+						actionFn: 'doCancel'
+					});
+				}
+
+				config.buttons = buttons;
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+		function onHeaderLoadCallback() {
+			wait(false);
+		}
+		</script>
+	</apex:outputPanel>
+</apex:page>

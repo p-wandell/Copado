@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>When a LOE or SOW is assigned, an email is sent to the creator of the request.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>LOE/SOW Assigned</name>
+    <style>none</style>
+    <subject>An approver has been assigned to {!Opportunity.Name} {!LOE_SOW_Review__c.RecordType}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

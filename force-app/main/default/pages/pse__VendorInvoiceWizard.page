@@ -1,0 +1,451 @@
+<apex:page standardController="pse__Vendor_Invoice_Item__c" recordSetVar="items" tabStyle="pse__Vendor_Invoice_Item__c" title="{!$Label.pse__vendor_label_add_invoice_items}" extensions="pse.VendorInvoiceWizardController" lightningStyleSheets="true">
+    <style type="text/css">
+        div#wait {
+            width: 100%;
+            height: 100%
+        }
+        div#loading {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0px;
+        }
+        .infoIcon { 
+		    vertical-align: middle;
+		    margin: 10px !important; 
+	    }
+	    .info-block {    
+	    	border: 1px solid;
+	   		border-color: #dddbda;
+	   		border-radius: .25rem; 
+   		 }
+		.info-margin-display {
+			display: inline-block; 
+		 }
+		.resultTable th:nth-child(1) { 
+			width: 2%;
+		}
+		.resultTable th {
+			border-bottom: 1px solid rgb(221, 219, 218) !important;
+		}
+		.resultTable tbody tr:first-of-type td {
+			border-top: none !important;
+		}
+		.pbBody .pbSubheader {
+			margin-top: 0 !important;
+		} 
+		.sortingPanel {
+			cursor: pointer;
+			text-decoration: none;
+			color: #333333;
+		}
+		.sortingImage {
+			vertical-align: middle;
+		}
+    </style>
+    <apex:variable var="isLightningView" value="{!$User.UIThemeDisplayed!='Theme3'}" />
+	<apex:outputPanel rendered="{!isLightningView}" layout="none">
+		<style>
+	       	.infoIcon {
+				width: 23px !important;
+			    color: #706e6b;
+			    height: 23px !important;
+			}
+			.info-block {    
+		    	background-color: #f4f6f9;
+    			padding: 0.75rem 1rem;
+			    border: none;
+	   		}
+	       	.resultTable th:not(:first-of-type) { 
+				border-left: 1px solid rgb(221, 219, 218) !important; 
+			}
+		</style>
+		<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	</apex:outputPanel>
+	<script type="text/javascript">
+        function toggleCheckboxes(isChecked, cBoxComponent, tableComponent) {
+		    var inputs = tableComponent.getElementsByTagName("input");
+		    if (inputs == null || inputs.length == 0)
+		        return;
+		    for (var i = 0; i < inputs.length; i++) {
+		        if (inputs[i].type != null && inputs[i].type.toLowerCase() == "checkbox" &&
+		            inputs[i].id != null && inputs[i].id.indexOf(cBoxComponent) != -1)
+		            inputs[i].checked = isChecked;
+		    }
+		}
+		function setVisible(name, visible) {
+		    var e = document.getElementById(name),
+		    	usertheme = {!$User.UIThemeDisplayed != 'Theme3'};
+		    if (e != null) {
+		        if (visible) {
+		            e.setAttribute("style", "display: block");
+		            e.style.cssText = "display: block";
+		            if (usertheme) {
+				      	e.style.cssText += " position: fixed;";
+			        }
+		        } else {
+		            e.setAttribute("style", "display: none");
+		            e.style.cssText = "display: none";
+		        }
+		    }
+		}
+		function wait(val) {
+		    setVisible('loading', val);
+		    setVisible('wait', val);
+		}
+		function setFocusOnLoad() {}
+    </script>
+    
+    <apex:sectionHeader title="{!$Label.pse__vendor_label_add_invoice_items}" subtitle="{!invoice.Name}" />
+    <apex:outputPanel layout="block" styleClass="info-block">
+		<apex:image value="/s.gif" styleClass="infoIcon"/>
+		<apex:outputPanel layout="block" styleClass="info-margin-display">
+			{!$Label.pse__vendor_message_wizard_instruction1}
+		</apex:outputPanel>
+	</apex:outputPanel>
+	<p />
+    <div id="wait" class="waitingSearchDiv waitingSearchDivOpacity" style="display: none"></div>
+    <div id="loading" class="waitingSearchDiv" style="display: none">
+        <div id="waitingHolder" class="waitingHolder">
+            <img class="waitingImage" src="/img/loading.gif" />
+            <span class="waitingDescription">{!$Label.common_message_processing_wait}</span>
+        </div>
+    </div>
+    <apex:form >
+    	<apex:pageMessages id="messages" />
+        <apex:actionFunction name="DoSortEX" action="{!DoSortEX}" immediate="true" rerender="itemPanelEX,messages" oncomplete="wait(false);">
+            <apex:param name="column" assignTo="{!SortColumnEX}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="DoSortMI" action="{!DoSortMI}" immediate="true" rerender="itemPanelMI,messages" oncomplete="wait(false);">
+            <apex:param name="column" assignTo="{!SortColumnMI}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="DoSortMA" action="{!DoSortMA}" immediate="true" rerender="itemPanelMA,messages" oncomplete="wait(false);">
+            <apex:param name="column" assignTo="{!SortColumnMA}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="DoSortTC" action="{!DoSortTC}" immediate="true" rerender="itemPanelTC,messages" oncomplete="wait(false);">
+            <apex:param name="column" assignTo="{!SortColumnTC}" value="" />
+        </apex:actionFunction>
+        <apex:pageBlock title="{!$Label.pse__common_label_search}">
+            <apex:pageBlockButtons >
+                <apex:commandButton styleClass="btn" value="{!$Label.pse__common_label_search}" action="{!doSearch}" rendered="{!showContent}" rerender="uninvoicedItemsBlock,messages" onclick="wait(true);" oncomplete="wait(false);" />
+                <apex:commandButton styleClass="btn" value="{!$Label.pse__common_label_done}" action="{!cancel}" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="{!$Label.pse__common_label_information}" columns="2">
+                <apex:outputField value="{!invoice.Name}" />
+                <apex:outputField value="{!invoice.pse__Account__c}" />
+                <apex:outputField value="{!invoice.pse__Date__c}" />
+                <apex:outputField value="{!invoice.pse__Status__c}" />
+                <apex:outputField value="{!invoice.pse__Description__c}" />
+            </apex:pageBlockSection>
+            <br/>
+            <apex:pageBlockSection title="{!$Label.pse__common_label_search_criteria}" columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__common_label_start_date}" />
+                    <apex:inputField required="false" value="{!startDateCriteria.pse__Date__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__common_label_end_date}" />
+                    <apex:inputField required="false" value="{!endDateCriteria.pse__Date__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!itemCriteria.pse__Project__c}" style="vertical-align:top;" />
+                <apex:pageBlockSectionItem />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__vendor_label_show_expenses}" />
+                    <apex:inputCheckbox value="{!showExpenses}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__vendor_label_show_milestones}" />
+                    <apex:inputCheckbox value="{!showMilestones}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__vendor_label_show_misc}" />
+                    <apex:inputCheckbox value="{!showMiscAdjustments}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.pse__vendor_label_show_timecards}" />
+                    <apex:inputCheckbox value="{!showTimecards}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:outputPanel layout="block" styleClass="info-block" rendered="{!showContent}">
+			<apex:image value="/s.gif" styleClass="infoIcon"/>
+			<apex:outputPanel layout="block" styleClass="info-margin-display">
+				{!$Label.pse__vendor_message_wizard_instruction2}
+			</apex:outputPanel>
+		</apex:outputPanel>
+        <p />
+        
+        <apex:pageBlock title="{!$Label.pse__vendor_label_uninvoiced_items}" id="uninvoicedItemsBlock" rendered="{!showContent}">
+            <apex:pageBlockButtons >
+                <apex:commandButton styleClass="btn" value="{!$Label.pse__common_label_add}" disabled="{!addButtonDisabled}" action="{!addItems}" rerender="messages,uninvoicedItemsBlock" onclick="wait(true);" oncomplete="wait(false);" />
+            </apex:pageBlockButtons>
+            <apex:outputPanel id="itemPanelTC">
+                <apex:pageBlockSection title="{!$Label.pse__common_label_timecard}" columns="1">
+                	<apex:pageBlockTable var="iw" value="{!currentItemsTC}" id="itemTableTC" styleClass="resultTable">
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <input type="checkbox" id="selectAllCheckBoxTC" onclick="javascript:toggleCheckboxes(this.checked,'includedCBoxTC', document.getElementById('{!$Component.itemTableTC}'));" />
+	                        </apex:facet>
+	                        <apex:inputCheckbox value="{!iw.included}" id="includedCBoxTC" style="vertical-align:top;" />
+	                    </apex:column>
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortTC('name');">
+	                                {!$Label.common_label_name}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnTC='name' && SortTypeTC=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnTC='name' && SortTypeTC=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                        <apex:outputField value="{!iw.item.pse__Timecard__c}" />
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Project__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortTC('project');">
+	                                {!$Label.common_label_project}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnTC='project' && SortTypeTC=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnTC='project' && SortTypeTC=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortTC('resource');">
+	                                {!$Label.common_label_resource}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnTC='resource' && SortTypeTC=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnTC='resource' && SortTypeTC=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                        <apex:outputLink value="/{!iw.resourceId}" rendered="{!NOT(ISNULL(iw.resourceId))}">{!iw.resourceName}</apex:outputLink>
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Date__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortTC('date');">
+	                                {!$Label.common_label_date}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnTC='date' && SortTypeTC=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnTC='date' && SortTypeTC=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Amount__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortTC('amount');">
+	                                {!$Label.common_label_amount}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnTC='amount' && SortTypeTC=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnTC='amount' && SortTypeTC=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.timecard.Assignment__r.pse__Role__c}">
+	                        <apex:facet name="header">{!$Label.pse__common_label_role}</apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.timecard.pse__Total_Hours__c}">
+	                        <apex:facet name="header">{!$Label.pse__common_label_total_hours}</apex:facet>
+	                    </apex:column>
+	                </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            <br/>
+            <apex:outputPanel id="itemPanelEX">
+                <apex:pageBlockSection title="{!expenseLabel}" columns="1">
+                	<apex:pageBlockTable var="iw" value="{!currentItemsEX}" id="itemTableEX" styleClass="resultTable">
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <input type="checkbox" id="selectAllCheckBoxEX" onclick="javascript:toggleCheckboxes(this.checked,'includedCBoxEX', document.getElementById('{!$Component.itemTableEX}'));" />
+	                        </apex:facet>
+	                        <apex:inputCheckbox value="{!iw.included}" id="includedCBoxEX" style="vertical-align:top;" />
+	                    </apex:column>
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortEX('name');">
+	                                {!$Label.common_label_name}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnEX='name' && SortTypeEX=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnEX='name' && SortTypeEX=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                        <apex:outputField value="{!iw.item.pse__Expense__c}" />
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Project__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortEX('project');">
+	                                {!$Label.common_label_project}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnEX='project' && SortTypeEX=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnEX='project' && SortTypeEX=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortEX('resource');">
+	                                {!$Label.common_label_resource}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnEX='resource' && SortTypeEX=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnEX='resource' && SortTypeEX=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                        <apex:outputLink value="/{!iw.resourceId}" rendered="{!NOT(ISNULL(iw.resourceId))}">{!iw.resourceName}</apex:outputLink>
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Date__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortEX('date');">
+	                                {!$Label.common_label_date}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnEX='date' && SortTypeEX=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnEX='date' && SortTypeEX=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Amount__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortEX('amount');">
+	                                {!$Label.common_label_amount}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnEX='amount' && SortTypeEX=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnEX='amount' && SortTypeEX=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.expense.pse__Type__c}">
+	                        <apex:facet name="header">{!$Label.pse__common_label_type}</apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.expense.pse__Expense_Report__c}">
+	                        <apex:facet name="header">{!$Label.pse__expense_label_expense_report_header}</apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.expense.pse__Billable__c}">
+	                        <apex:facet name="header">{!$Label.pse__common_label_billable}</apex:facet>
+	                    </apex:column>
+	                </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            <br/>
+            <apex:outputPanel id="itemPanelMI">
+	            <apex:pageBlockSection title="{!$Label.pse__common_label_milestone}" columns="1">
+	                <apex:pageBlockTable var="iw" value="{!currentItemsMI}" id="itemTableMI" styleClass="resultTable">
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <input type="checkbox" id="selectAllCheckBoxMI" onclick="javascript:toggleCheckboxes(this.checked,'includedCBoxMI', document.getElementById('{!$Component.itemTableMI}'));" />
+	                        </apex:facet>
+	                        <apex:inputCheckbox value="{!iw.included}" id="includedCBoxMI" style="vertical-align:top;" />
+	                    </apex:column>
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMI('name');">
+	                                {!$Label.common_label_name}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMI='name' && SortTypeMI=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMI='name' && SortTypeMI=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                        <apex:outputField value="{!iw.item.pse__Milestone__c}" />
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Project__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMI('project');">
+	                                {!$Label.common_label_project}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMI='project' && SortTypeMI=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMI='project' && SortTypeMI=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMI('resource');">
+	                                {!$Label.common_label_resource}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMI='resource' && SortTypeMI=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMI='resource' && SortTypeMI=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                        <apex:outputLink value="/{!iw.resourceId}" rendered="{!NOT(ISNULL(iw.resourceId))}">{!iw.resourceName}</apex:outputLink>
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Date__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMI('date');">
+	                                {!$Label.common_label_date}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMI='date' && SortTypeMI=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMI='date' && SortTypeMI=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Amount__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMI('amount');">
+	                                {!$Label.common_label_amount}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMI='amount' && SortTypeMI=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMI='amount' && SortTypeMI=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.milestone.pse__Target_Date__c}">
+	                        <apex:facet name="header">{!$Label.pse__common_label_target_date}</apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.milestone.pse__Description__c}">
+	                        <apex:facet name="header">{!$Label.pse__common_label_description}</apex:facet>
+	                    </apex:column>
+	                </apex:pageBlockTable>
+	            </apex:pageBlockSection>    
+            </apex:outputPanel>
+            <br/>
+            <apex:outputPanel id="itemPanelMA">
+                <apex:pageBlockSection title="{!miscLabel}" columns="1">
+	                <apex:pageBlockTable var="iw" value="{!currentItemsMA}" id="itemTableMA" styleClass="resultTable">
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <input type="checkbox" id="selectAllCheckBoxMA" onclick="javascript:toggleCheckboxes(this.checked,'includedCBoxMA', document.getElementById('{!$Component.itemTableMA}'));" />
+	                        </apex:facet>
+	                        <apex:inputCheckbox value="{!iw.included}" id="includedCBoxMA" style="vertical-align:top;" />
+	                    </apex:column>
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMA('name');">
+	                                {!$Label.common_label_name}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMA='name' && SortTypeMA=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMA='name' && SortTypeMA=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                        <apex:outputField value="{!iw.item.pse__Miscellaneous_Adjustment__c}" />
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Project__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMA('project');">
+	                                {!$Label.common_label_project}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMA='project' && SortTypeMA=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMA='project' && SortTypeMA=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column >
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMA('resource');">
+	                                {!$Label.common_label_resource}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMA='resource' && SortTypeMA=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMA='resource' && SortTypeMA=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                        <apex:outputLink value="/{!iw.resourceId}" rendered="{!NOT(ISNULL(iw.resourceId))}">{!iw.resourceName}</apex:outputLink>
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Date__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMA('date');">
+	                                {!$Label.common_label_date}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMA='date' && SortTypeMA=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMA='date' && SortTypeMA=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.item.pse__Amount__c}">
+	                        <apex:facet name="header">
+	                            <apex:outputpanel styleClass="sortingPanel" title="{!$Label.pse__txviewer_message_click_to_sort}" onclick="wait(true);DoSortMA('amount');">
+	                                {!$Label.common_label_amount}&nbsp;
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_uparrow.gif" rendered="{!SortColumnMA='amount' && SortTypeMA=1}" />
+	                                <apex:image styleClass="sortingImage" value="/img/colTitle_downarrow.gif" rendered="{!SortColumnMA='amount' && SortTypeMA=2}" />
+	                            </apex:outputpanel>
+	                        </apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.miscadj.pse__Transaction_Category__c}">
+	                        <apex:facet name="header">{!$Label.pse__vendor_label_transaction_category}</apex:facet>
+	                    </apex:column>
+	                    <apex:column value="{!iw.miscadj.pse__Description__c}">
+	                        <apex:facet name="header">{!$Label.pse__common_label_description}</apex:facet>
+	                    </apex:column>
+	                </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

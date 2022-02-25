@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Excepción de horario</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Programar excepciones</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Programar nombre de excepción</nameFieldLabel>
+    <validationRules>
+        <errorMessage><!-- Start and/or End Date does not fall within the start and end dates of the schedule. --></errorMessage>
+        <name>pse__Check_Date_Range</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- End date cannot occur before start date --></errorMessage>
+        <name>pse__check_end_date</name>
+    </validationRules>
+</CustomObjectTranslation>

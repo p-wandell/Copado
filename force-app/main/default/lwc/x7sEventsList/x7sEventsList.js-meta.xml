@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Events List</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+		<target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default, lightning__RecordPage">
+            <property name="tileVariant" 
+                            label="Display Options" 
+                            type="String" 
+                            description="Select the tile layout display option." 
+                            datasource="default,featured"/>
+            <property name="layout" 
+                            label="Default Layout"
+                            type="String"  
+                            description="Select the default list layout" 
+                            datasource="vertical,horizontal,calendar" />
+            <property name="numberofresults"
+                            label="Number of Results"
+                            type="Integer"
+                            description="Enter maximum number of event records to select."/>
+            <property name="listSize"
+                            label="Number of Events Per Page"
+                            type="Integer"
+                            description="Number of events to show in list"/>
+            <property name="showImages" 
+                            label="Show Images" 
+                            type="Boolean"
+                            description="Select to show images on tile"/>
+            <property name="showImagesAsAvatar" 
+                            label="Show Images as Avatar" 
+                            type="Boolean"
+                            description="Select to show images as avatar on tile"/>
+            <property name="showEventType"
+                            label="Show Event Type"
+                            type="Boolean"
+                            description="Select to show the event type on the tile"/>
+            <property name="showTopics"
+                            label="Show Topics"
+                            type="Boolean"
+                            description="Select to show the topics on the tile"/>
+            <property name="filterOn"
+                            datasource="None, Search Term, Topic Value, My Events, Group"
+                            label="Filter On"
+                            type="String"
+                            description="Filter On"/>
+            <property name="filterEventsByTopic"
+                            label="Filter By Topic"
+                            type="String"
+                            description="Filter the Events List by topics.enter the exact topic Id(or comma separated list of Ids) to filter on"/>
+            <property name="eventListIds" 
+                            label="Featured Event List" 
+                            type="String" 
+                            description="Comma-separated list of Record IDs"/>
+            <property name="limitToSpecificGroups"
+                            label="Limit to Specific Groups"
+                            type="Boolean"
+                            description="Check to limit to specified groups only"/>
+        
+            <!-- CUSTOM FIELDS -->
+            <property name="customField1"
+                            label="Custom Field 1 API Name"
+                            type="String"
+                            description="Custom field 1 to display on the tile (ex: MyField__c)"/>
+            <property name="customLabel1"
+                            label="Custom Field 1 Label"
+                            type="String"
+                            description="Define a label for custom field 1"/>
+            <property name="customField2"
+                            label="Custom Field 2 API Name"
+                            type="String"
+                            description="Custom field 2 to display on the tile"/>
+            <property name="customLabel2"
+                            label="Custom Field 2 Label"
+                            type="String"
+                            description="Define a label for custom field 2"/>
+            <property name="customField3"
+                            label="Custom Field 3 API Name"
+                            type="String"
+                            description="Custom field 3 to display on the tile"/>
+            <property name="customLabel3"
+                            label="Custom Field 3 Label"
+                            type="String"
+                            description="Define a label for custom field 3"/>
+        
+            <!-- HIDDEN FILTERS -->
+            <property name="hiddenFilter1"
+                            label="Filter Field 1 API Name"
+                            type="String"
+                            description="Define a field for hidden filter 1"/>
+            <property name="hiddenValue1"
+                            label="Filter Field 1 Value"
+                            type="String"
+                            description="Limit the list for hidden filter field 1 to this value"/>
+            <property name="hiddenFilter2"
+                            label="Filter Field 2 API Name"
+                            type="String"
+                            description="Define a field for hidden filter 2"/>
+            <property name="hiddenValue2"
+                            label="Filter Field 2 Value"
+                            type="String"
+                            description="Limit the list for hidden filter field 2 to this value"/>
+            <property name="hiddenFilter3"
+                            label="Filter Field 3 API Name"
+                            type="String"
+                            description="Define a field for hidden filter 3"/>
+            <property name="hiddenValue3"
+                            label="Filter Field 3 Value"
+                            type="String"
+                            description="Limit the list for hidden filter field 3 to this value"/>
+        
+            <property name="eventDetailURL"
+                            label="Event Detail URL"
+                            type="String"
+                            description="URL for event detail page"/>
+            <property name="listViewPageUrl"
+                            label="List View Page URL"
+                            type="String"
+                            description="URL to redirect to List View Page"/>
+            
+            <property name="customClass" 
+                            label="Custom Class" 
+                            type="String" 
+                            description="Used for custom styling." />
+            <property name="listId" 
+                            label="Component Group" 
+                            type="String" 
+                            description="Unique ID to link complimentary components together to share data."/>
+	    </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

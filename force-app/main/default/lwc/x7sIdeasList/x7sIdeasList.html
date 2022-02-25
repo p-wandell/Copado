@@ -1,0 +1,62 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper custom-class={componentClass} auto-slds-card={autoSlds} aria-label={labels.labelAriaWrapper}>
+		<lightning-layout multiple-rows="true" vertical-align="stretch" pull-to-boundary="small">
+			<template if:false={isTableView}>
+				<template if:true={ideaListWrapper}>
+					<template for:each={ideaListWrapper.ideaList} for:item="idea">
+						<lightning-layout-item class={viewSelectorStyle} key={idea.Id} padding="around-small">
+							<c-x7s-ideas-list-item idea={idea}
+												idea-list-wrapper={ideaListWrapper}
+												show-images={showImages}
+												layout={layout}
+												tile-variant={tileVariant}
+												text-align={cardTextAlign}
+												show-description = {showDescription}
+												description-line-count = {descriptionLineCount}
+												show-status={showStatus}
+												show-topic={showTopic}
+												display-post-date-author={displayPostDateAuthor}
+												is-nickname-display-enabled={isNicknameDisplayEnabled}
+												allow-voting={showVote}
+												enable-down-voting={enableDownVoting}
+												idea-detail-url={ideaDetailURL}
+												site-path={sitePath}
+												site-prefix={sitePrefix}
+												account-limit-reached-message={accountLimitReachedMessage}
+												custom-class={customClass}
+												show-avatar={showAvatar}
+												show-remove-vote={showRemoveVote}
+							></c-x7s-ideas-list-item>
+						</lightning-layout-item>
+					</template>
+				</template>
+			</template>
+		</lightning-layout>
+		<template if:true={isTableView}>
+			<template if:true={ideaListWrapper}>
+			 <c-x7s-ideas-table
+							list-id={listId}
+							result={ideaListWrapper}
+							show-status={showStatus}
+							show-topic={showTopic}
+							variant={tileVariant}
+							display-post-date-author={displayPostDateAuthor}
+							show-description ={showDescription}
+							show-edit={showEdit}
+							show-delete={showDelete}
+							show-vote={showVote}
+							idea-detail-url={ideaDetailURL}
+							idea-new-url={ideaNewURL}
+							show-remove-vote={showRemoveVote}
+			 >
+			 </c-x7s-ideas-table>
+			 </template>
+		  </template>
+		  <template if:true={showSpinner}>
+			<lightning-spinner alternative-text="Loading"></lightning-spinner>
+		</template>
+	</c-x7s-shr-component-wrapper>
+</template>

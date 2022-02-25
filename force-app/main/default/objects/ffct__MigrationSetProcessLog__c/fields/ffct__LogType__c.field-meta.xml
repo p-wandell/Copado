@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffct__LogType__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Holds the log level. eg- Abort, Error, Information</description>
+    <externalId>false</externalId>
+    <label>Log Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Abort</fullName>
+                <default>false</default>
+                <label>Abort</label>
+            </value>
+            <value>
+                <fullName>Error</fullName>
+                <default>false</default>
+                <label>Error</label>
+            </value>
+            <value>
+                <fullName>External</fullName>
+                <default>false</default>
+                <label>External</label>
+            </value>
+            <value>
+                <fullName>Information</fullName>
+                <default>false</default>
+                <label>Information</label>
+            </value>
+            <value>
+                <fullName>WARN</fullName>
+                <default>false</default>
+                <label>WARN</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

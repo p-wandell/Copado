@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Nonbill_Forecast_Details__c</fullName>
+    <description>Schedule details for the nonbill resource.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Please provide details on the scope of the nonbill schedule, including dates nonbill time is needed and amount of nonbill hours per week.</inlineHelpText>
+    <label>Nonbill Forecast Details</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>TextArea</type>
+</CustomField>

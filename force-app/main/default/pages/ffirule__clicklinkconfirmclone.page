@@ -1,0 +1,30 @@
+<apex:page standardController="ffirule__IntegrationRule__c" extensions="ffirule.ConfirmCloneController" lightningStylesheets="true">
+	<apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}" layout="none">
+		<style>
+			.pageTitleIcon {
+				border-radius: .25rem;
+			    background-color: #f87d76;
+			    background-image: url("{!URLFOR($Asset.SLDS, 'assets/icons/custom/custom67.svg')}");
+			    background-repeat: no-repeat;
+			    background-position: center;
+			    background-size: 2rem;
+				display: block !important;
+			}
+		</style>
+	</apex:outputPanel>
+	<apex:sectionHeader title="{!$Label.ffirule__cloneclicklinkrule}" subtitle="{!RuleName}"/>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pagemessages />
+            <apex:pageMessage summary="{!ConfirmationMessage}" severity="Info" rendered="{!renderClone}"/>
+            <apex:pageBlockButtons location="bottom">
+
+                <apex:commandButton action="{!continueClone}" value="{!$Label.ffirule__continue}" rendered="{!renderClone}"/>
+                <apex:commandButton action="{!cancel}" value="{!$Label.ffirule__cancel}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <!-- Hidde fields for binding -->
+        <apex:inputField value="{!ffirule__IntegrationRule__c.Name}" rendered="false"/>
+    </apex:form>
+</apex:page>

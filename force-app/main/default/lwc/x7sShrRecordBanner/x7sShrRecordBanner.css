@@ -1,0 +1,63 @@
+/**
+ * Copyright (c) 2021.  7Summits Inc. All rights reserved.
+ *
+ * COMPILED FILE DO NOT DIRECTLY EDIT
+ */
+.slds-text-heading_x-large {
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1.15;
+}
+@media (min-width: 48em) {
+  .slds-text-heading_x-large {
+    font-size: 3rem;
+  }
+}
+.record-banner_meta {
+  display: none;
+}
+.record-banner_has-meta-slot {
+  border: 1px solid var(--lwc-colorBorder);
+  border-radius: 0.5rem;
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.125rem 1rem;
+}
+.record-banner_title-container {
+  flex-grow: 0;
+  overflow: hidden;
+}
+.record-banner_title-slot {
+  margin-right: 1.5rem;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.record-banner_has-title-slot {
+  align-items: center;
+  align-content: center;
+  display: flex;
+  flex-direction: row;
+}
+.record-banner_has-title-slot .record-banner_title-slot {
+  display: block;
+}
+.record-banner_has-actions-slot .record-banner_actions-slot {
+  display: block;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0.25rem 0;
+}
+@media (min-width: 48em) {
+  .record-banner_has-actions-slot .record-banner_title-container {
+    align-items: center;
+    align-content: space-between;
+    display: flex;
+    flex-direction: row;
+  }
+  .record-banner_has-actions-slot .record-banner_actions-slot {
+    padding-left: 1.5rem;
+  }
+  .record-banner_has-actions-slot .record-banner_title-wrapper {
+    flex-grow: 1;
+  }
+}

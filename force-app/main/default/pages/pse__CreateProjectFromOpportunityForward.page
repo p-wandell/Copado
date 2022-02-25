@@ -1,0 +1,2 @@
+<apex:page standardController="Opportunity" action="{!URLFOR($Page.CreateProjectFromOpportunity,'',[Id=Opportunity.Id])}">
+</apex:page>

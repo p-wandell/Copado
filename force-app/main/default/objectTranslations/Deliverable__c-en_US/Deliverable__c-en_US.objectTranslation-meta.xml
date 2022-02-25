@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Deliverable</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Deliverables</value>
+    </caseValues>
+    <recordTypes>
+        <label><!-- Project Deliverable --></label>
+        <name>Project_Deliverable</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Status Meeting --></label>
+        <name>Status_Meeting</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- If you&apos;ve selected a Type of Other, please populate &quot;Other Details&quot; --></errorMessage>
+        <name>Require_Other_Details_if_Type_is_Other</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- To mark the Status as Signed Off, populate the Signoff Date and Signoff Owner. --></errorMessage>
+        <name>Required_fields_if_Status_is_Signed_Off</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- To mark an Audit Status of Completed, you must populate Audit Reviewer and Audit Date --></errorMessage>
+        <name>Required_fields_on_audit_complete</name>
+    </validationRules>
+</CustomObjectTranslation>

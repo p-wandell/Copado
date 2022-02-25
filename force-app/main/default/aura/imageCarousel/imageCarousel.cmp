@@ -1,0 +1,105 @@
+<!-- Copyright 2017 7Summits Inc -->
+<aura:component description="Display multiple images from a source and configure related display settings in a single component." 
+                access="global" 
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+    
+    <aura:attribute name="Title" access="global" type="String" default="Image Gallery" />
+    
+    <aura:attribute name="ImageURL1" access="global" type="String" default="" />
+    <aura:attribute name="ImageTitle1" access="global" type="String" default="First Image" />
+    <aura:attribute name="ImageDescription1" access="global" type="String" default="Some great first content!" />
+    
+    <aura:attribute name="ImageURL2" access="global" type="String" default="" />
+    <aura:attribute name="ImageTitle2" access="global" type="String" default="Second Image" />
+    <aura:attribute name="ImageDescription2" access="global" type="String" default="Some great second content!" />
+    
+    <aura:attribute name="ImageURL3" access="global" type="String" default="" />
+    <aura:attribute name="ImageTitle3" access="global" type="String" default="Third Image" />
+    <aura:attribute name="ImageDescription3" access="global" type="String" default="Some great third content!" />
+    
+    <aura:attribute name="hideDescriptions" access="global" type="Boolean" default="false" />
+    <aura:attribute name="descriptionLineLength" access="global" type="String" default="3" />
+    <aura:attribute name="hasBorder" access="global" type="Boolean" default="false" />
+    
+    <section class="slds-container_x-large slds-container_center">
+        <h2 class="slds-text-heading_large">{!v.Title}</h2>
+        <aura:set attribute="imagesPerRow" value="1"/>
+        <div class="slds-grid slds-wrap slds-grid_pull-padded no-medium-pull slds-grid_vertical-stretch">
+            <aura:renderIf isTrue="{!and(and((v.ImageURL1.length != 0), (v.ImageURL2.length != 0)), (v.ImageURL3.length != 0))}">
+                    <div class="slds-p-horizontal_small slds-size--1-of-1 slds-medium-size_1-of-3 slds-p-vertical_medium hasBorder">
+                        <article data-hasBorder="{!v.hasBorder}">
+                            <div class="image-wrap">
+                                <!-- Upload image to salesforce files. Make the image public, follow the link and copy that images address. Use that as the URL ID. -->
+                                <img src="{!v.ImageURL1}" alt="Image"/>
+                            </div>
+                            <div class="slds-text-heading_small slds-p-top_small">{!v.ImageTitle1}</div>
+                            <aura:if isTrue="{!v.hideDescriptions != true}">
+                                <div class="slds-text-body_regular description" style="{!'-webkit-line-clamp:'+v.descriptionLineLength}">{!v.ImageDescription1}</div>
+                            </aura:if>
+                        </article>
+                    </div>
+                    <div class="slds-p-horizontal_small slds-size--1-of-1 slds-medium-size_1-of-3 slds-p-vertical_medium hasBorder">
+                        <article data-hasBorder="{!v.hasBorder}">
+                            <div class="picture-wrap">
+                                <img src="{!v.ImageURL2}" alt="Image"/>
+                            </div>
+                            <div class="slds-text-heading_small slds-p-top_small">{!v.ImageTitle2}</div>
+                            <aura:if isTrue="{!v.hideDescriptions != true}">
+                                <div class="slds-text-body_regular description" style="{!'-webkit-line-clamp:'+v.descriptionLineLength}">{!v.ImageDescription2}</div>
+                            </aura:if>
+                        </article>
+                    </div>
+                    <div class="slds-p-horizontal_small slds-size--1-of-1 slds-medium-size_1-of-3 slds-p-vertical_medium hasBorder">
+                        <article data-hasBorder="{!v.hasBorder}">
+                            <div class="image-wrap">
+                                <img src="{!v.ImageURL3}" alt="Image"/>                            
+                            </div>
+                            <div class="slds-text-heading_small slds-p-top_small">{!v.ImageTitle3}</div>
+                            <aura:if isTrue="{!v.hideDescriptions != true}">
+                                <div class="slds-text-body_regular description" style="{!'-webkit-line-clamp:'+v.descriptionLineLength}">{!v.ImageDescription3}</div>
+                            </aura:if>
+                        </article>
+                    </div>
+                <aura:set attribute="else">
+                     <aura:renderIf isTrue="{!and(v.ImageURL1, v.ImageURL2)}">
+                            <div class="slds-p-horizontal_small slds-size--1-of-1 slds-medium-size_1-of-2 slds-p-vertical_medium hasBorder">
+                                <article data-hasBorder="{!v.hasBorder}">
+                                    <div class="image-wrap">
+                                        <img src="{!v.ImageURL1}" alt="Image"/>
+                                    </div>
+                                    <div class="slds-text-heading_small slds-p-top_small">{!v.ImageTitle1}</div>
+                                    <aura:if isTrue="{!v.hideDescriptions != true}">
+                                        <div class="slds-text-body_regular description" style="{!'-webkit-line-clamp:'+v.descriptionLineLength}">{!v.ImageDescription1}</div>
+                                    </aura:if>
+                                </article>
+                            </div>
+                            <div class="slds-p-horizontal_small slds-size--1-of-1 slds-medium-size_1-of-2 slds-p-vertical_medium hasBorder">
+                                <article data-hasBorder="{!v.hasBorder}">
+                                    <div class="Image-wrap">
+                                        <img src="{!v.ImageURL2}" alt="Image"/>
+                                    </div>
+                                    <div class="slds-text-heading_small slds-p-top_small">{!v.ImageTitle2}</div>
+                                    <aura:if isTrue="{!v.hideDescriptions != true}">
+                                        <div class="slds-text-body_regular description" style="{!'-webkit-line-clamp:'+v.descriptionLineLength}">{!v.ImageDescription2}</div>
+                                    </aura:if>
+                                </article>
+                            </div>
+                        <aura:set attribute="else">
+                            <div class="slds-p-horizontal_small slds-size--1-of-1 slds-medium-size_1-of-1 slds-p-vertical_medium hasBorder">
+                                <article data-hasBorder="{!v.hasBorder}">
+                                    <div class="image-wrap">
+                                        <img src="{!v.ImageURL1}" alt="Image"/>
+                                    </div>
+                                    <div class="slds-text-heading_small slds-p-top_small">{!v.ImageTitle1}</div>
+                                    <aura:if isTrue="{!v.hideDescriptions != true}">
+                                        <div class="slds-text-body_regular description" style="{!'-webkit-line-clamp:'+v.descriptionLineLength}">{!v.ImageDescription1}</div>
+                                    </aura:if>
+                                </article>
+                           </div>
+                        </aura:set>
+                    </aura:renderIf>
+                </aura:set>
+            </aura:renderIf>
+        </div>
+    </section>
+</aura:component>

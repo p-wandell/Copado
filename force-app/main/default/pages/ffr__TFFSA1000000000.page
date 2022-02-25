@@ -1,0 +1,354 @@
+<!-- User Note: TFFSA1000000000 Reporting Template Designed For Gathering Information About A Reporting Definition. Specific To A Tfsa Definitions. -->
+<!-- User Note: This Template Is Specific To The Support Report -->
+<!-- User Note: The Layout And Design Provides An Easy View Of The Information Contained On A Report Definition -->
+<!-- User Note: Special Features: Special Formatting And No Messages Box Rendered -->
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- User Note: I Want To Use The Reporting Engine To Generate Reports -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}" contenttype="{!SaveReportAS}">
+<!-- User Note: I Want To Have A Single Format For All Of My Reports So That I Can Style The Fonts And Colors -->
+<!-- User Note: A Standard Stylesheet Has Been Provided In The Static Resources -->
+<!-- User Note: You Can Create Your Own Stylsheet In The Static Resources And Apply It To Your Reports -->
+<!-- User Note: The Style Has Been Designed To Allow Variations Within Different Types Of Reports -->
+<!-- User Note: Change The Last Character From D To S On The Style Classes Applied To Each Line Will Produce A Summary Report -->
+<!-- User Note: A Summary Report Hides The Lowest Level Of Rows But Retains Calculations -->
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:stylesheet value="{!StyleSheetName}"/>
+<apex:PageMessages />
+<!-- User Note: I Want To Format Values On A Report In Different Ways -->
+<!-- User Note: A Number Formatter Component Has Been Provided To Support Different Formats -->
+<!-- User Note: The Coding Structure For The Variable Is As Follows Value/Percent Numberofdecimals Normal/Reversed Brakets/Minus 3Charcterinternationalcurrencycode/None-->
+<!-- User Note: Good Practice Is To Reverse Values Using A Format Rather Than Create Calculations On The Visualforce Page So Running Totals Can Be Easily Maintained-->
+<!-- User Note: You Can Add Your Own Formats To The List Below Try To Keep A Good Coding Structure-->
+<apex:variable var="V2NCB" value="#,###,###,##0.00;(#,###,###,##0.00);0.00"/>
+<apex:variable var="P2NCB" value="#,###,###,##0.00%;(#,###,###,##0.00%);0.00%"/>
+<apex:variable var="V0NCB" value="#,###,###,##0;(#,###,###,##0);0"/>
+<apex:variable var="P0NCB" value="#,###,###,##0%;(#,###,###,##0%);0%"/>
+<apex:variable var="V2RCB" value="(#,###,###,##0.00);#,###,###,##0.00;0.00"/>
+<apex:variable var="P2RCB" value="(#,###,###,##0.00%);#,###,###,##0.00%;0.00%"/>
+<apex:variable var="V0RCB" value="(#,###,###,##0);#,###,###,##0;0"/>
+<apex:variable var="P0RCB" value="(#,###,###,##0%);#,###,###,##0%;0%"/>
+<apex:variable var="V2NCBUSD" value="$#,###,###,##0.00;$(#,###,###,##0.00);$0.00"/>
+<apex:variable var="V2RCBUSD" value="$(#,###,###,##0.00);$#,###,###,##0.00;$0.00"/>
+<!-- User Note: I Want To Change All Of The Value Formats Quickly Across The Whole Of The Report -->
+<!-- User Note: Having The Variables Above Assigned To A Second Variable Here Means That Just Changing This Field Will -->
+<!-- User Note: Apply The Results To All The Fields Where It Is Used -->
+<!-- User Note: It Is Possible To Use Individual Variables Against A Line This Method Allows You To Make A Single Change To All Related Formats  -->
+<apex:variable var="VN" value="{!V2NCB}"/>
+<apex:variable var="PN" value="{!P2NCB}"/>
+<apex:variable var="VR" value="{!V2RCB}"/>
+<apex:variable var="PR" value="{!P2RCB}"/>
+<!-- REGION 01: GENERAL CONFIGURATION START-->
+<!-- REGION 02: REPORT HEADER START -->
+<!-- Demand The Report Definition Fields To Be Loaded Even If Data Is Not Found -->
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__CompanyLogo__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintChatterFeed__c}" rendered="false"/>
+<div class="chatterPosition"></div>
+<!-- User Note: I Want A Consistent Header Format To All Of My Reports With Titles Descriptions And Runtime Prompts Etc -->
+<!-- User Note: When Creating New Templates This Well Formatted Header Should Be Copied And Used Across All The Reports -->
+<table class="ffrgridd">
+	<tr>
+		<td><apex:image url="{!URLFOR(StaticResourceImages, CompanyLogo)}" rendered="{!DisplayCompanyLogo}" styleClass="logoReport"/></td>
+	</tr>
+    <tr>
+        <td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+        <td align="right">{!NOW()}</td>
+    </tr>
+    <tr><td class="ffrgridspacer2"></td></tr>
+    <tr>
+        <td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+        <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+    </tr>
+    <tr><td class="ffrgridspacer2"></td></tr>
+    <tr>
+        <td align="left"><apex:outputField value="{!ffr__ReportingDefinition__c.ffr__Description__c}"/></td>
+        <td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+    </tr>
+</table>
+<!-- User Note: Create a new table to display the prompt information -->
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridspacer2"></td></tr>
+    <tr>
+        <td align="left">
+                <table class="ffrgrid">
+                <apex:repeat value="{!promptList}" var="prompt" >
+                <tr>
+                    <td align="left">{!prompt.label}</td>
+                    <td align="left" class="ffrgridspacer"></td>
+                    <td align="left"><strong>{!prompt.value}</strong></td>
+                </tr>
+                </apex:repeat>
+                </table>
+        </td>
+  </tr>
+</table>
+<!-- User Note: Insert a space after the header -->
+<table class="ffrgrid">
+<tr><td class="ffrgridspacer"></td></tr>
+</table>
+<!-- REGION 02: REPORT HEADER END -->
+<!-- REGION 03: REPORT BODY-->
+<!-- User Note: Itterate Over All Of The Data Ranges, Groups And Rows And Return The Data -->
+<!-- User Note: Display The Report Definition > Data Range > Name Label-->
+<apex:outputpanel rendered="{!!hasMessages}">
+    <table class="ffrgrid">
+        <apex:variable value="{!reportingDataKeyList}" var="reportingDataKey"/>
+        <apex:variable var="dataRange" value="{!reportingData['DR01']}"/>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrgridtitleleftd">{!reportingDataRanges['DR01'].Name}</td></tr>
+        <tr><td class="ffrtextsmallleft">The definition record itself defines many attributes, including the description, reporting template and style sheet that is used</td></tr>
+        <tr><td class="ffrtextsmallleft">Templates supported by FinancialForce all begin with the prefix ffr__</td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+    </table>
+    <table class="ffrgridnotfullpageborder">
+            <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Reporting Values (GroupBy) Labels-->
+                <apex:repeat value="{!dataRange.groupLabelList}" var="groupLabel">
+                    <th class="ffrtextsmallleftbold">{!groupLabel}</th>
+                    <th class="ffrcolumnspacerd"></th>
+                </apex:repeat>
+    <!-- User Note: Display The Report Definition > Data Range > Filter Mapping (Column) Labels And The Related Values Labels-->
+                <apex:repeat value="{!dataRange.columnLabelList}" var="columnLabel">
+                    <apex:repeat value="{!dataRange.valueLabelList}" var="valueLabel">
+                        <th class="ffrtextsmallrightbold">{!columnLabel}<br/>{!valueLabel}</th>
+                    </apex:repeat>
+                </apex:repeat>
+            </tr>
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+                <apex:repeat value="{!row.lineList}" var="line" >
+                    <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Values(Group) Actual Data -->
+                        <apex:repeat value="{!line.groupList}" var="group" >
+                            <td class="ffrtextsmallleft">{!group}</td>
+                            <th class="ffrcolumnspacerd"></th>
+                        </apex:repeat>
+                        <apex:repeat value="{!line.columnList}" var="column">
+                            <apex:repeat value="{!column.valueList}" var="value">
+     <!-- User Note: Display The Report Definition Values(Sum) Actual Data -->
+                                <td class="ffrtextsmallright"> <c:NumberFormatter value="{!value}" pattern="{!VN}"/>
+                                </td>
+                            </apex:repeat>
+                        </apex:repeat>
+                    </tr>
+                </apex:repeat>
+            </apex:repeat>
+        </table>
+    <table class="ffrgrid">
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+      </table>
+    <!-- User Note: Display The Report Definition > Data Range > Name Label-->
+    <table class="ffrgrid">
+        <apex:variable var="dataRange" value="{!reportingData['DR02']}"/>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrgridtitleleftd">{!reportingDataRanges['DR02'].Name}</td></tr>
+        <tr><td class="ffrtextsmallleft">Each reporting data range has selection criteria defining the "pot" of data to be reported on within the reporting data range</td></tr>
+        <tr><td class="ffrtextsmallleft">A reporting data range works within only one object</td></tr>
+        <tr><td class="ffrtextsmallleft">By creating multiple reporting data ranges, a report can access multiple "pots" of data from different objects</td></tr>
+        <tr><td class="ffrtextsmallleft">Within each data range filters are used to define which information to show as columns or rows</td></tr>
+        <tr><td class="ffrtextsmallleft">The values shown on a report are generated from the intersect of the columns and rows</td></tr>
+        <tr><td class="ffrtextsmallleft">Global filters (with type All) are used to limit all of the information within a data range or report</td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+    </table>
+    <table class="ffrgridnotfullpageborder">
+            <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Reporting Values (GroupBy) Labels-->
+                <apex:repeat value="{!dataRange.groupLabelList}" var="groupLabel">
+                    <th class="ffrtextsmallleftbold">{!groupLabel}</th>
+                    <th class="ffrcolumnspacerd"></th>
+                </apex:repeat>
+    <!-- User Note: Display The Report Definition > Data Range > Filter Mapping (Column) Labels And The Related Values Labels-->
+                <apex:repeat value="{!dataRange.columnLabelList}" var="columnLabel">
+                    <apex:repeat value="{!dataRange.valueLabelList}" var="valueLabel">
+                        <th class="ffrtextsmallrightbold">{!columnLabel}<br/>{!valueLabel}</th>
+                    </apex:repeat>
+                </apex:repeat>
+            </tr>
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+               <apex:repeat value="{!row.lineList}" var="line" >
+                    <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Values(Group) Actual Data -->
+                        <apex:repeat value="{!line.groupList}" var="group" >
+                            <td class="ffrtextsmallleft">{!group}</td>
+                            <th class="ffrcolumnspacerd"></th>
+                        </apex:repeat>
+                        <apex:repeat value="{!line.columnList}" var="column">
+                            <apex:repeat value="{!column.valueList}" var="value">
+     <!-- User Note: Display The Report Definition Values(Sum) Actual Data -->
+                                <td class="ffrtextsmallright"> <c:NumberFormatter value="{!value}" pattern="{!VN}"/>
+                                </td>
+                            </apex:repeat>
+                        </apex:repeat>
+                    </tr>
+                </apex:repeat>
+            </apex:repeat>
+        </table>
+    <table class="ffrgrid">
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+      </table>
+    <!-- User Note: Display The Report Definition > Data Range > Name Label-->
+    <table class="ffrgrid">
+        <apex:variable var="dataRange" value="{!reportingData['DR03']}"/>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrgridtitleleftd">{!reportingDataRanges['DR03'].Name}</td></tr>
+        <tr><td class="ffrtextsmallleft">Reporting values specify the values (fields) in the data that are aggregated and displayed on the report for the related</td></tr>
+        <tr><td class="ffrtextsmallleft">A Group value represents a field on the object being reported that is used to group the records. The group value can be displayed as text on the report output.</td></tr>
+        <tr><td class="ffrtextsmallleft">A Sum value represents a field on the object being reported whose numeric values will be summed and displayed on the report for each group</td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+    </table>
+    <table class="ffrgridnotfullpageborder">
+            <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Reporting Values (GroupBy) Labels-->
+                <apex:repeat value="{!dataRange.groupLabelList}" var="groupLabel">
+                    <th class="ffrtextsmallleftbold">{!groupLabel}</th>
+                    <th class="ffrcolumnspacerd"></th>
+                </apex:repeat>
+    <!-- User Note: Display The Report Definition > Data Range > Filter Mapping (Column) Labels And The Related Values Labels-->
+                <apex:repeat value="{!dataRange.columnLabelList}" var="columnLabel">
+                    <apex:repeat value="{!dataRange.valueLabelList}" var="valueLabel">
+                        <th class="ffrtextsmallrightbold">{!columnLabel}<br/>{!valueLabel}</th>
+                    </apex:repeat>
+                </apex:repeat>
+            </tr>
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+               <apex:repeat value="{!row.lineList}" var="line" >
+                    <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Values(Group) Actual Data -->
+                        <apex:repeat value="{!line.groupList}" var="group" >
+                            <td class="ffrtextsmallleft">{!group}</td>
+                            <th class="ffrcolumnspacerd"></th>
+                        </apex:repeat>
+                        <apex:repeat value="{!line.columnList}" var="column">
+                            <apex:repeat value="{!column.valueList}" var="value">
+     <!-- User Note: Display The Report Definition Values(Sum) Actual Data -->
+                                <td class="ffrtextsmallright"> <c:NumberFormatter value="{!value}" pattern="{!VN}"/>
+                                </td>
+                            </apex:repeat>
+                        </apex:repeat>
+                    </tr>
+                </apex:repeat>
+            </apex:repeat>
+        </table>
+    <table class="ffrgrid">
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+      </table>
+    <!-- User Note: Display The Report Definition > Data Range > Name Label-->
+    <table class="ffrgrid">
+        <apex:variable var="dataRange" value="{!reportingData['DR04']}"/>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrgridtitleleftd">{!reportingDataRanges['DR04'].Name}</td></tr>
+        <tr><td class="ffrtextsmallleft">Reporting prompts are run-time criteria that the user provides. Example prompts might be the period/year of the report or analysis dimensions</td></tr>
+        <tr><td class="ffrtextsmallleft">Reporting prompt mapping records map reporting prompts to the reporting filters being used</td></tr>
+        <tr><td class="ffrtextsmallleft">Prompt tags are use to join information from a user response on a prompt, to the filter being used</td></tr>
+        <tr><td class="ffrtextsmallleft">The prompt tags on filters provided by FinancialForce are implemented consistently to provide re-use across reports</td></tr>
+        <tr><td class="ffrtextsmallleft">The mapping of a prompt tags from a report to a filter must be identical on both the mapping and the filter to work correctly</td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+    </table>
+    <table class="ffrgridnotfullpageborder">
+            <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Reporting Values (GroupBy) Labels-->
+                <apex:repeat value="{!dataRange.groupLabelList}" var="groupLabel">
+                    <th class="ffrtextsmallleftbold">{!groupLabel}</th>
+                    <th class="ffrcolumnspacerd"></th>
+                </apex:repeat>
+    <!-- User Note: Display The Report Definition > Data Range > Filter Mapping (Column) Labels And The Related Values Labels-->
+                <apex:repeat value="{!dataRange.columnLabelList}" var="columnLabel">
+                    <apex:repeat value="{!dataRange.valueLabelList}" var="valueLabel">
+                        <th class="ffrtextsmallrightbold">{!columnLabel}<br/>{!valueLabel}</th>
+                    </apex:repeat>
+                </apex:repeat>
+            </tr>
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+               <apex:repeat value="{!row.lineList}" var="line" >
+                    <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Values(Group) Actual Data -->
+                        <apex:repeat value="{!line.groupList}" var="group" >
+                            <td class="ffrtextsmallleft">{!group}</td>
+                            <th class="ffrcolumnspacerd"></th>
+                        </apex:repeat>
+                        <apex:repeat value="{!line.columnList}" var="column">
+                            <apex:repeat value="{!column.valueList}" var="value">
+     <!-- User Note: Display The Report Definition Values(Sum) Actual Data -->
+                                <td class="ffrtextsmallright"> <c:NumberFormatter value="{!value}" pattern="{!VN}"/>
+                                </td>
+                            </apex:repeat>
+                        </apex:repeat>
+                    </tr>
+                </apex:repeat>
+            </apex:repeat>
+        </table>
+    <table class="ffrgrid">
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+      </table>
+    <!-- User Note: Display The Report Definition > Data Range > Name Label-->
+    <table class="ffrgrid">
+        <apex:variable var="dataRange" value="{!reportingData['DR05']}"/>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+        <tr><td class="ffrgridtitleleftd">{!reportingDataRanges['DR05'].Name}</td></tr>
+        <tr><td class="ffrtextsmallleft">A reporting label is a simple container for text to be made available to a reporting template</td></tr>
+        <tr><td class="ffrtextsmallleft">Reporting labels to define items such as calculated column labels</td></tr>
+        <tr><td class="ffrtextsmallleft">Reporting labels are only shown on a report if the template is designed to show the label</td></tr>
+        <tr><td class="ffrrowspacerd"></td></tr>
+    </table>
+    <table class="ffrgridnotfullpageborder">
+            <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Reporting Values (GroupBy) Labels-->
+                <apex:repeat value="{!dataRange.groupLabelList}" var="groupLabel">
+                    <th class="ffrtextsmallleftbold">{!groupLabel}</th>
+                    <th class="ffrcolumnspacerd"></th>
+                </apex:repeat>
+    <!-- User Note: Display The Report Definition > Data Range > Filter Mapping (Column) Labels And The Related Values Labels-->
+                <apex:repeat value="{!dataRange.columnLabelList}" var="columnLabel">
+                    <apex:repeat value="{!dataRange.valueLabelList}" var="valueLabel">
+                        <th class="ffrtextsmallrightbold">{!columnLabel}<br/>{!valueLabel}</th>
+                    </apex:repeat>
+                </apex:repeat>
+            </tr>
+            <apex:repeat value="{!dataRange.rowList}" var="row" >
+                <apex:repeat value="{!row.lineList}" var="line" >
+                    <tr>
+    <!-- User Note: Display The Report Definition > Data Range > Values(Group) Actual Data -->
+                        <apex:repeat value="{!line.groupList}" var="group" >
+                            <td class="ffrtextsmallleft">{!group}</td>
+                            <th class="ffrcolumnspacerd"></th>
+                        </apex:repeat>
+                        <apex:repeat value="{!line.columnList}" var="column">
+                            <apex:repeat value="{!column.valueList}" var="value">
+     <!-- User Note: Display The Report Definition Values(Sum) Actual Data -->
+                                <td class="ffrtextsmallright"> <c:NumberFormatter value="{!value}" pattern="{!VN}"/>
+                                </td>
+                            </apex:repeat>
+                        </apex:repeat>
+                    </tr>
+                </apex:repeat>
+            </apex:repeat>
+        </table>
+    <table class="ffrgrid">
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+    <tr><td class="ffgridspacerd"></td></tr>
+      </table>
+</apex:outputpanel>
+<!-- REGION 03: REPORT BODY END -->
+<!-- REGION 05: REPORT PAGE END -->
+<!-- REGION 06: REPORT CHATTER START -->
+<c:ShowChatter value="{!ReportingLog}" rendered="{!PrintChatterFeed}" printPDF="{!RenderReportAs}"/>
+<!-- REGION 06: REPORT CHATTER END -->
+</apex:page>

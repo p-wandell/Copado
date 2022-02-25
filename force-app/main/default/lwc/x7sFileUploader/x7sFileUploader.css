@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2020. 7Summits Inc.
+ */
+.x7s-file-uploader {
+  position: relative;
+  min-height: 2rem;
+}
+.x7s-file-uploader .file-details .help-icon button {
+  vertical-align: text-bottom;
+  color: currentColor;
+}
+.x7s-file-uploader .file-input,
+.x7s-file-uploader .spinner-container {
+  position: relative;
+}

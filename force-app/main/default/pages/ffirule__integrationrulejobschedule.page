@@ -1,0 +1,35 @@
+<apex:page standardController="ffirule__IntegrationRuleJob__c" extensions="ffirule.IntegrationRuleJobController" lightningStylesheets="true">
+    <apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}" layout="none">
+        <style>
+            .pageTitleIcon {
+            border-radius: .25rem;
+            background-color: #f87d76;
+            background-image: url("{!URLFOR($Asset.SLDS, 'assets/icons/custom/custom67.svg')}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 2rem;
+            display: block !important;
+            }
+        </style>
+    </apex:outputPanel>
+	<apex:sectionHeader title="{!$ObjectType.ffirule__IntegrationRuleJob__c.Label} Scheduling" subtitle="{!ffirule__IntegrationRuleJob__c.Name}"/>
+    <apex:form >
+	    <apex:outputField value="{!ffirule__IntegrationRuleJob__c.ffirule__ScheduledApexJobID__c}" rendered="false"/>
+	    <apex:outputField value="{!ffirule__IntegrationRuleJob__c.ffirule__ScheduledApexJobCronExpression__c}" rendered="false"/>
+	    <apex:outputField value="{!ffirule__IntegrationRuleJob__c.ffirule__IntegrationRule__c}" rendered="false"/>
+	    <apex:outputField value="{!ffirule__IntegrationRuleJob__c.IntegrationRule__r.Id}" rendered="false"/> 
+    	<apex:pageBlock rendered="{!JobScheduleConfirm}">
+	    	<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="Back" action="{!view}"/>
+			</apex:pageBlockButtons>
+	    	<apex:pageMessages />
+	    </apex:pageBlock>
+	    <apex:pageBlock rendered="{!NOT(JobScheduleConfirm)}">
+	    	<apex:pageMessage summary="{!$Label.ffirule__clicklinkjobscheduleconfirmation}" severity="Info" strength="1"/>
+	    	<apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="{!$Label.ffirule__continue}" action="{!schedule}" />
+                <apex:commandButton value="{!$Label.ffirule__cancel}" action="{!cancel}" />
+			</apex:pageBlockButtons>
+	    </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>50.0</apiVersion>
+	<isExposed>true</isExposed>
+	<masterLabel>7S News Create</masterLabel>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightning__AppPage, lightning__HomePage,
+                                lightningCommunity__Default">
+			<property name="headingTitle" label="Heading Title" type="String" description="Heading title for author."/>
+			<property name="headerAlignment" label="Heading Alignment" type="String" description="Header Alignment"
+			          datasource="left,center,right"/>
+			<property name="variant" label="Display variant" type="String"
+			          description="Select the default layout variant" datasource="default,slds-card,featured"/>
+			<property name="requireTopics" label="Require Topics?" type="Boolean"
+			          description="Require the user to select topics for the article."/>
+			<property name="allowShowSource" label="Allow Show Source Button" type="Boolean"
+			          description="Adds a Show Source button to the page to allow for editing of the raw HTML within the editor."/>
+			<property name="attachmentAccept" label="Image file types" type="String"
+			          description="Specify allowed image file types (CSV list of file extensions)"/>
+			<property name="pathToDetail" label="Path To Detail" type="String"
+			          description="Enter the page name for News Detail page"/>
+			<property name="allNewsUrl" label="News List View URL" type="String"
+			          description="Enter the page name for News list view page for Cancel Button redirect"/>
+			<property name="limitToSpecificGroups" label="Enable Limit to Specific Groups" type="Boolean"
+			          description="Check to limit to specified collaboration groups"/>
+			<property name="customClass" label="Custom Class" type="String" description="Used for custom styling."/>
+			<property name="ariaLandmarkRoleForComponent" label="ACCESSIBILITY: ARIA landmark role for component" type="String"
+					  description="HTML role of the outer div of the component."
+					  datasource="main,region,complementary"
+					  default="main"/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

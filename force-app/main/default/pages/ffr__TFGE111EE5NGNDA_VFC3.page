@@ -1,0 +1,88 @@
+<!-- User Note: Service Pack Upgrade -->
+<!-- User Note: The Report Template was a temporary version and has been replaced by a new version -->
+
+<!-- Always insert the following code which is essential on all templates. It tells Visualforce to use the Reporting Engine and Stylesheets -->
+<apex:page standardController="ffr__ReportingDefinition__c" extensions="ffr.ReportingTemplateController" readOnly="true" showHeader="true" sidebar="false" standardStylesheets="false" renderas="{!RenderReportAs}">
+<apex:stylesheet value="{!URLFOR($Resource.ffr__ReportingDefaultStyles, 'ReportingDefaultStyles.css')}"/>
+<apex:PageMessages />
+<apex:stylesheet value="{!StyleSheetName}"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.Name}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Description__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__Title__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__DisplayPrompts__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}" rendered="false"/>
+<apex:outputText value="{!ffr__ReportingDefinition__c.ffr__PrintStyleSheet__c}" rendered="false"/>
+
+<!-- You now create a form where you can display information from the Reporting Engine, this will typically have a header section and a data section -->
+
+
+<!-- All of the reports that you create should contain the following header information. It has been carefully formatted to include the name of the Definition and other properties -->
+<table class="ffrgridd">
+<tr>
+<td><h1 class="ffrtitle">{!ffr__ReportingDefinition__c.ffr__Title__c}</h1></td>
+<td align="right">{!NOW()}</td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td><h1 class="ffrname">{!ffr__ReportingDefinition__c.Name}</h1></td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__ReportingTemplate__c}</h2></td>
+</tr>
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">{!ffr__ReportingDefinition__c.ffr__Description__c}</td>
+<td align="right"><h2 class="ffrwhiteonwhite">{!ffr__ReportingDefinition__c.ffr__StyleSheet__c}</h2></td>
+</tr>
+</table>
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridspacer2"></td></tr>
+<tr>
+<td align="left">
+<table class="ffrgrid">
+<apex:repeat value="{!promptList}" var="prompt" >
+<tr>
+<td align="left">{!prompt.label}</td>
+<td align="left" class="ffrgridspacer"></td>
+<td align="left"><strong>{!prompt.value}</strong></td>
+</tr>
+</apex:repeat>
+</table>
+</td>
+</tr>
+</table>
+<table class="ffrgrid">
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+</table>
+
+
+
+<!-- Data Start
+Create a table that will be used to contain your data and in our case we apply a class to the table so that it uses 100% of the page width-->
+<table class="ffrgridnotfullpage">
+<!-- Within that table, create a set of rows (tr) and cells (td) that show your information, so the code that is described above-->
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><td class="ffrgridrowspacerd"></td></tr>
+<tr><th><h1 class="ffrname">FinancialForce Reporting Template Change</h1></th></tr>
+</table>
+<table class="ffrgridnotfullpage">
+<tr><td class="ffrgridrowlabeld" colspan="3">The Reporting Template you are using has been changed in this release.</td></tr>
+<tr><td class="ffrgridrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">Please edit the Reporting Definition and modify the reference to the Reporting Template: </td></tr>
+<tr><td class="ffrgridrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrgridrowspacerd" colspan="3"></td></tr>
+<tr><td class="ffrcalcsumlabeld">ffr__TFGE111EE5NGNDA_VFC3</td>
+<td class="ffrgridrowlabeld">has been replaced by Reporting Template</td>
+<td class="ffrcalcsumlabeld">ffr__TFBS111EE5NGNDD</td></tr>
+<tr><td class="ffrgridrowlabeld" colspan="3">Once you have applied the change, run your report once more and you will see the same format as in previous versions.</td></tr>
+
+<!-- Now that you have completed the display of information, close the Table -->
+</table>
+
+<!-- Now that you have completed your table you can add another here or close the Form -->
+
+<!-- Now that you have completed your report, close the Page, you do not need to create additional forms at any time and only need to do the form and page options at the end of your page -->
+</apex:page>

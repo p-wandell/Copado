@@ -1,0 +1,31 @@
+<apex:page lightningStylesheets="true" standardcontroller="ffr__ReportingDataRange__c" extensions="ffr.ReportingDataRangeSortController">
+	<apex:form >
+		<apex:pageBlock title="{!$Label.ffr__reportingvaluesortpageheader}">
+			<apex:pageMessages />
+			<apex:pageBlockSection title="{!$Label.ffr__reportingvaluesortpagegroupsectionheader}" rendered="{!GroupReportingValueList.size > 0}" collapsible="false">
+				<apex:pageBlockTable value="{!GroupReportingValueList}" var="groupReportingValue">
+					<apex:column value="{!groupReportingValue.Name}"/>
+					<apex:column headerValue="{!$Label.ffr__reportingvaluesortpagetemplatekeycolumnheader}">
+						<apex:selectList value="{!groupReportingValue.ffr__TemplateKey__c}" size="1">
+							<apex:selectOptions value="{!GroupTemplateKeyPickList}"/>
+						</apex:selectList>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="{!$Label.ffr__reportingvaluesortpagesumsectionheader}" rendered="{!SumReportingValueList.size > 0}" collapsible="false">
+				<apex:pageBlockTable value="{!SumReportingValueList}" var="sumReportingValue">
+					<apex:column value="{!sumReportingValue.Name}"/>
+					<apex:column headerValue="{!$Label.ffr__reportingvaluesortpagetemplatekeycolumnheader}">
+						<apex:selectList value="{!sumReportingValue.ffr__TemplateKey__c}" size="1">
+							<apex:selectOptions value="{!SumTemplateKeyPickList}"/>
+						</apex:selectList>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!save}" value="{!$Label.ffr__reportingvaluesortpagesavebutton}"/>
+				<apex:commandButton action="{!cancel}" value="{!$Label.ffr__reportingvaluesortpagecancelbutton}"/>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

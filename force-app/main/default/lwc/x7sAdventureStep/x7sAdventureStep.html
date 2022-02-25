@@ -1,0 +1,62 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<c-x7s-shr-component-wrapper custom-class={sectionClass} variant={displayVariant} aria-label={label.labelAriaWrapper}>
+    <section>
+      <template if:true={adventureContentObject}>
+
+        <!--Progress Bar -->
+        <lightning-layout>
+			<lightning-layout-item  flexibility="auto, grow" > 
+				<c-x7s-adventure-step-progress list-id={listId}>
+				</c-x7s-adventure-step-progress>
+			</lightning-layout-item>
+        </lightning-layout>
+       	
+        
+        <!-- Step Banner -->
+        <c-x7s-adventure-steps-banner adventure-step-background-color ={adventureStepBackgroundColor}
+                                      adventure-step-text-color ={adventureStepTextColor}
+                                      adventure-header-image ={adventureHeaderImage}
+                                      adventure-step-header-image ={adventureStepHeaderImage}
+                                      step-title ={selectedStep.title}
+                                      step-banner-align ={stepBannerAlign}
+                                      task-checkbox-setup ={taskCheckboxSetup}
+                                      my-filter ={myFilter}
+                                      step-subtitle ={selectedStep.subtitle}
+                                      ontoggleflag ={filterByTask}
+                                      display-step-title ={displayStepTitle}
+                                      display-step-sub-title ={displayStepSubTitle}
+                                      show-only-my-task={showOnlyMyTask}>
+        </c-x7s-adventure-steps-banner>
+
+        <!--Module task filter toggle -->
+        <lightning-layout multiple-rows="true" vertical-align="stretch" pull-to-boundary="small" class="slds-p-horizontal_small">
+            <template if:true={selectedStep.stepModuleWrapperList}>
+              <template for:each={selectedStep.stepModuleWrapperList} for:item="stepModule" for:index="index">
+                  <lightning-layout-item key={stepModule.id} padding="horizontal-small" size="12" large-device-size="4" medium-device-size="6" class="slds-m-vertical--small">
+                  <!--  {stepModule.id}  / {stepModule.title} / {stepModule.descriptionLabel}-->
+                        <c-x7s-adventure-modules step-module ={stepModule}
+                                              show-links ={showLinks}
+                                              custom-class ={customClass}
+                                              show-avatar ={showAvatar}
+                                              show-images ={showImages}
+                                              task-progress={stepModule.taskProgress}
+                                              adventure-setup ={adventureSetup}
+                                              task-checkbox-setup ={taskCheckboxSetup}
+                                              my-filter ={myFilter}
+                                              is-lex = {isLex}
+                                              module-progress-type ={moduleProgress}
+                                              tile-variant ={moduleDisplayVariant}
+                                              truncate ={truncate}
+                                              show-module-tooltip ={showModuleTooltip}>
+                        </c-x7s-adventure-modules>
+                  </lightning-layout-item>
+              </template>
+            </template>
+        </lightning-layout>
+      </template>  
+    </section>
+  </c-x7s-shr-component-wrapper>
+</template>

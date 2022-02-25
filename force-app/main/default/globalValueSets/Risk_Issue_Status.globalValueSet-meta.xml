@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Draft</fullName>
+        <default>true</default>
+        <label>Draft</label>
+    </customValue>
+    <customValue>
+        <fullName>In Progress</fullName>
+        <default>false</default>
+        <label>In Progress</label>
+    </customValue>
+    <customValue>
+        <fullName>Mitigated</fullName>
+        <default>false</default>
+        <label>Mitigated</label>
+    </customValue>
+    <customValue>
+        <fullName>Eradicated</fullName>
+        <default>false</default>
+        <label>Eradicated</label>
+    </customValue>
+    <description>Valid Risk &amp; Issue Status</description>
+    <masterLabel>Risk &amp; Issue Status</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

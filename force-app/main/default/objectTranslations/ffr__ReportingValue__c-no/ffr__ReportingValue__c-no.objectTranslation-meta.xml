@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Rapporteringsverdi</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Rapporteringsverdier</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+    </caseValues>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Rapporteringsverdienavn</nameFieldLabel>
+    <recordTypes>
+        <description><!-- This record type is only valid when the Data Range Type is &quot;Detail&quot;. --></description>
+        <label><!-- Detail --></label>
+        <name>ffr__Detail</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- This record type is only valid when the Data Range Type is &quot;Summary&quot;. --></description>
+        <label><!-- Summary --></label>
+        <name>ffr__Summary</name>
+    </recordTypes>
+    <webLinks>
+        <label><!-- Sort --></label>
+        <name>ffr__Sort</name>
+    </webLinks>
+</CustomObjectTranslation>

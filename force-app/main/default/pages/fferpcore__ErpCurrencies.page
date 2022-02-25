@@ -1,0 +1,150 @@
+<apex:page controller="fferpcore.ErpCurrenciesController" extensions="fferpcore.ErpCurrencyRatesRedirectController" action="{!processPageParameters}" tabStyle="ErpCurrencies__tab" lightningStylesheets="true">
+    <c:ffui_slds />
+    <style>
+        .detailList input[type="button"].form-activate-button {
+            margin-right: 0.5rem;
+            margin-top: 0.3em ;
+            float: right;
+        }
+        .detailList input[type="button"].form-activate-button-classic {
+            margin-top: 0.3em;
+            float:right;
+        }
+        .detailList input[type="button"].form-metadata-button {
+            margin-right: 0.5rem;
+            float:right;
+        }
+        div.content-wrapper {
+            display: table;
+        }
+        div.content-wrapper-warning {
+            width: 44rem;
+        }
+        .slds-vf-scope input[type] ~ input[type] {
+            margin-left: 0;
+        }
+        div.content-wrapper .confimationDetailToggle {
+            padding-bottom: 0.5rem;
+            display: block;
+        }
+        div.content-wrapper ul {
+            list-style: disc;
+            margin-left: 1.5rem;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0.5rem;
+        }
+        /* Required CSS fix when using RemoteSiteVerifier directly below ffui_header.
+         * Margins from ffui_header and RemoteSiteVerifier cause too much empty space. */
+        div.remoteSiteVerifier div.message {
+            margin-top: 0rem !important;
+        }
+    </style>
+    <apex:outputPanel styleClass="slds-scope">
+        <c:ffui_lightningOut outAppName="fferpcore:ExchangeRatesApp"/>
+        <c:ffui_header instanceName="$FFHEADER"/>
+    </apex:outputPanel>
+    <c:RemoteSiteVerifier siteUrl="{!MetadataApiUrl}"
+        siteName="{!$Label.fferpcore__remotesitemetadataapiname}"
+        siteDescription="{!$Label.fferpcore__remotesitemetadataapidescription}"
+        message="{!RemoteSiteVerifierMessage}"
+        rendered="{!AND(IsMetadataApiAccessRequired, NOT(IsRemoteSiteSettingConfigured))}"/>
+    <apex:form id="page">
+        <apex:actionFunction name="redirectToExchangeRateGroups" action="{!redirectToExchangeRateGroups}"/>
+        <apex:actionFunction name="redirectToExchangeRates" action="{!redirectToExchangeRates}"/>
+        <apex:actionFunction name="redirectToExchangeRateHistory" action="{!redirectToExchangeRateHistory}"/>
+        <apex:pageBlock rendered="{!NOT(isMultiCurrencyOrganization)}">
+            <apex:pageMessage summary="{!$Label.fferpcore__erpcurrenciessinglecurrencyorgerrormessage}" severity="info" strength="0"/>
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!isMultiCurrencyOrganization}">
+            <apex:pageMessages />
+            <c:Loader >
+                <apex:pageBlockSection title="{!$Label.fferpcore__erpcurrenciesavailablecurrenciessectiontitle}" rendered="{!hasActivationPermission}" columns="1">
+                    <apex:outputText value="{!$Label.fferpcore__erpcurrenciesallactive}" rendered="{!AND(!showMetadataModificationWarning, InactiveCurrencies.empty, SelectedCurrencies.empty)}"/>
+                    <apex:outputPanel id="picklist" rendered="{!AND(!showMetadataModificationWarning, (!InactiveCurrencies.empty || !SelectedCurrencies.empty))}" layout="block" styleClass="content-wrapper">
+                        <c:MultiselectPicklist notSelectedValues="{!InactiveCurrencies}"
+                            selectedValues="{!SelectedCurrencies}"
+                            notSelectedColumnLabel="{!$Label.fferpcore__erpcurrenciesactivatesectionavailablepicklisttitle}"
+                            selectedColumnLabel="{!$Label.fferpcore__erpcurrenciesactivatesectionchosenpicklisttitle}"/>
+                        <apex:commandButton id="buttonActivate"
+                            action="{!activateSelection}"
+                            value="{!$Label.fferpcore__erpcurrenciesactivatebutton}"
+                            status="loader"
+                            reRender="page"
+                            styleClass="{!IF($User.UIThemeDisplayed=='Theme4d','form-activate-button','form-activate-button-classic')}"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="metadataModificationWarning" layout="block" rendered="{!showMetadataModificationWarning}" styleClass="content-wrapper">
+                        <apex:outputText value="{!$Label.fferpcore__erpcurrenciesmetadatamodificationwarning}"/>
+                        <br/><br/>
+                        <apex:outputPanel id="moreInfoBlock">
+                            <apex:commandLink value="{!IF(ShowConfirmationDetail, $Label.fferpcore__erpcurrencieshidemoreinformation, $Label.fferpcore__erpcurrenciesdisplaymoreinformation)}"
+                                action="{!toggleShowConfirmationDetail}"
+                                rerender="moreInfoBlock"
+                                styleClass="confimationDetailToggle"/>
+                            <apex:outputPanel rendered="{!ShowConfirmationDetail}">
+                                <apex:outputText value="{!rateFieldInformationMessage}"/>
+                                <apex:dataList value="{!SelectedCurrencies}" var="currencyIso">
+                                    <apex:outputText value="{!rateFieldName}">
+                                        <apex:param value="{!currencyIso.value}"/>
+                                    </apex:outputText>
+                                </apex:dataList>
+                                <apex:outputText value="{!picklistEntriesInformationMessage}"/>
+                                <apex:dataList value="{!SelectedCurrencies}" var="currencyIso">
+                                    <apex:outputText value="{!currencyIso.label}"/>
+                                </apex:dataList>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <br/>
+                        <apex:commandButton id="buttonConfirm" action="{!confirmSelection}" value="{!$Label.fferpcore__erpvisualforceconfirmbutton}" status="loader" reRender="page" styleClass="form-metadata-button"/>
+                        <apex:commandButton id="buttonCancel" action="{!cancelSelection}" value="{!$Label.fferpcore__erpvisualforcecancelbutton}" status="loader" reRender="page" styleClass="form-metadata-button"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSection>
+            </c:Loader>
+            <apex:pageBlockSection title="{!$Label.fferpcore__erpcurrenciescurrentsectiontitle}">
+                <apex:outputText value="{!$Label.fferpcore__erpcurrenciesnoactivecurrencies}" rendered="{!NOT(hasActiveCurrencies)}"/>
+                <apex:pageBlockTable id="currentCurrenciesTable" value="{!ActiveCurrencies}" var="currency" rendered="{!hasActiveCurrencies}">
+                <apex:column headerValue="{!$Label.fferpcore__erpcurrenciescurrentsectionisocolumn}" value="{!currency}"/>
+                <apex:column headerValue="{!$Label.fferpcore__erpcurrenciescurrentsectionnamecolumn}" value="{!ActiveCurrencies[currency]}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+        var headerButtons = [];
+
+        if({!hasExchangeRateGroupsPermissions}) {
+            headerButtons.push({
+                id: 'groups',
+                label: '{!JSENCODE($Label.fferpcore__erpcurrenciesredirectgroups)}',
+                actionFn: 'redirectToExchangeRateGroups'
+            });
+        }
+
+        if({!hasExchangeRatesPermissions}) {
+            headerButtons.push({
+                id: 'rates',
+                label: '{!JSENCODE($Label.fferpcore__erpcurrenciesredirectrates)}',
+                actionFn: 'redirectToExchangeRates'
+            });
+        }
+
+        if({!hasExchangeRateHistoryPermissions}) {
+            headerButtons.push({
+                id: 'history',
+                label: '{!JSENCODE($Label.fferpcore__erpcurrenciesredirecthistory)}',
+                actionFn: 'redirectToExchangeRateHistory'
+            });
+        }
+
+        $FFHEADER.renderHeader({
+            recordName: '{!JSENCODE($Label.fferpcore__erpcurrenciespageheadertitle)}',
+            objectName: '{!JSENCODE($Label.fferpcore__exchangeratepagesubtitle)}',
+            icon: '{!iconUrl}',
+            helpUrl: '{!helpUrl}',
+            buttons: headerButtons
+        });
+
+        // Remove SLDS scope from content container to ensure correct styling in Classic.
+        document.querySelector('#bodyCell').classList.remove('slds-scope');
+    </script>
+</apex:page>

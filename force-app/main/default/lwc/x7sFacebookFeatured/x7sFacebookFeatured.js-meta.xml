@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>7S Facebook Featured</description>
+    <isExposed>true</isExposed>
+    <masterLabel>7S Facebook Featured</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__HomePage, lightning__RecordPage, lightningCommunity__Default">
+            <property name="title" type="String" label="Title" default="Featured Facebook Posts" />
+            <property name="subTitle" type="String" label="Subtitle" default="Join In The Fun!" />
+            <property name="align" type="String" label="Title Alignment" datasource="left,center,right" />
+
+            <property name="moreText" type="String" label="'See More' Link Text" />
+            <property name="moreLink" type="String" label="'See More' Link" />
+
+            <property name="post1href" type="String" label="Post 1: URL" default="https://www.facebook.com/7SummitsInc/posts/10156713857981437" />
+            <property name="post1height" type="String" label="Post 1: Height (px)" default="500" />
+            <property name="post1full" type="Boolean" label="Post 1: Show full text?" default="true" />
+
+            <property name="post2href" type="String" label="Post 2: URL" default="https://www.facebook.com/7SummitsInc/posts/10156729449161437" />
+            <property name="post2height" type="String" label="Post 2: Height (px)" default="500" />
+            <property name="post2full" type="Boolean" label="Post 2: Show full text?" default="true" />
+
+            <property name="post3href" type="String" label="Post 3: URL" default="https://www.facebook.com/7SummitsInc/posts/10156693959556437" />
+            <property name="post3height" type="String" label="Post 3: Height (px)" default="500" />
+            <property name="post3full" type="Boolean" label="Post 3: Show full text?" default="true" />
+
+            <property
+                    name="useMetaData"
+                    type="Boolean"
+                    label="Use custom metadata type values for content"
+                    description="If checked, use values from configured custom metadata type record and ignore all content/post IDs in property editor."
+                    default="false" />
+            <property name="record" type="String" label="Record Name for the post URLs" description="Only applicable if using custom metadata type values for content." />
+            <property name="appId" type="String" label="AppId (optional)" required="false" />
+            <property
+                    name="variant"
+                    type="String"
+                    label="Variant"
+                    datasource="default, slds-card, featured"
+                    description="Sets the style of the component wrapper."
+                    default="slds-card"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

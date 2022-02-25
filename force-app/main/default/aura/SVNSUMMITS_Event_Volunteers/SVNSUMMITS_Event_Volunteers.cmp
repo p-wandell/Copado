@@ -1,0 +1,46 @@
+<!-- Copyright ©2016-2017 7Summits Inc. All rights reserved. -->
+<aura:component controller="SVNSUMMITS_EventVolunteersController"
+                access="global"
+                extends="c:SVNSUMMITS_Events_Base"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName">
+
+    <!-- Base model -->
+    <aura:attribute name="baseModel" type="String" access="global"/>
+    <aura:handler name="baseReady" event="c:SVNSUMMITS_Events_BaseReady" action="{!c.initVolunteers}"/>
+
+    <aura:attribute name="recordId" type="String" access="global"/>
+    <aura:attribute name="volunteerNeeds" type="List" access="global"/>
+    <aura:attribute name="sitePath" type="String" access="global"/>
+    <aura:attribute name="sitePrefix" type="String" access="global"/>
+    <aura:attribute name="currentUser" type="User" access="global"/>
+    <aura:attribute name="isInit" type="Boolean" default="false" access="global"/>
+
+
+    <!-- Wait for is init. Child component needs both wrapper and currentUser to be valid on init -->
+    <aura:if isTrue="{!v.isInit}">
+        <aura:if isTrue="{!v.volunteerNeeds.length > 0}">
+            <!-- Loop through Volunteer Needs -->
+            <aura:if isTrue="{!v.currentUser.UserType == 'Guest'}">
+                <div class="slds-card slds-p-around_x-small slds-m-vertical_large volunteer-title">
+                    <a href="{!v.sitePath +'/login'}">{!$Label.c.ss_evt_login_register}</a>&nbsp;{!$Label.c.ss_event_guest_user_volunteer_action}
+                </div>
+            </aura:if>
+
+
+            <aura:iteration items="{!v.volunteerNeeds}" var="wrapper" indexVar="idx">
+                <!-- Show the parent event's volunteer needs description at the top of the list, only if it's not blank -->
+                <aura:if isTrue="{!and(lessthan(idx,1),wrapper.volunteerNeed.Event__r.Volunteer_Description__c != '')}">
+                    <div class="slds-m-vertical_large">
+                        <aura:unescapedHtml value="{!wrapper.volunteerNeed.Event__r.Volunteer_Description__c}" />
+                    </div>
+                </aura:if>
+                <!-- Show sign up header only once -->
+                <aura:if isTrue="{!lessthan(idx,1)}">
+                    <h4 class="slds-m-vertical_large">{!$Label.c.ss_evt_task_signup}</h4>
+                </aura:if>
+                <c:SVNSUMMITS_Event_VolunteerNeed wrapper="{!wrapper}" currentUser="{!v.currentUser}" sitePath="{!v.sitePath}"/>
+            </aura:iteration>
+        </aura:if>
+    </aura:if>
+
+</aura:component>

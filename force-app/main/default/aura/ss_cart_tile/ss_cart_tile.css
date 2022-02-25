@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2017. 7Summits inc.
+ */
+
+/**
+ * Created by francoiskorb on 11/21/17.
+ */
+
+.THIS .mobileImage {
+	display: none;
+}
+.THIS .productImage {
+	width: 32px;
+}
+
+@media (min-width: 1024px) {
+	.THIS .mobileImage {
+		display: block;
+	}
+}

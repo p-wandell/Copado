@@ -1,0 +1,3 @@
+<apex:page standardController="ffr__InquiryTemplate__c" extensions="ffr.ActionViewImportExportController" contentType="application/json#{!URLENCODE(fileName)}" recordSetVar="templates" sidebar="true">
+{!exportBag}
+</apex:page>

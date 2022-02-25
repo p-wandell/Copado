@@ -1,0 +1,315 @@
+<apex:page standardController="pse__Team__c" extensions="pse.ManageTeamController" showHeader="true" tabStyle="Manage_Team__tab" lightningStylesheets="true">
+	<style>
+        .deleteImg { width: 24px; height: 20px; vertical-align: middle; cursor: pointer; }
+        .notificationItem { margin-left: 10px; }
+        .notificationItem input[type="text"] { min-width: auto !important; }
+        [id*=TM_teamMemberTable] div.errorMsg { display: block !important; }
+        .notificationItem span.helpButton, .notificationItem span.helpButtonOn
+        {
+        	display: inline; 
+        	margin: {!IF($User.UIThemeDisplayed == 'Theme4d', '0 -5px 0 -3px;', '0 15px 0 -3px;')}
+        }
+        .notificationItem span.helpButton img, .notificationItem span.helpButtonOn img
+        {
+        	margin: {!IF($User.UIThemeDisplayed == 'Theme4d', '0 0 0 -10px;', '5px 4px 0 0;')}
+        }
+    </style>
+	<apex:stylesheet value="{!URLFOR($Resource.pse__lexstyle, 'stylesheets/customIconStyles.css')}"/>
+	<script type="text/javascript">
+		//Page onload script is added as combo list value is not refreshed when browser back button is clicked 
+		//browsers like chrome gets the page from cache by default on back button click
+		var vfDefaultOnload = window.onload;
+		
+	    window.onload = function() {
+	    	if (typeof vfDefaultOnload === 'function') {
+	        	vfDefaultOnload();
+	      	}
+	    	loadTeamComboOnLoad();
+	    	// Here we will enable/disable the textbox according to related checkbox condition
+	    	EnableDisableTextboxOnLoading();
+	  	}
+
+		function loadTeamComboOnLoad() {
+			var teamCombo = document.querySelector('[id*=teamComboList]');
+			if (teamCombo && teamCombo.querySelector('[selected=selected]')) {
+				teamCombo.value = teamCombo.querySelector('[selected=selected]').value;
+			} 
+		}
+		
+		function EnableDisableTextboxOnLoading() {
+			var swapTemplateChkbox = document.querySelector('[id*=TM_swapUseCustomTemplateCheckbox]'),
+				swapTemplateField = document.querySelector('[id*=TM_swapCustomTemplateNameField]'),
+				swapEmailChkbox = document.querySelector('[id*=TM_swapSendEmailCheckbox]'),
+				swapOtherEmailField = document.querySelector('[id*=TM_swapOtherEmailField]'),
+				schTemplateChkbox = document.querySelector('[id*=TM_scheduleUseCustomTemplateCheckbox]'),
+				schTemplateField = document.querySelector('[id*=TM_scheduleCustomTemplateNameField]'),
+				schEmailChkbox = document.querySelector('[id*=TM_scheduleSendEmailCheckbox]'),
+				schOtherEmailField = document.querySelector('[id*=TM_scheduleOtherEmailField]');
+				
+			if (swapTemplateField) {
+				swapTemplateField.disabled = (swapTemplateChkbox && swapTemplateChkbox.checked) ? false : true;
+			}
+			if (swapOtherEmailField) {
+				swapOtherEmailField.disabled = (swapEmailChkbox && swapEmailChkbox.checked) ? false : true;
+			}
+			if (schTemplateField) {
+				schTemplateField.disabled = (schTemplateChkbox && schTemplateChkbox.checked) ? false : true;
+			}
+			if (schOtherEmailField) {
+				schOtherEmailField.disabled = (schEmailChkbox && schEmailChkbox.checked) ? false : true;
+			}
+		}
+		
+		/**
+		 * Enable/Disable the textbox according to the checkbox state
+		 * @param  {checkbox}
+		 * @param  {textbox}
+		 */
+		function EnableDisableTextbox(chkbox, txtBox) {
+			var cmp = document.getElementById(txtBox);			
+			if (chkbox.checked) {				
+				cmp.disabled = false;
+			} else {
+				cmp.disabled = true;
+			}
+		}
+		
+		/**
+		 * Handling keydown event, and saving data if Enter is pressed
+		 * @param  {KeyboardEvent} e
+		 */
+		function handleKeyDown(e) {
+			if (e.key === 'Enter' || e.which === 13) {
+				e.preventDefault();
+
+				if (typeof saveTeamsOnEnter === 'function') {
+					saveTeamsOnEnter();
+				}
+			}
+		}
+
+		function hasAdminChanged() {
+			var isTeamAdminChanged;
+			var adminChangeValue = document.getElementById("{!$Component.TM_Form.adminChangeValue}");
+			var teamOwnerValidationMessage = document.getElementById("{!$Component.TM_Form.teamOwnerValidationMessage}");
+
+			//Converting value fetched from hidden input field to boolean
+			if(adminChangeValue.value === 'true'){
+				isTeamAdminChanged = true;
+			}
+			else{
+				isTeamAdminChanged = false;
+			}
+
+			if(isTeamAdminChanged){
+				if(!confirm(teamOwnerValidationMessage.value)){
+					location.reload(true);
+					return false;
+				}
+			}
+		}
+	</script>
+	<c:WaitComponent />
+    <apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+    
+    <apex:sectionHeader title="{!$Label.pse__tp_manage_team_label}" help="{!$Page.pse__ManageTeamHelp}" />
+	<apex:form id="TM_Form">
+	<apex:pageMessages id="TM_messages"/>
+	
+	<apex:actionFunction name="saveTeamsOnEnter" status="ajaxStatus" rendered="{!(hasAccessLevel && editingTeam)}" action="{!save}" reRender="TM_Form" oncomplete="EnableDisableTextboxOnLoading()"/>
+
+	<!--Action Function Called After JS Method hasAdminChanged Is Invoked-->
+	<apex:actionFunction name="hasTeamAdminChanged" action="{!setTeamAdminChangeProperties}"  oncomplete="hasAdminChanged();" reRender="adminChangeValue, teamOwnerValidationMessage"/>
+
+	<apex:actionFunction name="showSections" action="{!doEdit}" reRender="TM_Form" oncomplete="EnableDisableTextboxOnLoading()"/>
+	<apex:actionFunction name="deleteResource" action="{!deleteSelected}" reRender="TM_teamMemberSection">
+		<apex:param name="position" value="" assignTo="{!positionToRemove}"/>
+	</apex:actionFunction>
+
+	<apex:inputHidden value="{!isTeamAdminChanged}" id="adminChangeValue"/>
+	<apex:inputHidden value="{!teamOwnerValidationMessage}" id="teamOwnerValidationMessage"/>
+
+	<apex:pageBlock rendered="{!displayContent}">
+		<apex:pageBlockSection columns="1" rendered="{!NOT(creatingTeam)}">
+			<apex:outputPanel >
+				<apex:outputLabel value="{!$Label.pse__tp_combo_team_label}" />&nbsp;
+				<apex:selectList id="teamComboList" size="1" value="{!teamId}"  onchange="showSections();" disabled="{!editingTeam}">
+					<apex:selectOptions value="{!teamOptions}"/>
+				</apex:selectList>&nbsp;
+		
+				<!--Button To Change Team If On Edit Team Section -->
+				<apex:commandButton id="TM_changeTeamBtn" value="{!$Label.pse__tm_label_change_team}" action="{!changeTeam}" rendered="{!editingTeam && NOT(creatingTeam)}" immediate="true"/>&nbsp;
+				<!--Button To Navigate To Team Schedule Page -->
+				<apex:commandButton id="TM_scheduleBtn" value="{!$Label.pse__tp_open_team_scheduler_label}" action="{!navigateToTeamSchedulePage}" disabled="{!disableButton}" immediate="true"/>&nbsp;
+				<!--Button To Navigate To Create Team Section -->
+				<apex:commandButton id="TM_createTeamBtn" value="{!$Label.pse__tp_create_team_label}" action="{!navigateToCreateTeam}" 
+				rendered="{!(createTeamAccess && (NOT(creatingTeam) && NOT(editingTeam))) || (createTeamAccess && NOT(creatingTeam))}" immediate="true"/>  
+			</apex:outputPanel>
+		</apex:pageBlockSection>
+
+		<apex:pageBlockButtons location="bottom">
+			<!-- [START - Buttons For Edit Team Section] -->
+			<!--Save Button -->
+			<apex:commandButton id="TM_saveBtn" value="{!$Label.pse__common_label_save}" status="ajaxStatus"  rendered="{!(hasAccessLevel && editingTeam)}" action="{!save}" reRender="TM_Form" oncomplete="EnableDisableTextboxOnLoading()"/>
+			<!-- [END - Buttons For Edit Team Section] --">
+
+			<!-- [START - Buttons For Create Team Section] -->
+			<!--Save Button -->
+			<apex:commandButton id="TM_saveBtn_create_team" value="{!$Label.pse__common_label_save}" action="{!createTeam}"
+			rendered="{!creatingTeam}" />
+			<!--Button To Navigate Back To Manage Team Home -->
+			<apex:commandButton id="TM_cancelBtn" value="{!$Label.pse__common_label_cancel}" action="{!changeTeam}" rendered="{!creatingTeam}" immediate="true" />
+			<!-- [END - Buttons For Create Team Section] -->
+
+			<!--Discard Button To Reset Changes Before Data Is Saved -->
+			<apex:commandButton id="TM_discardChangesBtn" value="{!$Label.pse__tm_label_discard_changes}" action="{!discardChanges}" status="ajaxStatus" 
+			rendered="{!(hasAccessLevel && editingTeam) || (NOT(hasAccessLevel) && creatingTeam)}" rerender="TM_teamMemberSection,TM_messages,TM_genInfo,TM_addMembers,TM_createTeam" immediate="true"/>
+		</apex:pageBlockButtons>
+
+		<!--Create Team Section -->
+		<apex:pageBlockSection title="{!$Label.pse__tp_create_team_label}" id="TM_createTeam" rendered="{!creatingTeam}" collapsible="false">
+			<apex:inputField id="TM_teamNameId" value="{!newTeam.Name}" required="true"/>
+			<apex:inputField id="TM_teamDescriptionId" value="{!newTeam.pse__Description__c}"/>
+			<apex:inputField id="TM_teamTeamOwnerId" value="{!newTeam.pse__Team_Owner__c}"/>
+			<apex:inputField id="TM_teamTimeZoneId" value="{!newTeam.pse__Time_Zone__c}"/>
+			<apex:inputField id="TM_teamProject" value="{!newTeam.pse__Project__c}"/>
+			<apex:inputField id="TM_teamEnableSwapping" value="{!newTeam.pse__Enable_Swapping__c}" />
+		</apex:pageBlockSection>
+
+		<!--General Team Information Section -->
+		<apex:pageBlockSection title="{!$Label.pse__tp_general_information_label}" id="TM_genInfo" rendered="{!editingTeam && NOT(creatingTeam)}">
+
+				<apex:inputField id="TM_teamTeamOwner" value="{!currentTeam.pse__Team_Owner__c}" rendered="{!hasAccessLevel}" onkeydown="handleKeyDown(event)">
+					<apex:actionSupport event="onchange" oncomplete="hasTeamAdminChanged();" status="status" reRender="adminChangeValue, teamOwnerValidationMessage"/>
+				</apex:inputField>
+				
+				<apex:outputField id="TM_teamTeamOwner_OPF" value="{!currentTeam.pse__Team_Owner__c}" rendered="{!NOT(hasAccessLevel)}"/>
+
+				<apex:inputField id="TM_teamTimeZone" value="{!currentTeam.pse__Time_Zone__c}" rendered="{!hasAccessLevel}"/>
+				<apex:outputField id="TM_teamTimeZone_OPF" value="{!currentTeam.pse__Time_Zone__c}" rendered="{!NOT(hasAccessLevel)}"/>
+		
+				<apex:inputField id="TM_teamDescription" value="{!currentTeam.pse__Description__c}" rendered="{!hasAccessLevel}" onkeydown="handleKeyDown(event)"/>
+				<apex:outputField id="TM_teamDescription_OPF" value="{!currentTeam.pse__Description__c}" rendered="{!NOT(hasAccessLevel)}"/>
+
+				<apex:inputField id="TM_teamProject" value="{!currentTeam.pse__Project__c}" rendered="{!hasAccessLevel}" onkeydown="handleKeyDown(event)"/>
+				<apex:outputField id="TM_teamProject_OPF" value="{!currentTeam.pse__Project__c}" rendered="{!NOT(hasAccessLevel)}"/>
+
+		</apex:pageBlockSection>
+
+		<!--Edit Section For Team's Team Member -->
+		<apex:pageBlockSection title="{!teamMemberCountLabel}" id="TM_teamMemberSection" rendered="{!editingTeam && NOT(creatingTeam)}">
+			<apex:pageBlockTable value="{!teamMemberWrappers}" var="tm" id="TM_teamMemberTable">
+				<apex:column headerValue="#">
+					<apex:outputText value="{!tm.position + 1}"/>
+				</apex:column>
+				<apex:column headerValue="{!$Label.pse__common_label_remove}" rendered="{!hasAccessLevel}">
+					<apex:image id="TM_deleteImage" url="{!URLFOR($Resource.pse__appirioCommon, 'delete.svg')}" styleClass="deleteImg" onclick="deleteResource({!tm.position});"></apex:image>
+				</apex:column>
+				<apex:column headerValue="{!$Label.pse__tp_staffing_column_team_member}">
+					<div class="requiredInput">
+						<div class="requiredBlock" style="{!IF(hasAccessLevel, '' , 'display: none;')}" ></div>
+						<apex:inputField id="TM_teamMemberId" value="{!tm.member.pse__Team_Member__c}" required="false" rendered="{!hasAccessLevel}" onkeydown="handleKeyDown(event)"/>
+					</div>
+					<apex:outputField id="TM_teamMemberId_OPF" value="{!tm.member.pse__Team_Member__c}" rendered="{!NOT(hasAccessLevel)}"/>
+				</apex:column>
+				<apex:column headerValue="{!$Label.pse__tp_staffing_column_team_member_initial}">
+					<apex:inputField id="TM_teamMemberInitialId" value="{!tm.member.pse__Team_Member_Initials__c}" required="false" rendered="{!hasAccessLevel}" onkeydown="handleKeyDown(event)" style="min-width: auto;"/>
+					<apex:outputField id="TM_teamMemberInitialId_OPF" value="{!tm.member.pse__Team_Member_Initials__c}" rendered="{!NOT(hasAccessLevel)}"/>
+				</apex:column>
+				<apex:column headerValue="{!$Label.pse__tp_team_schedule_permission_label}">
+					<apex:selectList id="TM_TeamSchedulerPermission" value="{!tm.member.pse__Team_Scheduler_Permission__c}" multiselect="false" size="1" disabled="{!NOT(hasAccessLevel)}" style="min-width: auto; margin-bottom: 0;">
+                		<apex:selectOptions value="{!accessLevelOptions}"/>
+            		</apex:selectList>
+
+				</apex:column>
+			</apex:pageBlockTable><br/><br/>
+			<apex:outputPanel id="TM_addMembers" rendered="{!hasAccessLevel}">
+				<apex:selectList id="TM_addMembersList" size="1" value="{!addRows}" style="min-width: auto;">
+					<apex:selectOption itemValue="1" itemLabel="1"/>
+					<apex:selectOption itemValue="2" itemLabel="2"/>
+					<apex:selectOption itemValue="3" itemLabel="3"/>
+					<apex:selectOption itemValue="4" itemLabel="4"/>
+					<apex:selectOption itemValue="5" itemLabel="5"/>
+				</apex:selectList>&nbsp;&nbsp;
+				<apex:commandLink action="{!addRow}" rendered="{!hasAccessLevel}" reRender="TM_teamMemberSection">{!$Label.pse__tp_button_add_team_member_label}</apex:commandLink>&nbsp; | &nbsp;
+				<apex:commandLink action="{!deleteAllMembers}" rendered="{!hasAccessLevel}" rerender="TM_teamMemberSection">{!$Label.pse__tp_button_remove_all_team_members_label}</apex:commandLink>
+			</apex:outputPanel>
+		</apex:pageBlockSection>
+
+		
+		<!--Edit Section For Service Feature -->
+		<apex:pageBlockSection title="{!$Label.pse__tp_manage_team_self_service_feature_label}" id="SelfeviceFeatureSection" rendered="{!hasAccessLevel}" columns="1"  >
+			<apex:outputPanel >
+            		<apex:selectRadio value="{!currentTeam.pse__Enable_Swapping__c}" label="{!$Label.pse__tp_manage_team_swap_label +':'}" style="min-width: auto;" >
+            			<apex:selectOption itemValue="true" itemLabel="{!$Label.pse__tp_manage_team_enable_swapping_label}"/>
+						<apex:selectOption itemValue="false" itemLabel="{!$Label.pse__tp_manage_team_disable_swapping_label}"/>
+           			</apex:selectRadio>
+           	</apex:outputPanel>
+		</apex:pageBlockSection>
+		
+		<!--Edit Section For Notification Feature -->
+		<apex:pageBlockSection title="{!$Label.pse__tp_manage_team_notification_label}" id="NotificationFeatureSection" rendered="{!hasAccessLevel}" >
+			<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputPanel >
+					<apex:outputLabel id="TM_swapLabel" value="{!$Label.pse__tp_manage_team_swap_label}" />
+				</apex:outputPanel><br/><br/>
+
+				<apex:outputPanel styleClass="notificationItem">
+					<apex:inputcheckbox id="TM_previouslyAssignedCheckbox" value="{!currentTeam.pse__Previously_Assigned__c}"/>
+					<apex:outputLabel id="TM_previouslyAssignedLabel" value="{!$ObjectType.pse__Team__c.fields.pse__Previously_Assigned__c.Label}"/>
+				</apex:outputPanel><br/><br/>
+
+				<apex:outputPanel styleClass="notificationItem">
+					<apex:inputcheckbox id="TM_nowAssignedCheckbox" value="{!currentTeam.pse__Now_Assigned__c}"/>
+					<apex:outputLabel id="TM_nowAssignedLabel" value="{!$ObjectType.pse__Team__c.fields.pse__Now_Assigned__c.Label}"/>
+				</apex:outputPanel><br/><br/>
+
+				<apex:outputPanel styleClass="notificationItem">
+					<apex:inputcheckbox id="TM_anyOneWithEditAccessCheckbox" value="{!currentTeam.pse__Anyone_With_Edit_Access__c}"/>
+					<apex:outputLabel id="TM_anyOneWithEditAccessLabel" value="{!$Label.pse__tp_manage_team_anyone_with_edit_access_label}"/>
+				</apex:outputPanel><br/><br/>
+
+				<apex:outputPanel styleClass="notificationItem">
+					<apex:inputcheckbox id="TM_swapSendEmailCheckbox" value="{!currentTeam.pse__Swap_Send_Email_To_Others__c}" onclick="EnableDisableTextbox(this, '{!$Component.TM_swapOtherEmailField}')"/>
+					<c:helpLabel labelText="{!$Label.pse__tp_manage_team_other_email_addresses_label}" spanId="swapEmailAddresses" helpText="{!$Label.pse__tp_manage_team_help_text_for_swap_other_email_addresses}" labelFor="TM_swapSendEmailCheckbox"/>
+					<apex:inputField id="TM_swapOtherEmailField" value="{!currentTeam.pse__Swap_Other_Email_Addresses__c}" />
+				</apex:outputPanel><br/><br/>
+
+				<apex:outputPanel styleClass="notificationItem">
+					<apex:inputcheckbox id="TM_swapUseCustomTemplateCheckbox" value="{!currentTeam.pse__Swap_Use_Custom_Template__c}" onclick="EnableDisableTextbox(this, '{!$Component.TM_swapCustomTemplateNameField}')" />
+					<c:helpLabel labelText="{!$Label.pse__tp_manage_team_use_custom_template_label}" spanId="swapCustomTemplateName" helpText="{!$Label.pse__tp_manage_team_help_text_for_swap_custom_template_name}" labelFor="TM_swapUseCustomTemplateCheckbox"/>
+					<apex:inputField id="TM_swapCustomTemplateNameField" value="{!currentTeam.pse__Swap_Custom_Template_Name__c}"/>
+				</apex:outputPanel>
+			</apex:outputPanel>
+			</apex:pageBlockSectionItem>
+
+			<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputPanel >
+					<apex:outputLabel id="TM_scheduleLabel" value="{!$Label.pse__tp_manage_team_schedule_label}" />
+				</apex:outputPanel><br/><br/>
+
+				<apex:outputPanel styleClass="notificationItem">
+					<apex:inputcheckbox id="TM_allTeamMemberCheckbox" value="{!currentTeam.pse__All_Team_Members__c}" />
+					<apex:outputLabel id="TM_allTeamMemberLabel" value="{!$Label.pse__tp_manage_team_all_team_members_label}" />
+				</apex:outputPanel><br/><br/>
+
+				<apex:outputPanel styleClass="notificationItem">
+					<apex:inputcheckbox id="TM_scheduleSendEmailCheckbox" value="{!currentTeam.pse__Schedule_Send_Email_To_Others__c}" onclick="EnableDisableTextbox(this, '{!$Component.TM_scheduleOtherEmailField}')" />
+					<c:helpLabel labelText="{!$Label.pse__tp_manage_team_other_email_addresses_label}" spanId="scheduleEmailAddresses" helpText="{!$Label.pse__tp_manage_team_help_text_for_other_email_addresses}" labelFor="TM_scheduleSendEmailCheckbox"/>
+					<apex:inputField id="TM_scheduleOtherEmailField" value="{!currentTeam.pse__Schedule_Other_Email_Addresses__c}"/>
+				</apex:outputPanel><br/><br/>
+
+				<apex:outputPanel styleClass="notificationItem">
+					<apex:inputcheckbox id="TM_scheduleUseCustomTemplateCheckbox" value="{!currentTeam.pse__Schedule_Use_Custom_Template__c}" onclick="EnableDisableTextbox(this, '{!$Component.TM_scheduleCustomTemplateNameField}')"/>
+					<c:helpLabel labelText="{!$Label.pse__tp_manage_team_use_custom_template_label}" spanId="scheduleCustomTemplateName" helpText="{!$Label.pse__tp_manage_team_help_text_for_schedule_custom_template_name}" labelFor="TM_scheduleUseCustomTemplateCheckbox"/>
+					<apex:inputField id="TM_scheduleCustomTemplateNameField" value="{!currentTeam.pse__Schedule_Custom_Template_Name__c}" />
+				</apex:outputPanel><br/><br/>
+			</apex:outputPanel>
+			</apex:pageBlockSectionItem>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+
+	</apex:form>
+</apex:page>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Compelling_Events</fullName>
+    <active>true</active>
+    <description>Compelling Event is requiried on the Opportunity in order to create a PLR record.</description>
+    <errorConditionFormula>AND(
+Opportunity__r.CloseDate&gt;=DATE(2020,04,15),
+ISBLANK(Opportunity__r.Compelling_Event__c))</errorConditionFormula>
+    <errorDisplayField>Compelling_Event__c</errorDisplayField>
+    <errorMessage>Compelling Event is requiried on the Opportunity in order to create a PLR record. Please update the associated Opportunity record.</errorMessage>
+</ValidationRule>

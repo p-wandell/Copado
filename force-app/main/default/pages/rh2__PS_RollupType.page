@@ -1,0 +1,904 @@
+<apex:page controller="rh2.PS_SelectMaster_Controller" title="Rollup Helper Setting Creation" standardStylesheets="false"  sidebar="false" applyBodyTag="false" docType="html-5.0" showHeader="true">
+     <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+     <head> 
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+     <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/modernizr-1.7.min.js') }"/>
+     <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/UI_Utilities.js') }"/>
+     <apex:includeScript value="{! URLFOR($Resource.PT_Resources_v1, '/js/hs_breadcrumbs.js')}" />
+
+     <apex:includeScript value="{! URLFOR($Resource.HS_Jquery, 'jquery-1.12.1.min.js')}" />
+     <apex:includeScript value="{! URLFOR($Resource.HS_Jquery, 'jquery-ui.min.js')}" />
+     <apex:stylesheet value="{! URLFOR($Resource.HS_Jquery, 'jquery-ui.min.css')}" />
+     
+     </head> 
+ 
+    <style>
+
+        [id$=heading] { padding-top:20px; padding-bottom:5px;}
+        .h_scroll {overflow-x:auto;}
+        .caption {font-size:smallest; padding-left:10px; padding-bottom:5px; padding-top:5px;}
+        .breadcrumb {font-size:small;}
+        .ndLabel { padding-top:4px; }
+        .nameArea { margin-right:0px;padding-right:0px; }
+        .descriptionArea { margin-left:0px;padding-left:0px; } 
+        
+        @media screen and (min-width:1025px){
+            #sourceObjSelect{
+                width:35%;
+            }
+        }
+    </style>
+    
+    <script type="text/javascript">
+    
+     $(document).ready(function(){
+         var urlParams = new URLSearchParams(window.location.search);
+         if(urlParams.has('preview')){
+            showModal(true, 'previewRollupResults')
+         }
+     });
+
+    var rh = rh || {};
+    rh.j$ = jQuery.noConflict();
+    
+    function unhideTDAndPopulateRels(){
+        document.getElementById("relFieldSelect").style.display="table-cell";
+    }
+    
+  </script>
+  
+  <script> var previousOnload = window.onload; window.onload = function() { if (previousOnload) { previousOnload(); } showModal({!smHelper.showSchedulePopup }, "modalPopup"); showModal({!smHelper.showTargetFieldPopup }, "targetFieldModal"); } </script>
+
+  <script>
+    selectBreadcrumb_HS();
+
+    function setPositionOfTooltip(tooltip, label){
+        var xPos = -10;
+        var yPos = -10;
+        var height = 0;
+        
+        var item = document.getElementById(label);
+
+        while(item){
+        
+            xPos += (item.offsetLeft - item.scrollLeft + item.clientLeft);
+            yPos += (item.offsetTop - item.scrollTop + item.clientTop);
+            
+            item = item.offsetParent;
+        }
+        var tt = document.getElementById(tooltip);
+        var height = rh.j$('#' + tooltip).outerHeight(true);
+        
+        tt.style.top = yPos - height - 115 + 'px';
+      
+        tt.style.left = xPos - 20 + 'px';
+    }
+    
+    function setShowTooltipFormatting(tooltip){
+        var tt = document.getElementById(tooltip);
+        
+        tt.style.display = 'block';
+        tt.style.overflow = 'visible';
+        tt.style.wordWrap = 'break-word';
+    }
+
+</script>
+    <apex:slds />
+    <apex:form >
+    <apex:actionFunction action="{!doChildObjSearch}" name="searchAllChildObjs" rerender="relationtxt" status="loading">
+        <apex:param name="childObjSearch" value=""/>
+    </apex:actionFunction>
+    <apex:actionFunction action="{!doChildFieldSearch}" name="searchAllChildFields" rerender="firstFieldOptions" status="loading">
+        <apex:param name="childFieldSearch" value=""/>
+    </apex:actionFunction>
+    <apex:actionFunction action="{!doChildFKFieldSearch}" name="searchAllChildFKFields" rerender="fkFieldOptions" status="loading">
+        <apex:param name="childFKFieldSearch" value=""/>
+    </apex:actionFunction>
+    <apex:actionStatus id="loading" onstart="loading(true)" onstop="loading(false)" />
+    <div class="slds-scope" role="main">
+    <div class="slds-card">
+            <header class="slds-card__header slds-text-heading--small ">
+                {!$Label.rh2__step3selectsourcefield}
+            </header>
+            <header class="slds-card__header ">
+                <nav role="navigation">
+                    <ol class="slds-breadcrumb slds-list_horizontal">
+                        <li class="slds-list__item slds-text-heading_label home-crumb"><a href="{!URLFOR($Page.rh2__PS_landingPage)}">{!$Label.rh2__home}</a></li>
+                        <li class="slds-list__item slds-text-heading_label setting-crumb"><a href="{!URLFOR($Page.rh2__PS_AllSettings)}">{!$Label.rh2__allrollupsetting}</a></li>
+                        <li class="slds-list__item slds-text-heading_label"><a href="{!URLFOR($Page.rh2__PS_SelectMaster)}">{!$Label.rh2__selecttargetobject}</a></li>
+                        <li class="slds-list__item slds-text-heading_label"><apex:commandLink action="{!goBackToTargetFieldSelect}">{!masterObjectLabel} {!$Label.rh2__fieldforresults}</apex:commandLink></li>
+                        <li class="slds-list__item slds-text-heading_label"><a href="#">{!$Label.rh2__definesummarycalc}</a></li>
+                    </ol>
+                </nav>
+            </header>
+        </div>
+        <br/>
+    <apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(masterObjectLabel)), NOT(ISBLANK(smHelper.targetField)))}">
+        
+        
+         <apex:pagemessages id="topPageMessage"/>
+            
+            <!-- Start of object selection -->
+            <div class="slds-card">
+             <header class="slds-card__header slds-grid slds-theme_alt-inverse">
+                <h4 class="slds-text-heading--small slds-truncate">{!$Label.rh2__whichobjectforsource} ({! masterObjectLabel } {!$Label.rh2__child})</h4>
+
+             </header>
+             <section class="slds-card__body">
+                <apex:outputPanel id="objectSelectSection">
+                    <apex:outputPanel >
+                        <div class="slds-form-element" style="padding-top:15px;padding-left:15px;width:315px;">    
+                            <input class="slds-input" placeHolder="{!$Label.TypeForChildObjects}" type="text" onkeypress="captureEnterAndBuildList(event, 'childObjSearch', searchAllChildObjs);" id="childObjSearch"/>					
+                        </div>
+                        <script>
+                            searchFromInput("childObjSearch", searchAllChildObjs);
+                        </script>
+                        <br/>
+                        <apex:outputpanel >                  
+                            <apex:outputPanel >
+                                <apex:actionStatus id="statusMessage" startText="({!$Label.rh2__refreshing})" stopText=" " styleClass="caption" />
+                            </apex:outputPanel>  
+                        </apex:outputpanel>
+                        <apex:outputpanel styleClass="slds-grid slds-container_left slds-container_small" style="padding-left:15px;" id="relationtxt">
+                            <br/>
+                            <apex:outputPanel styleClass="slds-col">
+                            <apex:outputText value="{!$Label.rh2__selectchildobject}"/><br/> 
+                                <apex:selectList style="width:300px;" size="5" value="{!smHelper.selectedSourceObj}" >
+                                <apex:actionsupport event="onchange"  rerender="relationtxt, bottomWrapper, fieldHeader, field1, field2, source, filter, saveCancelBtns, sourceObjSelect, realtimeEnable" status="statusMessage" action="{!clearSourceApi}"/>
+                                <apex:selectOptions value="{!sourceObjectController.PaginatedList}"/>
+                            </apex:selectList>
+                            <apex:outputPanel rendered="{! sourceObjectController.hasMultiplePages }"> 
+                                <div >
+                                    <c:Paginate pageController="{! sourceObjectController }" renderedComponent="objectSelectSection" />
+                                </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{! NOT(ISBLANK(smHelper.selectedSourceObj)) }" styleClass="slds-col" id="relation" style="padding-left:15px;">
+                                <apex:outputText value="{!$Label.rh2__selectrelationshipfield}"  /><br/>
+                                <apex:selectList size="5" value="{! smHelper.relationshipField }" rendered="{! NOT(ISBLANK(smHelper.selectedSourceObj)) }" >
+                                    <apex:actionSupport event="onchange" action="{! refreshSource1 }" reRender="bottomWrapper, fieldHeader, field1, field2, source,  filter, saveCancelBtns" status="statusMessage"/>
+                                    <apex:selectOptions value="{! sourceObjects }" /> 
+                                </apex:selectList>
+                        </apex:outputPanel>   
+                        
+                     
+                            
+                      </apex:outputPanel>
+                      
+                    <br/>
+                    <div style="padding-left:15px;">
+                    <a href="{!URLFOR($Page.PS_helpPage)}" target="_blank" >{!$Label.MySourceObjNotAppearing}</a>  <br/>
+                    <apex:outputLink rendered="{! AND(smHelper.notPaid, !smHelper.lhInstalled) }" target="_blank" value="https://appexchange.salesforce.com/listingDetail?listingId=a0N30000009wj3REAQ">{!$Label.rh2__dontseesourcenotinstalled}</apex:outputLink>  
+                    <apex:outputLink rendered="{! AND(smHelper.notPaid, smHelper.lhInstalled) }" value="/apex/lh__LH_All_Settings">{!$Label.rh2__dontseesourceinstalled}</apex:outputLink> 
+                    </div>    
+                  </apex:outputpanel>
+            
+            </apex:outputPanel>
+            </section>
+            <footer class="slds-card__footer"></footer>
+          </div> 
+           <!-- Start of field selector -->
+           <br/>
+           <apex:outputPanel id="bottomWrapper" layout="block" >
+            <apex:outputPanel rendered="{!NOT(ISBLANK(smHelper.relationshipField))}" layout="none">
+            <div class="slds-card" >
+             <header class="slds-card__header slds-grid slds-theme--alt-inverse">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate" id="fieldHeader">
+                    <div class="slds-media__body"  >
+                        <h4 class="slds-text-heading--small slds-truncate">{!$Label.WhichFieldOn} {!smHelper.sourceObject} {!$Label.ShouldWeUseAsSource}</h4>
+                    </div> 
+                </div>
+             </header>
+             <section class="slds-card__body">
+            <apex:outputText style="padding-left:20px;" value="{!$Label.rh2__labelsfollowedby}" /><br/> <br/>
+           <div class="slds-grid " style="padding-left:15px;">
+           <apex:outputPanel id="field1">
+           <apex:outputPanel rendered="{!NOT(ISBLANK(smHelper.relationshipField))}"> 
+                
+                <div class="slds-col slds-col--padded" style="float:left;"> 
+
+                    <apex:outputPanel id="source">
+                    
+                        <apex:outputPanel >
+                        
+                        <apex:outputPanel style="overflow-x:visible;" id="type"> 
+    
+                            <apex:outputText value="{!$Label.rh2__selecttype}" />    
+                            <apex:selectRadio value="{!smHelper.logic}" layout="pageDirection">
+                                <apex:actionSupport event="onchange" action="{!selectRollupType}" reRender="type, firstField, field2, filterAndPreview, DateField, deduplicate, selectionInfo, preview, saveCancelBtns, createTrigger, cloneModal" status="statusMessage"/>
+                                <apex:selectOption itemValue="CNT" itemLabel="{!$Label.rh2__count}" rendered="{! AND(IF(smHelper.targetFieldType != 'REFERENCE', true, false), IF(smHelper.targetFieldType != 'ID', true, false), IF(smHelper.targetFieldType != 'BOOLEAN', true, false), IF(smHelper.targetFieldType != 'DATE', true, false), IF(smHelper.targetFieldType != 'DATETIME', true, false))}"/>
+                                <apex:selectOption itemValue="MAX" itemLabel="{!$Label.rh2__maximum}" rendered="{! AND(IF(smHelper.targetFieldType != 'REFERENCE', true, false), IF(smHelper.targetFieldType != 'ID', true, false), IF(smHelper.targetFieldType != 'BOOLEAN', true, false))}"/>
+                                <apex:selectOption itemValue="MIN" itemLabel="{!$Label.rh2__minimum}" rendered="{! AND(IF(smHelper.targetFieldType != 'REFERENCE', true, false), IF(smHelper.targetFieldType != 'ID', true, false), IF(smHelper.targetFieldType != 'BOOLEAN', true, false))}"/>
+                                <apex:selectOption itemValue="AVG" itemLabel="{!$Label.rh2__average}"  rendered="{! AND(IF(smHelper.targetFieldType != 'REFERENCE', true, false), IF(smHelper.targetFieldType != 'ID', true, false), IF(smHelper.targetFieldType != 'BOOLEAN', true, false), IF(smHelper.targetFieldType != 'DATE', true, false), IF(smHelper.targetFieldType != 'DATETIME', true, false))}"/>
+                                <apex:selectOption itemValue="SUM" itemLabel="{!$Label.rh2__sum}" rendered="{! AND(IF(smHelper.targetFieldType != 'REFERENCE', true, false), IF(smHelper.targetFieldType != 'ID', true, false), IF(smHelper.targetFieldType != 'BOOLEAN', true, false), IF(smHelper.targetFieldType != 'DATE', true, false), IF(smHelper.targetFieldType != 'DATETIME', true, false))}"/>
+                                <apex:selectOption itemValue="CBX" itemLabel="{!$Label.rh2__checkbox}" rendered="{! IF(smHelper.targetFieldType = 'BOOLEAN', true, false) }"/>
+                                <apex:selectOption itemValue="TXT" itemLabel="{!$Label.rh2__textseparatedby}" rendered="{! OR(IF(smHelper.targetFieldType = 'STRING', true, false),IF(smHelper.targetFieldType = 'REFERENCE', true, false), IF(smHelper.targetFieldType = 'ID', true, false))}"/>                                            
+                            </apex:selectRadio>      
+                            <apex:outputPanel id="delim" rendered="{! AND(smHelper.logic =='TXT', OR(IF(smHelper.targetFieldType = 'STRING', true, false),IF(smHelper.targetFieldType = 'REFERENCE', true, false), IF(smHelper.targetFieldType = 'ID', true, false)))}">                      
+                                <apex:selectList value="{!smHelper.delim}" size="1">
+                                <apex:actionsupport event="onchange" action="{! postVariable }" rerender="delim" />
+                                    <apex:selectOption itemValue="SP" itemLabel="{!$Label.rh2__space}" />  
+                                    <apex:selectOption itemValue="-" itemLabel="{!$Label.rh2__hyphen}" />
+                                    <apex:selectOption itemValue="SSP" itemLabel="{!$Label.rh2__semicolon}" />
+                                    <apex:selectOption itemValue="CSP" itemLabel="{!$Label.rh2__comma}" />
+                                    <apex:selectOption itemValue="/" itemLabel="{!$Label.rh2__slash}"/>
+                                    <apex:selectOption itemValue="|" itemLabel="{!$Label.rh2__pipe}"/>
+                                    <apex:selectOption itemValue="CRLF" itemLabel="{!$Label.rh2__newline}" rendered="{!smHelper.targetFieldIsTextAreaOrRichText}"/>
+                                    <apex:selectOption itemValue="DBNL" itemLabel="{!$Label.rh2__doublenewline}" rendered="{!smHelper.targetFieldIsTextAreaOrRichText}"/>
+                                    <apex:selectOption itemValue="CUSTOM" itemLabel="{!$Label.rh2__customdelimiter}"/>
+                                </apex:selectList>
+                                <br/><br/>
+                                <apex:outputPanel id="customDelim" rendered="{!smHelper.delim == 'CUSTOM'}">
+                                    <apex:outputText >{!$Label.rh2__customdelimiter}</apex:outputText>
+                                    <a id='customDelim' onmouseover="setShowTooltipFormatting('customDelimHelp');" onmouseout="document.getElementById('customDelimHelp').style.display = 'none';"> 
+                                        <img class="slds-icon slds-icon--x-small" src="/apexpages/slds/latest/assets/icons/utility/info_60.png"></img>                 
+                                    </a> 
+                                    <div style="max-height:0px;overflow:visible;overflow-y:visible;position:absolute;">
+                                        <div class="slds-popover slds-theme--info" id='customDelimHelp' style="display:none !important;">                       
+                                            <div class="slds-popover__body">
+                                                    {!$Label.PleaseNoteOnlyCharacters}
+                                            </div>
+                                        </div>    
+                                    </div> 
+                                    <br/>
+                                    <apex:inputText style="width:130px;" value="{!smHelper.customDelim}" maxlength="4" id="customDelimInput" />                        
+                                    <apex:actionSupport action="{! postVariable}" event="onchange" rerender=""/> 
+                                </apex:outputPanel>
+                            </apex:outputPanel>   
+                        
+                            <apex:outputPanel id="countFieldDisplay" rendered="{!smHelper.logic == 'CNT'}">
+                                <br/>
+                                <apex:inputCheckbox value="{!smHelper.displayCountFields}"><apex:actionSupport event="onchange" action="{!setCountSourceDefaultField}" reRender="firstField, saveCancelBtns"/></apex:inputCheckbox>&nbsp;{!$Label.ChangeSourceField} 
+                                <br/>
+                                <apex:outputPanel id="uniqueCountOption">
+                                    <apex:inputCheckbox value="{!smHelper.uniqueCount}" disabled="{!smHelper.sourceFieldType == 'BOOLEAN' }"></apex:inputCheckbox>&nbsp;{!$Label.UniqueCount}
+                                    <span>                  
+                                        <a id='distinctCountInfo' onmouseover="setShowTooltipFormatting('distinctCountHelp');" onmouseout="document.getElementById('distinctCountHelp').style.display = 'none';"> 
+                                            <img class="slds-icon slds-icon--x-small" src="/apexpages/slds/latest/assets/icons/utility/info_60.png"></img>                 
+                                        </a> 
+                                        <div style="max-height:0px;overflow:visible;overflow-y:visible;position:absolute;">
+                                            <div class="slds-popover slds-theme--info" id='distinctCountHelp' style="display:none !important;">                       
+                                                <div class="slds-popover__body">
+                                                    {!$Label.IfCheckedUniqueCount}
+                                                </div>
+                                            </div>    
+                                        </div> 
+                                    </span>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+
+                        </apex:outputPanel>
+                    </apex:outputPanel> 
+                    </apex:outputpanel>
+                </div> &nbsp; &nbsp;                      
+
+                <div class="slds-grid slds-grid--pull-padded" style="float:right;"> 
+                    <apex:outputPanel id="firstField">
+                    <apex:outputPanel rendered="{!IF(OR(AND(smHelper.logic != null, smHelper.logic != 'CNT'), AND(smHelper.displayCountFields == true, smHelper.logic == 'CNT')), true, false)}">
+                        <apex:outputPanel id="firstFieldOptions">
+                            <apex:selectList size="8" value="{!smHelper.sourceField1API}" id="sf1" style="margin-right:15px;width:315px;">
+                                <apex:actionSupport event="onchange" action="{!refreshSource2}" reRender="sf2, field2, selectionInfo, source, saveCancelBtns, filterAndPreview, targetFieldMessage, polyWarning" status="statusMessage"/> 
+                                <apex:selectOptions value="{! pgCon.PaginatedList }"/>
+                            </apex:selectList>
+                        </apex:outputPanel>
+                        <br/><br/>
+                        <div class="slds-form-element"> 
+                            <input style="width:315px;" class="slds-input" placeHolder="{!$Label.TypeForFields}" type="text" onkeypress="captureEnterAndBuildList(event, 'childFieldSearch', searchAllChildFields);" id="childFieldSearch"/>					
+                        </div>
+                        <script>
+                            searchFromInput("childFieldSearch", searchAllChildFields);
+                        </script>
+                        <br/>
+                        <div >
+                            <c:Paginate pageController="{! pgCon }" renderedComponent="field1" rendered="{!IF(smHelper.logic != null, true, false)}"/>
+                        </div>
+                    </apex:outputPanel>
+                    </apex:outputPanel>             
+                    <apex:outputPanel id="field2">
+                        <apex:outputPanel rendered="{! AND(NOT(ISBLANK(smHelper.sourceField1API)), sourceFields1FK)}">
+                            <apex:outputPanel id="fkFieldOptions">
+                                <apex:selectList id="sf2" size="8" value="{!smHelper.sourceField2API}" style="margin-right:15px;width:315px;">
+                                    <apex:actionSupport event="onchange" action="{!selectSourceField}" reRender="uniqueCountOption, source, selectionInfo, saveCancelBtns, filterAndPreview" status="statusMessage"/>
+                                    <apex:selectOptions value="{! sourceFields2 }"/>
+                                </apex:selectList>
+                            </apex:outputPanel>
+                            <br/><br/>
+                            <div class="slds-form-element">    
+                                <input style="width:315px;" class="slds-input" placeHolder="{!$Label.TypeForFields}" type="text" onkeypress="captureEnterAndBuildList(event, 'childFKFieldSearch', searchAllChildFKFields);" id="childFKFieldSearch"/>					
+                            </div>
+                            <script>
+                                searchFromInput("childFKFieldSearch", searchAllChildFKFields);
+                            </script>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel id="selectionInfo">
+                    <apex:outputPanel styleClass="slds-box" style="width:250px;float:right; margin-right:35px; background-color: white; word-wrap:break-word;" rendered="{!IF(AND(smHelper.sourceFieldType != null, smHelper.sourceField != null), true, false)}">
+                        <apex:outputText value="{!$Label.rh2__youhaveselected}" styleClass="caption"/>
+                        <br/> 
+                        <br/>
+                        <apex:outputText value="{! SUBSTITUTE(smHelper.sourceField, '.', ' > ') }" /> 
+                        <br/>
+                        <br/>
+                        <apex:outputText value="{!$Label.Type} {! smHelper.sourceFieldType }"/><br />
+                        <apex:outputText value="{!$Label.rh2__torollupinto} {!smHelper.targetField}" />
+                    </apex:outputPanel>
+                    </apex:outputPanel>                    
+              </div> &nbsp; &nbsp;                
+            </apex:outputPanel>            
+            </apex:outputPanel>
+            <apex:outputPanel id="targetFieldMessage">
+                <apex:outputPanel rendered="{!smHelper.showShortTargetFieldMessage}" styleclass="slds-box" style="color:red; width:300px;float:right; margin-right:35px; background-color: white; word-wrap:break-word;">
+                    {!$Label.rh2__targetfieldshorterlength}
+                </apex:outputPanel>
+            </apex:outputPanel>
+            </div> <br/><br/>
+            <!-- Start of query preview -->
+            
+            <apex:outputPanel id="filterAndPreview">
+            	<apex:outputPanel id="polyWarning">
+                    <apex:outputPanel rendered="{!usingLimitedFields}">
+                        <div class="slds-box slds-theme_inverse" style="width: 840px; margin-left:16px; margin-right:16px; word-wrap:break-word;">
+                            <p>The available fields have been restricted due to {!smHelper.sourceField1API} being a polymorphic field.</p>
+                            <p>For more information, please read the Name ID and Related to ID entry in our <a href="/apex/PS_helpPage#ui-accordion-faq-header-15" target="_blank">FAQ</a></p>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                <br/>
+            <apex:outputPanel rendered="{!AND(queryString != '', smHelper.logic != null)}" >
+            
+                    <h5 style="padding-left:15px;" class="slds-text-heading_label"> {!$Label.CustomFilter} </h5>                        
+                
+                <span>                  
+                    <a  id = 'filterLocation' onmouseover="setShowTooltipFormatting('filterhelp');" onmouseout="document.getElementById('filterhelp').style.display = 'none';"> 
+                        <img  class="slds-icon slds-icon--x-small" src="/apexpages/slds/latest/assets/icons/utility/info_60.png"></img>                 
+                    </a> 
+                    <div style="max-height:0px;overflow:visible;overflow-y:visible;position:relative;">
+                        <div class="slds-popover slds-theme--info" id='filterhelp' style="display:none !important;">                       
+                           <div class="slds-popover__body">
+                                {!$Label.CreatingCustomFilterOptional}
+                            </div>
+                        </div>    
+                    </div> 
+                </span>
+                    <div class="slds-text-body_large">
+                        <apex:outputText style="padding-left:15px;" value="{!$Label.rh2__selectfilter}" /> &nbsp; 
+                        <apex:selectList size="1" value="{! smHelper.filterName }" >
+                            <apex:actionSupport action="{!buildFilterString}" event="onchange" reRender="filter_edit, modalPopup, preview"/>                                
+                            <apex:selectOptions value="{! filterNames }"/>  
+                        </apex:selectList>              
+                        
+                        <apex:outputPanel id="filter_edit">  
+                            <apex:outputPanel rendered="{! NOT(ISBLANK(smHelper.filterName)) }">
+                                &nbsp;
+                                <apex:commandLink action="{!editFilter}" value="{!$Label.rh2__edit}" styleClass="slds-button slds-button_neutral slds-button_small slds-text-body_small"/>
+                                <apex:outputText style="margin-left:6px;" value="|"/>
+                            </apex:outputPanel> 
+                            &nbsp;             
+                            <apex:commandLink styleClass="slds-button slds-button_neutral slds-button_small slds-text-body_small" action="{! createFilter }" value="{!$Label.rh2__createnewfilter}"/>
+                            &nbsp;<apex:outputText value="|"/>
+                            <apex:commandLink styleClass="slds-button slds-button_neutral slds-button_small slds-text-body_small" style="margin-left:7px;" onclick="showModal(true, 'clonePopup');" value="{!$Label.rh2__clonefromexistingfilters}" rerender="clonePopup"/>
+                            
+                        </apex:outputPanel> 
+                     </div> 
+
+                    <hr></hr>
+                    
+                    <script>
+                       rh.j$(function() {
+                        rh.j$( "#advSettings" ).accordion({ collapsible: true, active: false});
+                       });
+                        
+                        
+                    </script>
+                        <apex:outputPanel id="preview">
+                        <apex:outputPanel >
+                        <h5 style="padding-left:15px;"> {!$Label.rh2__querypreview}: </h5>
+                        </apex:outputPanel> <br/>     
+                        <apex:outputPanel style="word-wrap:break-word; white-space:normal; margin-bottom:10px; margin-left:15px; margin-right:15px;" 
+                        styleClass="slds-box slds-box_small slds-theme_default slds-truncate" layout="block">
+                            {!queryString}
+                            
+                       
+                        
+                        </apex:outputPanel>
+                        </apex:outputPanel>
+                         <apex:outputPanel >
+                            <br/>
+                            <div class="slds-box slds-box_small slds-theme_info" style="word-wrap:break-word; white-space:normal; margin-left:15px; margin-right:15px;">
+                                <apex:outputText value="{!$Label.rh2__inordertoimprovedatabase}"/>&nbsp;
+                                <apex:outputLink value="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_VLSQ.htm">{!$Label.rh2__selective}</apex:outputLink>&nbsp;{!$Label.AsPossibleIfYouNeed}
+                                <a href="{!URLFOR($Page.PS_helpPage)}" target="_blank">{!$Label.HelpPage}</a>&nbsp;{!$Label.OrEmailOurSupportTeam}&nbsp;<apex:outputLink value="mailto:support@passagetech.com">{!$Label.rh2__oursupportteam}</apex:outputLink>
+                            </div>
+                        </apex:outputPanel>    
+                        <apex:outputPanel id="encryptedDataMessage" rendered="{!EncryptionMessage}">
+                            <div class="slds-box slds-box_small slds-theme_info" style="word-wrap:break-word; white-space:normal; margin-left:15px; margin-right:15px;">
+                                <apex:outputText >{!$Label.rh2__pleasenotesourcefieldsmaybeencrypted}</apex:outputText>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <br/><br/>
+                             
+                        <!-- Start of optional settings -->
+                                         
+                        <apex:outputPanel >
+
+
+                         
+                       <div class="row">
+                       <div id="advSettings" > 
+                       
+                       <!-- Start of name and description -->
+                       <h3>{!$Label.NameAndDescription}</h3>
+                       <div>
+                           <table class="slds-table slds-no-row-hover">     
+                                
+                                <tr>
+                                    <td style="width:75px;">
+                                        <apex:outputText value="{!$Label.rh2__label}:"/> &nbsp;
+                                    </td>  
+                                    <td>   
+                                        <apex:inputText value="{!smHelper.rollupLabel}" maxlength="50" id="nameField" />                        
+                                        <apex:actionSupport action="{! postVariable}" event="onchange" rerender=""/> 
+                                    </td>
+                                 </tr>   
+                                
+                                 <tr>
+                                
+                                    <td style="width:75px;">
+                                        <apex:outputText value="{!$Label.rh2__description}:"/>&nbsp;
+                                    </td>
+                                    <td>    
+                                        <apex:inputText maxlength="200" size="50" value="{!smHelper.rollupDescription}" 
+                                            id="descriptionField" />                    
+                                        <apex:actionSupport action="{! postVariable}" event="onchange" rerender=""/> 
+                                    
+                                    </td>
+                                </tr>
+                           </table>
+                       </div>
+                       
+                       <h3>{!$Label.rh2__systemauditfields}</h3>
+                       <div class="slds">
+                            <apex:outputPanel rendered="{!NOT(settingName == null)}">
+                                <table class="slds-table" style="width:25%;">
+                                    <tr>
+                                        <td>{!$Label.rh2__createddate}</td>
+                                        <td>{!smHelper.createdDate}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{!$Label.rh2__createdby}</td>
+                                        <td>{!smHelper.createdName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{!$Label.rh2__lastmodifieddate}</td>
+                                        <td>{!smHelper.lastModifiedDate}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{!$Label.rh2__lastmodifiedby}</td>
+                                        <td>{!smHelper.lastModifiedName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{!$Label.rh2__lastactivationstatuschanged}</td>
+                                        <td>{!smHelper.lastActiveStatusChange}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{!$Label.rh2__lastactivationstatuschangedby}</td>
+                                        <td>{!smHelper.lastActiveStatusChangedBy}</td>
+                                    </tr>
+                                </table>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(settingName == null, true, false)}">
+                                {!$Label.rh2__noauditinfo}
+                            </apex:outputPanel>
+                       </div>
+                       
+                       
+                       
+                    
+                        <h3>{!$Label.rh2__advancedconfig}</h3>              
+                        <div class="slds">
+                            <apex:outputPanel id="sortFieldContainer">
+                                <apex:outputPanel id="customSortField" rendered="{!OR(LOWER(smHelper.logic) == 'max', LOWER(smHelper.logic) == 'min')}">
+                                    <apex:outputPanel id="enableCustomSort">
+                                        <apex:inputCheckbox value="{!smHelper.useCustomSort}" id="sortFieldCheckbox" />
+                                        <apex:actionSupport event="onchange" action="{!postVariable}" rerender="customSortField"/>
+                                    </apex:outputPanel>
+                                    <apex:outputLabel for="sortFieldCheckbox" value="{! ' ' + $Label.UseACustomSortField}"/>
+                                    <br/>
+                                    <apex:outputPanel styleClass="slds-grid slds-container_left slds-container_small" rendered="{!smHelper.useCustomSort}" id="sortFieldSelection">
+                                        <apex:outputPanel styleClass="slds-col">
+                                            <apex:selectList size="5" value="{!smHelper.sortField1}" id="sort1" style="margin-right:15px;width:315px;" >
+                                                <apex:actionSupport event="onchange" action="{!refreshSort2}" rerender="topPageMessage, sortField2"/>
+                                                <apex:selectOptions value="{!smHelper.sortFields.PaginatedList }"/>
+                                            </apex:selectList>
+                                            <apex:outputPanel rendered="{! smHelper.sortFields.hasMultiplePages }"> 
+                                                <div >
+                                                    <c:Paginate pageController="{! smHelper.sortFields }" renderedComponent="sortFieldContainer" />
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel id="sortField2">                                   
+                                            <apex:outputPanel rendered="{! OR(smHelper.sortFields2.size > 0, smHelper.sortField2 != NULL)}">                                                                      
+                                                <apex:selectList size="5" value="{!smHelper.sortField2}" id="sort2" style="margin-right:15px;width:315px;" >
+                                                    <apex:selectOptions value="{!smHelper.sortFields2}"/>
+                                                </apex:selectList>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <br/>
+                                    </apex:outputPanel>
+                                    <br/>                              
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <apex:outputpanel > 
+
+                            
+                                <apex:outputpanel id="overwrite">
+                                    <apex:inputCheckbox value="{!smHelper.overwrite}" id="overwriteCheckbox" />                   
+                                    <apex:actionsupport event="onchange" action="{! updateAppendBasedOnOverwrite }" rerender="overwrite, append" status="loading"/>   
+                                </apex:outputpanel>
+
+                                <apex:outputLabel for="overwriteCheckbox" value="{!' ' + $Label.rh2__overwriteexistingtargetfield}"/>
+                                <apex:outputPanel rendered="{!NOT(AND(smHelper.targetFieldType == 'STRING', smHelper.logic =='TXT'))}">
+                                    <p class="slds-text-body_small">
+                                        {!$Label.rh2__ifuncheckedoverwrite}
+                                    </p>
+                                </apex:outputPanel>
+
+                                <apex:outputPanel rendered="{!AND(smHelper.targetFieldType == 'STRING', smHelper.logic =='TXT')}">
+                                    <p class="slds-text-body_small">
+                                        {!$Label.rh2__ifuncheckedoverwriteappend}
+                                    </p>
+                                </apex:outputPanel>
+                                <br/>
+
+                            </apex:outputpanel>
+
+                            <apex:outputPanel rendered="{!AND(smHelper.targetFieldType == 'STRING', smHelper.logic =='TXT')}">
+
+                                <apex:outputPanel id="append">
+                                    <apex:inputCheckbox title="{!$Label.rh2__toeditappend}" value="{!smHelper.append}" id="appendCheckbox" disabled="{!smHelper.overwrite}"/>
+                                    <apex:actionSupport event="onchange" action="{! postVariable }" rerender="append"/>
+                                </apex:outputPanel>
+
+                                <apex:outputLabel for="appendCheckbox" value="{!' ' + $Label.rh2__appendfield}"/>
+                                <p class="slds-text-body_small">{!$Label.rh2__ifcheckedappend}</p>
+                                <br/>
+
+                            </apex:outputPanel>
+
+                            <apex:outputpanel rendered="{!smHelper.showBlankOverwriteOption}">                            
+                                <apex:outputpanel id="blankOverwrite">
+                                    <apex:outputPanel rendered="{!smHelper.targetFieldIsRequired}" >
+                                        <input disabled='true' title="{!$Label.BlankOverwriteFieldDisabled}" id="blankOverwriteDisabled" type="checkbox"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!!smHelper.targetFieldIsRequired}">
+                                        <apex:inputCheckbox value="{!smHelper.blankOverwrite}" id="blankOverwriteCheckbox" />
+                                    </apex:outputPanel>
+                                                       
+                                    <apex:actionsupport event="onchange" action="{! postVariable }" rerender="blankOverwrite"/>   
+                                </apex:outputpanel>
+
+                                <apex:outputLabel for="blankOverwriteCheckbox" value="{!' ' + $Label.rh2__blankoverwritetargetfield}"/>
+                                <p class="slds-text-body_small">{!$Label.rh2__ifuncheckedblankoverwrite}</p>
+                                  <br/>
+
+                            </apex:outputpanel>
+
+                             <apex:outputpanel id="multiselectPicklistSplit" rendered="{!RenderPicklistSplitSetting}">                    
+                            
+                                <apex:outputpanel id="multiselect">
+                                    <apex:inputCheckbox value="{!smHelper.multipicklistSplit}" id="multiselectCheckbox" />                   
+                                    <apex:actionsupport event="onchange" action="{! postVariable }" rerender="multiselect"/>   
+                                </apex:outputpanel>
+
+                                <apex:outputLabel for="multiselectCheckbox" value="{!' ' + $Label.rh2__disablemultiselect}"/>
+                                <p class="slds-text-body_small">{!$Label.rh2__ifcheckedmultiselect}</p>
+
+                                <br/>    
+                            </apex:outputpanel>
+
+                             <apex:outputpanel id="trimTrailingDelimiter" rendered="{!renderDedupSetting}">                    
+                            
+                                <apex:outputpanel id="trailingDelim">
+                                    <apex:inputCheckbox value="{!smHelper.trailingDelims}" id="trailingDelimCheckbox" />                   
+                                    <apex:actionsupport event="onchange" action="{! postVariable }" rerender="trailingDelim"/>   
+                                </apex:outputpanel>
+
+                                <apex:outputLabel for="trailingDelimCheckbox" value="{!' ' + $Label.rh2__trimtrailingdelimiters}"/>
+                                <p class="slds-text-body_small">{!$Label.rh2__ifcheckeddelimiters}</p>
+
+                                 <br/>    
+                            </apex:outputpanel>
+
+                             
+                            
+                            <apex:outputpanel id="DateField" rendered="{!smHelper.isAdvCurrency}">
+                                <apex:outputtext value="{!$Label.rh2__select} {!smHelper.SourceField1API} {!$Label.rh2__datefieldusedfordated}" rendered="{!sourceFields1FK}"/>
+                                <apex:outputtext value="{!$Label.rh2__select} {!smHelper.sourceObject} {!$Label.rh2__datefieldusedfordated}" rendered="{!NOT(sourceFields1FK)}"/>
+                                <br/>
+                                <apex:selectList size="1" value="{!smHelper.conversionDate}" rendered="{!smHelper.isAdvCurrency}">
+                                  <apex:selectOptions value="{!dateFields}" />
+                                </apex:selectList>
+                                 <br /><br/>       
+                            </apex:outputpanel>
+
+
+                            <apex:outputpanel rendered="{!smHelper.logic == 'AVG'}"> 
+
+                            
+                                <apex:outputpanel id="nullsCountTowardAvg">
+                                    <apex:inputCheckbox value="{!smHelper.nullCountsTowardAvg}" id="nullCountTowardsAvgCheckbox" />                   
+                                    <apex:actionsupport event="onchange" action="{! postVariable }" rerender="nullsCountTowardAvg"/>   
+                                </apex:outputpanel>
+                                <apex:outputLabel for="nullCountTowardsAvgCheckbox" value="{!' ' + $Label.rh2__nullscounttowardaveragecalculation}"/>
+                                <p class="slds-text-body_small">{!$Label.rh2__nullscountaszero}</p>
+                                  <br/>
+
+                            </apex:outputpanel>
+
+
+                            <!-- Code for deduplication checkbox -->
+                            <apex:outputPanel id="deduplicate" rendered="{!renderDedupSetting}">
+                                <apex:outputPanel >
+                                    <apex:inputCheckbox value="{!smHelper.dedupeFlag}" id="dedupCheckbox" />
+                                    <apex:actionsupport event="onchange" action="{! postVariable }" rerender="deduplicate" />
+                                </apex:outputPanel>
+
+                                <apex:outputLabel for="dedupCheckbox" value="{!' ' + $Label.rh2__uniquevaluesonly}" />
+                                <p class="slds-text-body_small">
+                                    {!$Label.CheckUniqueValues}
+                                </p>
+                                <br />
+                            </apex:outputPanel>
+
+                            
+                            
+                            <!-- Code for escape checkbox -->
+                            <apex:outputpanel id="escape">
+                                <apex:outputPanel >
+                                    <apex:inputCheckbox value="{!smHelper.escapeSpecialCharacters}" id="escapeCheckbox" />                   
+                                    <apex:actionsupport event="onchange" action="{! postVariable }" rerender="escape"/>   
+                                </apex:outputpanel>
+
+                                <apex:outputLabel for="escapeCheckbox" value="{!' ' + $Label.rh2__escapefilterstring}"/>
+                                <p class="slds-text-body_small">{!$Label.AdvancedEscapeFilter}</p>
+                                <br />
+                            </apex:outputpanel>     
+                            
+                            
+                            
+                            <!-- Code for archived checkbox -->
+                            <apex:outputpanel id="archive">
+                                <apex:outputPanel >
+                                    <apex:inputCheckbox value="{!smHelper.queryArchive}" id="archiveCheckbox" />                   
+                                    <apex:actionsupport event="onchange" action="{! postVariable }" rerender="archive"/>   
+                                </apex:outputpanel>
+
+                                <apex:outputLabel for="archiveCheckbox" value="{!' ' + $Label.rh2__queryarchivedrecords}"/>
+                                <p class="slds-text-body_small">{!$Label.IfCheckedWillRollupFromBothArchived}</p>
+                                <br />
+                            </apex:outputpanel> 
+
+                            <!-- Code for individual realtime checkbox -->
+                            <apex:outputpanel id="individualRealtime">
+                                <apex:outputPanel >
+                                    <apex:inputCheckbox value="{!smHelper.disableRealtime}" id="disableRealtimeCheckbox" />                   
+                                    <apex:actionsupport event="onchange" action="{! postVariable }" rerender="individualRealtime"/>   
+                                </apex:outputpanel>
+
+                                <apex:outputLabel for="disableRealtimeCheckbox" value="{!' ' + $Label.rh2__disablerealtime}"/>
+                                <p class="slds-text-body_small">{!$Label.rh2__ifcheckedwillnotrollupinrealtime}</p>
+                            </apex:outputpanel> 
+                            
+                         </div>
+                     </div> 
+                     </div>
+                     
+                     
+                            <apex:outputText value=" "/>
+                            </apex:outputPanel>    
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                   
+                </section>     
+             <footer class="slds-card__footer">
+                 <apex:outputPanel id="saveCancelBtns">
+                    <hr />
+                 <center>
+                 <apex:commandbutton styleClass="slds-button slds-button_neutral" action="{!cancelSettingConfig}" value="{!$Label.rh2__cancel}"/>
+                 <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!validateChildCount}" value="{!$Label.rh2__validatequery}" disabled="{!!renderSaveButton}" oncomplete="showModal(true, 'rollupQueryValidation');" reRender="validationTextContainer"/>
+                 <apex:commandbutton styleClass="slds-button slds-button_neutral" action="{!previewRollup}" disabled="{!!renderSaveButton}" onClick="if(!confirm('{!$Label.rh2__changesmadetoactiveandinactive}')) return false;" oncomplete="showModal(true, 'previewRollupResults')" value="{!$Label.rh2__previewrollupresults}" rerender="rollupPreviewContainer"/>
+                 <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!save}" value="{!$Label.rh2__save}" disabled="{!!renderSaveButton}" rerender="topPageMessage" rendered="{!OR(!smHelper.showEnableRealTimeModal, $Setup.rh2__PS_Settings__c.rh2__RealtimeEnablementOptOut__c == true)}" status="loading">
+                    <apex:param name="saveAndNewParam" value="false" assignTo="{!smHelper.saveAndNewClicked}" />
+                 </apex:commandButton>
+                 <apex:commandButton styleClass="slds-button slds-button_neutral" onclick="{showModal(true, 'triggerPopup')}" value="{!$Label.rh2__save}" disabled="{!!renderSaveButton}" rerender="topPageMessage" rendered="{!AND(smHelper.showEnableRealTimeModal, $Setup.rh2__PS_Settings__c.rh2__RealtimeEnablementOptOut__c == false)}"/>
+                 <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!save}" value="{!$Label.rh2__saveandnew}" disabled="{!!renderSaveButton}" rerender="topPageMessage" status="loading">
+                    <apex:param name="saveAndNewParam" value="true" assignTo="{!smHelper.saveAndNewClicked}"/>
+                 </apex:commandButton>
+                 <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!runsave}" value="{!$Label.rh2__saveandrun}" disabled="{!!renderSaveButton}" rendered="{!not(and(smHelper.activeRollupCount > 2, smHelper.notpaid))}" rerender="topPageMessage" status="loading"/>  
+                 
+                 </center> 
+                    </apex:outputPanel>
+             </footer>
+                </div>
+            </apex:outputPanel>
+           </apex:outputPanel>        
+                
+    </apex:outputPanel>
+
+   <div id='triggerPopup' style="display:none">
+   <apex:outputpanel id="realtimeEnable">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="width:640px !important;">
+                <div class="slds-modal__header slds-theme_alert-texture">
+                    <h4 class="slds-text-heading_medium">{!$Label.EnableRealtime}?</h4>
+                    {!$Label.ItAppearsRealtime} &nbsp; {!smHelper.childObjectLabel} &nbsp; {!$Label.ObjectCurrently}.
+                    {!$Label.WeRecommendRealtime} &nbsp; {!smHelper.childObjectLabel} &nbsp; {!$Label.ObjectNow}?
+                    <br/>
+                    <br/>
+                    <apex:inputCheckbox value="{!smHelper.realtimeEnablementOptOut}"/>
+                    {!$Label.rh2__dontsuggestrealtime}                              
+                </div>
+                <div class="slds-modal__footer">
+                    <div class="slds-x-small-buttons_horizontal slds-align_absolute-center">
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!save}" value="{!$Label.rh2__saveandcreatetrigger}" rerender="topPageMessage" status="loading">                    
+                            <apex:param name="createTrigger" value="true" assignTo="{!smHelper.createTriggerOnSave}" />
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!save}" value="{!$Label.rh2__savewithouttrigger}" rerender="topPageMessage" status="loading">
+                            <apex:param name="createTrigger" value="false" assignTo="{!smHelper.createTriggerOnSave}" />
+                        </apex:commandButton>
+                        <button type="button" onclick='showModal(false, "triggerPopup");' class="slds-button slds-button_neutral">{!$Label.rh2__cancel}</button>
+                    </div>
+                </div>
+            </div>            
+        </div>
+       <div class="slds-backdrop slds-backdrop_open"></div>
+        </apex:outputpanel>
+    </div>
+    <!-- Modal Schedule Recommended -->
+    <div class="slds"> 
+    <div id='rollupQueryValidation' style="display:none">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">{!$Label.RollupQueryValidation}</h2>
+                    <button type="button" onclick='showModal(false, "rollupQueryValidation");' class="slds-button slds-button_icon-inverse slds-modal__close">
+                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon_large">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                    </button>
+                        
+                </div>
+                <apex:outputPanel id="validationTextContainer">
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <apex:outputText value="{!$Label.rh2__atleastonechild}" rendered="{!NOT(smHelper.childQueryHasNoMatches)}"/>&nbsp;<apex:outputLink target="_blank" value="mailto:support@passagetech.com">{!$Label.rh2__contactsupport}.</apex:outputLink> &nbsp;{!$Label.ForAssistancePerforming}
+                        <apex:outputText value="{!$Label.rh2__thecurrentrollup}" rendered="{!smHelper.childQueryHasNoMatches}"></apex:outputText> &nbsp;<apex:outputLink target="_blank" value="mailto:support@passagetech.com">{!$Label.rh2__contactsupport}.</apex:outputLink>
+                    </div>
+                </apex:outputPanel>
+                <div class="slds-modal__footer">
+                    <div class="slds-x-small-buttons_horizontal">
+                       <button type="button" onclick='showModal(false, "rollupQueryValidation");' class="slds-button slds-button_neutral slds-button_small slds-m-bottom_x-small">{!$Label.Close}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div> 
+   
+    <div id='modalPopup' style="display:none">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">{!$Label.ScheduleRecommended}</h2>
+                    <button type="button" onclick='showModal(false, "modalPopup");' class="slds-button slds-button_icon-inverse slds-modal__close">
+                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon_large">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                    </button>
+                        
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <apex:outputText value="{!$Label.rh2__youhaveappliedfilter}"/>&nbsp;<apex:outputLink target="_blank" value="mailto:support@passagetech.com">{!$Label.rh2__contactsupport}.</apex:outputLink>
+                </div>
+                <div class="slds-modal__footer">
+                    <div class="slds-x-small-buttons_horizontal">
+                        <apex:outputLink value="{! URLFOR('/apex/PS_Job?s=' + settingName)}" styleClass="slds-button slds-button_neutral slds-button_small slds-m-bottom_x-small">{!$Label.rh2__saveandschedule}</apex:outputLink>
+                        <button type="button" onclick='showModal(false, "modalPopup");' class="slds-button slds-button_neutral slds-button_small slds-m-bottom_x-small">{!$Label.rh2__cancel}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+
+    <div id='targetFieldModal' style="display:none">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">{!$Label.InvalidTargetField}</h2>
+                </div>
+                <div class="slds-modal__content">
+                    <apex:outputText value="{!$Label.rh2__thefieldwhererollupinfo}"/>&nbsp; <apex:outputLink target="_blank" value="mailto:support@passagetech.com">{!$Label.rh2__contactsupport}.</apex:outputLink>
+                </div>
+                <div class="slds-modal__footer">
+                    <div class="slds-x-small-buttons_horizontal">
+                        <apex:outputLink value="{!URLFOR($Page.rh2__PS_SelectTargetField)}{!IF(CONTAINS(URLFOR($Page.rh2__PS_RollupType), '?'), '&', '?')}mast={!URLENCODE(smHelper.masterAPI)}&sname={!URLENCODE(settingName)}" styleClass="slds-button slds-button_neutral slds-button_small slds-m-bottom_x-small">{!$Label.rh2__edittargetfield}</apex:outputLink>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+    <div id='previewRollupResults' style="display:none">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">{!$Label.rh2__previewrollupresults}</h2>
+                    <button type="button" onclick='showModal(false, "previewRollupResults");' class="slds-button slds-button_icon-inverse slds-modal__close">
+                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon_large">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                    </button>
+                            
+                </div>
+                <div class="slds-modal__content slds-p-around_small">
+                    <apex:outputPanel id="rollupPreviewContainer">
+                        <apex:outputPanel id="rollupPreview" rendered="{!settingName != null}">
+                            <c:PS_PreviewRollups rolName="{!settingName}" sourceQuery="{!childQuery}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>
+                <div class="slds-modal__footer" style="display: inline-block;">
+                    <div class="slds-x-small-buttons_horizontal">
+                        <apex:outputPanel >
+                            <div style="width:80%;height:35px;display:inline-block;">
+                                <center>
+                                    {!$Label.PleaseNotePreviewRollupResults}
+                                </center>
+                            </div>
+                            <div style="width:10%;height:35px;vertical-align:top;display:inline-block;">
+                                <button type="button" onclick='showModal(false, "previewRollupResults");' style="float: right;" class="slds-button slds-button_neutral slds-button_small slds-m-bottom_x-small">{!$Label.Close}</button>
+                            </div>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+    <apex:outputPanel id="cloneModal" >
+        <apex:outputPanel rendered="{!NOT(ISBLANK(smHelper.relationshipField))}">
+            <div id="clonePopup" style="display:none">
+                <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <h2 class="slds-text-heading_medium">{!$Label.rh2__clonefromexistingfilters}</h2>
+                        </div>
+                        <div class="slds-modal__content slds-p-around_small">   
+                        <center>                            
+                            <apex:selectlist value="{!smHelper.selectedCloneFilter}" styleclass="slds-select" style="width: 80%;" multiselect="false" size="1">
+                                <apex:selectOptions value="{!filterNames}"/>
+                                <apex:actionSupport event="onchange" rerender="cloneFilterButtons" status="loading"/>
+                            </apex:selectlist>              
+                        </center>
+                        </div>              
+                        <div class="slds-modal__footer">
+                            <apex:outputPanel id="cloneFilterButtons">
+                                <apex:commandButton styleClass="slds-button slds-button_neutral" onclick="showModal(false, 'clonePopup');" rerender="clonePopup" value="{!$Label.rh2__cancel}"/>                                                       
+                                <apex:commandButton disabled="{!smHelper.selectedCloneFilter == null}" styleClass="slds-button slds-button_brand" action="{!cloneFilter}" value="{!$Label.rh2__clone}" status="loading"/>
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </apex:outputPanel>
+    </apex:outputPanel>
+    <c:Loading_Spinner opacity="1"/>
+    </div>
+    </div>
+    </apex:form>
+    
+    </html>   
+</apex:page>

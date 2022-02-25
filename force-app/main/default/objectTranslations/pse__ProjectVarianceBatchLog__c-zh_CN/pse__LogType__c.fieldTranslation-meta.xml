@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help>表示日志类型（错误，信息，中止，外部）。</help>
+    <label><!-- Log Type --></label>
+    <name>pse__LogType__c</name>
+    <picklistValues>
+        <masterLabel>Abort</masterLabel>
+        <translation>退出</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Error</masterLabel>
+        <translation>错误</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>External</masterLabel>
+        <translation>外部</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Information</masterLabel>
+        <translation>信息</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,49 @@
+<apex:page showHeader="false" sidebar="false" id="pg" tabStyle="pse__Proj__c" lightningStylesheets="true" controller="pse.LightningOutController">
+	<apex:includeLightning />
+	<apex:slds />
+
+	<div id="hierarchyTreeContainer" />
+
+	<script type="text/javascript">
+		(function (global) {
+			var hierarchyTree;
+
+			global.addEventListener('load', function() {
+				$Lightning.use('{!IF(ISBLANK(namespace), "c", namespace)}:outApp', function() {
+					$Lightning.createComponent('{!IF(ISBLANK(namespace), "c", namespace)}:rpgHierarchy', {
+						'queryParam': {
+							'recordId': '{!JSENCODE($CurrentPage.parameters.recordId)}',
+							'queryFor': '{!JSENCODE($CurrentPage.parameters.queryFor)}'
+						},
+						'class': 'slds-m-around_small',
+						'callback': clickHandler
+					},
+					'hierarchyTreeContainer',
+					function (component) {
+						hierarchyTree = component;
+					});
+				});
+			});
+
+			function isLightningTheme() {
+				return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+			}
+
+			function clickHandler (recordId) {
+				if (isLightningTheme()) {
+					if (recordId) {
+						return;
+					}
+					sforce.one.navigateToSObject('{!JSENCODE($CurrentPage.parameters.recordId)}');
+				} else {
+					if (recordId) {
+						global.opener.location.href = '/' + recordId;
+					}
+					global.close();
+				}
+				hierarchyTree.destroy();
+			}
+		}(this));
+	</script>
+
+</apex:page>

@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2021. 7Summits Inc.
+ */
+
+.script-container {
+    border: var(--lwc-borderWidthThick) solid var(--lwc-colorBorderBrand);
+    border-radius: var(--lwc-borderRadiusMedium);
+ }
+ 
+ 
+.script {
+    font-size: 1.125rem; /*t(fontSizeTextLarge)*/
+    font-weight: var(--lwc-fontWeightRegular);
+    line-height: var(--lwc-lineHeightHeading);
+ }

@@ -1,0 +1,143 @@
+<!--
+  ~ Copyright (c) 2020. 7Summits Inc.
+  -->
+<template>
+	<!-- EDIT -->
+	<div if:true={showEdit} class="slds-p-around--small">
+		<div class='slds-p-bottom--small'>
+			<lightning-input-rich-text data-id="richtextComment"
+			                           placeholder={placeholderComment}
+			                           value={newComment}
+			                           valid={validity}
+			                           message-when-bad-input={labels.labelErrCommentEntry}
+			                           onblur={handleEventDetail}>
+			</lightning-input-rich-text>
+		</div>
+		<div class='slds-p-bottom--small'>
+			<lightning-button label={labels.labelAddComment}
+			                  onclick={addIdeaComment}
+			                  title="Add comment"
+			                  variant="brand">
+			</lightning-button>
+		</div>
+	</div>
+
+	<!-- TITLE -->
+	<div class='slds-p-left--small'>
+		<c-x7s-shr-component-wrapper title={title}></c-x7s-shr-component-wrapper>
+	</div>
+
+	<!--Sort-->
+	<div if:true={showSorting}>
+		<c-x7s-shr-list-control list-id={listId}
+		                        custom-class={customClass}
+		                        default-sort={sortOrder}
+		                        hide-pagination="true"
+		                        hide-sort={hideSort}
+		                        hide-view-selector="true"
+		                        sort-options={sortBy}
+		                        sort-variant={sortVariant}>
+		</c-x7s-shr-list-control>
+	</div>
+
+	<!-- SPINNER -->
+	<template if:true={showSpinner}>
+		<lightning-spinner size="small"
+		                   variant="brand"
+		                   alternative-text="Loading...">
+		</lightning-spinner>
+	</template>
+
+	<!-- COMMENTS -->
+	<template if:true={showComments} for:each={comments} for:item="comment">
+		<div class='slds-border--bottom slds-p-left--small' key={comment.id}>
+			<lightning-layout multiple-rows="true"
+			                  class="slds-p-vertical--small" key={comment.id}>
+
+				<!-- creator -->
+				<lightning-layout-item>
+					<lightning-avatar src={comment.smallPhotoUrl}
+					                  size="medium"
+					                  variant="circle"
+					                  fallback-icon-name="standard:user"
+					                  class="slds-m-right_xx-small">
+					</lightning-avatar>
+				</lightning-layout-item>
+				<lightning-layout-item class="slds-has-flexi-truncate">
+					<lightning-layout multiple-rows="true">
+						<lightning-layout-item size="12"
+						                       class="slds-text-body_regular slds-p-bottom--xx-small">
+
+							<lightning-formatted-url value={comment.userURLValue}
+							                         label={comment.userURLLabel}>
+							</lightning-formatted-url>
+
+							<!-- body -->
+							<template if:true={comment.isHtml}>
+								<lightning-formatted-rich-text value={comment.commentBody}
+								                               title="Comment">
+								</lightning-formatted-rich-text>
+							</template>
+							<template if:false={comment.isHtml}>
+								<lightning-formatted-text value={comment.commentBody}
+								                          title="Comment">
+								</lightning-formatted-text>
+							</template>
+
+							<!-- VOTES -->
+							<lightning-layout multiple-rows="false">
+								<lightning-layout-item size="12" class="slds-p-top--xx-small">
+
+									<lightning-layout multiple-rows="false">
+										<lightning-layout-item class="slds-p-right--x-small">
+											<lightning-relative-date-time value={comment.commentCreatedDate}>
+											</lightning-relative-date-time>
+										</lightning-layout-item>
+										<lightning-layout-item class="slds-p-right--x-small">
+											<lightning-formatted-text value={likeSeparator}></lightning-formatted-text>
+										</lightning-layout-item>
+										<lightning-layout-item class="slds-p-right--x-small">
+											<lightning-formatted-text
+													value={comment.likeText}></lightning-formatted-text>
+										</lightning-layout-item>
+
+										<!-- Like actions  -->
+										<template if:true={enableCanComment}>
+											<lightning-layout-item class="slds-p-right--x-small">
+												<lightning-formatted-text
+														value={likeSeparator}></lightning-formatted-text>
+											</lightning-layout-item>
+
+											<lightning-layout-item>
+												<template if:true={comment.likedByUser}>
+													<a onclick={unlikeComment}
+													   data-recordid={comment.voteId}>
+														{labels.labelCommentUnlike}
+													</a>
+												</template>
+												<template if:false={comment.likedByUser}>
+													<a onclick={likeComment}
+													   data-recordid={comment.id}>
+														{labels.labelCommentLike}
+													</a>
+												</template>
+											</lightning-layout-item>
+										</template>
+									</lightning-layout>
+								</lightning-layout-item>
+							</lightning-layout>
+						</lightning-layout-item>
+					</lightning-layout>
+				</lightning-layout-item>
+			</lightning-layout>
+		</div>
+	</template>
+
+	<!-- PAGINATION-->
+	<c-x7s-shr-list-control list-id={listId}
+	                        custom-class={customClass}
+	                        hide-pagination={hidePagination}
+	                        hide-sort="true"
+	                        hide-view-selector="true">
+	</c-x7s-shr-list-control>
+</template>

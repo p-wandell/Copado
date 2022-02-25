@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__ChartType__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>Bar</fullName>
+                <default>false</default>
+                <label>Bar</label>
+            </value>
+            <value>
+                <fullName>Bar Full Stacked</fullName>
+                <default>false</default>
+                <label>Bar Full Stacked</label>
+            </value>
+            <value>
+                <fullName>Bar Stacked</fullName>
+                <default>false</default>
+                <label>Bar Stacked</label>
+            </value>
+            <value>
+                <fullName>Bubble</fullName>
+                <default>false</default>
+                <label>Bubble</label>
+            </value>
+            <value>
+                <fullName>Column</fullName>
+                <default>false</default>
+                <label>Column</label>
+            </value>
+            <value>
+                <fullName>Column Full Stacked</fullName>
+                <default>true</default>
+                <label>Column Full Stacked</label>
+            </value>
+            <value>
+                <fullName>Column Stacked</fullName>
+                <default>false</default>
+                <label>Column Stacked</label>
+            </value>
+            <value>
+                <fullName>Donut</fullName>
+                <default>false</default>
+                <label>Donut</label>
+            </value>
+            <value>
+                <fullName>Line</fullName>
+                <default>false</default>
+                <label>Line</label>
+            </value>
+            <value>
+                <fullName>None</fullName>
+                <default>false</default>
+                <label>None</label>
+            </value>
+            <value>
+                <fullName>Pie</fullName>
+                <default>false</default>
+                <label>Pie</label>
+            </value>
+            <value>
+                <fullName>Radial</fullName>
+                <default>false</default>
+                <label>Radial</label>
+            </value>
+            <value>
+                <fullName>Scatter</fullName>
+                <default>false</default>
+                <label>Scatter</label>
+            </value>
+            <value>
+                <fullName>Smooth</fullName>
+                <default>false</default>
+                <label>Smooth</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

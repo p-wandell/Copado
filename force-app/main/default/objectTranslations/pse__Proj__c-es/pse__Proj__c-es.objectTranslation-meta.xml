@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Proyecto</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Proyectos</value>
+    </caseValues>
+    <fieldSets>
+        <label><!-- Create Project From Opp And Temp Project Columns Custom --></label>
+        <name>CreateProjFromOppAndTempColumns_Custom</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Milestone Billing Project Financials Field Updates --></label>
+        <name>Milestone_Billing_Project_Financials_Fie</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Project Planner Filter Field Set --></label>
+        <name>Project_Planner_Filter_Field_Set</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Assign Multiple Projects to Resource Filter Options --></label>
+        <name>pse__AssignMultiProjectFilterOptions</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Assign Multiple Projects to Resource Search Columns --></label>
+        <name>pse__AssignMultiProjectSearchColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Assign Resource Project Information Section FieldSet --></label>
+        <name>pse__AssignResourceProjectInfoSectionFieldSet</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Create Project From Template Alt Copy Project Fields --></label>
+        <name>pse__CreateProjFromTempAltCopyProjectFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Create Project From Opp And Template Project Columns --></label>
+        <name>pse__CreateProjectFromOppAndTempProjColumns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Project Information Fields On RR from PTA --></label>
+        <name>pse__OnRRFromPTAProjectInfoFields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Project Detail Fields on RR From Template Field Set --></label>
+        <name>pse__ProjectDetailOnRRFromTemplateFieldSet</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Project Fields For Rate Card Set --></label>
+        <name>pse__Project_Fields_For_Rate_Card_Set</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Project Planner Columns --></label>
+        <name>pse__Project_Planner_Columns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Project Planner Enabled Filters --></label>
+        <name>pse__Project_Planner_Enabled_Filters</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Tooltip Fields for Project Planner --></label>
+        <name>pse__Project_Tooltip_Field_Set</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Select Project Template Field Set --></label>
+        <name>pse__SelectProjectTemplateFieldSet</name>
+    </fieldSets>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Nombre del proyecto</nameFieldLabel>
+    <sharingReasons>
+        <label><!-- PSE Member Share --></label>
+        <name>pse__PSE_Member_Share</name>
+    </sharingReasons>
+    <sharingReasons>
+        <label><!-- PSE PM Share --></label>
+        <name>pse__PSE_PM_Share</name>
+    </sharingReasons>
+    <validationRules>
+        <errorMessage><!-- Go Live Date is required before the project can be completed --></errorMessage>
+        <name>Go_Live_Date_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- If the Project Stage ≠ Planned, you cannot change the # of Weeks Pushed field. --></errorMessage>
+        <name>ffps_7summits__Cant_Push_Dates_if_Project_not_Planned</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Projects may only be marked as &quot;Time Credited&quot; if they are Non-Billable. --></errorMessage>
+        <name>pse__Billable_Projects_may_not_be_Credited</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Projects may only be marked as &quot;Time Excluded&quot; if they are Non-Billable. --></errorMessage>
+        <name>pse__Billable_Projects_may_not_be_Excluded</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Projects may not be marked as &quot;Time Excluded&quot; if they are also marked as &quot;Time Credited&quot;. --></errorMessage>
+        <name>pse__Credited_Projects_may_not_be_Excluded</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Rate Card Percentage Discount must be between 0 and 100. --></errorMessage>
+        <name>pse__Discount_Rates_Must_Be_Between_0_to_100</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A Project&apos;s Currency field value may not be updated once set. --></errorMessage>
+        <name>pse__Project_Currency_is_Constant</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You cannot associate the rate card set with the project. They must both use the same currency. --></errorMessage>
+        <name>pse__Project_Rate_Card_Set_Currency_Mismatch</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The project start date must be on or before the project end date. --></errorMessage>
+        <name>pse__Start_Date_must_be_before_End_Date</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Detailed_Status_Report --></label>
+        <name>Detailed_Status_Report</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Detailed_Status_Report_PDF --></label>
+        <name>Detailed_Status_Report_PDF</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Preflight_Risks --></label>
+        <name>Preflight_Risks</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Status_Report --></label>
+        <name>Status_Report</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Apply_Rate_Card_Discount --></label>
+        <name>pse__Apply_Rate_Card_Discount</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Copy_From_Template --></label>
+        <name>pse__Copy_From_Template</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_Change_Request --></label>
+        <name>pse__Create_Change_Request</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_Project --></label>
+        <name>pse__Create_Project</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_Project_From_Template --></label>
+        <name>pse__Create_Project_From_Template</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_Project_Version --></label>
+        <name>pse__Create_Project_Version</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Manage_Project_Tasks --></label>
+        <name>pse__Manage_Project_Tasks</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Manage_Resource_Replacement --></label>
+        <name>pse__Manage_Resource_Replacement</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Project_Billing --></label>
+        <name>pse__Project_Billing</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Project_Gantt --></label>
+        <name>pse__Project_Gantt</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Project_Planner --></label>
+        <name>pse__Project_Planner</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Project_Planner_Group --></label>
+        <name>pse__Project_Planner_Group</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Project_Planner_Practice --></label>
+        <name>pse__Project_Planner_Practice</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Project_Planner_Region --></label>
+        <name>pse__Project_Planner_Region</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Run_Revenue_Forecast --></label>
+        <name>pse__Run_Revenue_Forecast</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Share_Project --></label>
+        <name>pse__Share_Project</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- View_Unfilled_Resource_Requests --></label>
+        <name>pse__View_Unfilled_Resource_Requests</name>
+    </webLinks>
+</CustomObjectTranslation>

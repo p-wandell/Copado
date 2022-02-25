@@ -1,0 +1,80 @@
+<!--
+  ~ Copyright (c) 2020.  7Summits Inc. All rights reserved.
+  -->
+
+<!-- x7S Card -->
+<template>
+    <c-x7s-shr-card-horizontal if:true={horizontalLayout}
+                               avatar-alignment={avatarAlignment}
+                               avatar-size={avatarSize}
+                               avatar-border-radius={avatarBorderRadius}
+                               custom-class={customClass}
+                               description={description}
+                               description-lines={descriptionLines}
+                               emphasize-avatar-background={emphasizeAvatarBackground}
+                               href={cardUrl}
+                               hide-avatar={hideAvatar}
+                               hide-avatar-background={hideAvatarBackground}
+                               hide-footer={hideFooter}
+                               hide-image={hideImage}
+                               hide-placeholder-image={hidePlaceholderImage}
+                               image-src={imageSrc}
+                               image-label={imageLabel}
+                               image-placeholder-icon={imagePlaceholderIcon}
+                               image-width={imageWidthHorizontal}
+                               icon-opacity={iconOpacity}
+                               icon-color={iconColor}
+                               image-background-size={imageBackgroundSize}
+                               image-background-color={imageBackgroundColor}
+                               ontitleclick={handleTitleClick}
+                               min-height={minHeight}
+                               record-id={recordId}
+                               text-align={textAlign}
+                               title={title}
+                               title-lines={titleLines}
+                               topics={topics}
+                               use-avatar={useAvatar}
+                               use-href-only={useHrefOnly}
+                               variant={variant}
+    >
+        <slot></slot>
+        <slot slot="footer" name="footer"></slot>
+    </c-x7s-shr-card-horizontal>
+
+    <c-x7s-shr-card-vertical if:true={verticalLayout}
+                               avatar-alignment={avatarAlignment}
+                               avatar-size={avatarSize}
+                               avatar-border-radius={avatarBorderRadius}
+                               custom-class={customClass}
+                               description={description}
+                               description-lines={descriptionLines}
+                               emphasize-avatar-background={emphasizeAvatarBackground}
+                               href={cardUrl}
+                               hide-avatar={hideAvatar}
+                               hide-avatar-background={hideAvatarBackground}
+                               hide-footer={hideFooter}
+                               hide-image={hideImage}
+                               hide-placeholder-image={hidePlaceholderImage}
+                               image-src={imageSrc}
+                               image-label={imageLabel}
+                               image-placeholder-icon={imagePlaceholderIcon}
+                               image-height={imageHeight}
+                               icon-opacity={iconOpacity}
+                               icon-color={iconColor}
+                               image-background-size={imageBackgroundSize}
+                               image-background-color={imageBackgroundColor}
+                               ontitleclick={handleTitleClick}
+                               min-height={minHeight}
+                               record-id={recordId}
+                               text-align={textAlign}
+                               title={title}
+                               title-lines={titleLines}
+                               topics={topics}
+                               use-avatar={useAvatar}
+                               use-href-only={useHrefOnly}
+                               variant={variant}
+    >
+        <slot></slot>
+        <slot slot="footer" name="footer"></slot>
+    </c-x7s-shr-card-vertical>
+</template>

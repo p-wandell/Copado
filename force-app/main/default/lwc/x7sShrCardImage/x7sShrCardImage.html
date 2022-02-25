@@ -1,0 +1,15 @@
+<template>
+    <div class={componentClass}>
+        <div class="card-image__wrapper" style={imageWrapperStyle} if:true={showImage}>
+            <div class="card-image__image" style={imageStyle}></div>
+        </div>
+        <div class={avatarClass} if:true={useAvatar}>
+            <div class="card-image__avatar" style={avatarStyle}></div>
+        </div>
+        <div class="card-image__wrapper slds-align_absolute-center" if:true={showPlaceholderImage} style={imageWrapperStyle}>
+            <div class="card-image__placeholder" style={iconWrapperStyles}>
+                <lightning-icon icon-name={imagePlaceholderIcon} class="slds-current-color"></lightning-icon>
+            </div>
+        </div>
+    </div>
+</template>

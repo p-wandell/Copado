@@ -1,0 +1,84 @@
+<apex:page controller="ffct.MergeLayoutController" action="{!listLayouts}" sidebar="false">
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-load.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-deflate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ffct__jszip, '/jszip-inflate.js')}"/>
+           
+    <apex:form id="form" >      
+        <apex:sectionHeader title="Merge Layouts" help="helploader?topicid=1040"/>
+        <apex:pageMessages escape="false" id="messageDiv"/>
+        <apex:outputPanel id="progressDiv" layout="block" >
+            <apex:outputPanel layout="block" rendered="{!ShowProgress}">
+                <img src="{!URLFOR($Resource.progressGIF)}" />
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="mergePanel" rendered="{!!IsMergeInProcess && !IsDeploymentInProcess}">
+            <apex:actionPoller action="{!checkAsyncRequestForRetrieve}" interval="5" rerender="form" rendered="{!NOT(ISNULL(AsyncResultForRetrieve))}"/>
+            <apex:actionFunction action="{!getLayouts}" name="getLayouts" rerender="layouts"/>
+            <apex:pageBlock title="Layouts" rendered="{!AND(ISNULL(AsyncResultForRetrieve),ISNULL(MetaDataRetrieveZip))}">
+                <apex:pageBlockButtons location="bottom" >
+                    <apex:commandButton value="Merge" action="{!retrieveLayout}" rerender="form" onclick="this.className='btnDisabled'" />
+                </apex:pageBlockButtons>
+                <apex:outputPanel id="layouts">
+                    <apex:pageBlockSection columns="1">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Object Name:" />
+                            <apex:selectList size="1" value="{!SelectedObject}" onchange="getLayouts()">
+                                <apex:selectOptions value="{!ObjectNames}"/>
+                            </apex:selectList>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Source Layout:" />
+                            <apex:selectList size="1" value="{!SourceLayoutName}" >
+                                <apex:selectOptions value="{!Layouts}"/>
+                            </apex:selectList>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Target Layout:" />
+                            <apex:selectList size="5" value="{!TargetLayoutName}" multiselect="true" >
+                                <apex:selectOptions value="{!Layouts}"/>
+                            </apex:selectList>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Create Copy" />
+                            <apex:inputCheckbox value="{!IsCopy}"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+            </apex:pageBlock> 
+            <apex:outputPanel rendered="{!NOT(ISNULL(MetaDataRetrieveZip))}">
+                <apex:actionFunction name="receiveFile" action="{!receiveMetadataZipFile}" rerender="messageDiv,progressDiv" oncomplete="unzip();">
+                    <apex:param name="filename" assignTo="{!MetadataFileName}" value=""/>
+                    <apex:param name="filedata" assignTo="{!MetadataFileData}" value=""/>
+                </apex:actionFunction>  
+                <apex:actionFunction name="receiveComplete" action="{!receiveComplete}" rerender="form"/>
+                <c:unzip name="unzip" oncomplete="if(more) receiveFile(path, data); else receiveComplete();">{!MetaDataRetrieveZip}</c:unzip>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        
+       <apex:outputPanel id="mergeProcessStatus" rendered="{!IsMergeInProcess}">
+            <apex:actionPoller action="{!isMergeProcessCompleted}" interval="5" rerender="form"/>              
+        </apex:outputPanel>
+         
+        <apex:outputPanel id="parentDeployPanel">
+            <apex:outputPanel id="deployPanel" rendered="{!IsDeploymentInProcess}">
+            
+                <apex:actionPoller action="{!checkAsyncRequestForDeploy}" interval="5" rerender="form" rendered="{!NOT(ISNULL(AsyncResultForDeploy))}"/>
+                <apex:actionFunction name="deployZip" action="{!deployZip}" rendered="{!ISNULL(AsyncResultForDeploy)}" rerender="parentDeployPanel">
+                    <apex:param name="data" assignTo="{!ZipData}" value=""/>
+                </apex:actionFunction>
+                <c:zip name="generateZip" oncomplete="deployZip(data);" rendered="{!ISNULL(AsyncResultForDeploy)}">
+                    <c:zipEntry path="package.xml" data="{!PackageXml}"/>
+                    <apex:repeat value="{!Paths}" var="path">                   
+                        <c:zipEntry path="{!path}" data="{!Paths[path]}"/> 
+                    </apex:repeat>
+                </c:zip>
+                <script>
+                    generateZip();  
+                </script>
+            </apex:outputPanel>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

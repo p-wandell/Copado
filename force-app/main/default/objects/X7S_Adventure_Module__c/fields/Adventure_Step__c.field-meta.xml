@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Adventure_Step__c</fullName>
+    <description>The Adventure Step that contains this Step Module</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The Adventure Step that contains this Step Module</inlineHelpText>
+    <label>Adventure Step</label>
+    <referenceTo>X7S_Adventure_Step__c</referenceTo>
+    <relationshipName>X7S_Step_Modules</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

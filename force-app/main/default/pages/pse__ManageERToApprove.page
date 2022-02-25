@@ -1,0 +1,294 @@
+<apex:page lightningStylesheets="true" id="ERMassApprovalPage" tabStyle="pse__Expense_Report__c" title="{!$Label.pse__manageertoapprove_title}"
+ controller="pse.ManageERToApproveController" action="{!init}">
+	<script type="text/javascript">
+		function selectAll(comp, checkBoxId) {
+			var inputElem = document.getElementsByTagName('input');
+			for (var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(checkBoxId) != -1) {
+					inputElem[i].checked = comp.checked;
+				}
+			}
+		}
+		function selectExpenseReport(comp) {
+			var allchecked = true;
+			var lstindex = comp.id.lastIndexOf(':') + 1;
+			var compID = comp.id.substring(lstindex, comp.id.length);
+			var inputElem = document.getElementsByTagName('input');
+			for (var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].id.indexOf(compID) != -1) {
+					if (!inputElem[i].checked) {
+						allchecked = false;
+					}
+				}
+			}
+			if (allchecked) {
+				document.getElementById('selectAllER').checked = true;
+			} else {
+				document.getElementById('selectAllER').checked = false;
+			}
+		}
+	</script>
+	<style>
+		.sortingClass {
+			width: 21px;
+			height: 14px;
+			vertical-align: sub;
+		}
+
+		.ascImage {
+			background: url('/img/sort_asc_arrow.gif');
+		}
+
+		.descImage {
+			background: url('/img/sort_desc_arrow.gif');
+		}
+	</style>
+	<apex:outputPanel rendered="{!$User.UIThemeDisplayed=='Theme4d'}" layout="none">
+		<style>
+			.div-table-scroll {
+				overflow-x: auto;
+			}
+		</style>
+	</apex:outputPanel>
+	<c:WaitComponent />
+
+	<c:lightningOutDependency exportObjectName="$FFOUTAPP" />
+	<c:ffui_header instanceName="$FFHEADER" id="vfHeader" />
+
+	<apex:pageBlock rendered="{!NOT(isEverythingOk)}">
+		<apex:pageMessages />
+	</apex:pageBlock>
+	<apex:form id="MassERAppForm" rendered="{!isEverythingOk}">
+		<apex:actionFunction name="doApprove" action="{!approveRecords}" status="ajaxStatus" rerender="ERPageBlock, FilterBlock, quickTooltipPanel, headerScriptBlock, vfHeader"
+		 oncomplete="onApproveRecordsDone();updateAnchorTargetAttribute();" />
+		<apex:actionFunction name="doReject" action="{!rejectRecords}" status="ajaxStatus" rerender="ERPageBlock, FilterBlock, quickTooltipPanel, headerScriptBlock, vfHeader"
+		 oncomplete="onRejectRecordsDone();updateAnchorTargetAttribute();" />
+		<apex:actionFunction name="doCancel" action="{!cancel}" />
+
+		<apex:actionStatus id="ajaxStatus" onstart="wait(true)" onstop="wait(false)" />
+		<apex:actionRegion >
+			<apex:actionFunction name="jsOnProjectChange" action="{!onProjectChange}" rerender="milestoneListOP, quickTooltipPanel" oncomplete="onProjectChangeDone();updateAnchorTargetAttribute();">
+				<apex:param name="selectedProjFilter" assignTo="{!selectedProjFilter}" value="" />
+			</apex:actionFunction>
+		</apex:actionRegion>
+		<apex:actionFunction name="sortData" action="{!Sort}" rerender="ERPageBlock, quickTooltipPanel" status="ajaxStatus" oncomplete="onSortDataDone();updateAnchorTargetAttribute();">
+			<apex:param name="sortField" assignTo="{!sortField}" value="" />
+		</apex:actionFunction>
+		<apex:pageblock id="FilterBlock">
+			<apex:pageblockSection columns="2" id="erFilterByTable">
+				<apex:facet name="header">
+					<apex:outputText value="{!$Label.pse__approval_ui_title_filter_approval_requests}" />
+				</apex:facet>
+				<apex:pageBlockSectionItem id="projectListPSI">
+					<apex:outputLabel >{!$Label.pse__timecard_entry_label_proj_assign} </apex:outputLabel>
+					<apex:selectList size="1" value="{!selectedProjFilter}" multiselect="false" id="projectLst" onchange="onAssignmentChange(this)">
+						<apex:selectOptions value="{!filterByProjORAssigOptions}" />
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel >{!$Label.pse__common_label_resource} </apex:outputLabel>
+					<apex:selectList size="1" value="{!selectedResourceFilter}" multiselect="false">
+						<apex:selectOptions value="{!filterByResourceOptions }" />
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem id="milestoneListPSI">
+					<apex:outputLabel for="milestoneList" value="{!$Label.pse__common_label_milestone}" />
+					<apex:outputPanel id="milestoneListOP">
+						<select id="milestoneList" onchange="document.getElementById('{!$Component.milestoneListHidden}').value = this.value;">
+							<option value="none">{!$Label.pse__mass_approval_empty_select_list_label_none}</option>
+							<apex:repeat value="{!filterByMilestoneOptions}" var="msOptionList">
+								<apex:repeat value="{!msOptionList}" var="msOption">
+									<option value="{!msOption.value}">{!HTMLENCODE(msOption.label)}</Option>
+								</apex:repeat>
+							</apex:repeat>
+						</select>
+						<apex:inputHidden value="{!selectedmilestoneFilter}" id="milestoneListHidden" />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel for="billableList" value="{!$Label.pse__common_label_billable}" />
+					<apex:selectList id="billableList" value="{!selectedBillableFilter}" multiselect="false" size="1">
+						<apex:selectOptions value="{!filterByBillableOptions}" />
+					</apex:selectList>
+				</apex:pageBlockSectionItem>
+			</apex:pageblockSection>
+			<apex:pageblockButtons location="bottom">
+				<apex:commandButton value="{!$Label.pse__common_label_filter}" action="{!filterRecords}" status="ajaxStatus" rerender="ERPageBlock, quickTooltipPanel"
+				 oncomplete="onFilterRecordsDone();updateAnchorTargetAttribute();" />
+				<apex:commandButton value="{!$Label.pse__mass_approval_expense_report_button_list_all}" action="{!listAll}" status="ajaxStatus"
+				 rerender="ERPageBlock, FilterBlock, quickTooltipPanel" oncomplete="onListAllDone();updateAnchorTargetAttribute();" />
+			</apex:pageblockButtons>
+		</apex:pageblock>
+		<apex:pageBlock title="{!$Label.pse__expense_label_expense_report_header}" id="ERPageBlock">
+			<apex:pageMessages />
+			<apex:outputPanel rendered="{!foundItemsToApprove}" styleClass="detailList">
+				<div class="div-table-scroll">
+					<apex:pageblockTable value="{!paginator.currentItems}" var="itemToApproveWrapper" width="100%" columnswidth="50px,50px" cellpadding="4"
+					 id="ERList">
+						<apex:column width="20px">
+							<apex:facet name="header">
+								<input type="checkbox" id="selectAllER" onclick="selectAll(this, 'selectSingleER')" />
+							</apex:facet>
+							<apex:inputCheckbox id="selectSingleER" value="{!itemToApproveWrapper.isSelected}" onclick="selectExpenseReport(this)" styleclass="singleERStyleClass" />
+						</apex:column>
+						<apex:column width="165px">
+							<apex:facet name="header">
+								<apex:outputPanel >
+									<apex:outputLink value="javascript:void(0);" onclick="sortData('Name');" styleClass="slds-p-right_large">
+										<apex:outputText value="{!$Label.pse__expense_label_expense_report_header}" />
+										<img src="/s.gif" class="sortingClass slds-input__icon-group slds-m-top_none {!IF(paginator.dataSource.sortField = 'Name',IF(paginator.dataSource.isAscending , 'ascImage','descImage'),'')}" />
+									</apex:outputLink>
+								</apex:outputPanel>
+							</apex:facet>
+							<a href="/{!itemToApproveWrapper.expenseReport.id}" target="_blank">
+								<apex:outputField value="{!itemToApproveWrapper.expenseReport.Name}" />
+							</a>
+						</apex:column>
+						<apex:column width="20px" rendered="{!renderTooltip}">
+							<apex:facet name="header"></apex:facet>
+							<img src="/s.gif" class="infoIcon" data-tooltip="{!itemToApproveWrapper.tooltip}" />
+						</apex:column>
+						<apex:repeat value="{!eRColumns}" var="f">
+							<apex:column >
+								<apex:facet name="header">
+									<apex:outputLink value="javascript:void(0);" styleClass="sort slds-p-right_large" onclick="sortData('{!f.fieldPath}');">
+										<apex:outputText value="{!f.Label}" />
+										<img src="/s.gif" class="sortingClass slds-input__icon-group slds-m-top_none {!IF(sortField = f.fieldPath,IF(paginator.dataSource.isAscending , 'ascImage','descImage'),'')}" />
+									</apex:outputLink>
+								</apex:facet>
+								<apex:outputfield value="{!itemToApproveWrapper.expenseReport[f.fieldPath]}" />
+							</apex:column>
+						</apex:repeat>
+						<apex:column rendered="{!showNumberOfExpenseLines}">
+							<apex:facet name="header">
+								<apex:outputText value="{!$Label.pse__expense_approval_ui_label_number_of_expense_lines}" />
+							</apex:facet>
+							<apex:outputText value="{!itemToApproveWrapper.noOfExpenseLines}" />
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header"></apex:facet>
+							<apex:outputPanel rendered="{!itemToApproveWrapper.isError}">
+								<img height="14px" style="padding-left: 2px;padding-right: 5px;" src="/img/msg_icons/error24.png" title="{!itemToApproveWrapper.errorMessage}" />
+							</apex:outputPanel>
+						</apex:column>
+					</apex:pageblockTable>
+				</div>
+				<table class="list">
+					<tr class="totalRow">
+						<th class="totalRow" scope="col" align="left">
+							<apex:outputText value="{!paginator.statusMessage}" /> &nbsp;&nbsp;&nbsp;
+							<apex:commandButton styleClass="btn" action="{!paginator.first}" value="{!$Label.pse__common_label_first}" disabled="{!NOT(paginator.hasFirst)}"
+							 rerender="ERPageBlock, quickTooltipPanel" status="ajaxStatus" oncomplete="onPageChangeDone();updateAnchorTargetAttribute();" />
+							<apex:commandButton styleClass="btn" action="{!paginator.previous}" value="{!$Label.pse__common_label_previous}" disabled="{!NOT(paginator.hasPrevious)}"
+							 rerender="ERPageBlock, quickTooltipPanel" status="ajaxStatus" oncomplete="onPageChangeDone();updateAnchorTargetAttribute();" />
+							<apex:commandButton styleClass="btn" action="{!paginator.next}" value="{!$Label.pse__common_label_next}" disabled="{!NOT(paginator.hasNext)}"
+							 rerender="ERPageBlock, quickTooltipPanel" status="ajaxStatus" oncomplete="onPageChangeDone();updateAnchorTargetAttribute();" />
+							<apex:commandButton styleClass="btn" action="{!paginator.last}" value="{!$Label.pse__common_label_last}" disabled="{!NOT(paginator.hasLast)}"
+							 rerender="ERPageBlock, quickTooltipPanel" status="ajaxStatus" oncomplete="onPageChangeDone();updateAnchorTargetAttribute();" />
+						</th>
+					</tr>
+				</table>
+				<br />
+				<apex:pageBlockSection showHeader="true" title="{!$Label.pse__common_label_comments}" collapsible="false" columns="2">
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel >{!$Label.pse__common_label_comments} </apex:outputLabel>
+						<apex:inputTextarea cols="60" rows="5" value="{!approverComment}" />
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+			</apex:outputpanel>
+			<apex:pageblockButtons location="bottom">
+				<apex:commandButton value="{!$Label.pse__common_label_cancel}" onclick="doCancel(); return false;" />
+				<apex:commandButton value="{!$Label.pse__common_label_reject}" onclick="doReject(); return false;" rendered="{!foundItemsToApprove}" />
+				<apex:commandButton value="{!$Label.pse__common_label_approve}" onclick="doApprove(); return false;" rendered="{!foundItemsToApprove}" />
+			</apex:pageblockButtons>
+		</apex:pageBlock>
+	</apex:form>
+
+	<apex:outputPanel id="headerScriptBlock" layout="block">
+		<script>
+			prepareHeader();
+			function prepareHeader() {
+				var config = {
+					objectName: '{!JSENCODE($Label.manage_expense_reports_to_approve)}',
+					helpUrl: '{!$Page.ManageERToApproveHelp}',
+					objectApiName: '{!$ObjectType["Expense_Report__c"].name}',
+					onRender: 'onHeaderLoadCallback',
+					buttons: [{
+						id: 'cancel',
+						label: '{!JSENCODE($Label.common_label_cancel)}',
+						actionFn: 'doCancel'
+					}]
+				};
+
+				if ('{!foundItemsToApprove}' === 'true') {
+					config.buttons.push({
+						id: 'reject',
+						label: '{!JSENCODE($Label.common_label_reject)}',
+						actionFn: 'doReject'
+					}, {
+						id: 'approve',
+						label: '{!JSENCODE($Label.common_label_approve)}',
+						actionFn: 'doApprove'
+					});
+				}
+
+				wait(true);
+				$FFHEADER.renderHeader(config);
+			}
+
+			function onHeaderLoadCallback() {
+				wait(false);
+			}
+		</script>
+	</apex:outputPanel>
+	<script>
+		function onAssignmentChange(projDOM) {
+			var milestoneListDOM = document.getElementById('milestoneList');
+			milestoneListDOM.disabled = (projDOM.value == 'none');
+
+			if (milestoneListDOM.options) milestoneListDOM.options.length = 0;
+			if (!milestoneListDOM.disabled) {
+				milestoneListDOM.options[0] = new Option('{!JSENCODE($Label.common_loading_label)}', 'none');
+			} else {
+				milestoneListDOM.options[0] = new Option('{!JSENCODE($Label.Mass_Approval_Empty_Select_List_Label_None)}', 'none');
+			}
+			jsOnProjectChange(projDOM.value);
+		}
+		function onListAllDone() {
+			document.getElementById('milestoneList').disabled = true;
+		}
+		function onApproveRecordsDone() {
+			document.getElementById('milestoneList').disabled = true;
+		}
+		function onRejectRecordsDone() {
+			document.getElementById('milestoneList').disabled = true;
+		}
+		function setFocusOnLoad() { }
+		document.getElementById('milestoneList').disabled = true;
+		function onProjectChangeDone() {
+			var milestoneListDOM = document.getElementById('milestoneList');
+			var projectListDOM = document.getElementById('{!$Component.ERMassApprovalPage.MassERAppForm.FilterBlock.erFilterByTable.projectListPSI.projectLst}');
+			milestoneListDOM.disabled = (projectListDOM.value == 'none');
+		}
+		function updateAnchorTargetAttribute() {
+			// This is to set the anchor tag target as _blank to open in new tab.
+			var parentDiv = document.getElementById('{!$Component.ERMassApprovalPage.MassERAppForm.ERPageBlock.ERList}');
+			var inputElem = parentDiv.getElementsByTagName("a");
+			for (var i = 0; i < inputElem.length; i++) {
+				if (inputElem[i].className.indexOf('sort') == -1) {
+					var hrefValue = decodeURIComponent(inputElem[i].href);
+					// removing isdtp parameter if present in url which is responsible for classic view of lookup fields
+					inputElem[i].href = hrefValue.replace('?isdtp=p1', '');
+					inputElem[i].target = '_blank';
+					inputElem[i].onmouseover = '';
+				}
+			}
+		}
+		document.addEventListener('DOMContentLoaded', updateAnchorTargetAttribute);
+	</script>
+	<!-- Added this components to include jquery library and required script for tooltip -->
+	<c:fflib_thirdparty jQuery="true" jQueryUI="true" />
+	<apex:outputPanel id="quickTooltipPanel">
+		<c:QuickTooltip tooltipTextAttrName="data-tooltip" />
+	</apex:outputPanel>
+</apex:page>

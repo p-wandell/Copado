@@ -1,0 +1,38 @@
+<apex:page controller="QuotaManagerController">
+	<apex:form >
+		<apex:actionfunction action="{!initializeQuotas}" name="redoQuotas" rerender="quotaBlock" />
+		<apex:pageMessages />
+		<apex:pageBlock title="Quota Manager">
+			<apex:pageBlockButtons >
+               	<apex:commandButton action="{!saveForm}" value="Save" rerender="quotaBlock"/>
+               	<apex:commandButton action="{!addNew}" value="New"/>
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection title="Select Year">
+				<apex:selectList value="{!SelectedYear}" multiselect="false" size="1" onChange="redoQuotas();">
+            		<apex:selectOptions value="{!YearOptions}"/>
+        		</apex:selectList>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="Sales Quotas" id="quotaBlock">
+				<apex:dataTable value="{!Quotas}" var="quota">
+					<apex:column style="width:90px;">
+						<apex:commandLink action="{!deleteForm}" value="Delete">
+							<apex:param name="quotaId" value="{!quota.Id}" assignTo="{!DeleteId}" />
+                		</apex:commandLink>
+		       		</apex:column>
+		       		<apex:column style="width:200px;">
+		       			<apex:facet name="header">Owner</apex:facet>
+		       			<apex:inputField value="{!quota.QuotaOwnerId}" />
+		       		</apex:column>
+		       		<apex:column style="width:200px;">
+		       			<apex:facet name="header">Quota Amount</apex:facet>
+		       			<apex:inputField value="{!quota.QuotaAmount}" />
+		       		</apex:column>
+		       		<apex:column >
+		       			<apex:facet name="header">Start Date</apex:facet>
+		       			<apex:inputField value="{!quota.StartDate}" />
+		       		</apex:column>
+				</apex:dataTable>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Industry_Type_Not_Required</fullName>
+    <active>false</active>
+    <description>Establishes when field Industry Type is not required.</description>
+    <errorConditionFormula>AND 
+( 
+
+NOT 
+( 
+OR 
+( 
+(RecordType.DeveloperName = &quot;Trailhead&quot;), 
+(RecordType.DeveloperName = &quot;PSA_Resource&quot;), 
+(Record_Type__c = &quot;Vendor&quot;), 
+(Record_Type__c =&quot;Competitor&quot;) 
+)
+), 
+
+ISBLANK(TEXT(Industry_Type__c)),
+$Profile.Name != &quot;System Administrator&quot;
+)</errorConditionFormula>
+    <errorDisplayField>Industry_Type__c</errorDisplayField>
+    <errorMessage>Contact Industry Type is a required field</errorMessage>
+</ValidationRule>

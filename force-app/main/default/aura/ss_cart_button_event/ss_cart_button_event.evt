@@ -1,0 +1,13 @@
+<!--
+  - Copyright (c) 2017. 7Summits inc.
+  -->
+
+<!--
+ - Created by francois korb on 11/15/17.
+ -->
+
+<aura:event type="APPLICATION"
+            description="ss_cart_button_event">
+	<!-- Cart button mode - can be 'cart' or 'Return to catalog' -->
+	<aura:attribute name="buttonMode" type="String" default="cart" description="cart button mode : cart, return"/>
+</aura:event>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ffr__BalanceSheet3__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Balance Sheet 3</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>ffr__BalanceSheet2__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Bank and Cash</fullName>
+                <default>false</default>
+                <label>Bank and Cash</label>
+            </value>
+            <value>
+                <fullName>Accounts Receivable</fullName>
+                <default>false</default>
+                <label>Accounts Receivable</label>
+            </value>
+            <value>
+                <fullName>Provisions</fullName>
+                <default>false</default>
+                <label>Provisions</label>
+            </value>
+            <value>
+                <fullName>Inventory</fullName>
+                <default>false</default>
+                <label>Inventory</label>
+            </value>
+            <value>
+                <fullName>Prepayments and Accrued Income</fullName>
+                <default>false</default>
+                <label>Prepayments and Accrued Income</label>
+            </value>
+            <value>
+                <fullName>Debtors</fullName>
+                <default>false</default>
+                <label>Debtors</label>
+            </value>
+            <value>
+                <fullName>Stock</fullName>
+                <default>false</default>
+                <label>Stock</label>
+            </value>
+            <value>
+                <fullName>Fixtures Fittings and Equipment</fullName>
+                <default>false</default>
+                <label>Fixtures Fittings and Equipment</label>
+            </value>
+            <value>
+                <fullName>Land and Buildings</fullName>
+                <default>false</default>
+                <label>Land and Buildings</label>
+            </value>
+            <value>
+                <fullName>Intangible Assets</fullName>
+                <default>false</default>
+                <label>Intangible Assets</label>
+            </value>
+            <value>
+                <fullName>Accounts Payable</fullName>
+                <default>false</default>
+                <label>Accounts Payable</label>
+            </value>
+            <value>
+                <fullName>Accruals and Deferred Income</fullName>
+                <default>false</default>
+                <label>Accruals and Deferred Income</label>
+            </value>
+            <value>
+                <fullName>Employment Payables</fullName>
+                <default>false</default>
+                <label>Employment Payables</label>
+            </value>
+            <value>
+                <fullName>Tax Liability</fullName>
+                <default>false</default>
+                <label>Tax Liability</label>
+            </value>
+            <value>
+                <fullName>Creditors</fullName>
+                <default>false</default>
+                <label>Creditors</label>
+            </value>
+            <value>
+                <fullName>Employment Creditors</fullName>
+                <default>false</default>
+                <label>Employment Creditors</label>
+            </value>
+            <value>
+                <fullName>Payable After 1 Year</fullName>
+                <default>false</default>
+                <label>Payable After 1 Year</label>
+            </value>
+            <value>
+                <fullName>Creditors Due After 1 Year</fullName>
+                <default>false</default>
+                <label>Creditors Due After 1 Year</label>
+            </value>
+            <value>
+                <fullName>Capital and Reserves</fullName>
+                <default>false</default>
+                <label>Capital and Reserves</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Bank and Cash</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Accounts Receivable</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Provisions</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Inventory</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Prepayments and Accrued Income</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Debtors</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Assets</controllingFieldValue>
+            <valueName>Stock</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Fixed Assets</controllingFieldValue>
+            <valueName>Fixtures Fittings and Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Fixed Assets</controllingFieldValue>
+            <valueName>Land and Buildings</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Intangible Assets</controllingFieldValue>
+            <valueName>Intangible Assets</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Accounts Payable</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Accruals and Deferred Income</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Employment Payables</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Tax Liability</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Creditors</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Current Liabilities</controllingFieldValue>
+            <valueName>Employment Creditors</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Long Term Liabilities</controllingFieldValue>
+            <valueName>Payable After 1 Year</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Long Term Liabilities</controllingFieldValue>
+            <valueName>Creditors Due After 1 Year</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shareholders Funds</controllingFieldValue>
+            <valueName>Capital and Reserves</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

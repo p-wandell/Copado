@@ -1,0 +1,34 @@
+<apex:page standardController="ProjectSurveyContact__c" showHeader="false" applyHtmlTag="true" applyBodyTag="false" lightningStylesheets="true" extensions="ProjectSurveyContactController">
+    <head>
+        <apex:slds />
+    </head>
+    <body class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <apex:form >
+            <apex:pageBlock >
+                <apex:pageBlockSection columns="2" collapsible="false" >
+                    <apex:pageBlockSectionItem ><b>Project: </b>{!currentProject.Name}</apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem ><b>Account: </b>{!currentProject.pse__Account__r.Name}</apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:pageblock >
+                <apex:pageBlockButtons >
+                    <apex:commandButton value="Save" action="{!save}"/>
+                    <apex:commandButton value="Cancel" action="{!cancel}"/>
+                    
+                </apex:pageBlockButtons>
+                <table width="100%">
+                    <tr>
+                        <th width="80%"><b>Contact Name</b></th>
+                        <th width="20%"><b>Send Survey</b></th>
+                    </tr>
+                    <apex:repeat value="{!contacts}" var="contact">
+                        <tr>
+                            <td>{!contact.contactName}</td>
+                            <td><apex:inputCheckbox value="{!contact.sendSurvey}"/> </td>
+                        </tr>
+                    </apex:repeat>                    
+                </table>
+            </apex:pageblock>
+        </apex:form>
+    </body>
+</apex:page>

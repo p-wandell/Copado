@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>pse__Timecard_Header__c.pse__Project__c</field>
+    </columns>
+    <columns>
+        <field>FK_$Contact.psa_report__Resource_Name__c</field>
+    </columns>
+    <columns>
+        <field>pse__Timecard_Header__c.pse__Monday_Hours__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>pse__Timecard_Header__c.pse__Project__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>contains</operator>
+            <value>7S Internal : Paid Time Off (PTO)</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>pse__Timecard_Header__c.pse__Monday_Hours__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>0</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>9/2/19 Time as PTO</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$pse__Timecard_Header__c@pse__Timecard_Header__c.pse__Resource__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>pse__Timecard_Header__c.pse__End_Date__c</dateColumn>
+        <endDate>2019-09-07</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2019-09-01</startDate>
+    </timeFrameFilter>
+</Report>
