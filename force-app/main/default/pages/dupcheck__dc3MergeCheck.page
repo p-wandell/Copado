@@ -150,10 +150,16 @@
 						</td>
 						<td data-label="{!$Label.dupcheck__owner}">
 							<apex:outputPanel layout="none" rendered="{!isOwner}">
-								{!object['Owner.Name']}
+								<apex:outputPanel layout="none" rendered="{!objectHasOwner[Object.Id]}">
+									{!object['Owner.Name']}
+								</apex:outputPanel>
 							</apex:outputPanel>
 						</td>
-						<td data-label="{!$Label.dupcheck__owner_id}">{!object['OwnerId']}</td>
+						<td data-label="{!$Label.dupcheck__owner_id}">
+							<apex:outputPanel layout="none" rendered="{!objectHasOwner[Object.Id]}">
+								{!object['OwnerId']}
+							</apex:outputPanel>
+						</td>
 						<td data-label="{!$Label.dupcheck__sharing_rules}">
 							{!userRecordAccess[object.Id].MaxAccessLevel}
 						</td>
