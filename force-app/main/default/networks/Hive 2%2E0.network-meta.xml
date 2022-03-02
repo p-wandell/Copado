@@ -163,6 +163,10 @@
             <points>1</points>
         </pointsRule>
         <pointsRule>
+            <eventType>FeedItemMentionSomeone</eventType>
+            <points>2</points>
+        </pointsRule>
+        <pointsRule>
             <eventType>FeedItemShareAPost</eventType>
             <points>2</points>
         </pointsRule>
@@ -174,14 +178,11 @@
             <eventType>FeedItemReceiveAMention</eventType>
             <points>1</points>
         </pointsRule>
-        <pointsRule>
-            <eventType>FeedItemMentionSomeone</eventType>
-            <points>2</points>
-        </pointsRule>
     </reputationPointsRules>
     <selfRegistration>false</selfRegistration>
     <sendWelcomeEmail>true</sendWelcomeEmail>
     <site>Hive_2_0</site>
+    <siteArchiveStatus>NotArchived</siteArchiveStatus>
     <status>Live</status>
     <tabs>
         <customTab>News__c</customTab>
