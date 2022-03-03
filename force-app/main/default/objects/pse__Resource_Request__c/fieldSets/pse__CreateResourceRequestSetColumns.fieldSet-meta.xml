@@ -847,11 +847,6 @@
         <isRequired>false</isRequired>
     </availableFields>
     <availableFields>
-        <field>pse__Practice__r.CurrencyIsoCode</field>
-        <isFieldManaged>false</isFieldManaged>
-        <isRequired>false</isRequired>
-    </availableFields>
-    <availableFields>
         <field>pse__Preferred_Schedule__r.CurrencyIsoCode</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
@@ -863,6 +858,11 @@
     </availableFields>
     <availableFields>
         <field>pse__Project__r.CurrencyIsoCode</field>
+        <isFieldManaged>false</isFieldManaged>
+        <isRequired>false</isRequired>
+    </availableFields>
+    <availableFields>
+        <field>pse__Practice__r.CurrencyIsoCode</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
     </availableFields>
@@ -2107,11 +2107,6 @@
         <isRequired>false</isRequired>
     </availableFields>
     <availableFields>
-        <field>pse__Practice__r.LastModifiedById</field>
-        <isFieldManaged>false</isFieldManaged>
-        <isRequired>false</isRequired>
-    </availableFields>
-    <availableFields>
         <field>pse__Preferred_Schedule__r.LastModifiedById</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
@@ -2123,6 +2118,11 @@
     </availableFields>
     <availableFields>
         <field>pse__Project__r.LastModifiedById</field>
+        <isFieldManaged>false</isFieldManaged>
+        <isRequired>false</isRequired>
+    </availableFields>
+    <availableFields>
+        <field>pse__Practice__r.LastModifiedById</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
     </availableFields>
@@ -3122,17 +3122,17 @@
         <isRequired>false</isRequired>
     </availableFields>
     <availableFields>
-        <field>pse__Opportunity__r.pse__Practice__c</field>
-        <isFieldManaged>false</isFieldManaged>
-        <isRequired>false</isRequired>
-    </availableFields>
-    <availableFields>
         <field>pse__Practice__c</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
     </availableFields>
     <availableFields>
         <field>pse__Project__r.pse__Practice__c</field>
+        <isFieldManaged>false</isFieldManaged>
+        <isRequired>false</isRequired>
+    </availableFields>
+    <availableFields>
+        <field>pse__Opportunity__r.pse__Practice__c</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
     </availableFields>
