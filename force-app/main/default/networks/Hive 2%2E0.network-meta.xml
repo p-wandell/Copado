@@ -163,10 +163,6 @@
             <points>1</points>
         </pointsRule>
         <pointsRule>
-            <eventType>FeedItemMentionSomeone</eventType>
-            <points>2</points>
-        </pointsRule>
-        <pointsRule>
             <eventType>FeedItemShareAPost</eventType>
             <points>2</points>
         </pointsRule>
@@ -177,6 +173,10 @@
         <pointsRule>
             <eventType>FeedItemReceiveAMention</eventType>
             <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemMentionSomeone</eventType>
+            <points>2</points>
         </pointsRule>
     </reputationPointsRules>
     <selfRegistration>false</selfRegistration>
