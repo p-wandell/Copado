@@ -264,6 +264,10 @@
             <outputField>Leaderboard_Plus_Install_Count__c</outputField>
         </mappingFields>
         <mappingFields>
+            <inputField>MQL_Inquiry__c</inputField>
+            <outputField>MQL_Inquiry__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>LinkedIn_Profile__c</inputField>
             <outputField>LinkedIn_Profile__c</outputField>
         </mappingFields>
@@ -274,10 +278,6 @@
         <mappingFields>
             <inputField>MQL_Date__c</inputField>
             <outputField>MQL_Date__c</outputField>
-        </mappingFields>
-        <mappingFields>
-            <inputField>MQL_Inquiry__c</inputField>
-            <outputField>MQL_Inquiry__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Page_Info_Demo__c</inputField>
@@ -360,6 +360,10 @@
             <outputField>PartnerFirst_for_Manufacturing_Bolt_De__c</outputField>
         </mappingFields>
         <mappingFields>
+            <inputField>Passed_to_Sales__c</inputField>
+            <outputField>Passed_to_Sales__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>PartnerFirst_for_Mfg_Bolt_Demo_Count__c</inputField>
             <outputField>PartnerFirst_for_Mfg_Bolt_Demo_Count__c</outputField>
         </mappingFields>
@@ -370,10 +374,6 @@
         <mappingFields>
             <inputField>PartnerFirst_Mfg_Bolt_Install_Count__c</inputField>
             <outputField>PartnerFirst_Mfg_Bolt_Install_Count__c</outputField>
-        </mappingFields>
-        <mappingFields>
-            <inputField>Passed_to_Sales__c</inputField>
-            <outputField>Passed_to_Sales__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Profile_Wizard_Flow_Demo__c</inputField>
@@ -476,6 +476,10 @@
             <outputField>Total_MQL__c</outputField>
         </mappingFields>
         <mappingFields>
+            <inputField>Twitter_Feed_Install_Count__c</inputField>
+            <outputField>Twitter_Feed_Install_Count__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Twitter_Feed_Demo__c</inputField>
             <outputField>Twitter_Feed_Demo__c</outputField>
         </mappingFields>
@@ -486,10 +490,6 @@
         <mappingFields>
             <inputField>Twitter_Feed_Install__c</inputField>
             <outputField>Twitter_Feed_Install__c</outputField>
-        </mappingFields>
-        <mappingFields>
-            <inputField>Twitter_Feed_Install_Count__c</inputField>
-            <outputField>Twitter_Feed_Install_Count__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Twitter_Handle__c</inputField>
@@ -520,14 +520,6 @@
     <objectMapping>
         <inputObject>Lead</inputObject>
         <mappingFields>
-            <inputField>Lead_Source__c</inputField>
-            <outputField>Lead_Source__c</outputField>
-        </mappingFields>
-        <mappingFields>
-            <inputField>Lead_Source_Detail__c</inputField>
-            <outputField>Lead_Source_Detail__c</outputField>
-        </mappingFields>
-        <mappingFields>
             <inputField>Channel_Rep_del__c</inputField>
             <outputField>Channel_Rep__c</outputField>
         </mappingFields>
@@ -550,6 +542,14 @@
         <mappingFields>
             <inputField>Lead_Qualification_Status__c</inputField>
             <outputField>Lead_Qualification_Status__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Lead_Source_Detail__c</inputField>
+            <outputField>Lead_Source_Detail__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Lead_Source__c</inputField>
+            <outputField>Lead_Source__c</outputField>
         </mappingFields>
         <outputObject>Opportunity</outputObject>
     </objectMapping>
