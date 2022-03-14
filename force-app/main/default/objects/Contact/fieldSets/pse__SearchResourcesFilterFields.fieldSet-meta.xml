@@ -772,11 +772,6 @@
         <isRequired>false</isRequired>
     </availableFields>
     <availableFields>
-        <field>CreatedBy.Email</field>
-        <isFieldManaged>false</isFieldManaged>
-        <isRequired>false</isRequired>
-    </availableFields>
-    <availableFields>
         <field>Email</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
@@ -802,17 +797,22 @@
         <isRequired>false</isRequired>
     </availableFields>
     <availableFields>
+        <field>CreatedBy.Email</field>
+        <isFieldManaged>false</isFieldManaged>
+        <isRequired>false</isRequired>
+    </availableFields>
+    <availableFields>
         <field>EmailBouncedDate</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
     </availableFields>
     <availableFields>
-        <field>MasterRecord.EmailBouncedDate</field>
+        <field>ReportsTo.EmailBouncedDate</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
     </availableFields>
     <availableFields>
-        <field>ReportsTo.EmailBouncedDate</field>
+        <field>MasterRecord.EmailBouncedDate</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
     </availableFields>
