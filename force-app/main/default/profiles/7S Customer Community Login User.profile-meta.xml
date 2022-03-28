@@ -7908,11 +7908,19 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>dupcheck__AssertTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>dupcheck__Dc3MergeField</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>dupcheck__Dc3MergeFieldGroup</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>dupcheck__Dc3MergeFieldGroupTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -7964,7 +7972,15 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>dupcheck__Dc3MergeRuleValidatorTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>dupcheck__Logger</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>dupcheck__LoggerTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -8116,6 +8132,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>dupcheck__dc3AuraShareControllerTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>dupcheck__dc3AuraUtilSobjectLookup</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -8240,6 +8260,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>dupcheck__dc3ConfigDataTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>dupcheck__dc3ConfigExport</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -8253,6 +8277,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>dupcheck__dc3ConfigExternal</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>dupcheck__dc3ConfigExternalTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -8433,10 +8461,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>dupcheck__dc3ControllerMergeListTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>dupcheck__dc3ControllerMergeModal</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -8676,11 +8700,23 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>dupcheck__dc3HelperLwcWireMethodsTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>dupcheck__dc3HelperPicklist</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>dupcheck__dc3HelperPicklistTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>dupcheck__dc3HelperSharing</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>dupcheck__dc3HelperSharingTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -8801,6 +8837,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>dupcheck__dc3Janitor</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>dupcheck__dc3JanitorTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -9001,6 +9041,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>dupcheck__dc3PluginModel</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>dupcheck__dc3PluginModelTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>

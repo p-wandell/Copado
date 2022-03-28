@@ -520,14 +520,6 @@
     <objectMapping>
         <inputObject>Lead</inputObject>
         <mappingFields>
-            <inputField>Lead_Source__c</inputField>
-            <outputField>Lead_Source__c</outputField>
-        </mappingFields>
-        <mappingFields>
-            <inputField>Lead_Source_Detail__c</inputField>
-            <outputField>Lead_Source_Detail__c</outputField>
-        </mappingFields>
-        <mappingFields>
             <inputField>Channel_Rep_del__c</inputField>
             <outputField>Channel_Rep__c</outputField>
         </mappingFields>
@@ -550,6 +542,14 @@
         <mappingFields>
             <inputField>Lead_Qualification_Status__c</inputField>
             <outputField>Lead_Qualification_Status__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Lead_Source_Detail__c</inputField>
+            <outputField>Lead_Source_Detail__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Lead_Source__c</inputField>
+            <outputField>Lead_Source__c</outputField>
         </mappingFields>
         <outputObject>Opportunity</outputObject>
     </objectMapping>
