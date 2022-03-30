@@ -120,52 +120,22 @@
 
     svg4everybody();
     var actionList = [];
-    {
-      !IF(license.features.duplicatePrevention, 'actionList.push({"Value":"INSERT","Label":"Manual Insert Prevention"});', '');
-    }
-    {
-      !IF(license.features.duplicatePrevention, 'actionList.push({"Value":"UPDATE","Label":"Manual Update Prevention"});', '');
-    }
-    actionList.push({ Value: 'SEARCH', Label: 'DC Search' });
-    {
-      !IF(license.features.pageConvert, 'actionList.push({"Value":"CONVERT","Label":"DC Convert"});', '');
-    }
-    {
-      !IF(license.features.pageCheck, 'actionList.push({"Value":"CHECK","Label":"DC Check"});', '');
-    }
-    {
-      !IF(license.features.pageEntry, 'actionList.push({"Value":"ENTRY","Label":"DC Entry"});', '');
-    }
-    {
-      !IF(license.features.pageLayout, 'actionList.push({"Value":"LAYOUT","Label":"DC Live"});', '');
-    }
-    {
-      !IF(license.features.batchDeduplication, 'actionList.push({"Value":"BATCH","Label":"DC Job"});', '');
-    }
-    {
-      !IF(license.features.uniqueUpload, 'actionList.push({"Value":"UPLOAD","Label":"Unique Import / API Bulk Insert"});', '');
-    }
-    {
-      !IF(license.features.uniqueUpload, 'actionList.push({"Value":"SINGLEUPLOAD","Label":"API Single Insert / Update"});', '');
-    }
-    {
-      !IF(license.features.api, 'actionList.push({"Value":"API","Label":"DC Apex API"});', '');
-    }
-    {
-      !IF(license.features.web2Lead, 'actionList.push({"Value":"WEB2LEAD","Label":"Web-to-Lead"});', '');
-    }
-    {
-      !IF(license.features.dataApi, 'actionList.push({"Value":"DATAAPI","Label":"Data API"});', '');
-    }
-    {
-      !IF(license.features.flow, 'actionList.push({"Value":"FLOW","Label":"Flow"});', '');
-    }
-    {
-      !IF(RVInstalled, 'actionList.push({"Value":"RVINSERT","Label":"RV Manual Insert Prevention"});', '');
-    }
-    {
-      !IF(RVInstalled, 'actionList.push({"Value":"RVUPDATE","Label":"RV Manual Update Prevention"});', '');
-    }
+    {!IF(license.features.duplicatePrevention, 'actionList.push({"Value":"INSERT","Label":"Manual Insert Prevention"});', '')}
+    {!IF(license.features.duplicatePrevention, 'actionList.push({"Value":"UPDATE","Label":"Manual Update Prevention"});', '')}
+    actionList.push({"Value":"SEARCH","Label":"DC Search"});
+    {!IF(license.features.pageConvert, 'actionList.push({"Value":"CONVERT","Label":"DC Convert"});', '')}
+    {!IF(license.features.pageCheck, 'actionList.push({"Value":"CHECK","Label":"DC Check"});', '')}
+    {!IF(license.features.pageEntry, 'actionList.push({"Value":"ENTRY","Label":"DC Entry"});', '')}
+    {!IF(license.features.pageLayout, 'actionList.push({"Value":"LAYOUT","Label":"DC Live"});', '')}
+    {!IF(license.features.batchDeduplication, 'actionList.push({"Value":"BATCH","Label":"DC Job"});', '')}
+    {!IF(license.features.uniqueUpload, 'actionList.push({"Value":"UPLOAD","Label":"Unique Import / API Bulk Insert"});', '')}
+    {!IF(license.features.uniqueUpload, 'actionList.push({"Value":"SINGLEUPLOAD","Label":"API Single Insert / Update"});', '')}
+    {!IF(license.features.api, 'actionList.push({"Value":"API","Label":"DC Apex API"});', '')}
+    {!IF(license.features.web2Lead, 'actionList.push({"Value":"WEB2LEAD","Label":"Web-to-Lead"});', '')}
+    {!IF(license.features.dataApi, 'actionList.push({"Value":"DATAAPI","Label":"Data API"});', '')}
+    {!IF(license.features.flow, 'actionList.push({"Value":"FLOW","Label":"Flow"});', '')}
+    {!IF(RVInstalled, 'actionList.push({"Value":"RVINSERT","Label":"RV Manual Insert Prevention"});', '')}
+    {!IF(RVInstalled, 'actionList.push({"Value":"RVUPDATE","Label":"RV Manual Update Prevention"});', '')}
   </script>
 
   <c:dc3Welcome version="LIGHTNING" />
